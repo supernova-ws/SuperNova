@@ -353,46 +353,58 @@ require_once('vars_combats.php');
 require_once('vars_powerups.php');
 
 $sn_data += array(
+  UNIT_PLAYER_EMPIRE_SPY => [
+    'type'       => UNIT_INTERNAL,
+    'location'   => LOC_USER,
+//    P_BONUS_TYPE => BONUS_ADD,
+  ],
+  UNIT_FLEET_PLANET_SPY  => [
+    'type'       => UNIT_INTERNAL,
+    'location'   => LOC_USER,
+//    P_BONUS_TYPE => BONUS_ADD,
+  ],
+
+
   RES_METAL       => array(
     'name'       => 'metal',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_PLANET,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_CRYSTAL     => array(
     'name'       => 'crystal',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_PLANET,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_DEUTERIUM   => array(
     'name'       => 'deuterium',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_PLANET,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_ENERGY      => array(
     'name'       => 'energy',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_PLANET,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_DARK_MATTER => array(
     'name'       => 'dark_matter',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_USER,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_METAMATTER  => array(
     'name'       => 'metamatter',
     'type'       => UNIT_RESOURCES,
     'location'   => LOC_USER,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
 
@@ -404,7 +416,7 @@ $sn_data += array(
       RES_DARK_MATTER => 1000,
       'factor'        => 1.01,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
 
   UNIT_PLANET_DENSITY => array(
@@ -415,7 +427,7 @@ $sn_data += array(
       RES_DARK_MATTER => 2000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
 
   UNIT_GROUP => array(

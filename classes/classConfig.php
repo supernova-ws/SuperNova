@@ -76,6 +76,10 @@
  * @property string     $var_stat_update_next         => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
  * @property string     $var_stat_update_msg          => 'Update never started' - Last stat update message
  *
+ * @property float      $resource_multiplier          => 1, // aka Mining speed
+ * @property float      $game_speed                   => 1, // Game speed aka Building/Research speed
+ * @property float      $fleet_speed                  => 1, // Fleet speed
+ *
  * @property int        $tutorial_first_item          ID of first item of tutorial
  *
  * @property int        $url_faq                      URL of FAQ root

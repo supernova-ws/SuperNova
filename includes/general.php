@@ -66,23 +66,38 @@ function sys_file_write($filename, $content) {
   return @file_put_contents($filename, $content, FILE_APPEND);
 }
 
-function get_game_speed($plain = false) { return sn_function_call('get_game_speed', array($plain, &$result)); }
-
-function sn_get_game_speed($plain = false, &$result) {
-  return $result = classSupernova::$config->game_speed ? classSupernova::$config->game_speed : 1;
+function game_resource_multiplier($plain = false) {
+  $vs = classSupernova::$gc->valueStorage;
+  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_MINING);
+  return $plain ? $valueObject->base : $valueObject->value;
 }
 
-function flt_server_flight_speed_multiplier($plain = false) { return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result)); }
-
-function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
-  return $result = classSupernova::$config->fleet_speed;
+function get_game_speed($plain = false) {
+  $vs = classSupernova::$gc->valueStorage;
+  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_BUILDING);
+  return $plain ? $valueObject->base : $valueObject->value;
 }
 
-function game_resource_multiplier($plain = false) { return sn_function_call('game_resource_multiplier', array($plain, &$result)); }
-
-function sn_game_resource_multiplier($plain = false, &$result) {
-  return $result = classSupernova::$config->resource_multiplier;
+function flt_server_flight_speed_multiplier($plain = false) {
+  $vs = classSupernova::$gc->valueStorage;
+  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_FLEET);
+  return $plain ? $valueObject->base : $valueObject->value;
 }
+
+//function get_game_speed($plain = false) { return sn_function_call('get_game_speed', array($plain, &$result)); }
+//function sn_get_game_speed($plain = false, &$result) {
+//  return $result = classSupernova::$config->game_speed ? classSupernova::$config->game_speed : 1;
+//}
+//
+//function flt_server_flight_speed_multiplier($plain = false) { return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result)); }
+//function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
+//  return $result = classSupernova::$config->fleet_speed;
+//}
+//
+//function game_resource_multiplier($plain = false) { return sn_function_call('game_resource_multiplier', array($plain, &$result)); }
+//function sn_game_resource_multiplier($plain = false, &$result) {
+//  return $result = classSupernova::$config->resource_multiplier;
+//}
 
 /**
  * Получение стоимости ММ в валюте сервера
@@ -474,9 +489,9 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
     $mercenary_bonus = $mercenary['bonus'];
 
     switch ($mercenary['bonus_type']) {
-      case BONUS_PERCENT_CUMULATIVE:
-        $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
-      break;
+//      case BONUS_PERCENT_CUMULATIVE:
+//        $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
+//      break;
 
       case BONUS_PERCENT:
         $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
@@ -1073,6 +1088,17 @@ function sys_stat_get_user_skip_list() {
   return $result;
 }
 
+/**
+ * Get unit info by unit's SN ID
+ *
+ * @param int $unitSnId
+ *
+ * @return mixed
+ */
+function getUnitInfo($unitSnId) {
+  return get_unit_param($unitSnId);
+}
+
 // function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
 // function sn_render_player_nick($render_user, $options = false, &$result)
 
@@ -1604,4 +1630,30 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = fa
  */
 function getUniqueFleetId($planetTemplatized) {
   return empty($planetTemplatized['id']) ? 0 : sprintf(FLEET_ID_TEMPLATE, $planetTemplatized['id']);
+}
+
+/**
+ * @param array $context
+ *
+ * @return array
+ */
+function getLocationFromContext($context = []) {
+  if(!empty($context[LOC_FLEET])) {
+    return [LOC_FLEET, $context[LOC_FLEET]['fleet_id']];
+//    $this->location = LOC_FLEET;
+//    $this->locationId = $context[LOC_FLEET]['fleet_id'];
+  } elseif(!empty($context[LOC_PLANET])) {
+    return [LOC_PLANET, $context[LOC_PLANET]['id']];
+//    $this->location = LOC_PLANET;
+//    $this->locationId = $context[LOC_PLANET]['id'];
+  } elseif(!empty($context[LOC_USER])) {
+    return [LOC_USER, $context[LOC_USER]['id']];
+//    $this->location = LOC_USER;
+//    $this->locationId = $this->context[LOC_USER]['id'];
+  } else {
+    return [LOC_SERVER, 0];
+//    $this->location = LOC_SERVER;
+//    $this->locationId = 0;
+  }
+
 }

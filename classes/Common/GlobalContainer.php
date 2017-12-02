@@ -3,6 +3,8 @@
 namespace Common;
 
 use Bonus\BonusCatalog;
+use Bonus\ValueStorage;
+use Bonus\ValueBonused;
 use \classSupernova;
 use \General;
 use \Core\Watchdog;
@@ -32,6 +34,7 @@ use \Meta\Economic\EconomicHelper;
  * @property Watchdog         $watchdog
  * @property EventBus         $eventBus
  *
+ * @property ValueStorage     $valueStorage
  * @property BonusCatalog     $bonusCatalog
  *
  * @property General          $general
@@ -126,6 +129,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->eventBus = function (GlobalContainer $gc) {
       return new EventBus($gc);
+    };
+
+    $gc->valueStorage = function (GlobalContainer $gc) {
+      return new ValueStorage([]);
     };
 
     $gc->bonusCatalog = function (GlobalContainer $gc) {

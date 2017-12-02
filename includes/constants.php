@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a9.0');
+define('SN_VERSION', '43a9.3');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -199,7 +199,8 @@ define('PT_MOON'  , 3);
 
 // *** Unit locations - shows db table where unit belong
 // Also cache indexes
-define('LOC_NONE',    -1);
+define('LOC_AUTODETECT', -2);
+define('LOC_NONE',    -1); // Deprecated
 define('LOC_UNIVERSE', 0);
 define('LOC_PLANET',   1);
 define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `debris_*` fields
@@ -763,9 +764,9 @@ define('BONUS_PERCENT' ,            1);  // Percent on base value
 define('BONUS_ADD'     ,            2);  // Add
 define('BONUS_ABILITY' ,            3);  // Some ability
 define('BONUS_MULTIPLY',            4);  // Multiply by value
-define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
-define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
-define('BONUS_SPEED',               7);  // Speed bonus
+//define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
+//define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
+//define('BONUS_SPEED',               7);  // Speed bonus
 
 // *** Action constant (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
@@ -1194,6 +1195,28 @@ define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNOWFLAKE', 3128); // 99 - Снежинк
 
 define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 
+// WHEN CHANGING CONSTANT STRING VALUE TO INTEGER IT SHOULD BE CONSISTENT WITH UNIT_xxx FAMILY OF CONSTANTS!!!
+define('UNIT_INTERNAL', 700000);
+
+define('UNIT_SERVER_SPEED_BUILDING', 'UNIT_SERVER_SPEED_BUILDING');
+define('UNIT_SERVER_SPEED_MINING', 'UNIT_SERVER_SPEED_MINING');
+define('UNIT_SERVER_SPEED_FLEET', 'UNIT_SERVER_SPEED_FLEET');
+define('UNIT_SERVER_SPEED_EXPEDITION', 'UNIT_SERVER_SPEED_EXPEDITION');
+
+define('UNIT_FESTIVAL_SPEED_BUILDING', 'UNIT_FESTIVAL_SPEED_BUILDING');
+define('UNIT_FESTIVAL_SPEED_MINING', 'UNIT_FESTIVAL_SPEED_MINING');
+define('UNIT_FESTIVAL_SPEED_FLEET', 'UNIT_FESTIVAL_SPEED_FLEET');
+define('UNIT_FESTIVAL_SPEED_EXPEDITION', 'UNIT_FESTIVAL_SPEED_EXPEDITION');
+
+define('UNIT_PLAYER_EMPIRE_SPY', 'UNIT_PLAYER_EMPIRE_SPY');
+
+define('UNIT_PLANET_MINING_METAL', 'UNIT_PLANET_MINING_METAL');
+define('UNIT_PLANET_MINING_CRYSTAL', 'UNIT_PLANET_MINING_CRYSTAL');
+define('UNIT_PLANET_MINING_DEUTERIUM', 'UNIT_PLANET_MINING_DEUTERIUM');
+
+define('UNIT_FLEET_PLANET_SPY', 'UNIT_FLEET_PLANET_SPY');
+
+
 define('GROUP_PART',         800000);
 // Зарезервировано для запчастей: 800.001 - 899.999
 // define('GROUP_PART_HULL',    801000); // Корпуса - 1000 штук
@@ -1234,6 +1257,7 @@ define('P_STORAGE', 'storage');
 define('P_STACKABLE', 'stackable'); // COMPLETE
 define('P_DEPLOY', 'deploy');
 define('P_BONUS_VALUE', 'bonus');
+define('P_BONUS_TYPE', 'bonus_type');
 define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
