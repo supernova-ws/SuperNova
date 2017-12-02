@@ -70,17 +70,20 @@ class ValueStorage extends ContainerPlus {
    * @param int   $unitSnId
    * @param array $context - Context list of locations: [LOC_xxx => (data)]
    *
-   * @return ValueBonused
+   * @return ValueBonused|mixed
    */
   public function getValueObject($unitSnId, $context = []) {
-    if(isset($this[$unitSnId])) {
+    if (isset($this[$unitSnId])) {
       // Server var
       $valueObject = $this[$unitSnId];
     } else {
       // Not a server var
       $valueObject = new ValueBonused($unitSnId, $this->getLevelNonServer($unitSnId, $context));
     }
-    $valueObject->calc($context);
+
+    if($valueObject instanceof ValueBonused) {
+      $valueObject->calc($context);
+    }
 
     return $valueObject;
   }
@@ -92,10 +95,11 @@ class ValueStorage extends ContainerPlus {
    * @return float|int
    */
   public function getValue($unitSnId, $context = []) {
-    if(isset($this[$unitSnId]) && $this[$unitSnId] instanceof ValueBonused) {
-      $result = $this->getValueObject($unitSnId, $context)->value;
+
+    if(($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
+      $result = $vo->value;
     } else {
-      $result = $this[$unitSnId];
+      $result = $vo;
     }
 
     return $result;
@@ -108,10 +112,10 @@ class ValueStorage extends ContainerPlus {
    * @return float|int
    */
   public function getBase($unitSnId, $context = []) {
-    if(isset($this[$unitSnId]) && $this[$unitSnId] instanceof ValueBonused) {
-      $result = $this->getValueObject($unitSnId, $context)->base;
+    if(($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
+      $result = $vo->base;
     } else {
-      $result = $this[$unitSnId];
+      $result = $vo;
     }
 
     return $result;

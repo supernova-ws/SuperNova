@@ -14,16 +14,24 @@ namespace Bonus;
  * @package Bonus
  */
 class BonusFactory {
+  public static $classByType = [
+    BONUS_ABILITY  => BonusAtomAbility::class,
+    BONUS_ADD      => BonusAtomAdd::class,
+    BONUS_PERCENT  => BonusAtomPercent::class,
+    BONUS_MULTIPLY => BonusAtomMultiply::class,
+  ];
 
   /**
-   * @param int  $sourceUnitId - Unit ID from which base value should be retrieved
-   * @param int  $location - Location of unit in context
-   * @param bool $ifBaseNonZero - Bonus should applied only if base value is not empty when true
+   * @param int $sourceUnitId - Unit ID from which base value should be retrieved
+   * @param     $ifNotEmpty
    *
-   * @return BonusDescription
+   * @return BonusAtom
    */
-  public static function build($sourceUnitId, $location, $ifNotEmpty) {
-    return new BonusDescription($sourceUnitId, $location, $ifNotEmpty);
+  public static function build($sourceUnitId, $ifNotEmpty) {
+    $bonusType = BonusAtom::calcBonusType(getUnitInfo($sourceUnitId));
+    $bonusClass = isset(static::$classByType[$bonusType]) ? static::$classByType[$bonusType] : BonusAtom::class;
+
+    return new $bonusClass($sourceUnitId, $ifNotEmpty);
   }
 
 }

@@ -1062,6 +1062,11 @@ var_stat_update_next	2017-11-12 04:00:00
 [*] 'bonus_type' => 'P_BONUS_TYPE'
 
 
+2017-12-02 17:29:26 43a9.4
+[@] Код
+    Класс BonusDescription развернут в семейство классов BonusAtomXXX
+    Переработан класс BonusListAtom (бывш BonusDescriptionList)
+
 
 2017-12-02 09:54:39 43a9.3
 [@] Код

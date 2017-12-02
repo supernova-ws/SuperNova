@@ -13,10 +13,16 @@ class ValueBonused {
   public $snId = 0;
   public $context = [];
 
+
   /**
-   * [(int BONUS_xxx)bonusType][(int)$sourceUnitSnId] => (float)bonusValue
+   * @var BonusListAtom $bonusDescription
+   */
+  public $bonusDescription;
+
+  /**
+   * [(int)$sourceUnitSnId] => (float)bonusValue
    *
-   * @var float[][] $bonusValues
+   * @var float[] $bonusValues
    */
   public $bonusValues = [];
 
@@ -46,27 +52,12 @@ class ValueBonused {
     $this->value = $this->base;
     $this->bonusValues = [];
 
-    $bonuses = $this->bonusCatalog->getBonusDescriptions($this->snId);
-    if(!$bonuses) {
+    $this->bonusDescription = $this->bonusCatalog->getBonusDescriptions($this->snId);
+    if(!$this->bonusDescription) {
       return $this->base;
     }
 
-    $this->bonusValues = $bonuses->calcBonusValues($this);
-
-    // Summing up those bonuses which can be summarized
-    $justSum = $this->bonusValues;
-    unset($justSum[BONUS_MULTIPLY]);
-    $this->value = 0;
-    foreach($justSum as $bonusList) {
-      $this->value += array_reduce($bonusList, function($result, $bonus) {return $result + $bonus;}, 0);
-    }
-
-    // Multiplying summarized value by multiplication bonuses
-    if(!empty($this->bonusValues[BONUS_MULTIPLY])) {
-      foreach($this->bonusValues[BONUS_MULTIPLY] as $multiplier) {
-        $this->value *= $multiplier;
-      }
-    }
+    $this->bonusValues = $this->bonusDescription->apply($this);
 
     return $this->value;
   }

@@ -10,7 +10,7 @@ use Common\GlobalContainer;
 /**
  * Class BonusCatalog
  *
- * Bonus catalog - list of all possible modifiers for all bonus types
+ * BonusAtom catalog - list of all possible modifiers for all bonus types
  *
  * @package Bonus
  */
@@ -26,9 +26,9 @@ class BonusCatalog {
   /**
    * List of bonuses for levels
    *
-   * [(int)$snId => Bonus\BonusDescriptionList]
+   * [(int)$snId => Bonus\BonusListAtom]
    *
-   * @var BonusDescriptionList[] $bonuses
+   * @var BonusListAtom[] $bonuses
    */
   protected $bonuses = [];
 
@@ -39,12 +39,6 @@ class BonusCatalog {
   }
 
   protected function loadDefaults() {
-//    $this->registerBonus(UNIT_SERVER_SPEED_BUILDING, UNIT_PREMIUM);
-
-
-//    $this->registerBonus(TECH_SPY, UNIT_PREMIUM);
-//    $this->registerBonus(MRC_SPY, UNIT_PREMIUM);
-//
     $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, TECH_SPY, BonusCatalog::VALUE_ANY);
     $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, MRC_SPY, BonusCatalog::VALUE_ANY);
 
@@ -58,22 +52,21 @@ class BonusCatalog {
    * @param int  $bonusId - ID of value to which bonus is attached
    * @param int  $baseBonusId - ID of unit which value will be used to calculate bonus
    * @param bool $ifNotEmpty - Bonus should applied only if base value is not empty when true
-   * @param int  $location - location of unit for bonus calculation. Default - LOC_AUTODETECT: taken from unit info
    */
-  public function registerBonus($bonusId, $baseBonusId, $ifNotEmpty = BonusCatalog::VALUE_NON_ZERO, $location = LOC_AUTODETECT) {
+  public function registerBonus($bonusId, $baseBonusId, $ifNotEmpty = BonusCatalog::VALUE_NON_ZERO) {
     // TODO - also register triggers to invalidate
-    if(empty($this->bonuses[$bonusId])) {
+    if (empty($this->bonuses[$bonusId])) {
       // TODO - lazy loader
-      $this->bonuses[$bonusId] = new BonusDescriptionList($bonusId);
+      $this->bonuses[$bonusId] = new BonusListAtom($bonusId);
     }
 
-    $this->bonuses[$bonusId]->addUnit($baseBonusId, $location, $ifNotEmpty);
+    $this->bonuses[$bonusId]->addUnit($baseBonusId, $ifNotEmpty);
   }
 
   /**
    * @param $bonusId
    *
-   * @return BonusDescriptionList|null
+   * @return BonusListAtom|null
    */
   public function getBonusDescriptions($bonusId) {
     return array_key_exists($bonusId, $this->bonuses) ? $this->bonuses[$bonusId] : null;
