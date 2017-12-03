@@ -5,8 +5,6 @@
 
 namespace Bonus;
 
-use \classSupernova;
-
 /**
  * Class BonusListAtom
  *
@@ -24,9 +22,9 @@ class BonusListAtom {
   /**
    * [(int)$sourceUnitSnId] => (class)BonusAtom
    *
-   * @var BonusAtom[] $bonusDescriptions
+   * @var BonusAtom[] $bonusAtoms
    */
-  protected $bonusDescriptions = [];
+  protected $bonusAtoms = [];
 
   /**
    * BonusListAtom constructor.
@@ -38,39 +36,47 @@ class BonusListAtom {
   }
 
   /**
-   * Add bonus from specified unit to current bonus list
-   *
-   * @param int  $baseBonusId - Unit ID from which base value should be retrieved
-   * @param bool $ifNotEmpty - Bonus should applied only if base value is not empty when true
+   * @return BonusAtom[]
    */
-  public function addUnit($baseBonusId, $ifNotEmpty = BonusCatalog::VALUE_NON_ZERO) {
-    // ToDo - exception on existing (duplicate) bonus ID?
-    $this->bonusDescriptions[$baseBonusId] = BonusFactory::build($baseBonusId, $ifNotEmpty);
+  public function getBonusAtoms() {
+    return $this->bonusAtoms;
   }
 
   /**
-   * Calculates real bonus values within supplied context
+   * Add bonus from specified unit to current bonus list
    *
-   * @param ValueBonused $value
-   *
-   * @return array
+   * @param int  $baseBonusId - Unit ID from which base value should be retrieved
+   * @param bool $ifBaseNonZero - Bonus should applied only if base value is not empty when true
    */
-  public function apply(ValueBonused $value) {
-    uasort($this->bonusDescriptions, [$this, 'bonusSort']);
+  public function addUnit($baseBonusId, $ifBaseNonZero = BonusCatalog::VALUE_NON_ZERO) {
+    // ToDo - exception on existing (duplicate) bonus ID?
+    $this->bonusAtoms[$baseBonusId] = BonusFactory::build($baseBonusId, $ifBaseNonZero);
 
-    $result = [BONUS_NONE => $value->base];
-    foreach ($this->bonusDescriptions as $unitId => $description) {
-      $amount = classSupernova::$gc->valueStorage->getValue($unitId, $value->context);
-
-      $result[$unitId] = $description->adjustValue($amount, $value);
-    }
-
-// TODO - проследить, что бы ниже не было отрицательных значений
-//            $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
-//            $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
-
-    return $result;
+    uasort($this->bonusAtoms, [$this, 'bonusSort']);
   }
+
+
+//  /**
+//   * Calculates real bonus values within supplied context
+//   *
+//   * @param ValueBonused $value
+//   *
+//   * @return array
+//   */
+//  public function apply(ValueBonused $value) {
+//    $result = [BONUS_NONE => $value->base];
+//    foreach ($this->bonusAtoms as $unitId => $description) {
+//      $amount = classSupernova::$gc->valueStorage->getValue($unitId, $value->context);
+//
+//      $result[$unitId] = $description->adjustValue($amount, $value);
+//    }
+//
+//// TODO - проследить, что бы ниже не было отрицательных значений
+////            $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
+////            $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
+//
+//    return $result;
+//  }
 
   protected function bonusSort(BonusAtom $a, BonusAtom $b) {
     static $bonusOrder = [BonusAtom::class, BonusAtomAbility::class, BonusAtomAdd::class, BonusAtomPercent::class, BonusAtomMultiply::class];

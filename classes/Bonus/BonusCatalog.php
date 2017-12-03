@@ -51,16 +51,16 @@ class BonusCatalog {
    *
    * @param int  $bonusId - ID of value to which bonus is attached
    * @param int  $baseBonusId - ID of unit which value will be used to calculate bonus
-   * @param bool $ifNotEmpty - Bonus should applied only if base value is not empty when true
+   * @param bool $ifBaseNonZero - Bonus should applied only if base value is not empty when true
    */
-  public function registerBonus($bonusId, $baseBonusId, $ifNotEmpty = BonusCatalog::VALUE_NON_ZERO) {
+  public function registerBonus($bonusId, $baseBonusId, $ifBaseNonZero = BonusCatalog::VALUE_NON_ZERO) {
     // TODO - also register triggers to invalidate
     if (empty($this->bonuses[$bonusId])) {
       // TODO - lazy loader
       $this->bonuses[$bonusId] = new BonusListAtom($bonusId);
     }
 
-    $this->bonuses[$bonusId]->addUnit($baseBonusId, $ifNotEmpty);
+    $this->bonuses[$bonusId]->addUnit($baseBonusId, $ifBaseNonZero);
   }
 
   /**

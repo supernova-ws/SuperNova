@@ -76,9 +76,19 @@ class BonusAtom {
     $this->power = static::calcBonusPower(getUnitInfo($bonusId));
   }
 
-
+  /**
+   * Checks if bonus should return no result
+   *
+   * Bonus value can be linked to base value
+   * Basic example is below: if base value is zero then we check $ifBaseNonZero flag. If $ifBaseNonZero is set then we return nothing even if there is some bonus value
+   * Setting $ifBaseNonZero to 'false' will return bonus value not matter what base value is
+   *
+   * @param ValueBonused $baseValue
+   *
+   * @return bool
+   */
   protected function isReturnNothing(ValueBonused $baseValue) {
-    return $baseValue->base == 0 && $this->ifBaseNonZero == BonusCatalog::VALUE_NON_ZERO;
+    return $this->ifBaseNonZero == BonusCatalog::VALUE_NON_ZERO && $baseValue->base == 0;
   }
 
   /**

@@ -82,7 +82,7 @@ class ValueStorage extends ContainerPlus {
     }
 
     if($valueObject instanceof ValueBonused) {
-      $valueObject->calc($context);
+      $valueObject->getValue($context);
     }
 
     return $valueObject;

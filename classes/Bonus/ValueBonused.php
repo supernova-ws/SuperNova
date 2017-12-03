@@ -5,6 +5,7 @@
 
 namespace Bonus;
 
+use \classSupernova;
 
 class ValueBonused {
 
@@ -15,9 +16,9 @@ class ValueBonused {
 
 
   /**
-   * @var BonusListAtom $bonusDescription
+   * @var BonusListAtom $bonusList
    */
-  public $bonusDescription;
+  protected $bonusList;
 
   /**
    * [(int)$sourceUnitSnId] => (float)bonusValue
@@ -39,27 +40,64 @@ class ValueBonused {
    * @param array     $context
    */
   public function __construct($unitSnId, $baseValue, $context = []) {
+    $this->snId = $unitSnId;
+
     $this->base = $baseValue;
     $this->value = $this->base;
-    $this->snId = $unitSnId;
+    $this->bonusValues = [];
 
     $this->bonusCatalog = \classSupernova::$gc->bonusCatalog;
   }
 
-  public function calc($context = []) {
+
+  /**
+   * @param array $context - Context list of locations: [LOC_xxx => (data)]
+   *
+   * @return float|int
+   */
+  public function getValue($context = []) {
     // Context can differ. However - it shouldn't
+    if ($this->context == $context) {
+      return $this->value;
+    }
+
     $this->context = $context;
     $this->value = $this->base;
     $this->bonusValues = [];
 
-    $this->bonusDescription = $this->bonusCatalog->getBonusDescriptions($this->snId);
-    if(!$this->bonusDescription) {
+    $this->bonusList = $this->bonusCatalog->getBonusDescriptions($this->snId);
+    if (!$this->bonusList instanceof BonusListAtom) {
       return $this->base;
     }
 
-    $this->bonusValues = $this->bonusDescription->apply($this);
+    $this->applyBonuses($context);
 
     return $this->value;
+  }
+
+  /**
+   * Calculates real bonus values within supplied context
+   *
+   * @param array $context - Context list of locations: [LOC_xxx => (data)]
+   */
+  protected function applyBonuses($context = []) {
+    $this->bonusValues = [BONUS_NONE => $this->base];
+    if (!$this->bonusList instanceof BonusListAtom) {
+      return;
+    }
+
+    foreach ($this->bonusList->getBonusAtoms() as $unitId => $bonusAtom) {
+      $amount = classSupernova::$gc->valueStorage->getValue($unitId, $context);
+
+
+
+
+//      $this->bonusValues[$unitId] = $bonusAtom->adjustValue($amount, $this);
+    }
+
+// TODO - проследить, что бы ниже не было отрицательных значений
+//            $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
+//            $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
   }
 
 }

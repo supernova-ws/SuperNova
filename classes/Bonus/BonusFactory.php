@@ -22,16 +22,16 @@ class BonusFactory {
   ];
 
   /**
-   * @param int $sourceUnitId - Unit ID from which base value should be retrieved
-   * @param     $ifNotEmpty
+   * @param int  $sourceUnitId - Unit ID from which base value should be retrieved
+   * @param bool $ifBaseNonZero
    *
    * @return BonusAtom
    */
-  public static function build($sourceUnitId, $ifNotEmpty) {
+  public static function build($sourceUnitId, $ifBaseNonZero) {
     $bonusType = BonusAtom::calcBonusType(getUnitInfo($sourceUnitId));
     $bonusClass = isset(static::$classByType[$bonusType]) ? static::$classByType[$bonusType] : BonusAtom::class;
 
-    return new $bonusClass($sourceUnitId, $ifNotEmpty);
+    return new $bonusClass($sourceUnitId, $ifBaseNonZero);
   }
 
 }
