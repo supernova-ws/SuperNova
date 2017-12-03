@@ -104,9 +104,9 @@ if($lang['info'][$unit_id]['effect']) {
   $template_result['UNIT_EFFECT'] = $lang['info'][$unit_id]['effect'];
 }
 
-if($unit_data['bonus']) {
-  $unit_bonus = !$unit_data['bonus'] || $unit_data['bonus_type'] == BONUS_ABILITY ? '' : (
-    ($unit_data['bonus'] >= 0 ? '+' : '') . $unit_data['bonus'] . ($unit_data['bonus_type'] == BONUS_PERCENT ? '%' : '')
+if($unit_data[P_BONUS_VALUE]) {
+  $unit_bonus = !$unit_data[P_BONUS_VALUE] || $unit_data[P_BONUS_TYPE] == BONUS_ABILITY ? '' : (
+    ($unit_data[P_BONUS_VALUE] >= 0 ? '+' : '') . $unit_data[P_BONUS_VALUE] . ($unit_data[P_BONUS_TYPE] == BONUS_PERCENT ? '%' : '')
   );
   $template_result['UNIT_BONUS'] = $unit_bonus;
 }

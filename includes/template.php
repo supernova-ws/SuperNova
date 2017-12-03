@@ -1064,8 +1064,8 @@ function tpl_assign_select(&$template, $name, $values) {
  * @return string
  */
 function tpl_render_unit_bonus_data($unitInfo) {
-  $strBonus = tplAddPlus($unitInfo['bonus']);
-  switch ($unitInfo['bonus_type']) {
+  $strBonus = tplAddPlus($unitInfo[P_BONUS_VALUE]);
+  switch ($unitInfo[P_BONUS_TYPE]) {
     case BONUS_PERCENT:
       $strBonus = "{$strBonus}% ";
     break;

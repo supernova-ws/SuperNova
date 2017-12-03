@@ -102,7 +102,7 @@ foreach($sn_group_artifacts as $artifact_id)
       'LEVEL'       => intval($artifact_level),
       'LEVEL_MAX'   => intval($artifact_data['max']),
       'BONUS'       => $artifact_data_bonus,
-      'BONUS_TYPE'  => $artifact_data['bonus_type'],
+      'BONUS_TYPE'  => $artifact_data[P_BONUS_TYPE],
       'CAN_BUY'     => $build_data['CAN'][BUILD_CREATE],
     ));
 }

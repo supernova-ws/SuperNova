@@ -19,8 +19,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    'bonus'      => 1,
-    'bonus_type' => BONUS_ADD,
+    P_BONUS_VALUE      => 1,
+    P_BONUS_TYPE => BONUS_ADD,
   ),
 
   TECH_SPY => array(
@@ -36,8 +36,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    'bonus'      => 1,
-    'bonus_type' => BONUS_ADD,
+    P_BONUS_VALUE      => 1,
+    P_BONUS_TYPE => BONUS_ADD,
   ),
 
   TECH_WEAPON => array(
@@ -53,8 +53,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   TECH_SHIELD => array(
@@ -70,8 +70,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   TECH_ARMOR => array(
@@ -87,8 +87,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   TECH_ENERGY => array(
@@ -131,8 +131,8 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    'bonus'          => 10,
-    'bonus_type'     => BONUS_PERCENT,
+    P_BONUS_VALUE          => 10,
+    P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.1,
   ),
 
@@ -148,8 +148,8 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    'bonus'          => 20,
-    'bonus_type'     => BONUS_PERCENT,
+    P_BONUS_VALUE          => 20,
+    P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.2,
   ),
 
@@ -165,8 +165,8 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    'bonus'          => 30,
-    'bonus_type'     => BONUS_PERCENT,
+    P_BONUS_VALUE          => 30,
+    P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.3,
   ),
 
@@ -291,8 +291,8 @@ $sn_data += array(
       RES_DARK_MATTER => 800,
       'factor'        => 1.06,
     ),
-    'bonus'      => 5,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 5,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
   MRC_ENGINEER     => array(
     'name'       => 'rpg_constructeur',
@@ -302,8 +302,8 @@ $sn_data += array(
       RES_DARK_MATTER => 500,
       'factor'        => 1.65,
     ),
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
   MRC_FORTIFIER    => array(
     'name'       => 'rpg_defenseur',
@@ -313,8 +313,8 @@ $sn_data += array(
       RES_DARK_MATTER => 2000,
       'factor'        => 1.25,
     ),
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
 
@@ -327,8 +327,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 20,
-    'bonus'      => 20,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 20,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   MRC_SPY => array(
@@ -341,8 +341,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 5,
-    'bonus'      => 1,
-    'bonus_type' => BONUS_ADD,
+    P_BONUS_VALUE      => 1,
+    P_BONUS_TYPE => BONUS_ADD,
   ),
 
   MRC_ACADEMIC => array(
@@ -355,8 +355,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 30,
-    'bonus'      => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 10,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   MRC_ADMIRAL => array(
@@ -368,8 +368,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 20,
-    'bonus'      => 5,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 5,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   MRC_COORDINATOR => array(
@@ -382,8 +382,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 5,
-    'bonus'      => 1,
-    'bonus_type' => BONUS_ADD,
+    P_BONUS_VALUE      => 1,
+    P_BONUS_TYPE => BONUS_ADD,
   ),
 
   MRC_NAVIGATOR => array(
@@ -396,8 +396,8 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 10,
-    'bonus'      => 5,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_VALUE      => 5,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
 
@@ -409,7 +409,7 @@ $sn_data += array(
       RES_DARK_MATTER => 25000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_HOOK_SMALL      => array(
     'name'       => 'art_hook_small',
@@ -419,7 +419,7 @@ $sn_data += array(
       RES_DARK_MATTER => 100000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_HOOK_MEDIUM     => array(
     'name'       => 'art_hook_medium',
@@ -429,7 +429,7 @@ $sn_data += array(
       RES_DARK_MATTER => 200000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_HOOK_LARGE      => array(
     'name'       => 'art_hook_large',
@@ -439,7 +439,7 @@ $sn_data += array(
       RES_DARK_MATTER => 400000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_RCD_SMALL       => array(
     'name'       => 'art_rcd_small',
@@ -449,7 +449,7 @@ $sn_data += array(
       RES_DARK_MATTER => 5000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     'deploy'     => array(
       STRUC_MINE_METAL     => 10,
       STRUC_MINE_CRYSTAL   => 10,
@@ -466,7 +466,7 @@ $sn_data += array(
       RES_DARK_MATTER => 25000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     'deploy'     => array(
       STRUC_MINE_METAL     => 15,
       STRUC_MINE_CRYSTAL   => 15,
@@ -483,7 +483,7 @@ $sn_data += array(
       RES_DARK_MATTER => 60000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
     'deploy'     => array(
       STRUC_MINE_METAL     => 20,
       STRUC_MINE_CRYSTAL   => 20,
@@ -501,7 +501,7 @@ $sn_data += array(
       RES_DARK_MATTER => 20000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_NANO_BUILDER    => array(
     'name'       => 'art_nano_builder',
@@ -511,7 +511,7 @@ $sn_data += array(
       RES_DARK_MATTER => 5000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   ART_DENSITY_CHANGER => array(
     'name'       => 'art_density_changer',
@@ -521,7 +521,7 @@ $sn_data += array(
       RES_DARK_MATTER => 50000,
       'factor'        => 1,
     ),
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
 
   UNIT_PLAN_STRUC_MINE_FUSION => array(
@@ -533,7 +533,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
 
   UNIT_PLAN_SHIP_CARGO_SUPER  => array(
@@ -545,7 +545,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   UNIT_PLAN_SHIP_CARGO_HYPER  => array(
     'name'       => 'UNIT_PLAN_SHIP_CARGO_HYPER',
@@ -556,7 +556,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   UNIT_PLAN_SHIP_DEATH_STAR   => array(
     'name'       => 'UNIT_PLAN_SHIP_DEATH_STAR',
@@ -567,7 +567,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   UNIT_PLAN_SHIP_SUPERNOVA    => array(
     'name'       => 'UNIT_PLAN_SHIP_SUPERNOVA',
@@ -578,7 +578,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
   UNIT_PLAN_DEF_SHIELD_PLANET => array(
     'name'       => 'UNIT_PLAN_DEF_SHIELD_PLANET',
@@ -589,7 +589,7 @@ $sn_data += array(
       'factor'        => 1,
     ),
     'max'        => 1,
-    'bonus_type' => BONUS_ABILITY,
+    P_BONUS_TYPE => BONUS_ABILITY,
   ),
 
   /*
@@ -603,7 +603,7 @@ $sn_data += array(
         'factor' => 1,
       ),
       'max' => 1,
-      'bonus_type' => BONUS_ABILITY,
+      P_BONUS_TYPE => BONUS_ABILITY,
     ),
   */
 );

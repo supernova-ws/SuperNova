@@ -111,7 +111,7 @@ class PageMercenary {
         'LEVEL_BONUS'       => $mercenary_level_bonus,
         'LEVEL_MAX'         => $mercenary['max'],
         'BONUS'             => tpl_render_unit_bonus_data($mercenary),
-        'BONUS_TYPE'        => $mercenary['bonus_type'],
+        'BONUS_TYPE'        => $mercenary[P_BONUS_TYPE],
         'HIRE_END'          => $unitIsOutdated ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
         'HIRE_LEFT_PERCENT' => $unitIsOutdated ? round(($mercenary_time_finish - SN_TIME_NOW) / ($mercenary_time_finish - $mercenary_time_start) * 100, 1) : 0,
         'CAN_BUY'           => $this->mrc_officer_accessible($user, $mercenary_id),

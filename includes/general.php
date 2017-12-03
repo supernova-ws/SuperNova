@@ -486,9 +486,9 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
     $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
     $mercenary = get_unit_param($mercenary_id);
-    $mercenary_bonus = $mercenary['bonus'];
+    $mercenary_bonus = $mercenary[P_BONUS_VALUE];
 
-    switch ($mercenary['bonus_type']) {
+    switch ($mercenary[P_BONUS_TYPE]) {
 //      case BONUS_PERCENT_CUMULATIVE:
 //        $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
 //      break;
@@ -737,7 +737,7 @@ function sn_get_url_contents($url) {
 }
 
 function get_engine_data($user, $engine_info) {
-  $sn_data_tech_bonus = get_unit_param($engine_info['tech'], 'bonus');
+  $sn_data_tech_bonus = get_unit_param($engine_info['tech'], P_BONUS_VALUE);
 
   $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
 

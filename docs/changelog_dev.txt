@@ -1059,7 +1059,12 @@ var_stat_update_next	2017-11-12 04:00:00
 
 #ctv
 
-[*] 'bonus_type' => 'P_BONUS_TYPE'
+
+
+
+2017-12-03 02:00:47 43a9.5
+[@] Код
+    В описании юнитов 'bonus_type' заменено на P_BONUS_TYPE, 'bonus' заменено на P_BONUS_VALUE
 
 
 2017-12-02 17:29:26 43a9.4
