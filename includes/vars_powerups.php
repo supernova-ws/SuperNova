@@ -19,8 +19,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    P_BONUS_VALUE      => 1,
-    P_BONUS_TYPE => BONUS_ADD,
+    P_BONUS_VALUE => 1,
+    P_BONUS_TYPE  => BONUS_ADD,
   ),
 
   TECH_SPY => array(
@@ -36,8 +36,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    P_BONUS_VALUE      => 1,
-    P_BONUS_TYPE => BONUS_ADD,
+    P_BONUS_VALUE => 1,
+    P_BONUS_TYPE  => BONUS_ADD,
   ),
 
   TECH_WEAPON => array(
@@ -53,8 +53,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   TECH_SHIELD => array(
@@ -70,8 +70,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   TECH_ARMOR => array(
@@ -87,8 +87,8 @@ $sn_data += array(
       'factor'      => 2,
     ),
 
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   TECH_ENERGY => array(
@@ -131,7 +131,7 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    P_BONUS_VALUE          => 10,
+    P_BONUS_VALUE    => 10,
     P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.1,
   ),
@@ -148,7 +148,7 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    P_BONUS_VALUE          => 20,
+    P_BONUS_VALUE    => 20,
     P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.2,
   ),
@@ -165,7 +165,7 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor'      => 2,
     ),
-    P_BONUS_VALUE          => 30,
+    P_BONUS_VALUE    => 30,
     P_BONUS_TYPE     => BONUS_PERCENT,
     'speed_increase' => 0.3,
   ),
@@ -284,120 +284,120 @@ $sn_data += array(
 
 
   MRC_TECHNOLOGIST => array(
-    'name'       => 'rpg_geologue',
-    'type'       => UNIT_GOVERNORS,
-    'location'   => LOC_PLANET,
-    'cost'       => array(
+    'name'        => 'rpg_geologue',
+    'type'        => UNIT_GOVERNORS,
+    'location'    => LOC_PLANET,
+    'cost'        => array(
       RES_DARK_MATTER => 800,
       'factor'        => 1.06,
     ),
-    P_BONUS_VALUE      => 5,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 5,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
   MRC_ENGINEER     => array(
-    'name'       => 'rpg_constructeur',
-    'type'       => UNIT_GOVERNORS,
-    'location'   => LOC_PLANET,
-    'cost'       => array(
+    'name'        => 'rpg_constructeur',
+    'type'        => UNIT_GOVERNORS,
+    'location'    => LOC_PLANET,
+    'cost'        => array(
       RES_DARK_MATTER => 500,
       'factor'        => 1.65,
     ),
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
   MRC_FORTIFIER    => array(
-    'name'       => 'rpg_defenseur',
-    'type'       => UNIT_GOVERNORS,
-    'location'   => LOC_PLANET,
-    'cost'       => array(
+    'name'        => 'rpg_defenseur',
+    'type'        => UNIT_GOVERNORS,
+    'location'    => LOC_PLANET,
+    'cost'        => array(
       RES_DARK_MATTER => 2000,
       'factor'        => 1.25,
     ),
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
 
   MRC_STOCKMAN => array(
-    'name'       => 'rpg_stockeur',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'cost'       => array(
+    'name'        => 'rpg_stockeur',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 20,
-    P_BONUS_VALUE      => 20,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    'max'         => 20,
+    P_BONUS_VALUE => 20,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   MRC_SPY => array(
-    'name'       => 'rpg_espion',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'require'    => array(MRC_STOCKMAN => 5),
-    'cost'       => array(
+    'name'        => 'rpg_espion',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'require'     => array(MRC_STOCKMAN => 5),
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 5,
-    P_BONUS_VALUE      => 1,
-    P_BONUS_TYPE => BONUS_ADD,
+    'max'         => 5,
+    P_BONUS_VALUE => 1,
+    P_BONUS_TYPE  => BONUS_ADD,
   ),
 
   MRC_ACADEMIC => array(
-    'name'       => 'mrc_academic',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'require'    => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
-    'cost'       => array(
+    'name'        => 'mrc_academic',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'require'     => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 30,
-    P_BONUS_VALUE      => 10,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    'max'         => 30,
+    P_BONUS_VALUE => 10,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   MRC_ADMIRAL => array(
-    'name'       => 'rpg_amiral',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'cost'       => array(
+    'name'        => 'rpg_amiral',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 20,
-    P_BONUS_VALUE      => 5,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    'max'         => 20,
+    P_BONUS_VALUE => 5,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
   MRC_COORDINATOR => array(
-    'name'       => 'rpg_commandant',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'require'    => array(MRC_ADMIRAL => 5),
-    'cost'       => array(
+    'name'        => 'rpg_commandant',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'require'     => array(MRC_ADMIRAL => 5),
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 5,
-    P_BONUS_VALUE      => 1,
-    P_BONUS_TYPE => BONUS_ADD,
+    'max'         => 5,
+    P_BONUS_VALUE => 1,
+    P_BONUS_TYPE  => BONUS_ADD,
   ),
 
   MRC_NAVIGATOR => array(
-    'name'       => 'rpg_general',
-    'type'       => UNIT_MERCENARIES,
-    'location'   => LOC_USER,
-    'require'    => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
-    'cost'       => array(
+    'name'        => 'rpg_general',
+    'type'        => UNIT_MERCENARIES,
+    'location'    => LOC_USER,
+    'require'     => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
+    'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
     ),
-    'max'        => 10,
-    P_BONUS_VALUE      => 5,
-    P_BONUS_TYPE => BONUS_PERCENT,
+    'max'         => 10,
+    P_BONUS_VALUE => 5,
+    P_BONUS_TYPE  => BONUS_PERCENT,
   ),
 
 

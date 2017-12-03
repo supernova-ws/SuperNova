@@ -69,18 +69,21 @@ function sys_file_write($filename, $content) {
 function game_resource_multiplier($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_MINING);
+
   return $plain ? $valueObject->base : $valueObject->value;
 }
 
 function get_game_speed($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_BUILDING);
+
   return $plain ? $valueObject->base : $valueObject->value;
 }
 
 function flt_server_flight_speed_multiplier($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_FLEET);
+
   return $plain ? $valueObject->base : $valueObject->value;
 }
 
@@ -851,28 +854,28 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
  * @param string       $sub_type
  */
 function sys_handler_add_one(&$functions, $function_name, $function_data, $class_module_name, $sub_type) {
-  if(is_string($function_data)) {
+  if (is_string($function_data)) {
     $override_with = &$function_data;
-  } elseif(isset($function_data['callable'])) {
+  } elseif (isset($function_data['callable'])) {
     $override_with = &$function_data['callable'];
   }
 
   $overwrite = $override_with[0] == '*';
-  if($overwrite) {
+  if ($overwrite) {
     $override_with = substr($override_with, 1);
   }
 
-  if(($point_position = strpos($override_with, '.')) === false && $class_module_name) {
+  if (($point_position = strpos($override_with, '.')) === false && $class_module_name) {
     $override_with = array($class_module_name, $override_with);
-  } elseif($point_position == 0) {
+  } elseif ($point_position == 0) {
     $override_with = substr($override_with, 1);
-  } elseif($point_position > 0) {
+  } elseif ($point_position > 0) {
     $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
   }
 
-  if($overwrite) {
+  if ($overwrite) {
     $functions[$function_name] = array();
-  } elseif(!isset($functions[$function_name])) {
+  } elseif (!isset($functions[$function_name])) {
     $functions[$function_name] = array();
     $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
     //if(is_callable($sn_function_name))
@@ -1638,15 +1641,15 @@ function getUniqueFleetId($planetTemplatized) {
  * @return array
  */
 function getLocationFromContext($context = []) {
-  if(!empty($context[LOC_FLEET])) {
+  if (!empty($context[LOC_FLEET])) {
     return [LOC_FLEET, $context[LOC_FLEET]['fleet_id']];
 //    $this->location = LOC_FLEET;
 //    $this->locationId = $context[LOC_FLEET]['fleet_id'];
-  } elseif(!empty($context[LOC_PLANET])) {
+  } elseif (!empty($context[LOC_PLANET])) {
     return [LOC_PLANET, $context[LOC_PLANET]['id']];
 //    $this->location = LOC_PLANET;
 //    $this->locationId = $context[LOC_PLANET]['id'];
-  } elseif(!empty($context[LOC_USER])) {
+  } elseif (!empty($context[LOC_USER])) {
     return [LOC_USER, $context[LOC_USER]['id']];
 //    $this->location = LOC_USER;
 //    $this->locationId = $this->context[LOC_USER]['id'];

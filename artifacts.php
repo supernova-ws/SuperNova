@@ -1,17 +1,17 @@
 <?php
 
 /**
-* artifacts.php
-* Artifact actions
-*
-* @package roleplay
-* @version 1.0
-*
-* Revision History
-* ================
-* 1.0 copyright (c) 2011 by Gorlum for http://supernova.ws
-*
-*/
+ * artifacts.php
+ * Artifact actions
+ *
+ * @package roleplay
+ * @version 1.0
+ *
+ * Revision History
+ * ================
+ * 1.0 copyright (c) 2011 by Gorlum for http://supernova.ws
+ *
+ */
 
 global $lang, $user, $planetrow;
 
@@ -64,11 +64,9 @@ function art_buy($user, $unit_id, $planetrow, $lang) {
   return $Message;
 }
 
-if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
-{
+if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts)) {
   $Message = '';
-  switch($action)
-  {
+  switch ($action) {
     case ACTION_BUY:
       $Message = art_buy($user, $unit_id, $planetrow, $lang);
     break;
@@ -85,31 +83,30 @@ $user = db_user_by_id($user['id'], true);
 
 $template = gettemplate('artifacts', true);
 
-foreach($sn_group_artifacts as $artifact_id)
-{
+foreach ($sn_group_artifacts as $artifact_id) {
   $artifact_level = mrc_get_level($user, [], $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
-    $artifact_data = get_unit_param($artifact_id);
-    $artifact_data_bonus = tpl_render_unit_bonus_data($artifact_data);
+  $artifact_data = get_unit_param($artifact_id);
+  $artifact_data_bonus = tpl_render_unit_bonus_data($artifact_data);
 
-    $template->assign_block_vars('artifact', array(
-      'ID'          => $artifact_id,
-      'NAME'        => $lang['tech'][$artifact_id],
-      'DESCRIPTION' => $lang['info'][$artifact_id]['description'],
-      'EFFECT'      => $lang['info'][$artifact_id]['effect'],
-      'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
-      'COST_TEXT'   => HelperString::numberFloorAndFormat($build_data[BUILD_CREATE][RES_DARK_MATTER]),
-      'LEVEL'       => intval($artifact_level),
-      'LEVEL_MAX'   => intval($artifact_data['max']),
-      'BONUS'       => $artifact_data_bonus,
-      'BONUS_TYPE'  => $artifact_data[P_BONUS_TYPE],
-      'CAN_BUY'     => $build_data['CAN'][BUILD_CREATE],
-    ));
+  $template->assign_block_vars('artifact', array(
+    'ID'          => $artifact_id,
+    'NAME'        => $lang['tech'][$artifact_id],
+    'DESCRIPTION' => $lang['info'][$artifact_id]['description'],
+    'EFFECT'      => $lang['info'][$artifact_id]['effect'],
+    'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
+    'COST_TEXT'   => HelperString::numberFloorAndFormat($build_data[BUILD_CREATE][RES_DARK_MATTER]),
+    'LEVEL'       => intval($artifact_level),
+    'LEVEL_MAX'   => intval($artifact_data['max']),
+    'BONUS'       => $artifact_data_bonus,
+    'BONUS_TYPE'  => $artifact_data[P_BONUS_TYPE],
+    'CAN_BUY'     => $build_data['CAN'][BUILD_CREATE],
+  ));
 }
 
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['tech'][UNIT_ARTIFACTS],
-  'PAGE_HINT' => $lang['art_page_hint'],
+  'PAGE_HINT'   => $lang['art_page_hint'],
 ));
 
 display($template, $lang['tech'][UNIT_ARTIFACTS]);

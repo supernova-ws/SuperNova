@@ -281,7 +281,7 @@ class PageMercenary {
   /**
    * @param           $user
    * @param           $mercenary
-   * @param template $template
+   * @param template  $template
    */
   protected function renderMercenaryReq(&$user, $mercenary, $template) {
     if (empty($mercenary['require'])) {

@@ -7,16 +7,16 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $unit_id = sys_get_param_id('gid');
-if($unit_id == RES_DARK_MATTER) {
+if ($unit_id == RES_DARK_MATTER) {
   sys_redirect('dark_matter.php');
 }
 
-if($unit_id == RES_METAMATTER) {
+if ($unit_id == RES_METAMATTER) {
   sys_redirect('metamatter.php');
 }
 
 lng_include('infos');
-if(!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]))) {
+if (!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]))) {
   sys_redirect('index.php?page=techtree');
 }
 
@@ -25,7 +25,7 @@ $template = gettemplate('novapedia', true);
 $unit_data = get_unit_param($unit_id);
 $unit_type = $unit_data['type'];
 
-if($unit_type == UNIT_SHIPS) {
+if ($unit_type == UNIT_SHIPS) {
   $template_result['UNIT_IS_SHIP'] = true;
 
   $ship_data = get_ship_data($unit_id, $user);
@@ -41,7 +41,7 @@ if($unit_type == UNIT_SHIPS) {
   );
 
   $engine_template_info = array();
-  foreach($unit_data['engine'] as $unit_engine_data) {
+  foreach ($unit_data['engine'] as $unit_engine_data) {
     $unit_engine_data = get_engine_data($user, $unit_engine_data);
 
     $engine_template_info[] = array(
@@ -60,7 +60,7 @@ if($unit_type == UNIT_SHIPS) {
 
 
 $sn_data_group_combat = sn_get_groups('combat');
-if(in_array($unit_id, $sn_data_group_combat)) {
+if (in_array($unit_id, $sn_data_group_combat)) {
   $template_result['UNIT_IS_COMBAT'] = true;
 
   $unit_durability = $unit_data['shield'] + $unit_data['armor'];
@@ -68,21 +68,21 @@ if(in_array($unit_id, $sn_data_group_combat)) {
   $volley_arr = $rapid_to = $rapid_from = array();
   $str_rapid_from = '';
   $str_rapid_to = '';
-  foreach($sn_data_group_combat as $enemy_id) {
+  foreach ($sn_data_group_combat as $enemy_id) {
     $enemy_data = get_unit_param($enemy_id);
     $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
 
     $rapid = $unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability;
-    if($rapid >= 1) {
+    if ($rapid >= 1) {
       $volley_arr[$enemy_id]['TO'] = floor($rapid);
     }
 
     $rapid = $enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability;
-    if($rapid >= 1) {
+    if ($rapid >= 1) {
       $volley_arr[$enemy_id]['FROM'] = floor($rapid);
     }
   }
-  foreach($volley_arr as $enemy_id => &$rapid) {
+  foreach ($volley_arr as $enemy_id => &$rapid) {
     $rapid['ENEMY_ID'] = $enemy_id;
     $rapid['ENEMY_NAME'] = $lang['tech'][$enemy_id];
   }
@@ -100,11 +100,11 @@ if(in_array($unit_id, $sn_data_group_combat)) {
 
 }
 
-if($lang['info'][$unit_id]['effect']) {
+if ($lang['info'][$unit_id]['effect']) {
   $template_result['UNIT_EFFECT'] = $lang['info'][$unit_id]['effect'];
 }
 
-if($unit_data[P_BONUS_VALUE]) {
+if ($unit_data[P_BONUS_VALUE]) {
   $unit_bonus = !$unit_data[P_BONUS_VALUE] || $unit_data[P_BONUS_TYPE] == BONUS_ABILITY ? '' : (
     ($unit_data[P_BONUS_VALUE] >= 0 ? '+' : '') . $unit_data[P_BONUS_VALUE] . ($unit_data[P_BONUS_TYPE] == BONUS_PERCENT ? '%' : '')
   );

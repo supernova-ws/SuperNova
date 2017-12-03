@@ -14,7 +14,7 @@ use \Pages\PageTutorial;
 function getSkinPathTemplate($userSkinPath) {
   static $template_names = array();
 
-  if(!isset($template_names[$userSkinPath])) {
+  if (!isset($template_names[$userSkinPath])) {
     $template_names[$userSkinPath] = file_exists(SN_ROOT_PHYSICAL . $userSkinPath . '_template.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $userSkinPath . '_template.ini') : TEMPLATE_NAME;
   }
 
@@ -63,7 +63,7 @@ function messageBoxAdmin($message, $title = '', $redirectTo = '', $timeout = 5) 
 function messageBoxAdminAccessDenied($level = AUTH_LEVEL_ADMINISTRATOR) {
   global $user, $lang;
 
-  if($user['authlevel'] < $level) {
+  if ($user['authlevel'] < $level) {
     messageBoxAdmin($lang['adm_err_denied'], $lang['admin_title_access_denied'], SN_ROOT_VIRTUAL . 'overview.php');
   }
 }
@@ -73,12 +73,12 @@ function messageBoxAdminAccessDenied($level = AUTH_LEVEL_ADMINISTRATOR) {
  * @param $extra
  */
 function tpl_menu_merge_extra(&$menu, &$extra) {
-  if(empty($menu) || empty($extra)) {
+  if (empty($menu) || empty($extra)) {
     return;
   }
 
-  foreach($extra as $menu_item_id => $menu_item) {
-    if(empty($menu_item['LOCATION'])) {
+  foreach ($extra as $menu_item_id => $menu_item) {
+    if (empty($menu_item['LOCATION'])) {
       $menu[$menu_item_id] = $menu_item;
       continue;
     }
@@ -87,16 +87,16 @@ function tpl_menu_merge_extra(&$menu, &$extra) {
     unset($menu_item['LOCATION']);
 
     $is_positioned = $item_location[0];
-    if($is_positioned == '+' || $is_positioned == '-') {
+    if ($is_positioned == '+' || $is_positioned == '-') {
       $item_location = substr($item_location, 1);
     } else {
       $is_positioned = '';
     }
 
-    if($item_location) {
+    if ($item_location) {
       $menu_keys = array_keys($menu);
       $insert_position = array_search($item_location, $menu_keys);
-      if($insert_position === false) {
+      if ($insert_position === false) {
         $insert_position = count($menu) - 1;
         $is_positioned = '+';
         $item_location = '';
@@ -109,7 +109,7 @@ function tpl_menu_merge_extra(&$menu, &$extra) {
     $spliced = array_splice($menu, $insert_position, count($menu) - $insert_position);
     $menu[$menu_item_id] = $menu_item;
 
-    if(!$is_positioned && $item_location) {
+    if (!$is_positioned && $item_location) {
       unset($spliced[$item_location]);
     }
     $menu = array_merge($menu, $spliced);
@@ -125,24 +125,24 @@ function tpl_menu_merge_extra(&$menu, &$extra) {
 function tpl_menu_assign_to_template(&$sn_menu, &$template) {
   global $lang;
 
-  if(empty($sn_menu) || !is_array($sn_menu)) {
+  if (empty($sn_menu) || !is_array($sn_menu)) {
     return;
   }
 
-  foreach($sn_menu as $menu_item_id => $menu_item) {
-    if(!$menu_item) {
+  foreach ($sn_menu as $menu_item_id => $menu_item) {
+    if (!$menu_item) {
       continue;
     }
 
-    if(is_string($menu_item_id)) {
+    if (is_string($menu_item_id)) {
       $menu_item['ID'] = $menu_item_id;
     }
 
-    if($menu_item['TYPE'] == 'lang') {
+    if ($menu_item['TYPE'] == 'lang') {
       $lang_string = &$lang;
-      if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
-        for($i = 1; $i < count($matches); $i++) {
-          if(defined($matches[$i])) {
+      if (preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
+        for ($i = 1; $i < count($matches); $i++) {
+          if (defined($matches[$i])) {
             $matches[$i] = constant($matches[$i]);
           }
           $lang_string = &$lang_string[$matches[$i]];
@@ -154,8 +154,8 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template) {
     $menu_item['ALT'] = htmlentities($menu_item['ALT']);
     $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
 
-    if(!empty($menu_item['ICON'])) {
-      if(is_string($menu_item['ICON'])) {
+    if (!empty($menu_item['ICON'])) {
+      if (is_string($menu_item['ICON'])) {
         $menu_item['ICON_PATH'] = $menu_item['ICON'];
       } else {
         $menu_item['ICON'] = $menu_item_id;
@@ -187,7 +187,7 @@ function tpl_render_menu($template) {
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
   ));
 
-  if(isset($template_result['MENU_CUSTOMIZE'])) {
+  if (isset($template_result['MENU_CUSTOMIZE'])) {
     $template->assign_vars(array(
       'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
       'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
@@ -201,7 +201,7 @@ function tpl_render_menu($template) {
     ));
   }
 
-  if(defined('IN_ADMIN') && IN_ADMIN === true && !empty($user['authlevel']) && $user['authlevel'] > 0) {
+  if (defined('IN_ADMIN') && IN_ADMIN === true && !empty($user['authlevel']) && $user['authlevel'] > 0) {
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
@@ -223,7 +223,7 @@ function tpl_render_menu($template) {
  * @return mixed
  */
 function display($page, $title = '') {
-  if(!defined('SN_TIME_RENDER_START')) {
+  if (!defined('SN_TIME_RENDER_START')) {
     define('SN_TIME_RENDER_START', microtime(true));
   }
 
@@ -247,7 +247,7 @@ function sn_display($page, $title = '') {
   $exitStatus = true;
   $template_result['LOGIN_LOGOUT'] = $inLoginLogout = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
 
-  if(is_object($page)) {
+  if (is_object($page)) {
     isset($page->_rootref['PAGE_TITLE']) && empty($title) ? $title = $page->_rootref['PAGE_TITLE'] : false;
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
     !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
@@ -256,18 +256,18 @@ function sn_display($page, $title = '') {
   $isRenderGlobal = is_object($page) && isset($template_result['GLOBAL_DISPLAY_HEADER']) ? $template_result['GLOBAL_DISPLAY_HEADER'] : true;
 
   // Global header
-  if($isRenderGlobal) {
+  if ($isRenderGlobal) {
     renderHeader($page, $title, $template_result, $inLoginLogout, $user, $config, $lang, $planetrow);
   }
 
   // Page content
   !is_array($page) ? $page = array($page) : false;
   $result_added = false;
-  foreach($page as $page_item) {
+  foreach ($page as $page_item) {
     /**
      * @var template $page_item
      */
-    if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
+    if (!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
       $resultTemplate = gettemplate('_result_message');
       $resultTemplate->_tpldata = $page_item->_tpldata;
       displayP($resultTemplate);
@@ -284,7 +284,7 @@ function sn_display($page, $title = '') {
   }
 
   // Global footer
-  if($isRenderGlobal) {
+  if ($isRenderGlobal) {
     renderFooter();
   }
 
@@ -306,7 +306,7 @@ function sn_display($page, $title = '') {
  * @param $planetrow
  */
 function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, $config, $lang, $planetrow) {
-  if(classSupernova::$headerRendered) {
+  if (classSupernova::$headerRendered) {
     return;
   }
 
@@ -378,8 +378,8 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
     'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
     'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
 
-    'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-    'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
+    'title'              => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+    'ADV_SEO_JAVASCRIPT' => $config->adv_seo_javascript,
 
     'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
@@ -464,10 +464,10 @@ function tpl_global_header(&$template_result, $is_login) {
  */
 function cssAddFileName($cssFileName, &$cssArray) {
   $result = false;
-  if(file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.min.css')) {
+  if (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.min.css')) {
     $cssArray[$cssFileName . '.min.css'] = '';
     $result = true;
-  } elseif(file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.css')) {
+  } elseif (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.css')) {
     $cssArray[$cssFileName . '.css'] = '';
     $result = true;
   }
@@ -559,7 +559,7 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decreas
  * @param string   $type
  */
 function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet') {
-  if(empty($fleet_flying_list)) {
+  if (empty($fleet_flying_list)) {
     return;
   }
 
@@ -568,19 +568,19 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
   $fleet_flying_events = array();
-  foreach($fleet_flying_list as &$fleet_flying_row) {
+  foreach ($fleet_flying_list as &$fleet_flying_row) {
     $will_return = true;
-    if($fleet_flying_row['fleet_mess'] == 0) {
+    if ($fleet_flying_row['fleet_mess'] == 0) {
       // cut fleets on Hold and Expedition
-      if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) {
+      if ($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) {
         $fleet_flying_row['fleet_mission'] == MT_RELOCATE ? $will_return = false : false;
         tpl_topnav_event_build_helper($fleet_flying_row['fleet_start_time'], EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], 'fleet_end_', !$will_return, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
-      if($fleet_flying_row['fleet_end_stay']) {
+      if ($fleet_flying_row['fleet_end_stay']) {
         tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_stay'], EVENT_FLEET_STAY, $lang['sys_event_stay'], 'fleet_end_', false, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
     }
-    if($will_return) {
+    if ($will_return) {
       tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_time'], EVENT_FLEET_RETURN, $lang['sys_event_return'], 'fleet_start_', true, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
     }
   }
@@ -588,7 +588,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   asort($fleet_flying_sorter);
 
   $fleet_flying_count = count($fleet_flying_list);
-  foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time) {
+  foreach ($fleet_flying_sorter as $fleet_event_id => $fleet_time) {
     $fleet_event = &$fleet_flying_events[$fleet_event_id];
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - SN_TIME_NOW),
@@ -600,8 +600,8 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 }
 
 /**
- * @param array $user
- * @param array $planetrow
+ * @param array    $user
+ * @param array    $planetrow
  * @param template $template
  *
  * @return string|template
@@ -609,8 +609,8 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 function tpl_render_topnav(&$user, $planetrow, $template) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow, $template)); }
 
 /**
- * @param array $user
- * @param array $planetrow
+ * @param array    $user
+ * @param array    $planetrow
  * @param template $template
  *
  * @return string|template
@@ -618,15 +618,15 @@ function tpl_render_topnav(&$user, $planetrow, $template) { return sn_function_c
 function sn_tpl_render_topnav(&$user, $planetrow, $template) {
   global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
 
-  if(!is_array($user)) {
+  if (!is_array($user)) {
     return '';
   }
 
   $GET_mode = sys_get_param_str('mode');
 
   $ThisUsersPlanets = DBStaticPlanet::db_planet_list_sorted($user);
-  foreach($ThisUsersPlanets as $CurPlanet) {
-    if($CurPlanet['destruyed']) {
+  foreach ($ThisUsersPlanets as $CurPlanet) {
+    if ($CurPlanet['destruyed']) {
       continue;
     }
 
@@ -724,7 +724,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
-    'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),
+    'TOPNAV_QUEST_COMPLETE'    => get_quest_amount_complete($user['id']),
     'TOPNAV_QUEST_IN_PROGRESS' => get_quest_amount_in_progress($user['id']),
 
     'GAME_NEWS_OVERVIEW'       => $config->game_news_overview,
@@ -747,12 +747,12 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
 
     'TUTORIAL_ENABLED' => $tutorial_enabled,
 
-    'SUBQUE_FLEET' => SUBQUE_FLEET,
-    'QUE_RESEARCH' => QUE_RESEARCH,
+    'SUBQUE_FLEET'   => SUBQUE_FLEET,
+    'QUE_RESEARCH'   => QUE_RESEARCH,
     'QUE_STRUCTURES' => QUE_STRUCTURES,
   ));
 
-  if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
+  if ((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
     tpl_set_resource_info($template, $planetrow);
     $template->assign_vars(array(
       'SN_RENDER_NAVBAR_PLANET' => true,
@@ -792,7 +792,7 @@ function tpl_navbar_render_news(&$template, &$user, $config) {
 }
 
 /**
- * @param array $sn_mvc
+ * @param array  $sn_mvc
  * @param string $blockName
  *
  * @return array|false
@@ -820,7 +820,7 @@ function render_button_block(&$sn_mvc, $blockName) {
 }
 
 /**
- * @param array $sn_mvc
+ * @param array    $sn_mvc
  * @param template $template
  */
 function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
@@ -847,12 +847,12 @@ function templateRenderToHtml($template) {
  * @param template|string $template
  */
 function displayP($template) {
-  if(is_object($template)) {
-    if(empty($template->parsed)) {
+  if (is_object($template)) {
+    if (empty($template->parsed)) {
       parsetemplate($template);
     }
 
-    foreach($template->files as $section => $filename) {
+    foreach ($template->files as $section => $filename) {
       $template->display($section);
     }
   } else {
@@ -861,16 +861,16 @@ function displayP($template) {
 }
 
 /**
- * @param template $template
- * @param array|bool      $array
+ * @param template   $template
+ * @param array|bool $array
  *
  * @return mixed
  */
 function templateObjectParse($template, $array = false) {
   global $user;
 
-  if(!empty($array) && is_array($array)) {
-    foreach($array as $key => $data) {
+  if (!empty($array) && is_array($array)) {
+    foreach ($array as $key => $data) {
       $template->assign_var($key, $data);
     }
   }
@@ -893,7 +893,7 @@ function templateObjectParse($template, $array = false) {
  * @return mixed
  */
 function parsetemplate($template, $array = false) {
-  if(is_object($template)) {
+  if (is_object($template)) {
     return templateObjectParse($template, $array);
   } else {
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
@@ -938,7 +938,7 @@ function gettemplate($files, $template = null, $template_path = null) {
   !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
   $sn_page_name ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
 
-  foreach($files as &$filename) {
+  foreach ($files as &$filename) {
     $filename = $filename . $template_ex;
   }
 
@@ -967,9 +967,9 @@ function tpl_login_lang(&$template) {
     'FILENAME'       => basename($_SERVER['PHP_SELF']),
   ));
 
-  foreach(lng_get_list() as $lng_id => $lng_data) {
-    if(isset($lng_data['LANG_VARIANTS']) && is_array($lng_data['LANG_VARIANTS'])) {
-      foreach($lng_data['LANG_VARIANTS'] as $lang_variant) {
+  foreach (lng_get_list() as $lng_id => $lng_data) {
+    if (isset($lng_data['LANG_VARIANTS']) && is_array($lng_data['LANG_VARIANTS'])) {
+      foreach ($lng_data['LANG_VARIANTS'] as $lang_variant) {
         $lng_data1 = $lng_data;
         $lng_data1 = array_merge($lng_data1, $lang_variant);
         $template->assign_block_vars('language', $lng_data1);
@@ -989,7 +989,7 @@ function tpl_get_fleets_flying(&$user) {
   $fleet_flying_list = array();
 
   $fleet_flying_list[0] = fleet_list_by_owner_id($user['id']);
-  foreach($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
+  foreach ($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
     $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
   }
 
@@ -1008,8 +1008,8 @@ function tpl_assign_hangar(&$template, $planet, $que_type) {
   $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
 
   $que_length = 0;
-  if(!empty($que)) {
-    foreach($que as $que_item) {
+  if (!empty($que)) {
+    foreach ($que as $que_item) {
       $template->assign_block_vars('que', que_tpl_parse_element($que_item));
     }
     $que_length = count($que);
@@ -1026,7 +1026,7 @@ function tpl_assign_hangar(&$template, $planet, $que_type) {
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
   global $lang;
 
-  foreach($density_price_chart as $density_price_index => &$density_price_data) {
+  foreach ($density_price_chart as $density_price_index => &$density_price_data) {
     $density_cost = $density_price_data;
     $density_price_data = array(
       'COST'            => $density_cost,
@@ -1048,7 +1048,7 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
 function tpl_assign_select(&$template, $name, $values) {
   !is_array($values) ? $values = array($values => $values) : false;
 
-  foreach($values as $key => $value) {
+  foreach ($values as $key => $value) {
     $template->assign_block_vars($name, array(
       'KEY'   => htmlentities($key, ENT_COMPAT, 'UTF-8'),
       'VALUE' => htmlentities($value, ENT_COMPAT, 'UTF-8'),
