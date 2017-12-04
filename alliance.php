@@ -44,7 +44,7 @@ if (!$user['ally_id']) {
   }
 }
 
-sn_ali_fill_user_ally($user);
+\Alliance\Alliance::sn_ali_fill_user_ally($user);
 //$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
 if (!isset($user['ally'])) {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
@@ -90,7 +90,7 @@ if (!$ally['ranklist'] && $ally['ally_ranks']) {
   }
 }
 
-$ranks = ally_get_ranks($ally);
+$ranks = \Alliance\Alliance::ally_get_ranks($ally);
 
 $isAllyOwner = $ally['ally_owner'] == $user['id'];
 $user_can_send_mails = $ranks[$user['ally_rank_id']]['mail'] || $isAllyOwner;

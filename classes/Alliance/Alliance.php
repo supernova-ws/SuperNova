@@ -50,6 +50,56 @@ class Alliance extends RecordAlliance {
   protected $members;
 
   /**
+   * @param array $ally
+   *
+   * @return array
+   *
+   * @deprecated
+   */
+  public static function ally_get_ranks(&$ally) {
+    global $ally_rights;
+
+    $ranks = array();
+
+    if ($ally['ranklist']) {
+      $str_ranks = explode(';', $ally['ranklist']);
+      foreach ($str_ranks as $str_rank) {
+        if (!$str_rank) {
+          continue;
+        }
+
+        $tmp = explode(',', $str_rank);
+        $rank_id = count($ranks);
+        foreach ($ally_rights as $key => $value) {
+          $ranks[$rank_id][$value] = $tmp[$key];
+        }
+      }
+    }
+
+    return $ranks;
+  }
+
+  /**
+   * @param array $user
+   *
+   * @deprecated
+   */
+  public static function sn_ali_fill_user_ally(&$user) {
+    if (!$user['ally_id']) {
+      return;
+    }
+
+    if (!isset($user['ally'])) {
+      $user['ally'] = doquery("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
+    }
+
+    if (!isset($user['ally']['player'])) {
+      $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
+    }
+  }
+
+
+  /**
    * Alliance constructor.
    *
    * @param GlobalContainer|null $services

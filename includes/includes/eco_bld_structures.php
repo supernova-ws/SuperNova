@@ -20,7 +20,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   if($ally_id = sys_get_param_id('ally_id')) {
     define('SN_IN_ALLY', true);
-    $ranks = ally_get_ranks($auser['ally']);
+    $ranks = \Alliance\Alliance::ally_get_ranks($auser['ally']);
     if($ranks[$auser['ally_rank_id']]['admin'] || $auser['ally']['ally_owner'] == $auser['id']) {
       $user = &$auser['ally']['player'];
       $planet = array(

@@ -119,7 +119,7 @@ if(sys_get_param('note_delete')) {
 }
 
 if(!$note_id_edit) {
-  note_assign($template, array(
+  \Note\Note::note_assign($template, array(
     'id' => 0,
     'time' => SN_TIME_NOW,
     'priority' => 2,
@@ -132,7 +132,7 @@ if(!$note_id_edit) {
 $note_exist = false;
 $notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY priority DESC, galaxy ASC, system ASC, planet ASC, planet_type ASC, `time` DESC");
 while($note_row = db_fetch($notes_query)) {
-  note_assign($template, $note_row);
+  \Note\Note::note_assign($template, $note_row);
   $note_exist = $note_exist || $note_row['id'] == $note_id_edit;
 }
 $note_id_edit = $note_exist ? $note_id_edit : 0;

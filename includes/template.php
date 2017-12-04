@@ -770,7 +770,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
 function tpl_navbar_render_notes(&$template, &$user) {
   $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
   while ($note_row = db_fetch($notes_query)) {
-    note_assign($template, $note_row);
+    \Note\Note::note_assign($template, $note_row);
   }
 }
 

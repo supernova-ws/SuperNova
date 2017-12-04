@@ -28,7 +28,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
   // TODO НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!!
   if($user['ally_id']) {
     sn_db_transaction_start();
-    sn_ali_fill_user_ally($user);
+    \Alliance\Alliance::sn_ali_fill_user_ally($user);
     if(!$user['ally']['player']['id']) {
       // sn_sys_logout(false, true);
       // core_auth::logout(false);
