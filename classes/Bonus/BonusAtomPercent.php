@@ -10,15 +10,16 @@ class BonusAtomPercent extends BonusAtom {
 
   // TODO - pick MINIMUM value from unit description
 
-  public function adjustValue($bonusAmount, ValueBonused $value) {
-    $result = 0;
-    if (!$this->isReturnNothing($value)) {
-      $result = $value->base * $bonusAmount * $this->power / 100;
+  /**
+   * @inheritdoc
+   */
+  protected function calcAdjustment(&$currentValue, $bonusAmount, $baseValue) {
+    $result = $baseValue * $bonusAmount * ($this->power / 100);
 
-      $value->value += $result;
-    }
+    $currentValue += $result;
 
     return $result;
   }
+
 
 }

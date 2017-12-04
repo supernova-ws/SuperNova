@@ -70,21 +70,25 @@ function game_resource_multiplier($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_MINING);
 
-  return $plain ? $valueObject->base : $valueObject->value;
+  return $plain ? $valueObject->base : $valueObject->getValue();
 }
 
 function get_game_speed($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_BUILDING);
 
-  return $plain ? $valueObject->base : $valueObject->value;
+//  var_dump($valueObject->getValue());
+//  var_dump($valueObject);
+//  die();
+
+  return $plain ? $valueObject->base : $valueObject->getValue();
 }
 
 function flt_server_flight_speed_multiplier($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_FLEET);
 
-  return $plain ? $valueObject->base : $valueObject->value;
+  return $plain ? $valueObject->base : $valueObject->getValue();
 }
 
 //function get_game_speed($plain = false) { return sn_function_call('get_game_speed', array($plain, &$result)); }

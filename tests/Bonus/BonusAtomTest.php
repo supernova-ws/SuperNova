@@ -83,7 +83,7 @@ class BonusAtomTest extends BonusAtomAbilityTest {
     $valueBonused->base = $baseValue;
 
     $this->object = new BonusAtom(UNIT_TEST_ID_STRING_1, $isZeroReturned);
-    $this->assertEquals($expected, invokeMethod($this->object, 'isReturnNothing', [$valueBonused]));
+    $this->assertEquals($expected, invokeMethod($this->object, 'isReturnNothing', [$valueBonused->base]));
   }
 
   public function dataAdjustValue() {

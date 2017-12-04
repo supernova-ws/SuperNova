@@ -8,13 +8,13 @@ namespace Bonus;
 
 class BonusAtomAbility extends BonusAtom {
 
-  public function adjustValue($bonusAmount, ValueBonused $value) {
-    $result = 0;
-    if (!$this->isReturnNothing($value)) {
-      $result = $bonusAmount ? 1 : 0;
+  /**
+   * @inheritdoc
+   */
+  protected function calcAdjustment(&$currentValue, $bonusAmount, $baseValue) {
+    $result = $bonusAmount ? 1 : 0;
 
-      $value->value = $value->value || $result ? 1 : 0;
-    }
+    $currentValue = $currentValue || $result ? 1 : 0;
 
     return $result;
   }

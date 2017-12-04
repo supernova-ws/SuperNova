@@ -8,15 +8,15 @@ namespace Bonus;
 
 class BonusAtomMultiply extends BonusAtom {
 
-  public function adjustValue($bonusAmount, ValueBonused $value) {
-    $result = 0;
-    if (!$this->isReturnNothing($value)) {
-      $valueOld = $value->value;
+  /**
+   * @inheritdoc
+   */
+  protected function calcAdjustment(&$currentValue, $bonusAmount, $baseValue) {
+    $valueOld = $currentValue;
 
-      $value->value *= $this->power * $bonusAmount;
+    $currentValue *= $this->power * $bonusAmount;
 
-      $result = $value->value - $valueOld;
-    }
+    $result = $currentValue - $valueOld;
 
     return $result;
   }

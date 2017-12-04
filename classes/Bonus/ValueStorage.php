@@ -97,7 +97,7 @@ class ValueStorage extends ContainerPlus {
   public function getValue($unitSnId, $context = []) {
 
     if(($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
-      $result = $vo->value;
+      $result = $vo->getValue();
     } else {
       $result = $vo;
     }

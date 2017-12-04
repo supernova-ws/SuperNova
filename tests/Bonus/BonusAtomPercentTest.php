@@ -35,26 +35,29 @@ class BonusAtomPercentTest extends BonusAtomAbilityTest {
       [BonusCatalog::VALUE_ANY, 0, 0, 0, 0, 25],
       [BonusCatalog::VALUE_ANY, 0, 2.5, 0, 0, 25],
       [BonusCatalog::VALUE_ANY, 7, 0, 0, 7, 25],
-//      [BonusCatalog::VALUE_ANY, 7, 2.5, 115.5, 122.5, 25], // Unit power is 3, so 7 * 2.5 = 17.5 - multiplier. 17.5 * 7 = 122.5. (final)122.5 - (current)7 = 115.5 (returned)
-//
-//
-//      [BonusCatalog::VALUE_ANY, 2, 0.2, 0.8, 2.8, 25], // 7 * 0.2 = 1.4;  1.4 * 2 = 2.8 (final); 2.8 - 2 = 0.8 (returned)
-//      [BonusCatalog::VALUE_ANY, 2, 0.1, -0.6, 1.4, 25], // 7 * 0.1 = 0.7;  0.7 * 2 = 1.4 (final); 1.4 - 2 = -0.6 (returned)
-//      [BonusCatalog::VALUE_ANY, 5, 1, 30, 35, 25], // Amount = 1
-//
+      [BonusCatalog::VALUE_ANY, 6, 2.5, 3.75, 9.75, 25], // 25%(6) = 1.5; 1.5 * 2.5 = 3.75
+
+      [BonusCatalog::VALUE_ANY, 6, 2.5, 15, 21, 100], // 100%(6) = 6; 6 * 2.5 = 15
+      [BonusCatalog::VALUE_ANY, 6, 2.5, 0, 6, 0], // 0%(6) = 0; 0 * 2.5 = 0
+      [BonusCatalog::VALUE_ANY, 6, 2.5, -3.75, 2.25, -25], // -25%(6) = -15; -1.5 * 2.5 = -3.75
+
       [BonusCatalog::VALUE_NON_ZERO, 0, 0, 0, 0, 25],
       [BonusCatalog::VALUE_NON_ZERO, 0, 2.5, 0, 0, 25],
       [BonusCatalog::VALUE_NON_ZERO, 7, 0, 0, 7, 25],
-//      [BonusCatalog::VALUE_NON_ZERO, 7, 2.5, 115.5, 122.5, 25],
+      [BonusCatalog::VALUE_NON_ZERO, 6, 2.5, 3.75, 9.75, 25],
     ];
   }
 
   /**
    * @covers ::adjustValue
+   * @covers ::calcAdjustment
    * @dataProvider dataAdjustValue
    */
   public function testAdjustValue($isZeroReturned, $baseValue, $bonusAmount, $expectedResult, $expectedValue, $percent = 0) {
     UnitInfo::build(UNIT_TEST_ID_STRING_1)->bonus(BONUS_PERCENT, $percent)->install();
+
+    // Recalculating object because of new UnitInfo
+    $this->object = new $this->objectClass(UNIT_TEST_ID_STRING_1, BonusCatalog::VALUE_NON_ZERO);
 
     parent::testAdjustValue($isZeroReturned, $baseValue, $bonusAmount, $expectedResult, $expectedValue);
   }

@@ -83,23 +83,35 @@ class BonusAtom {
    * Basic example is below: if base value is zero then we check $ifBaseNonZero flag. If $ifBaseNonZero is set then we return nothing even if there is some bonus value
    * Setting $ifBaseNonZero to 'false' will return bonus value not matter what base value is
    *
-   * @param ValueBonused $baseValue
+   * @param int|float $baseValue
    *
    * @return bool
    */
-  protected function isReturnNothing(ValueBonused $baseValue) {
-    return $this->ifBaseNonZero == BonusCatalog::VALUE_NON_ZERO && $baseValue->base == 0;
+  protected function isReturnNothing($baseValue) {
+    return $this->ifBaseNonZero == BonusCatalog::VALUE_NON_ZERO && $baseValue == 0;
   }
 
   /**
    * Calculates how much should be added to base value
    *
-   * @param float|int    $bonusAmount
-   * @param ValueBonused $value
+   * @param float|int $currentValue
+   * @param float|int $bonusAmount
+   * @param float|int $baseValue
    *
    * @return float|int
    */
-  public function adjustValue($bonusAmount, ValueBonused $value) {
+  public function adjustValue(&$currentValue, $bonusAmount, $baseValue) {
+    return $this->isReturnNothing($baseValue) ? 0 : $this->calcAdjustment($currentValue, $bonusAmount, $baseValue);
+  }
+
+  /**
+   * @param float|int $currentValue
+   * @param float|int $bonusAmount
+   * @param float|int $baseValue
+   *
+   * @return float|int
+   */
+  protected function calcAdjustment(&$currentValue, $bonusAmount, $baseValue) {
     return 0;
   }
 

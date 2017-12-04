@@ -32,6 +32,8 @@ class ValueBonused {
    */
   protected $bonusCatalog;
 
+  protected $calculated = false;
+
   /**
    * ValueBonused constructor.
    *
@@ -57,13 +59,15 @@ class ValueBonused {
    */
   public function getValue($context = []) {
     // Context can differ. However - it shouldn't
-    if ($this->context == $context) {
+    if ($this->calculated && $this->context == $context) {
       return $this->value;
     }
+
 
     $this->context = $context;
     $this->value = $this->base;
     $this->bonusValues = [];
+    $this->calculated = true;
 
     $this->bonusList = $this->bonusCatalog->getBonusDescriptions($this->snId);
     if (!$this->bonusList instanceof BonusListAtom) {
@@ -89,10 +93,7 @@ class ValueBonused {
     foreach ($this->bonusList->getBonusAtoms() as $unitId => $bonusAtom) {
       $amount = classSupernova::$gc->valueStorage->getValue($unitId, $context);
 
-
-
-
-//      $this->bonusValues[$unitId] = $bonusAtom->adjustValue($amount, $this);
+      $this->bonusValues[$unitId] = $bonusAtom->adjustValue($this->value, $amount, $this->base);
     }
 
 // TODO - проследить, что бы ниже не было отрицательных значений

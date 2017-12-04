@@ -47,6 +47,7 @@ class BonusAtomAbilityTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::adjustValue
+   * @covers ::calcAdjustment
    * @dataProvider dataAdjustValue
    */
   public function testAdjustValue($isZeroReturned, $baseValue, $bonusAmount, $expectedResult, $expectedValue) {
@@ -58,7 +59,8 @@ class BonusAtomAbilityTest extends \PHPUnit_Framework_TestCase {
     $valueBonused->value = $baseValue;
 
     $this->object->ifBaseNonZero = $isZeroReturned;
-    $this->assertEquals($expectedResult, $this->object->adjustValue($bonusAmount, $valueBonused));
+
+    $this->assertEquals($expectedResult, $this->object->adjustValue($valueBonused->value, $bonusAmount, $valueBonused->base));
     $this->assertEquals($expectedValue, $valueBonused->value);
   }
 
