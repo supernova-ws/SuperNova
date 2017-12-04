@@ -5,13 +5,13 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a9.3#';
+  public $versionCommitted = '#43a9.13#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a9.3# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a9.13# copyright © 2009-2017 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -71,6 +71,25 @@ class sn_module {
   protected $config = array();
 
   protected $module_full_class_path = __FILE__;
+
+  /**
+   * @param string $group - Module group name or '*' for any group
+   *
+   * @return int
+   */
+  public static function sn_module_get_active_count($group = '*') {
+    global $sn_module_list;
+
+    $active_modules = 0;
+    if (isset($sn_module_list[$group]) && is_array($sn_module_list[$group])) {
+      foreach ($sn_module_list[$group] as $payment_module) {
+        $active_modules += $payment_module->manifest['active'];
+      }
+    }
+
+    return $active_modules;
+  }
+
 
   /**
    * @param string $functionName

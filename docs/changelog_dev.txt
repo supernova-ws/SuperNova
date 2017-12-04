@@ -1060,13 +1060,16 @@ var_stat_update_next	2017-11-12 04:00:00
 #ctv
 
 
-sn_module_get_active_count() - в sn_module закинуть
-
 [*] И вообще больше тестов для бонусов
 
 
+2017-12-04 04:02:37 43a9.13
+[@] Код
+    Функция sn_module_get_active_count() перемещена в sn_module::sn_module_get_active_count()
+
+
 2017-12-04 03:48:38 43a9.11
-[*] Код
+[@] Код
     Из файла general.php часть функций вынесены в отдельные файлы и классы
 
 

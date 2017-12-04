@@ -6,7 +6,7 @@ if (!defined('INSIDE')) {
 
 lng_include('menu');
 
-$active_payment_modules = sn_module_get_active_count('payment') > 0;
+$active_payment_modules = sn_module::sn_module_get_active_count('payment') > 0;
 
 global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
 global $sn_menu, $sn_menu_admin;

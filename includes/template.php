@@ -183,7 +183,7 @@ function tpl_render_menu($template) {
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
 //    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
-    'PAYMENT'             => sn_module_get_active_count('payment'),
+    'PAYMENT'             => sn_module::sn_module_get_active_count('payment'),
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
   ));
 
@@ -711,7 +711,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
-    'TOPNAV_PAYMENT'                => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+    'TOPNAV_PAYMENT'                => sn_module::sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
 
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],

@@ -8,7 +8,7 @@ global $debug;
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!sn_module_get_active_count('payment')) {
+if(!sn_module::sn_module_get_active_count('payment')) {
   sys_redirect('dark_matter.php');
   die();
 }
@@ -320,7 +320,7 @@ $template->assign_vars(array(
 
   'DARK_MATTER_DESCRIPTION' => classSupernova::$lang['info'][RES_DARK_MATTER]['description'],
 
-  'PAYMENT_AVAILABLE' => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+  'PAYMENT_AVAILABLE' => sn_module::sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
 
 ));
 
