@@ -69,7 +69,7 @@ class ValueBonused {
     $this->bonusValues = [];
     $this->calculated = true;
 
-    $this->bonusList = $this->bonusCatalog->getBonusDescriptions($this->snId);
+    $this->bonusList = $this->bonusCatalog->getBonusListAtom($this->snId);
     if (!$this->bonusList instanceof BonusListAtom) {
       return $this->base;
     }

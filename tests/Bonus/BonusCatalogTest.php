@@ -44,16 +44,13 @@ class BonusCatalogTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::registerBonus
-   */
-  public function testRegisterBonus() {
-
-  }
-
-  /**
-   * @covers ::getBonusDescriptions
+   * @covers ::getBonusListAtom
    */
   public function testGetBonusDescriptions() {
-
+    $this->assertNull($this->object->getBonusListAtom(UNIT_TEST_ID_STRING_1));
+    $this->object->registerBonus(UNIT_TEST_ID_STRING_1, UNIT_TEST_ID_STRING_1);
+    $this->object->registerBonus(UNIT_TEST_ID_STRING_1, UNIT_TEST_ID_STRING_2);
+    $this->assertCount(2, $this->object->getBonusListAtom(UNIT_TEST_ID_STRING_1));
   }
 
   protected function tearDown() {

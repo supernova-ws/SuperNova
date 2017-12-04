@@ -89,6 +89,8 @@ class BonusAtomTest extends BonusAtomAbilityTest {
   public function dataAdjustValue() {
     return [
       [BonusCatalog::VALUE_NON_ZERO, 0, 0, 0, 0],
+
+      [BonusCatalog::VALUE_NON_ZERO, 2, 3, 0, 2],
     ];
   }
 

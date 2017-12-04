@@ -68,7 +68,7 @@ class BonusCatalog {
    *
    * @return BonusListAtom|null
    */
-  public function getBonusDescriptions($bonusId) {
+  public function getBonusListAtom($bonusId) {
     return array_key_exists($bonusId, $this->bonuses) ? $this->bonuses[$bonusId] : null;
   }
 
