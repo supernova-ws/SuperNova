@@ -77,10 +77,6 @@ function get_game_speed($plain = false) {
   $vs = classSupernova::$gc->valueStorage;
   $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_BUILDING);
 
-//  var_dump($valueObject->getValue());
-//  var_dump($valueObject);
-//  die();
-
   return $plain ? $valueObject->base : $valueObject->getValue();
 }
 
@@ -90,21 +86,6 @@ function flt_server_flight_speed_multiplier($plain = false) {
 
   return $plain ? $valueObject->base : $valueObject->getValue();
 }
-
-//function get_game_speed($plain = false) { return sn_function_call('get_game_speed', array($plain, &$result)); }
-//function sn_get_game_speed($plain = false, &$result) {
-//  return $result = classSupernova::$config->game_speed ? classSupernova::$config->game_speed : 1;
-//}
-//
-//function flt_server_flight_speed_multiplier($plain = false) { return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result)); }
-//function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
-//  return $result = classSupernova::$config->fleet_speed;
-//}
-//
-//function game_resource_multiplier($plain = false) { return sn_function_call('game_resource_multiplier', array($plain, &$result)); }
-//function sn_game_resource_multiplier($plain = false, &$result) {
-//  return $result = classSupernova::$config->resource_multiplier;
-//}
 
 /**
  * Получение стоимости ММ в валюте сервера
@@ -116,8 +97,6 @@ function flt_server_flight_speed_multiplier($plain = false) {
 function get_mm_cost($plain = false) { return sn_function_call('get_mm_cost', array($plain, &$result)); }
 
 function sn_get_mm_cost($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : 20000;
 }
 
@@ -129,8 +108,6 @@ function sn_get_mm_cost($plain = false, &$result) {
  * @return float
  */
 function get_exchange_rate($currency_symbol) {
-  global $config;
-
   $currency_symbol = strtolower($currency_symbol);
   $config_field = 'payment_currency_exchange_' . $currency_symbol;
 
@@ -219,16 +196,6 @@ function GetMaxFleets(&$user) {
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-/*
-function GetMaxExpeditions(&$user)
-{
-  return floor(sqrt(mrc_get_level($user, false, TECH_EXPEDITION)));
-}
-*/
-
-// ----------------------------------------------------------------------------------------------------------------
-// Check input string for forbidden words
-//
 function CheckInputStrings($String) {
   global $ListCensure;
 
@@ -292,12 +259,6 @@ function sys_get_param_unit_array($param_name, $default = []) {
   return $result;
 }
 
-/*
-function sys_get_param_safe($param_name, $default = '')
-{
-  return db_escape(strip_tags(sys_get_param($param_name, $default)));
-}
-*/
 function sys_get_param_date_sql($param_name, $default = '2000-01-01') {
   $val = sys_get_param($param_name, $default);
 
@@ -361,8 +322,6 @@ function CheckAbandonPlanetState(&$planet) {
 }
 
 function eco_get_total_cost($unit_id, $unit_level) {
-  global $config;
-
   static $rate, $sn_group_resources_all, $sn_group_resources_loot;
   if (!$rate) {
     $sn_group_resources_all = sn_get_groups('resources_all');
@@ -384,7 +343,6 @@ function eco_get_total_cost($unit_id, $unit_level) {
     if (!in_array($resource_id, $sn_group_resources_all)) {
       continue;
     }
-//    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
     $cost_array[BUILD_CREATE][$resource_id] = round($resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor))));
     if (in_array($resource_id, $sn_group_resources_loot)) {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
@@ -397,63 +355,6 @@ function eco_get_total_cost($unit_id, $unit_level) {
 function sn_unit_purchase($unit_id) { }
 
 function sn_unit_relocate($unit_id, $from, $to) { }
-
-/*
-  ЭТО ПРОСТОЙ ВРАППЕР ДЛЯ БД! Здесь НЕТ никаких проверок! ВСЕ проверки должны быть сделаны заранее!
-  Враппер возвращает уровень для указанного UNIT_ID и заполняет поле в соответствующей записи
-  TODO: Он может быть перекрыт для возвращения дополнительной информации о юните - например, о Капитане (пока не реализовано)
-
-  $context
-    'location' - где искать данный тип юнита: LOC_USER
-    'user' - &$user
-
-  $options
-    'for_update' - блокировать запись до конца транзакции
-*/
-/*
-function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
-function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
-{
-  $unit_db_name = pname_resource_name($unit_id);
-  $for_update = $options['for_update'];
-
-  $unit_level = 0;
-  if($context['location'] == LOC_USER)
-  {
-    $user = &$context['user'];
-    if(!$user['id'])
-    {
-      $user[$unit_id]['unit_level'] = $user[$unit_db_name];
-    }
-    elseif($for_update || !isset($user[$unit_id]))
-    {
-      $unit_level = db_unit_by_location($user['id'], $context['location'], $user['id'], $unit_id, $for_update);
-      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
-      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
-      $user[$unit_id] = $unit_level;
-    }
-    $unit_level = intval($user[$unit_id]['unit_level']);
-  }
-  elseif($context['location'] == LOC_PLANET)
-  {
-    $planet = &$context['planet'];
-    if(!$planet['id'])
-    {
-      $planet[$unit_id]['unit_level'] = $planet[$unit_db_name];
-    }
-    elseif($for_update || !isset($planet[$unit_id]))
-    {
-      $unit_level = db_unit_by_location(0, $context['location'], $planet['id'], $unit_id, $for_update);
-      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
-      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
-      $planet[$unit_id] = $unit_level;
-    }
-    $unit_level = intval($planet[$unit_id]['unit_level']);
-  }
-
-  return $result = $unit_level;
-}
-*/
 
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, array(&$user, $planet, $unit_id, $for_update, $plain, &$result)); }
 
@@ -496,10 +397,6 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
     $mercenary_bonus = $mercenary[P_BONUS_VALUE];
 
     switch ($mercenary[P_BONUS_TYPE]) {
-//      case BONUS_PERCENT_CUMULATIVE:
-//        $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
-//      break;
-
       case BONUS_PERCENT:
         $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
         $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
@@ -937,8 +834,6 @@ function player_nick_uncompact($nick_string) {
 function player_nick_render_array_to_html($nick_array) { return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result)); }
 
 function sn_player_nick_render_array_to_html($nick_array, &$result) {
-  global $config, $user;
-
   static $iconCache = array();
 
   if (empty($iconCache['gender_' . $nick_array[NICK_GENDER]])) {
@@ -950,19 +845,14 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
 
   // ALL STRING ARE UNSAFE!!!
   if (isset($nick_array[NICK_BIRTHSDAY])) {
-//    $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
     $result[NICK_BIRTHSDAY] = $iconCache['icon_birthday'];
   }
 
   if (isset($nick_array[NICK_VACATION])) {
-//    $result[NICK_VACATION] = '<img src="design/images/icon_vacation.png" />';
-//    $result[NICK_VACATION] = classSupernova::$gc->skinModel->getImageCurrent('icon_vacation|html');
     $result[NICK_VACATION] = $iconCache['icon_vacation'];
   }
 
   if (isset($nick_array[NICK_GENDER])) {
-//    $result[NICK_GENDER] = '<img src="' . classSupernova::$gc->theUser->getSkinPath() . 'images/gender_' . $nick_array[NICK_GENDER] . '.png" />';
-//    $result[NICK_GENDER] = classSupernova::$gc->skinModel->getImageCurrent("gender_{$nick_array[NICK_GENDER]}|html");
     $result[NICK_GENDER] = $iconGender;
   }
 
@@ -991,7 +881,6 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
     if ($highlight) {
       list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
     }
-    // $result = preg_replace("#(.+)#", $highlight, $result);
   }
 
   if (isset($nick_array[NICK_CLASS])) {
@@ -1010,8 +899,33 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   return $result;
 }
 
+/**
+ * @param array      $render_user
+ * @param array|bool $options - [
+ *   'color' => true,
+ *   'icons' => true,
+ *   'gender' => true,
+ *   'birthday' => true,
+ *   'ally' => true,
+ * ]
+ *
+ * @return mixed
+ */
 function player_nick_render_current_to_array($render_user, $options = false) { return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result)); }
 
+/**
+ * @param array      $render_user
+ * @param array|bool $options - [
+ *   'color' => true,
+ *   'icons' => true,
+ *   'gender' => true,
+ *   'birthday' => true,
+ *   'ally' => true,
+ * ]
+ * @param array      $result
+ *
+ * @return mixed
+ */
 function sn_player_nick_render_current_to_array($render_user, $options = false, &$result) {
   /*
   $options = $options !== true ? $options :
@@ -1060,10 +974,7 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 }
 
 
-// TODO sys_stat_get_user_skip_list() ПЕРЕДЕЛАТЬ!
 function sys_stat_get_user_skip_list() {
-  global $config;
-
   $result = array();
 
   $user_skip_list = array();
@@ -1105,9 +1016,6 @@ function sys_stat_get_user_skip_list() {
 function getUnitInfo($unitSnId) {
   return get_unit_param($unitSnId);
 }
-
-// function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
-// function sn_render_player_nick($render_user, $options = false, &$result)
 
 function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) { return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result)); }
 
@@ -1213,11 +1121,6 @@ function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
 function array_merge_recursive_numeric($array1, $array2) {
   if (!empty($array2) && is_array($array2)) {
     foreach ($array2 as $key => $value) {
-//    if(!isset($array1[$key]) || !is_array($array1[$key])) {
-//      $array1[$key] = $value;
-//    } else {
-//      $array1[$key] = array_merge_recursive_numeric($array1[$key], $value);
-//    }
       $array1[$key] = !isset($array1[$key]) || !is_array($array1[$key]) ? $value : array_merge_recursive_numeric($array1[$key], $value);
     }
   }
@@ -1271,9 +1174,6 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     sn_db_transaction_start();
     $user = db_user_by_id($user['id'], true, '*');
     $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
-//    $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
-//    $user = $global_data['user'];
-//    $planetrow = $global_data['planet'];
 
     $planet_density_index = $planetrow['density_index'];
 
@@ -1284,8 +1184,6 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     }
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-    // $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
-    // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     $transmute_cost = $density_price_chart[$new_density_index];
     if ($user_dark_matter < $transmute_cost) {
       throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
@@ -1392,8 +1290,6 @@ function get_player_max_expedition_duration(&$user, $astrotech = -1) {
 }
 
 function get_player_max_colonies(&$user, $astrotech = -1) {
-  global $config;
-
   if ($astrotech == -1) {
     if (!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
 
@@ -1407,7 +1303,6 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
     return $user[UNIT_PLAYER_COLONIES_MAX];
   } else {
     $expeditions = get_player_max_expeditons($user, $astrotech);
-    // $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
     $colonies = $astrotech - $expeditions;
 
     return classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
@@ -1472,6 +1367,10 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
   return $result;
 }
 
+/**
+ * @param template $template
+ * @param array    $note_row
+ */
 function note_assign(&$template, $note_row) {
   global $note_priority_classes, $lang;
 
@@ -1515,8 +1414,6 @@ function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELA
 }
 
 function market_get_autoconvert_cost() {
-  global $config;
-
   return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
 }
 
@@ -1542,7 +1439,6 @@ function sn_can_capture_planet(&$result) {
  *
  * @return array
  */
-// OK v4
 function sec_player_ip() {
   // TODO - IPv6 support
   $ip = array(
@@ -1647,20 +1543,12 @@ function getUniqueFleetId($planetTemplatized) {
 function getLocationFromContext($context = []) {
   if (!empty($context[LOC_FLEET])) {
     return [LOC_FLEET, $context[LOC_FLEET]['fleet_id']];
-//    $this->location = LOC_FLEET;
-//    $this->locationId = $context[LOC_FLEET]['fleet_id'];
   } elseif (!empty($context[LOC_PLANET])) {
     return [LOC_PLANET, $context[LOC_PLANET]['id']];
-//    $this->location = LOC_PLANET;
-//    $this->locationId = $context[LOC_PLANET]['id'];
   } elseif (!empty($context[LOC_USER])) {
     return [LOC_USER, $context[LOC_USER]['id']];
-//    $this->location = LOC_USER;
-//    $this->locationId = $this->context[LOC_USER]['id'];
   } else {
     return [LOC_SERVER, 0];
-//    $this->location = LOC_SERVER;
-//    $this->locationId = 0;
   }
 
 }
