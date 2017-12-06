@@ -13,6 +13,9 @@ namespace Bonus;
  * @package Bonus
  */
 class BonusAtom {
+  const RETURN_IF_BASE_NOT_ZERO = true;
+  const RETURN_ALWAYS = false;
+
   /**
    * Unit SN ID to use as base to adjust base value
    *
@@ -88,7 +91,7 @@ class BonusAtom {
    * @return bool
    */
   protected function isReturnNothing($baseValue) {
-    return $this->ifBaseNonZero == BonusCatalog::VALUE_NON_ZERO && $baseValue == 0;
+    return $this->ifBaseNonZero == self::RETURN_IF_BASE_NOT_ZERO && $baseValue == 0;
   }
 
   /**

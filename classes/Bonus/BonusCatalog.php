@@ -15,9 +15,6 @@ use Common\GlobalContainer;
  * @package Bonus
  */
 class BonusCatalog {
-  CONST VALUE_NON_ZERO = true;
-  CONST VALUE_ANY = false;
-
   /**
    * @var GlobalContainer $gc
    */
@@ -39,8 +36,8 @@ class BonusCatalog {
   }
 
   protected function loadDefaults() {
-    $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, TECH_SPY, BonusCatalog::VALUE_ANY);
-    $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, MRC_SPY, BonusCatalog::VALUE_ANY);
+    $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, TECH_SPY, BonusAtom::RETURN_ALWAYS);
+    $this->registerBonus(UNIT_PLAYER_EMPIRE_SPY, MRC_SPY, BonusAtom::RETURN_ALWAYS);
 
 //    $this->registerBonus(UNIT_FLEET_PLANET_SPY, UNIT_PLAYER_EMPIRE_SPY);
 //    $this->registerBonus(UNIT_FLEET_PLANET_SPY, SHIP_SPY, LOC_FLEET);
@@ -53,7 +50,7 @@ class BonusCatalog {
    * @param int  $baseBonusId - ID of unit which value will be used to calculate bonus
    * @param bool $ifBaseNonZero - Bonus should applied only if base value is not empty when true
    */
-  public function registerBonus($bonusId, $baseBonusId, $ifBaseNonZero = BonusCatalog::VALUE_NON_ZERO) {
+  public function registerBonus($bonusId, $baseBonusId, $ifBaseNonZero = BonusAtom::RETURN_IF_BASE_NOT_ZERO) {
     // TODO - also register triggers to invalidate
     if (empty($this->bonuses[$bonusId])) {
       // TODO - lazy loader

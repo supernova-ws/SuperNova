@@ -8,19 +8,18 @@ namespace Bonus;
 /**
  * Class BonusListAtom
  *
- * Describes all bonuses for one value
+ * Lists all bonuses for one value
  *
  * @package Bonus
  */
 class BonusListAtom implements \Countable {
-
   /**
    * @var int $bonusId
    */
   public $bonusId;
 
   /**
-   * [(int)$sourceUnitSnId] => (class)BonusAtom
+   * [(int)$sourceUnitSnId => (class)BonusAtom]
    *
    * @var BonusAtom[] $bonusAtoms
    */
@@ -48,7 +47,7 @@ class BonusListAtom implements \Countable {
    * @param int  $baseBonusId - Unit ID from which base value should be retrieved
    * @param bool $ifBaseNonZero - Bonus should applied only if base value is not empty when true
    */
-  public function addUnit($baseBonusId, $ifBaseNonZero = BonusCatalog::VALUE_NON_ZERO) {
+  public function addUnit($baseBonusId, $ifBaseNonZero = BonusAtom::RETURN_IF_BASE_NOT_ZERO) {
     // ToDo - exception on existing (duplicate) bonus ID?
     $this->bonusAtoms[$baseBonusId] = BonusFactory::build($baseBonusId, $ifBaseNonZero);
 
@@ -56,32 +55,11 @@ class BonusListAtom implements \Countable {
   }
 
 
-//  /**
-//   * Calculates real bonus values within supplied context
-//   *
-//   * @param ValueBonused $value
-//   *
-//   * @return array
-//   */
-//  public function apply(ValueBonused $value) {
-//    $result = [BONUS_NONE => $value->base];
-//    foreach ($this->bonusAtoms as $unitId => $description) {
-//      $amount = classSupernova::$gc->valueStorage->getValue($unitId, $value->context);
-//
-//      $result[$unitId] = $description->adjustValue($amount, $value);
-//    }
-//
-//// TODO - проследить, что бы ниже не было отрицательных значений
-////            $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
-////            $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
-//
-//    return $result;
-//  }
-
   protected function bonusSort(BonusAtom $a, BonusAtom $b) {
     static $bonusOrder = [BonusAtom::class, BonusAtomAbility::class, BonusAtomAdd::class, BonusAtomPercent::class, BonusAtomMultiply::class];
-    $indexA = (int)array_search($a, $bonusOrder);
-    $indexB = (int)array_search($b, $bonusOrder);
+
+    $indexA = (int)array_search(get_class($a), $bonusOrder);
+    $indexB = (int)array_search(get_class($b), $bonusOrder);
 
     return $indexA == $indexB ? 0 : ($indexA > $indexB ? +1 : -1);
   }
@@ -98,4 +76,5 @@ class BonusListAtom implements \Countable {
   public function count() {
     return count($this->bonusAtoms);
   }
+
 }

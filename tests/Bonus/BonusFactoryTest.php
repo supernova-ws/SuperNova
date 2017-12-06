@@ -31,7 +31,7 @@ class BonusFactoryTest extends \PHPUnit_Framework_TestCase {
   public function testBuild($type, $power, $className) {
     UnitInfo::build(UNIT_TEST_ID_STRING_1)->bonus($type, $power)->install();
 
-    $bonus = BonusFactory::build(UNIT_TEST_ID_STRING_1, BonusCatalog::VALUE_ANY);
+    $bonus = BonusFactory::build(UNIT_TEST_ID_STRING_1, BonusAtom::RETURN_ALWAYS);
 
     // Checking that appropriate type returned
     $this->assertTrue($bonus instanceof $className);

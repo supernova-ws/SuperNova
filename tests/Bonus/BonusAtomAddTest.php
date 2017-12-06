@@ -32,15 +32,15 @@ class BonusAtomAddTest extends BonusAtomAbilityTest {
 
   public function dataAdjustValue() {
     return [
-      [BonusCatalog::VALUE_ANY, 0, 0, 0, 0],
-      [BonusCatalog::VALUE_ANY, 0, 2.5, 17.5, 17.5], // Unit power is 7, so 7 * 2.5 = 17.5
-      [BonusCatalog::VALUE_ANY, 7, 0, 0, 7],
-      [BonusCatalog::VALUE_ANY, 7, 2.5, 17.5, 24.5],
+      [BonusAtom::RETURN_ALWAYS, 0, 0, 0, 0],
+      [BonusAtom::RETURN_ALWAYS, 0, 2.5, 17.5, 17.5], // Unit power is 7, so 7 * 2.5 = 17.5
+      [BonusAtom::RETURN_ALWAYS, 7, 0, 0, 7],
+      [BonusAtom::RETURN_ALWAYS, 7, 2.5, 17.5, 24.5],
 
-      [BonusCatalog::VALUE_NON_ZERO, 0, 0, 0, 0],
-      [BonusCatalog::VALUE_NON_ZERO, 0, 2.5, 0, 0],
-      [BonusCatalog::VALUE_NON_ZERO, 7, 0, 0, 7],
-      [BonusCatalog::VALUE_NON_ZERO, 7, 2.5, 17.5, 24.5],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 0, 0, 0, 0],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 0, 2.5, 0, 0],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 7, 0, 0, 7],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 7, 2.5, 17.5, 24.5],
     ];
   }
 

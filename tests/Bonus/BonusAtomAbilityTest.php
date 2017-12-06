@@ -5,6 +5,7 @@
 
 namespace Bonus;
 
+use Common\GlobalContainer;
 use Fixtures\UnitInfo;
 
 /**
@@ -28,20 +29,20 @@ class BonusAtomAbilityTest extends \PHPUnit_Framework_TestCase {
     parent::setUp();
 
     UnitInfo::build(UNIT_TEST_ID_STRING_1)->bonus(BONUS_ABILITY, TEST_VALUE_INT_7)->install();
-    $this->object = new $this->objectClass(UNIT_TEST_ID_STRING_1, BonusCatalog::VALUE_NON_ZERO);
+    $this->object = new $this->objectClass(UNIT_TEST_ID_STRING_1, BonusAtom::RETURN_IF_BASE_NOT_ZERO);
   }
 
   public function dataAdjustValue() {
     return [
-      [BonusCatalog::VALUE_ANY, 0, 0, 0, 0],
-      [BonusCatalog::VALUE_ANY, 0, 2.5, 1, 1],
-      [BonusCatalog::VALUE_ANY, 7, 0, 0, 1],
-      [BonusCatalog::VALUE_ANY, 7, 2.5, 1, 1],
+      [BonusAtom::RETURN_ALWAYS, 0, 0, 0, 0],
+      [BonusAtom::RETURN_ALWAYS, 0, 2.5, 1, 1],
+      [BonusAtom::RETURN_ALWAYS, 7, 0, 0, 1],
+      [BonusAtom::RETURN_ALWAYS, 7, 2.5, 1, 1],
 
-      [BonusCatalog::VALUE_NON_ZERO, 0, 0, 0, 0],
-      [BonusCatalog::VALUE_NON_ZERO, 0, 2.5, 0, 0],
-      [BonusCatalog::VALUE_NON_ZERO, 7, 0, 0, 1],
-      [BonusCatalog::VALUE_NON_ZERO, 7, 2.5, 1, 1],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 0, 0, 0, 0],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 0, 2.5, 0, 0],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 7, 0, 0, 1],
+      [BonusAtom::RETURN_IF_BASE_NOT_ZERO, 7, 2.5, 1, 1],
     ];
   }
 
@@ -54,9 +55,10 @@ class BonusAtomAbilityTest extends \PHPUnit_Framework_TestCase {
     /**
      * @var ValueBonused $valueBonused
      */
-    $valueBonused = $this->createMock(ValueBonused::class);
-    $valueBonused->base = $baseValue;
-    $valueBonused->value = $baseValue;
+    \classSupernova::$gc = new GlobalContainer();
+    $valueBonused = $this->getMockBuilder(ValueBonused::class)
+      ->setConstructorArgs([UNIT_TEST_ID_STRING_0, $baseValue])
+      ->getMock();
 
     $this->object->ifBaseNonZero = $isZeroReturned;
 
