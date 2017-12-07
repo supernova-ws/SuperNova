@@ -81,7 +81,7 @@ class ValueStorage extends ContainerPlus {
       $valueObject = new ValueBonused($unitSnId, $this->getLevelNonServer($unitSnId, $context));
     }
 
-    if($valueObject instanceof ValueBonused) {
+    if ($valueObject instanceof ValueBonused) {
       $valueObject->getValue($context);
     }
 
@@ -96,7 +96,7 @@ class ValueStorage extends ContainerPlus {
    */
   public function getValue($unitSnId, $context = []) {
 
-    if(($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
+    if (($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
       $result = $vo->getValue();
     } else {
       $result = $vo;
@@ -112,7 +112,7 @@ class ValueStorage extends ContainerPlus {
    * @return float|int
    */
   public function getBase($unitSnId, $context = []) {
-    if(($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
+    if (($vo = $this->getValueObject($unitSnId, $context)) instanceof ValueBonused) {
       $result = $vo->base;
     } else {
       $result = $vo;
@@ -122,10 +122,21 @@ class ValueStorage extends ContainerPlus {
   }
 
   /**
+   * @param array $user
+   * @param array $planet
+   * @param int   $unitSnId
+   *
+   * @return int|float|bool
+   */
+  protected function getLevel($user, $planet, $unitSnId) {
+    return mrc_get_level($user, $planet, $unitSnId, true, true);
+  }
+
+  /**
    * @param int   $unitSnId
    * @param array $context - Context list of locations: [LOC_xxx => (data)]
    *
-   * @return mixed
+   * @return int|float|bool
    */
   protected function getLevelNonServer($unitSnId, $context = []) {
 //    pdump($unitSnId, 'NON-server');
@@ -134,7 +145,7 @@ class ValueStorage extends ContainerPlus {
     $user = !empty($context[LOC_USER]) ? $context[LOC_USER] : [];
     $planet = !empty($context[LOC_PLANET]) ? $context[LOC_PLANET] : [];
 
-    return mrc_get_level($user, $planet, $unitSnId, true, true);
+    return $this->getLevel($user, $planet, $unitSnId);
   }
 
 }

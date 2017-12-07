@@ -38,6 +38,15 @@ function sn_unit_purchase($unit_id) { }
 
 function sn_unit_relocate($unit_id, $from, $to) { }
 
+/**
+ * @param array $user
+ * @param array $planet
+ * @param int   $unit_id
+ * @param bool  $for_update
+ * @param bool  $plain
+ *
+ * @return int|float|bool
+ */
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, array(&$user, $planet, $unit_id, $for_update, $plain, &$result)); }
 
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result) {
