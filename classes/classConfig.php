@@ -28,6 +28,8 @@
  * @property int        $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
  * @property int        $fleet_update_lock            => ''  // SQL time when lock was acquired
  *
+ * @property string     $game_adminEmail              => 'root@localhost',    // Admin's email to show to users
+ *
  * @property string     $game_default_language        => 'ru'
  * @property string     $game_default_skin            => 'skins/EpicBlue/'
  * @property string     $game_default_template        => 'OpenGame'
@@ -79,6 +81,7 @@
  * @property float      $resource_multiplier          => 1, // aka Mining speed
  * @property float      $game_speed                   => 1, // Game speed aka Building/Research speed
  * @property float      $fleet_speed                  => 1, // Fleet speed
+ * @property float      $game_speed_expedition        => 1, // Game expedition speed
  *
  * @property int        $tutorial_first_item          ID of first item of tutorial
  *
@@ -187,6 +190,7 @@ class classConfig extends classPersistent {
     'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccounts)
 
     'game_speed'                => 1, // Game speed
+    'game_speed_expedition'     => 1, // Game expedition speed
     'game_user_changename'      => 2, // Is user allowed to change name after registration?
     'game_user_changename_cost' => 100000, // Change name cost for paid changename
 
@@ -345,7 +349,7 @@ class classConfig extends classPersistent {
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
-    if(!isset(self::$cacheObject)) {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }

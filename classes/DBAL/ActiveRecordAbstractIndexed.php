@@ -18,7 +18,6 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
   protected static $_primaryIndexField = 'id';
 
 
-
   /**
    * @param int|string $recordId
    *
@@ -53,9 +52,23 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
 
 
     $this->acceptChanges();
+
 //    $this->_isNew = false;
 
     return true;
+  }
+
+  public function delete() {
+    $result = static::dbPrepareQuery()
+      ->setWhereArray([static::$_primaryIndexField => $this->id])
+      ->doDelete();
+
+    if ($result) {
+      $this->id = 0;
+      $this->_isNew = true;
+    }
+
+    return $result;
   }
 
 
@@ -89,8 +102,6 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
 //  }
 
 
-
-
   /**
    * @return bool
    */
@@ -111,6 +122,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
 
 
   // Some overrides
+
   /**
    * @inheritdoc
    */
@@ -142,7 +154,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
    */
   // TODO - do a check that all fields present in stored data. I.e. no empty fields with no defaults
   public function insert() {
-    if(!parent::insert()) {
+    if (!parent::insert()) {
       return false;
     }
 

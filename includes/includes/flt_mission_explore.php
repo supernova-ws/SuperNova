@@ -95,7 +95,7 @@ function flt_mission_explore(&$mission_data) {
 
   $flt_stay_hours = ($fleet_row['fleet_end_stay'] - $fleet_row['fleet_start_time']) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
 
-  $outcome_list = sn_get_groups('mission_explore_outcome_list');
+  $outcome_list = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
   $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1/1.7));
 
   $chance_max = 0;

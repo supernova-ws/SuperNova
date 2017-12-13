@@ -915,6 +915,8 @@ input[type=text].coordinate {
   vertical-align: top;
   text-align: center;
   width: 100%;
+
+  white-space: normal;
 }
 #unit_info_level {
   position: absolute;

@@ -9,10 +9,35 @@ namespace Fleet;
 use Common\GlobalContainer;
 
 class MissionData {
+
   /**
-   * @var array|null
+   * Fleet record from DB
+   *
+   * @var RecordFleet $fleetRecord
+   */
+  protected $fleetRecord;
+
+  /**
+   * Fleet row from DB
+   *
+   * @var array|null $fleet
    */
   public $fleet;
+
+//  /**
+//   * List of fleet ships
+//   *
+//   * @var float[] $fleetShips
+//   */
+//  protected $fleetShips;
+//  /**
+//   * @var float[] $fleetResources
+//   */
+//  protected $fleetResources = [
+//    RES_METAL     => 0,
+//    RES_CRYSTAL   => 0,
+//    RES_DEUTERIUM => 0,
+//  ];
 
   /**
    * @var array|null
@@ -45,10 +70,20 @@ class MissionData {
   protected $general;
 
   /**
-   * MissionData constructor.
+   * @var \classLocale $lang
    */
-  public function __construct() {
-    $this->general = \classSupernova::$gc->general;
+  protected $lang;
+
+  /**
+   * MissionData constructor.
+   *
+   * @param array $missionArray
+   */
+  public function __construct($missionArray) {
+    $this->general = $this->getDefaultGeneral();
+    $this->lang = $this->getDefaultLang();
+
+    $this->fromMissionArray($missionArray);
   }
 
   /**
@@ -59,21 +94,51 @@ class MissionData {
   }
 
   /**
-   * @param $mission_data
+   * @param array $missionArray
    *
    * @return static
    */
-  public static function buildFromArray($mission_data) {
-    $that = new static();
+  public static function buildFromArray($missionArray) {
+    return new static($missionArray);
+  }
 
-    $that->fleet = is_array($mission_data['fleet']) && !empty($mission_data['fleet']) ? $mission_data['fleet'] : null;
-    $that->dst_user = is_array($mission_data['dst_user']) && !empty($mission_data['dst_user']) ? $mission_data['dst_user'] : null;
-    $that->dst_planet = is_array($mission_data['dst_planet']) && !empty($mission_data['dst_planet']) ? $mission_data['dst_planet'] : null;
-    $that->src_user = is_array($mission_data['src_user']) && !empty($mission_data['src_user']) ? $mission_data['src_user'] : null;
-    $that->src_planet = is_array($mission_data['src_planet']) && !empty($mission_data['src_planet']) ? $mission_data['src_planet'] : null;
-    $that->fleet_event = is_array($mission_data['fleet_event']) && !empty($mission_data['fleet_event']) ? $mission_data['fleet_event'] : null;
+  /**
+   * @param array $missionArray
+   */
+  protected function fromMissionArray($missionArray) {
+    $this->fleet = is_array($missionArray['fleet']) && !empty($missionArray['fleet']) ? $missionArray['fleet'] : null;
+    $this->dst_user = is_array($missionArray['dst_user']) && !empty($missionArray['dst_user']) ? $missionArray['dst_user'] : null;
+    $this->dst_planet = is_array($missionArray['dst_planet']) && !empty($missionArray['dst_planet']) ? $missionArray['dst_planet'] : null;
+    $this->src_user = is_array($missionArray['src_user']) && !empty($missionArray['src_user']) ? $missionArray['src_user'] : null;
+    $this->src_planet = is_array($missionArray['src_planet']) && !empty($missionArray['src_planet']) ? $missionArray['src_planet'] : null;
+    $this->fleet_event = !empty($missionArray['fleet_event']) ? $missionArray['fleet_event'] : null;
 
-    return $that;
+    $this->fleetRecord = $this->dbFleetFindRecordById($this->fleet['fleet_id']);
+
+//    $this->fleetShips = !empty($this->fleet['fleet_array']) ? sys_unit_str2arr($this->fleet['fleet_array']) : [];
+//    $this->fleetResources = [
+//      RES_METAL     => !empty($this->fleet['fleet_resource_metal']) ? floatval($this->fleet['fleet_resource_metal']) : 0,
+//      RES_CRYSTAL   => !empty($this->fleet['fleet_resource_crystal']) ? floatval($this->fleet['fleet_resource_crystal']) : 0,
+//      RES_DEUTERIUM => !empty($this->fleet['fleet_resource_deuterium']) ? floatval($this->fleet['fleet_resource_deuterium']) : 0,
+//    ];
+  }
+
+  protected function dbFleetFindRecordById($fleetId) {
+    return RecordFleet::findById($fleetId);
+  }
+
+  /**
+   * @return \classLocale
+   */
+  protected function getDefaultLang() {
+    return \classSupernova::$lang;
+  }
+
+  /**
+   * @return \General
+   */
+  protected function getDefaultGeneral() {
+    return \classSupernova::$gc->general;
   }
 
 }

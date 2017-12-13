@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a4.6
+* @version 43a9.18
 *
 */
 
@@ -350,6 +350,12 @@ $a_lang_array = (array(
   'flt_mission_expedition' => array(
     'msg_sender' => 'Отчет экспедиции',
     'msg_title' => 'Отчет экспедиции',
+
+    'found_dark_matter_new' => 'Получена ТМ:',
+    'found_resources_new' => "Найдены ресурсы:",
+    'found_fleet_new' => "Найдены корабли:",
+    'lost_fleet_new' => "Потеряны следующие корабли:",
+
     'found_dark_matter' => 'Получено %1$d единиц ТМ',
     'found_resources' => "Найдены ресурсы:\r\n",
     'found_fleet' => "Найдены корабли:\r\n",
@@ -409,7 +415,9 @@ $a_lang_array = (array(
 
       FLT_EXPEDITION_OUTCOME_FOUND_DM => array(
         'no_result' => 'К сожалению, всех накопителей флота не хватило что бы собрать одну-единственую ТМ. Попробуйте отправлять флот побольше',
-        'messages' => 'Ваш флот стал свидетелем рождения СуперНовы',
+        'messages' => [
+          'Ваш флот стал свидетелем рождения СуперНовы',
+        ],
         /*
         'messages' => array(
           'Ваш флот стал свидетелем рождения СуперНовы 1',

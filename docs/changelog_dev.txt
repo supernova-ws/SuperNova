@@ -1063,6 +1063,74 @@ var_stat_update_next	2017-11-12 04:00:00
 [*] И вообще больше тестов для бонусов
 
 
+[*] Fleet\MissionExplore
+        - Надо добавить механизм перекрытия для flt_mission_explore_addon
+            - Проверить, где перекрывается этот метод - и исправить работу перекрытий по месту
+            - СЕЙЧАС ПЕРЕКРЫТИЕ flt_mission_explore_addon ОТКЛЮЧЕНО!!
+        - Новый Наёмник - Экспедитор (?) - позволяет находить корабли других рас в экспе
+
+MissionExplore.php
+    // TODO - REMOVE!!!!
+    $flt_stay_hours = 1;
+
+      $this->manifest['functions']['flt_mission_explore_addon'] = 'expedition_result_adjust';
+
+
+[*] Токен-лотерея
+        - Написать Ридми
+        - Ограничивать юниты текущим уровнем игрока
+        - Админка Токен-лотереи - сделать. Показывать % для каждого айтема
+        - Показывать окно о получении токена
+        - Разделители тысяч количеству токенов
+        - Время получения токена - дату
+        - Звуки на выигрышь и проигрышь
+        - Логи:
+            - Получение токена
+            - Трата токена
+                - Получение юнитов
+
+[*] Модули
+        - Вынести общие функции чтения конфигурации - с пререндерингом префикса
+
+[*] Проверить, почему новые пункты меню добавляются под низ?
+
+//
+//$fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = 1", true);
+//if(empty($fleet_row)) {
+//  doquery("INSERT INTO `{{fleets}}` SET fleet_id = 1, fleet_owner = 2, fleet_mission = 15, fleet_amount = 1895433, fleet_start_time = " . (SN_TIME_NOW - PERIOD_HOUR - 1). ", fleet_end_stay = " . (SN_TIME_NOW). ", fleet_end_time = " . (SN_TIME_NOW + PERIOD_MINUTE). ", fleet_start_planet_id = 15, fleet_start_galaxy = 1, fleet_start_system = 1, fleet_start_planet = 15, fleet_start_type = 1, fleet_end_galaxy = 1, fleet_end_system = 1, fleet_end_planet = 17, fleet_end_type = 1, fleet_array = '203,152828;224,45081;201,35806;211,30817;213,34498;220,62015;204,226824;202,170037;205,58656;215,913290;207,13128;222,3703;206,33347;219,115403'");
+//}
+//$fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = 1", true);
+//
+//$mData = [
+//  'fleet'       => $fleet_row,
+////  'dst_user'    => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
+//  // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
+////  'dst_planet'  => $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
+//  'src_user'    => $user,
+//  // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
+//  'src_planet'  => $planetrow,
+//  'fleet_event' => EVENT_FLT_ACOMPLISH,
+//];
+//
+//$mission = new \Fleet\MissionExplore($mData);
+//$mission->process();
+//
+//doquery("DELETE FROM `{{fleets}}` WHERE fleet_id = 1");
+//die();
+//
+
+
+
+2017-12-13 10:37:53 43a9.18
+[~] Флоты
+    Теперь статус "Новый игрок" рассчитывается с учётом скорости добычи ресурсов
+[~] Модули
+    Поддержка core_login_reward 0a0
+
+[@] Код
+    Альфа-версия класса MissionExplore
+
+
 2017-12-06 15:33:17 43a9.15
 [@] Код
     Небольшой рефакторинг и еще один юнит-тест для подсистемы бонусов

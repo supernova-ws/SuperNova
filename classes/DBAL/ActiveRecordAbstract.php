@@ -513,6 +513,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * Protects object from setting non-existing property
    *
    * @param string $propertyName
+   *
+   * @throws DbalFieldInvalidException
    */
   protected function shieldName($propertyName) {
     if (!self::haveProperty($propertyName)) {

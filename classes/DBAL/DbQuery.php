@@ -176,6 +176,10 @@ class DbQuery {
     return doquery($this->update());
   }
 
+  public function doDelete() {
+    return doquery($this->delete());
+  }
+
   /**
    * @return array|bool|\mysqli_result|null
    */

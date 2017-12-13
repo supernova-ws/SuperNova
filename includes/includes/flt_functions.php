@@ -212,7 +212,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
-function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false){return sn_function_call('flt_can_attack', array($planet_src, $planet_dst, $fleet, $mission, $options, &$result));}
+function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false){$result = null; return sn_function_call('flt_can_attack', array($planet_src, $planet_dst, $fleet, $mission, $options, &$result));}
 function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false, &$result) {
   //TODO: try..catch
   global $config, $user;
@@ -418,9 +418,9 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   // Okay. Now skipping protection checks for inactive longer then 1 week
   if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60*60*24*7)) {
     if(
-      ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
+      (classSupernova::$gc->general->playerIsNoobByPoints($enemy_points) && !classSupernova::$gc->general->playerIsNoobByPoints($user_points))
       ||
-      ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor)
+      (classSupernova::$gc->general->playerIs1stStrongerThen2nd($user_points, $enemy_points))
     ) {
       if($mission != MT_HOLD) {
         return $result = ATTACK_NOOB;

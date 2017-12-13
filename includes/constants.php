@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a9.16');
+define('SN_VERSION', '43a9.18');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -291,6 +291,7 @@ define('RPG_EVENT_BIRTHDAY', 45);
 define('RPG_EVENT_BIRTHDAY_COMPILED', 46);
 define('RPG_BATCH_OPERATION', 47);
 define('RPG_EVENT_MARCH8', 48);
+define('RPG_LOGIN_TOKEN', 49);
 
 
 
@@ -1010,6 +1011,7 @@ define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
 define('UNIT_PLAN_SHIP_ORBITAL_HEAVY', 1107);
 
 define('UNIT_PREMIUM', 1200);
+define('UNIT_LOGIN_TOKEN', 1210);
 define('UNIT_MASS_OPERATIONS', 1290);
 define('UNIT_MASS_OPERATIONS_TEST_DRIVE', 1291);
 define('UNIT_SECTOR', 1300);
@@ -1240,6 +1242,7 @@ define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
+const GROUP_MISSION_EXPLORE_OUTCOMES = 'mission_explore_outcome_list';
 
 // Unit params
 // define('GROUP_PARAMS', 1000000000);
@@ -1307,6 +1310,11 @@ define('P_ONLY_DARK_MATTER', 'P_ONLY_DARK_MATTER');
 define('P_TIME_RAW', 'P_TIME_RAW');
 
 define('P_MINING_IS_MANAGED', 'P_MINING_IS_MANAGED'); // Флаг, означающий что добычей ресурсов можно управлять
+
+const P_MISSION_EXPEDITION_OUTCOME = 'outcome';
+const P_MISSION_EXPEDITION_OUTCOME_SECONDARY = 'secondary';
+const P_MULTIPLIER = 'multiplier';
+const P_MESSAGE_ID = 'messageId';
 
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);
@@ -1616,6 +1624,7 @@ define('PLAYER_OPTION_TUTORIAL_FINISHED', 52);
 define('PLAYER_OPTION_NAVBAR_PLANET_OLD', 53);
 define('PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE', 54);
 define('PLAYER_OPTION_QUEST_LIST_FILTER', 55);
+define('PLAYER_OPTION_LOGIN_REWARDED_LAST', 56);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

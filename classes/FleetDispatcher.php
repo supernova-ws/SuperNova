@@ -347,6 +347,10 @@ class FleetDispatcher {
 
         case MT_EXPLORE:
           $mission_result = flt_mission_explore($mission_data);
+//          $theMission = \Fleet\MissionExplore::buildFromArray($mission_data);
+//          $theMission->process();
+//
+//          unset($theMission);
         break;
 
         case MT_RECYCLE:

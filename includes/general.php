@@ -122,6 +122,23 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
 }
 
 
+// FLEET FUNCTIONS -----------------------------------------------------------------------------------------------------
+/**
+ * @param \Fleet\MissionExplore $result
+ *
+ * @return \Fleet\MissionExplore
+ */
+function flt_mission_explore_addon_object($result){return sn_function_call('flt_mission_explore_addon_object', [$result]);}
+
+/**
+ * @param \Fleet\MissionExplore $result
+ *
+ * @return \Fleet\MissionExplore
+ */
+function sn_flt_mission_explore_addon_object($result) {
+  return $result;
+}
+
 // FILE FUNCTIONS ----------------------------------------------------------------------------------------------------------------
 function sys_file_read($filename) {
   return @file_get_contents($filename);
@@ -188,7 +205,7 @@ function flt_server_flight_speed_multiplier($plain = false) {
  *
  * @return mixed
  */
-function get_mm_cost($plain = false) { return sn_function_call('get_mm_cost', array($plain, &$result)); }
+function get_mm_cost($plain = false) { $result = null; return sn_function_call('get_mm_cost', array($plain, &$result)); }
 
 function sn_get_mm_cost($plain = false, &$result) {
   return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : 20000;
@@ -247,7 +264,7 @@ function market_get_autoconvert_cost() {
   return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
 }
 
-function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) { return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result)); }
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) { $result = null; return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result)); }
 
 function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
   global $sn_powerup_buy_discounts;
@@ -416,20 +433,19 @@ function getLocationFromContext($context = []) {
 
 // MAIL ----------------------------------------------------------------------------------------------------------------
 function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
-  global $config, $lang;
-
   $from = trim($from ? $from : classSupernova::$config->game_adminEmail);
 
   $head = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain') . "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: {classSupernova::$config->game_adminEmail} \r\n";
+  $head .= "Return-Path: " . classSupernova::$config->game_adminEmail . " \r\n";
   $head .= "From: {$from} \r\n";
   $head .= "Sender: {$from} \r\n";
   $head .= "Reply-To: {$from} \r\n";
-  $head .= "Organization: {$org} \r\n";
+//  $head .= "Organization: {$org} \r\n";
   $head .= "X-Sender: {$from} \r\n";
   $head .= "X-Priority: 3 \r\n";
+
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
 

@@ -95,6 +95,8 @@ class userOptions extends oldArrayAccessNd {
     PLAYER_OPTION_TUTORIAL_FINISHED => 0,
 
     PLAYER_OPTION_QUEST_LIST_FILTER => QUEST_STATUS_ALL,
+
+    PLAYER_OPTION_LOGIN_REWARDED_LAST => '2000-01-01',
   );
 
   public $data = array(); // Container // TODO - make protected
@@ -137,7 +139,7 @@ class userOptions extends oldArrayAccessNd {
         $this->to_write[$key] = "({$this->user_id}, '" . db_escape($key) . "', '" . db_escape($value) . "')";
       }
 
-      doquery("REPLACE INTO {{player_options}} (`player_id`, `option_id`, `value`) VALUES " . implode(',', $this->to_write));
+      doquery("REPLACE INTO `{{player_options}}` (`player_id`, `option_id`, `value`) VALUES " . implode(',', $this->to_write));
 
       $this->to_write = array();
       $update_cache = true;
@@ -148,7 +150,7 @@ class userOptions extends oldArrayAccessNd {
         $value = is_string($key) ? "'". db_escape($key) . "'" : $key;
       }
 
-      doquery("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
+      doquery("DELETE FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
 
       $this->to_delete = array();
       $update_cache = true;

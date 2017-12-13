@@ -55,4 +55,29 @@ class General {
     return $this->getGroupsByName($groupIdList);
   }
 
+  /**
+   * Is player qualified as "noob" aka "New Inexpirienced player"
+   *
+   * @param float $playerTotalPoints
+   *
+   * @return bool
+   */
+  public function playerIsNoobByPoints($playerTotalPoints) {
+    return $playerTotalPoints <= $this->gc->config->game_noob_points * game_resource_multiplier(true);
+  }
+
+  /**
+   * Is player 1 stronger then player 2 counting game noob factor?
+   *
+   * @param float $player1TotalPoints
+   * @param float $player2TotalPoints
+   *
+   * @return bool
+   */
+  public function playerIs1stStrongerThen2nd($player1TotalPoints, $player2TotalPoints) {
+    $gameNoobFactor = $this->gc->config->game_noob_factor;
+
+    return $gameNoobFactor && $player1TotalPoints > $player2TotalPoints * $gameNoobFactor;
+  }
+
 }
