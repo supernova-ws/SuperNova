@@ -283,6 +283,15 @@ function sn_display($page, $title = '') {
     displayP($page_item);
   }
 
+  if(is_array($template_result[TEMPLATE_EXTRA_ARRAY]) && !empty($template_result[TEMPLATE_EXTRA_ARRAY])) {
+    foreach($template_result[TEMPLATE_EXTRA_ARRAY] as $extraName => $extraTemplate) {
+      /**
+       * @var template $extraTemplate
+       */
+      displayP($extraTemplate);
+    }
+  }
+
   // Global footer
   if ($isRenderGlobal) {
     renderFooter();
