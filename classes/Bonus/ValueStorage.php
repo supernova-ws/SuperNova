@@ -60,6 +60,22 @@ class ValueStorage extends ContainerPlus {
     $this[UNIT_SERVER_SPEED_EXPEDITION] = function (ValueStorage $vs) {
       return new ValueBonused(UNIT_SERVER_SPEED_EXPEDITION, floatval(1));
     };
+
+    $this[UNIT_SERVER_FLEET_NOOB_POINTS] = function (ValueStorage $vs) {
+      $config = $vs->getGlobalContainer()->config;
+
+      return new ValueBonused(
+        UNIT_SERVER_FLEET_NOOB_POINTS,
+        floatval($config->game_noob_points * $vs->getBase(UNIT_SERVER_SPEED_MINING))
+      );
+    };
+    $this[UNIT_SERVER_FLEET_NOOB_FACTOR] = function (ValueStorage $vs) {
+      return new ValueBonused(UNIT_SERVER_FLEET_NOOB_FACTOR, floatval($vs->getGlobalContainer()->config->game_noob_factor));
+    };
+
+    $this[UNIT_SERVER_PAYMENT_MM_PER_CURRENCY] = function (ValueStorage $vs) {
+      return new ValueBonused(UNIT_SERVER_PAYMENT_MM_PER_CURRENCY, floatval($vs->getGlobalContainer()->config->payment_currency_exchange_mm_));
+    };
   }
 
   /**

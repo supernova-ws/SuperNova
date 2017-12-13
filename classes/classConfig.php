@@ -58,7 +58,23 @@
  * @property int        $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
  * @property int        $menu_server_logo_disabled    => 0
  *
+ * @property string     $payment_currency_default      => 'USD',
+ * @property float      $payment_currency_exchange_dm_ => 20000,
+ * @property float      $payment_currency_exchange_mm_ => 20000,
+ * @property float      $payment_currency_exchange_eur => 0.90,
+ * @property float      $payment_currency_exchange_rub => 60,
+ * @property float      $payment_currency_exchange_uah => 30,
+ * @property float      $payment_currency_exchange_usd => 1,
+ * @property float      $payment_currency_exchange_wmb => 18000,
+ * @property float      $payment_currency_exchange_wme => 0.9,
+ * @property float      $payment_currency_exchange_wmr => 60,
+ * @property float      $payment_currency_exchange_wmu => 30,
+ * @property float      $payment_currency_exchange_wmz => 1,
+ *
  * @property int|float  $player_metamatter_immortal   => 200000, // MM amount to reward account with Immortal status
+ *
+ * @property string     $player_levels                => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
+ * @property string     $player_levels_calculated     => '2000-01-01 00:00:00', // Date and time where player level was calculated last
  *
  * @property int        $quest_total                  => 0, // Total number of quests
  *
@@ -252,8 +268,11 @@ class classConfig extends classPersistent {
 
     'player_metamatter_immortal' => 200000, // MM amount to reward account with Immortal status
 
+    'player_levels'            => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
+    'player_levels_calculated' => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+
     // Quests
-    'quest_total'                => 0, // Total number of quests
+    'quest_total'              => 0, // Total number of quests
 
     'resource_multiplier'     => 1,
 

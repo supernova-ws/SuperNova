@@ -13,8 +13,15 @@ use \Common\GlobalContainer;
  *
  */
 class General {
-
+  /**
+   * @var GlobalContainer $gc
+   */
   protected $gc;
+
+  /**
+   * @var \Bonus\ValueStorage $valueStorage
+   */
+  protected $valueStorage;
 
   /**
    * General constructor.
@@ -23,6 +30,7 @@ class General {
    */
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
+    $this->valueStorage = $this->gc->valueStorage;
   }
 
   /**
@@ -56,6 +64,13 @@ class General {
   }
 
   /**
+   * @return float|int
+   */
+  public function fleetNoobPoints() {
+    return $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_POINTS) * game_resource_multiplier(true);
+  }
+
+  /**
    * Is player qualified as "noob" aka "New Inexpirienced player"
    *
    * @param float $playerTotalPoints
@@ -63,7 +78,7 @@ class General {
    * @return bool
    */
   public function playerIsNoobByPoints($playerTotalPoints) {
-    return $playerTotalPoints <= $this->gc->config->game_noob_points * game_resource_multiplier(true);
+    return $playerTotalPoints <= $this->fleetNoobPoints();
   }
 
   /**
@@ -75,7 +90,7 @@ class General {
    * @return bool
    */
   public function playerIs1stStrongerThen2nd($player1TotalPoints, $player2TotalPoints) {
-    $gameNoobFactor = $this->gc->config->game_noob_factor;
+    $gameNoobFactor = $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
 
     return $gameNoobFactor && $player1TotalPoints > $player2TotalPoints * $gameNoobFactor;
   }

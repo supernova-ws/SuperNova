@@ -143,3 +143,12 @@ function str_raw2unsafe($raw) {
 function ip2longu($ip) {
   return sprintf('%u', floatval(ip2long($ip)));
 }
+
+/**
+ * @param int $fullDate
+ *
+ * @return int
+ */
+function datePart($fullDate) {
+  return (int)strtotime(date('Y-m-d', $fullDate));
+}

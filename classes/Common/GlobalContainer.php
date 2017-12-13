@@ -11,6 +11,7 @@ use \Core\Watchdog;
 use \Core\Repository;
 use \Event\EventBus;
 use \Meta\Economic\EconomicHelper;
+use Player\PlayerLevelHelper;
 
 
 /**
@@ -19,34 +20,36 @@ use \Meta\Economic\EconomicHelper;
  * Used to describe internal structures of container
  *
  * Variables ------------------------------------------------------------------------------------------------------------
- * @property string           $cachePrefix
+ * @property string            $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
- * @property \debug           $debug
- * @property \db_mysql        $db
- * @property \classCache      $cache
- * @property \classConfig     $config
- * @property \Core\Repository $repository
- * @property \Storage         $storage
- * @property \Design          $design
- * @property \BBCodeParser    $bbCodeParser
- * @property \FleetDispatcher $fleetDispatcher
- * @property Watchdog         $watchdog
- * @property EventBus         $eventBus
+ * @property \debug            $debug
+ * @property \db_mysql         $db
+ * @property \classCache       $cache
+ * @property \classConfig      $config
+ * @property \Core\Repository  $repository
+ * @property \Storage          $storage
+ * @property \Design           $design
+ * @property \BBCodeParser     $bbCodeParser
+ * @property \FleetDispatcher  $fleetDispatcher
+ * @property Watchdog          $watchdog
+ * @property EventBus          $eventBus
  *
- * @property ValueStorage     $valueStorage
- * @property BonusCatalog     $bonusCatalog
+ * @property ValueStorage      $valueStorage
+ * @property BonusCatalog      $bonusCatalog
  *
- * @property General          $general
- * @property EconomicHelper   $economicHelper
+ * @property General           $general
+ * @property EconomicHelper    $economicHelper
+ *
+ * @property PlayerLevelHelper $playerLevelHelper
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
- * @property \TheUser         $theUser
+ * @property \TheUser          $theUser
  *
  * Models --------------------------------------------------------------------------------------------------------------
- * @property \TextModel       $textModel
- * @property string           $skinEntityClass
- * @property \SkinModel       $skinModel
+ * @property \TextModel        $textModel
+ * @property string            $skinEntityClass
+ * @property \SkinModel        $skinModel
  *
  * @package Common
  *
@@ -145,6 +148,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->economicHelper = function (GlobalContainer $gc) {
       return new EconomicHelper($gc);
+    };
+
+    $gc->playerLevelHelper = function (GlobalContainer $gc) {
+      return new PlayerLevelHelper($gc);
     };
 
     // Dummy objects ---------------------------------------------------------------------------------------------------

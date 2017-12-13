@@ -128,7 +128,7 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
  *
  * @return \Fleet\MissionExplore
  */
-function flt_mission_explore_addon_object($result){return sn_function_call('flt_mission_explore_addon_object', [$result]);}
+function flt_mission_explore_addon_object($result) { return sn_function_call('flt_mission_explore_addon_object', [$result]); }
 
 /**
  * @param \Fleet\MissionExplore $result
@@ -176,27 +176,54 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = fa
 }
 
 
-// GLOBAL DATA FUNCTIONS ----------------------------------------------------------------------------------------------------------------
+// GLOBAL DATA FUNCTIONS -----------------------------------------------------------------------------------------------
+/**
+ * Simple wrapper to get base or calculated value for supplied unitSnId
+ *
+ * @param int  $unitSnId
+ * @param bool $plain
+ *
+ * @return float|int
+ */
+function getValueFromStorage($unitSnId, $plain = false) {
+  $valueObject = classSupernova::$gc->valueStorage->getValueObject($unitSnId);
+
+  return $plain ? $valueObject->base : $valueObject->getValue();
+}
+
+/**
+ * Get game resource multiplier aka mining speed
+ *
+ * @param bool $plain
+ *
+ * @return float|int
+ */
 function game_resource_multiplier($plain = false) {
-  $vs = classSupernova::$gc->valueStorage;
-  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_MINING);
-
-  return $plain ? $valueObject->base : $valueObject->getValue();
+  return getValueFromStorage(UNIT_SERVER_SPEED_MINING, $plain);
 }
 
+/**
+ * Get game speed aka manufacturing speed
+ *
+ * @param bool $plain
+ *
+ * @return float|int
+ */
 function get_game_speed($plain = false) {
-  $vs = classSupernova::$gc->valueStorage;
-  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_BUILDING);
-
-  return $plain ? $valueObject->base : $valueObject->getValue();
+  return getValueFromStorage(UNIT_SERVER_SPEED_BUILDING, $plain);
 }
 
+/**
+ * Get fleet flying speed aka... hmph... fleet flying speed
+ *
+ * @param bool $plain
+ *
+ * @return float|int
+ */
 function flt_server_flight_speed_multiplier($plain = false) {
-  $vs = classSupernova::$gc->valueStorage;
-  $valueObject = $vs->getValueObject(UNIT_SERVER_SPEED_FLEET);
-
-  return $plain ? $valueObject->base : $valueObject->getValue();
+  return getValueFromStorage(UNIT_SERVER_SPEED_FLEET, $plain);
 }
+
 
 /**
  * Получение стоимости ММ в валюте сервера
@@ -205,7 +232,11 @@ function flt_server_flight_speed_multiplier($plain = false) {
  *
  * @return mixed
  */
-function get_mm_cost($plain = false) { $result = null; return sn_function_call('get_mm_cost', array($plain, &$result)); }
+function get_mm_cost($plain = false) {
+  $result = null;
+
+  return sn_function_call('get_mm_cost', array($plain, &$result));
+}
 
 function sn_get_mm_cost($plain = false, &$result) {
   return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : 20000;
@@ -264,7 +295,11 @@ function market_get_autoconvert_cost() {
   return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
 }
 
-function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) { $result = null; return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result)); }
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) {
+  $result = null;
+
+  return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result));
+}
 
 function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
   global $sn_powerup_buy_discounts;
