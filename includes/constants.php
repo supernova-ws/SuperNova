@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a10.2');
+define('SN_VERSION', '43a10.6');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1095,6 +1095,17 @@ define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_DIAMOND', 2322); // День Рожд�
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_3RD', 2323); // Лучший Гость - День Рождения СН - 2016
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_2ND', 2324); // Лучший Гость - День Рождения СН - 2016
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_1ST', 2325); // Лучший Гость - День Рождения СН - 2016
+
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_SIMPLE', 2326); // СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BRONZE', 2327); // СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_SILVER', 2328); // СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_GOLD',   2329); // СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_PLATINUM', 2330); // СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_DIAMOND', 2331); // СуперНовый Год - 2018
+
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_1ST', 2332); // Лучший Гость - СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_2ND', 2333); // Лучший Гость - СуперНовый Год - 2018
+define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_3RD', 2334); // Лучший Гость - СуперНовый Год - 2018
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
