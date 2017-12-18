@@ -1,5 +1,16 @@
 <h1>{PAGE_HEADER}</h1>
 
+<!-- IF ANNOUNCE_ID && MODE == '' -->
+<h2><a class="link" href="announce.php">{L_news_all}</a></h2>
+<!-- ENDIF -->
+
+<!-- IF (MODE == 'edit' || MODE == 'copy') && ANNOUNCE_ID != 0 -->
+<!-- DEFINE $HIDE_NEWS_ADD_FORM = '' -->
+<!-- ELSE -->
+<!-- DEFINE $HIDE_NEWS_ADD_FORM = 'display: none;' -->
+<input type="button" value="{L_news_add}" id="js_news_show_add_form" />
+<!-- ENDIF -->
+
 <!-- IF AUTHLEVEL >= 3 -->
 <script type="text/javascript">
   $(document).on('click', '#js_news_show_add_form', function () {
@@ -8,9 +19,7 @@
   });
 </script>
 
-<input type="button" value="{L_news_add}" id="js_news_show_add_form"/>
-
-<div id="js_news_add_form" style="display: none;">
+<div id="js_news_add_form" style="{$HIDE_NEWS_ADD_FORM}">
   <br>
   <form action="announce.php" method="post" name="fForm">
     <table width="519">

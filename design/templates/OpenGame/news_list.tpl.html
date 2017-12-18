@@ -5,14 +5,21 @@
 <!-- BEGIN announces -->
   <tr>
     <td>
-      <div class="news_header">
-        <div class="news_date fl"><!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->{announces.TIME}</div>
+      <div class="news_header contFJ">
+        <div class="news_date">
+          <!-- IF announces.FUTURE -->
+          <span class="news_future">{L_news_future}</span>&nbsp;
+          <!-- ELSEIF announces.NEW -->
+          <span class="news_fresh">{L_news_new}</span>&nbsp;
+          <!-- ENDIF -->
+          <a class="link" href="announce.php?id={announces.ID}">{announces.TIME}</a>
+        </div>
+
         <!-- IF announces.USER_NAME -->
-          <div class="news_publisher fr">
-            {announces.USER_NAME}
-          </div>
+        <div class="news_publisher">
+          {announces.USER_NAME}
+        </div>
         <!-- ENDIF -->
-        <br />
       </div>
       <div class="news_text">
 

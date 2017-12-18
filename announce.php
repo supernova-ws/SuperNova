@@ -85,9 +85,19 @@ if ($user['authlevel'] >= 3) {
         $survey_answers = implode("\r\n", $survey_answers);
       }
     break;
+
+    default:
+      if ($announce_id) {
+        $annQuery = "WHERE `idAnnounce` = {$announce_id}";
+      }
+    break;
   }
 } else {
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`) <= ' . SN_TIME_NOW;
+
+  if ($announce_id) {
+    $annQuery .= " AND `idAnnounce` = {$announce_id}";
+  }
 }
 
 nws_render($template, $annQuery, 20);
@@ -96,6 +106,7 @@ $template->assign_vars(array(
   'PAGE_HEADER'     => $lang['news_title'],
   'AUTHLEVEL'       => $user['authlevel'],
   'MODE'            => $mode,
+  'ANNOUNCE_ID'     => $announce_id,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
   'DETAIL_URL'      => $announce['detail_url'],
