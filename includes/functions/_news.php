@@ -1,5 +1,8 @@
 <?php
 
+use DBAL\DbSqlPaging;
+use Helpers\PagingRenderer;
+
 /**
  * @param template $template
  * @param string $query_where
@@ -11,19 +14,20 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
    */
   global $config, $user;
 
-  $announce_list = doquery(
-    "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
+  $sqlText = "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
     FROM
-      {{announce}} AS a
-      LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
-      LEFT JOIN {{users}} AS u ON u.id = a.user_id
+      `{{announce}}` AS a
+      LEFT JOIN `{{survey}}` AS s ON s.survey_announce_id = a.idAnnounce
+      LEFT JOIN `{{users}}` AS u ON u.id = a.user_id
     {$query_where}
-    ORDER BY `tsTimeStamp` DESC, idAnnounce" .
-    ($query_limit ? " LIMIT {$query_limit}" : ''));
-  $template->assign_var('NEWS_COUNT', db_num_rows($announce_list));
+    ORDER BY `tsTimeStamp` DESC, idAnnounce"
+  ;
+
+  $announce_list = new DbSqlPaging($sqlText, $query_limit, sys_get_param_int(PagingRenderer::KEYWORD));
+  $pager = new PagingRenderer($announce_list, 'announce.php');
 
   $users = array();
-  while($announce = db_fetch($announce_list)) {
+  foreach($announce_list as $announce) {
     if($announce['user_id'] && !isset($users[$announce['user_id']])) {
       $users[$announce['user_id']] = db_user_by_id($announce['user_id']);
     }
@@ -101,6 +105,11 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       ));
     }
   }
+
+  $template->assign_vars([
+    'PAGER_MESSAGES' => $pager ? $pager->render() : '',
+    'NEWS_COUNT'     => HelperString::numberFloorAndFormat($announce_list->getTotalRecords()),
+  ]);
 }
 
 function nws_mark_read(&$user) {

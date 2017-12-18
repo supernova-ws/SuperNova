@@ -93,8 +93,8 @@ if ($user['authlevel'] >= 3) {
 nws_render($template, $annQuery, 20);
 
 $template->assign_vars(array(
+  'PAGE_HEADER'     => $lang['news_title'],
   'AUTHLEVEL'       => $user['authlevel'],
-//  'total'           => db_num_rows($allAnnounces),
   'MODE'            => $mode,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
@@ -102,6 +102,7 @@ $template->assign_vars(array(
   'SURVEY_QUESTION' => $announce['survey_question'],
   'SURVEY_UNTIL'    => $announce['survey_until'],
   'SURVEY_ANSWERS'  => $survey_answers,
+
 ));
 
 display($template, $lang['news_title']);

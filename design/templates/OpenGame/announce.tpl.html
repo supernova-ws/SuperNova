@@ -1,4 +1,16 @@
+<h1>{PAGE_HEADER}</h1>
+
 <!-- IF AUTHLEVEL >= 3 -->
+<script type="text/javascript">
+  $(document).on('click', '#js_news_show_add_form', function () {
+    $(this).hide();
+    $("#js_news_add_form").show();
+  });
+</script>
+
+<input type="button" value="{L_news_add}" id="js_news_show_add_form"/>
+
+<div id="js_news_add_form" style="display: none;">
   <br>
   <form action="announce.php" method="post" name="fForm">
     <table width="519">
@@ -51,10 +63,29 @@
       </tr>
     </table>
   </form>
+</div>
 <!-- ENDIF -->
+
 <br>
 <table width="519">
-  <tr><td class="c" colspan="<!-- IF AUTHLEVEL >= 3 -->5<!-- ELSE -->2<!-- ENDIF -->"><div class="fl">{L_news_title}</div><div class="fr">{L_news_total} {NEWS_COUNT}</div></td></tr>
+  <!-- IF .announces && PAGER_MESSAGES -->
+  <tr class="c_c">
+    <td class="subheader">
+      {PAGER_MESSAGES}
+    </td>
+  </tr>
+  <!-- ENDIF -->
+
+  <tr><td class="c"><div class="fl">{L_news_title}</div><div class="fr">{L_news_total} {NEWS_COUNT}</div></td></tr>
   <!-- DEFINE $NEWS_FULL = true -->
   <!-- INCLUDE news_list -->
+
+  <!-- IF .announces && PAGER_MESSAGES -->
+  <tr class="c_c">
+    <td class="subheader">
+      {PAGER_MESSAGES}
+    </td>
+  </tr>
+  <!-- ENDIF -->
 </table>
+<br>

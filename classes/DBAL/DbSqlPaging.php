@@ -63,8 +63,22 @@ class DbSqlPaging extends DbAbstractResultIterator {
     }
   }
 
+  /**
+   * Get current page number
+   *
+   * @return int
+   */
   public function getCurrentPageNumber() {
     return $this->currentPage;
+  }
+
+  /**
+   * Get total number of records in query
+   *
+   * @return int
+   */
+  public function getTotalRecords() {
+    return $this->mysqli_result instanceof mysqli_result ? $this->mysqli_result->num_rows : 0;
   }
 
   /**
@@ -73,7 +87,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * @return float|int
    */
   public function getTotalPages() {
-    return $this->mysqli_result instanceof mysqli_result ? ceil($this->mysqli_result->num_rows / $this->pageSize) : 0;
+    return $this->mysqli_result instanceof mysqli_result ? ceil($this->getTotalRecords() / $this->pageSize) : 0;
   }
 
   /**
@@ -82,7 +96,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * @return int
    */
   public function getRecordsOnCurrentPage() {
-    return min($this->pageSize, $this->mysqli_result->num_rows - $this->getPageZeroRecordNum());
+    return min($this->pageSize, $this->getTotalRecords() - $this->getPageZeroRecordNum());
   }
 
   /**
