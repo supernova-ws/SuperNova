@@ -1342,6 +1342,10 @@ $sn_data_bbCodes = array(
   AUTH_LEVEL_REGISTERED => array(
     // Prefix sn:// resolves to current server URL
     '#sn://#isU'                                                                        => SN_ROOT_VIRTUAL,
+    // news://ID resolves to news BBCode
+    '#news:\/\/(\d+)#is'                                                                => "[news=$1]",
+    // [news=ID] resolves to link to news
+    '#\[news\=(\d+)\]#is'                                                               => "<a href=\"announce.php?id=$1\" class=\"link zero\">news://$1</a>",
     // [ube=ID] resolves to link to battle report
     '#\[ube\=([0-9a-zA-Z]{32})\]#isU'                                                   => "<a href=\"index.php?page=battle_report&cypher=$1\"><span class=\"battle_report_link link\">($1)</span></a>",
     // Battle report's URL from current server also resolves to special link

@@ -93,12 +93,12 @@ function sn_options_model() {
     if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       // проверка на корректность
       sn_db_transaction_start();
-      $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+      $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
       if(!$name_check || $name_check['player_id'] == $user['id']) {
         $user = db_user_by_id($user['id'], true);
         switch($config->game_user_changename) {
           case SERVER_PLAYER_NAME_CHANGE_PAY:
-            if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < $config->game_user_changename_cost) {
+            if(mrc_get_level($user, [], RES_DARK_MATTER) < $config->game_user_changename_cost) {
               $template_result['.']['result'][] = array(
                 'STATUS'  => ERR_ERROR,
                 'MESSAGE' => $lang['opt_msg_name_change_err_no_dm'],
