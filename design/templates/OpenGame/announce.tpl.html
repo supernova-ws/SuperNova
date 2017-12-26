@@ -4,6 +4,8 @@
 <h2><a class="link" href="announce.php">{L_news_all}</a></h2>
 <!-- ENDIF -->
 
+<!-- IF AUTHLEVEL >= 3 -->
+
 <!-- IF (MODE == 'edit' || MODE == 'copy') && ANNOUNCE_ID != 0 -->
 <!-- DEFINE $HIDE_NEWS_ADD_FORM = '' -->
 <!-- ELSE -->
@@ -11,7 +13,6 @@
 <input type="button" value="{L_news_add}" id="js_news_show_add_form" />
 <!-- ENDIF -->
 
-<!-- IF AUTHLEVEL >= 3 -->
 <script type="text/javascript">
   $(document).on('click', '#js_news_show_add_form', function () {
     $(this).hide();
