@@ -297,16 +297,16 @@ class MissionExplore extends MissionData {
     $this->fillOutcomes();
     $this->randomizeOutcome();
 
-    $this->randomValue = 7; // TODO - REMOVE DEBUG!!!!!!!!!!!!!!!!
+//    $this->randomValue = 7; // TODO - REMOVE DEBUG!!!!!!!!!!!!!!!!
 
     $this->getOutcomeInfo();
     $this->getSecondaryOutcome();
 
-    var_dump($this->randomValue);
-    var_dump($this->outcomeType);
-    var_dump($this->outcomeInfo);
-    var_dump($this->secondaryPercent);
-    var_dump($this->outcomeInfo);
+//    var_dump($this->randomValue);
+//    var_dump($this->outcomeType);
+//    var_dump($this->outcomeInfo);
+//    var_dump($this->secondaryPercent);
+//    var_dump($this->outcomeInfo);
 //    var_dump($this->possibleOutcomes);
 //    return;
 
