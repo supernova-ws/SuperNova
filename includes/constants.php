@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a10.23');
+define('SN_VERSION', '43a11.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -970,6 +970,9 @@ define('MRC_TECHNOLOGIST', 601); // OK MODIFIER
 define('MRC_ENGINEER', 605);
 define('MRC_FORTIFIER', 608);
 
+define('UNIT_GOVERNOR_PRIMARY', 695);
+define('UNIT_GOVERNOR_SECONDARY', 696);
+
 // Bonus category
 define('BONUS_SERVER', 0);
 define('BONUS_MERCENARY', UNIT_MERCENARIES); // DO NOT MOVE ABOVE MERCENARIES SECTION!
@@ -1741,6 +1744,7 @@ define('HTML_ENCODE_PREFORM', 1); // perform HTML encoding
 define('HTML_ENCODE_NL2BR', 2); // should line breaks be converted to <br />
 define('HTML_ENCODE_STRIP_HTML', 4); // should HTML be cut from text
 define('HTML_ENCODE_JS_SAFE', 8); // should be string encoded for use in JavaScript
+define('HTML_ENCODE_SPACE', 16); // should be spaces replaced with $nbsp;
 
 define('HTML_ENCODE_MULTILINE', HTML_ENCODE_PREFORM | HTML_ENCODE_NL2BR);
 define('HTML_ENCODE_MULTILINE_JS', HTML_ENCODE_MULTILINE | HTML_ENCODE_JS_SAFE);

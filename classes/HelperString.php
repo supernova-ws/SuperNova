@@ -22,6 +22,7 @@ class HelperString {
     $params & HTML_ENCODE_PREFORM ? $string = self::htmlSafe($string) : false;
     $params & HTML_ENCODE_NL2BR ? $string = self::nl2br($string) : false;
     $params & HTML_ENCODE_JS_SAFE ? $string = self::jsSafe($string) : false;
+    $params & HTML_ENCODE_SPACE ? $string = self::space2nbsp($string) : false;
 
     return $string;
   }
@@ -54,6 +55,15 @@ class HelperString {
    */
   public static function jsSafe($string) {
     return str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string));
+  }
+
+  /**
+   * @param $string
+   *
+   * @return mixed
+   */
+  public static function space2nbsp($string) {
+    return str_replace(' ', '&nbsp;', $string);
   }
 
   protected function explodeCallable(&$string) {

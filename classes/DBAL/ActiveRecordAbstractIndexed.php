@@ -5,7 +5,13 @@
 
 namespace DBAL;
 
-
+/**
+ * Class ActiveRecordAbstractIndexed
+ * @package DBAL
+ *
+ * @property int|string $id - Record ID name would be normalized to 'id'
+ *
+ */
 class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
   const ID_PROPERTY_NAME = 'id';
 

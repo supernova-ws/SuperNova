@@ -156,42 +156,10 @@ switch ($mode = sys_get_param_str('mode')) {
       } else {
         messageBox(classSupernova::$lang['ov_delete_wrong_pass'], classSupernova::$lang['colony_abandon'], 'overview.php?mode=manage');
       }
-    } elseif (
-      ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))
-      && (
-        !get_unit_param($hire, P_MAX_STACK) ||
-        ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
-        (
-          $planetrow['PLANET_GOVERNOR_ID'] == $hire &&
-          $planetrow['PLANET_GOVERNOR_LEVEL'] < get_unit_param($hire, P_MAX_STACK)
-        )
-      )
-    ) {
-      sn_db_transaction_start();
-      $user = db_user_by_id($user['id'], true);
-      $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
-      $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
-      if ($build_data['CAN'][BUILD_CREATE]) {
-        if ($planetrow['PLANET_GOVERNOR_ID'] == $hire) {
-          $planetrow['PLANET_GOVERNOR_LEVEL']++;
-          $query = '`PLANET_GOVERNOR_LEVEL` + 1';
-        } else {
-          $planetrow['PLANET_GOVERNOR_LEVEL'] = 1;
-          $planetrow['PLANET_GOVERNOR_ID'] = $hire;
-          $query = '1';
-        }
-        DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
-        rpg_points_change(
-          $user['id'],
-          RPG_GOVERNOR,
-          -$build_data[BUILD_CREATE][RES_DARK_MATTER],
-          sprintf(classSupernova::$lang['ov_governor_purchase'], classSupernova::$lang['tech'][$hire], $hire, $planetrow['PLANET_GOVERNOR_LEVEL'], uni_render_planet_full($planetrow, '', false, true))
-        );
+    } elseif (($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))) {
+      $planet = new \Planet\Planet($planetrow['id']);
+      $planet->governorHire($hire);
 
-        //  => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
-        // die();
-      }
-      sn_db_transaction_commit();
       sys_redirect('overview.php?mode=manage');
       die();
     }

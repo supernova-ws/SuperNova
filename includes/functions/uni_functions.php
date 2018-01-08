@@ -312,7 +312,42 @@ function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include
     $from_planet_type = ($from_planet_type ? ' ' . $lang['sys_planet_type_sh'][$from_planet_type] : '');
 
     $result = $from_planet_id . uni_render_coordinates($from, $prefix) . $from_planet_type . ($from['name'] ? ' ' . $from['name'] : '');
-    $result = $html_safe ? str_replace(' ', '&nbsp;', htmlentities($result, ENT_COMPAT, 'UTF-8')) : $result;
+    $result = $html_safe ? HelperString::htmlEncode($result, HTML_ENCODE_PREFORM | HTML_ENCODE_SPACE) : $result;
+  }
+
+  return $result;
+}
+
+/**
+ * @param \Planet\Planet $from
+ *
+ * @return string
+ */
+function uni_render_coordinates_planet_object($from) {
+  return is_object($from) ? "[{$from->galaxy}:{$from->system}:{$from->planet}]" : '[-:-:-]';
+}
+
+
+/**
+ * @param \Planet\Planet $from
+ * @param bool           $html_safe
+ * @param bool           $include_id
+ *
+ * @return mixed|null|string
+ */
+function uni_render_planet_object_full($from, $html_safe = true, $include_id = false) {
+  if (empty($from->id)) {
+    $result = classSupernova::$lang['sys_planet_expedition'];
+  } else {
+    $from_planet_id = $include_id ? (
+      'ID {' . ($from->id ? $from->id : 0) . '} '
+    ) : '';
+
+    $from_planet_type = isset($from->planet_type) ? $from->planet_type : 0;
+    $from_planet_type = ($from_planet_type ? ' ' . classSupernova::$lang['sys_planet_type_sh'][$from_planet_type] : '');
+
+    $result = $from_planet_id . uni_render_coordinates_planet_object($from) . $from_planet_type . (isset($from->name) ? ' ' . $from->name : '');
+    $result = $html_safe ? HelperString::htmlEncode($result, HTML_ENCODE_PREFORM | HTML_ENCODE_SPACE) : $result;
   }
 
   return $result;

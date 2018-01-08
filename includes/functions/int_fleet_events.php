@@ -130,6 +130,10 @@ function flt_register_fleet_event($fleet, $ov_label, $planet_end_type)
   return tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
 }
 
+/**
+ * @param array    $planetrow
+ * @param template $template
+ */
 function int_planet_pretemplate($planetrow, &$template)
 {
   global $lang, $user;
