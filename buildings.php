@@ -32,7 +32,8 @@ if($building_sort = sys_get_param_id('sort_elements')) {
 lng_include('buildings');
 lng_include('infos');
 
-sn_sys_sector_buy('buildings.php?mode=' . $mode);
+$planet = new \Planet\Planet($planetrow['id']);
+$planet->sn_sys_sector_buy('buildings.php?mode=' . $mode);
 
 require_once('includes/includes/eco_bld_structures.php');
 switch ($mode) {

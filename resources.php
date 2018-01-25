@@ -53,10 +53,10 @@ function int_calc_storage_bar($resource_id, $capsObj)
 $ValidList['percent'] = array (  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100 );
 $template = gettemplate('resources', true);
 
-$transmutation_result = sn_sys_planet_core_transmute($user, $planetrow);
-if(!empty($transmutation_result))
-{
-  $template->assign_block_vars('result', $transmutation_result); // array('STATUS' => $transmutation_result['STATUS'], 'MESSAGE' => $transmutation_result['MESSAGE']));
+$planet = new \Planet\Planet($planetrow['id']);
+if(!empty($transmutation_result = $planet->sn_sys_planet_core_transmute($user))) {
+  $template->assign_block_vars('result', $transmutation_result);
+  $planet = new \Planet\Planet($planetrow['id']);
 }
 
 $sn_group_factories = sn_get_groups('factories');
@@ -141,10 +141,10 @@ foreach($sn_group_factories as $unit_id)
   }
 }
 
+
 $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-$planet_density_index = $planetrow['density_index'];
-$density_price_chart = planet_density_price_chart($planetrow);
-tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
+$planet = new \Planet\Planet($planetrow['id']);
+$template->assign_recursive($planet->tpl_planet_density_info($user_dark_matter));
 
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_total'],
@@ -167,8 +167,6 @@ int_calc_storage_bar(RES_DEUTERIUM, $capsObj);
 $template->assign_vars(array(
  'PLANET_NAME'          => $planetrow['name'],
  'PLANET_TYPE'          => $planetrow['planet_type'],
- 'PLANET_DENSITY_INDEX' => $planet_density_index,
- 'PLANET_CORE_TEXT'     => $lang['uni_planet_density_types'][$planet_density_index],
 
  'PRODUCTION_LEVEL'     => floor($capsObj->efficiency * 100),
 

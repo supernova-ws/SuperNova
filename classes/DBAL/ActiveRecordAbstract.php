@@ -42,6 +42,11 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   protected static $_fieldsToProperties = [];
 
+  /**
+   * @var bool $_forUpdate
+   */
+  protected static $_forUpdate = DbQuery::DB_SHARED;
+
   // AR's service fields
   /**
    * Is this field - new field?
@@ -110,6 +115,15 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   }
 
   /**
+   * Set flag "for update"
+   *
+   * @param bool $forUpdate - DbQuery::DB_FOR_UPDATE | DbQuery::DB_SHARED
+   */
+  public static function setForUpdate($forUpdate = DbQuery::DB_FOR_UPDATE) {
+    static::$_forUpdate = $forUpdate;
+  }
+
+  /**
    * Finds records by property - equivalent of SELECT ... WHERE ... AND ...
    *
    * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
@@ -120,6 +134,11 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     $dbq = static::dbPrepareQuery();
     if (!empty($propertyFilter)) {
       $dbq->setWhereArray(static::translateNames($propertyFilter, static::PROPERTIES_TO_FIELDS));
+    }
+
+    if(static::$_forUpdate == DbQuery::DB_FOR_UPDATE) {
+      $dbq->setForUpdate();
+      static::$_forUpdate = DbQuery::DB_SHARED;
     }
 
     return $dbq->doSelect();

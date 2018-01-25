@@ -34,6 +34,9 @@ class DbQuery {
   const DB_RECORDS_ALL = false;
   const DB_RECORD_ONE = true;
 
+  const DB_SHARED = false;
+  const DB_FOR_UPDATE = true;
+
   /**
    * @var db_mysql $db
    */
@@ -88,6 +91,8 @@ class DbQuery {
 
   protected $isOneRow = false;
 
+  protected $forUpdate = false;
+
   /**
    * DbQuery constructor.
    *
@@ -116,6 +121,7 @@ class DbQuery {
     $this->build[] = " FROM " . $this->quoteTable($this->table);
     $this->buildWhere();
     $this->buildLimit();
+    $this->buildForUpdate();
 
     return $this->__toString();
   }
@@ -238,6 +244,17 @@ class DbQuery {
    */
   public function setOneRow($oneRow = self::DB_RECORD_ONE) {
     $this->isOneRow = $oneRow;
+
+    return $this;
+  }
+
+  /**
+   * @param bool $forUpdate - DB_FOR_UPDATE || DB_SHARED
+   *
+   * @return $this
+   */
+  public function setForUpdate($forUpdate = self::DB_FOR_UPDATE) {
+    $this->forUpdate = $forUpdate;
 
     return $this;
   }
@@ -547,6 +564,11 @@ class DbQuery {
     }
   }
 
+  protected function buildForUpdate() {
+    if ($this->forUpdate == self::DB_FOR_UPDATE) {
+      $this->build[] = ' FOR UPDATE';
+    }
+  }
 
   public function __toString() {
     return implode('', $this->build);

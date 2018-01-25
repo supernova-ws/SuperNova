@@ -210,6 +210,8 @@ function tpl_parse_planet($planet, &$fleets)
   $defense_que = tpl_parse_planet_que($que, $planet, SUBQUE_DEFENSE); // TODO Заменить на que_tpl_parse_element($que_element);
   $defense_que_first = is_array($defense_que['que']) ? reset($defense_que['que']) : array();
 
+  $fleet_list = flt_get_fleets_to_planet($planet);
+
   $result = array(
     'ID'            => $planet['id'],
     'NAME'          => $planet['name'],
@@ -239,7 +241,7 @@ function tpl_parse_planet($planet, &$fleets)
     'FIELDS_MAX'    => eco_planet_fields_max($planet),
     'FILL'          => min(100, floor($planet['field_current'] / eco_planet_fields_max($planet) * 100)),
 
-    'fleet_list'      => $fleet_list = flt_get_fleets_to_planet($planet),
+    'fleet_list'      => $fleet_list,
     'FLEET_OWN'       => $fleet_list['own']['count'],
     'FLEET_ENEMY'     => $fleet_list['enemy']['count'],
     'FLEET_NEUTRAL'   => $fleet_list['neutral']['count'],

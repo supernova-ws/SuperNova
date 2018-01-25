@@ -1007,50 +1007,6 @@ function tpl_get_fleets_flying(&$user) {
 
 /**
  * @param template $template
- * @param array    $planet
- * @param int      $que_type
- *
- * @return int
- */
-function tpl_assign_hangar(&$template, $planet, $que_type) {
-  $que = que_get($planet['id_owner'], $planet['id'], $que_type);
-  $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
-
-  $que_length = 0;
-  if (!empty($que)) {
-    foreach ($que as $que_item) {
-      $template->assign_block_vars('que', que_tpl_parse_element($que_item));
-    }
-    $que_length = count($que);
-  }
-
-  return $que_length;
-}
-
-/**
- * @param template $template
- * @param array    $density_price_chart
- * @param int      $user_dark_matter
- */
-function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
-  global $lang;
-
-  foreach ($density_price_chart as $density_price_index => &$density_price_data) {
-    $density_cost = $density_price_data;
-    $density_price_data = array(
-      'COST'            => $density_cost,
-      'COST_TEXT'       => HelperString::numberFloorAndFormat($density_cost),
-      'COST_TEXT_CLASS' => prettyNumberGetClass($density_cost, $user_dark_matter),
-      'REST'            => $user_dark_matter - $density_cost,
-      'ID'              => $density_price_index,
-      'TEXT'            => $lang['uni_planet_density_types'][$density_price_index],
-    );
-    $template->assign_block_vars('densities', $density_price_data);
-  }
-}
-
-/**
- * @param template $template
  * @param string   $name
  * @param mixed    $values
  */

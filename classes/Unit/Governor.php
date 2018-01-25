@@ -81,8 +81,7 @@ class Governor extends Unit {
       )
     ) {
       $this->addLevel($hireId);
-      $this->planet->dbUpdate();
-//      DBStaticPlanet::db_planet_set_by_id($this->planet->id, "`{$this->typeIdField}` = {$this->id}, `{$this->typeLevelField}` = {$this->level}");
+      $this->planet->update();
     }
     sn_db_transaction_commit();
   }

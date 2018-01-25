@@ -6,6 +6,7 @@
 namespace Deprecated;
 
 use \template;
+use \ResultMessages;
 
 /**
  * Class PageDeprecated
@@ -15,9 +16,14 @@ use \template;
  * @package Deprecated
  */
 class PageDeprecated {
+  /**
+   * @var ResultMessages $resultMessageList
+   */
+  protected $resultMessageList;
+
 
   public function __construct() {
-    $this->resetResultMessages();
+    $this->resultMessageList = new ResultMessages();
   }
 
   protected function loadParams() {
@@ -33,36 +39,31 @@ class PageDeprecated {
 
 
   // TODO - move to separate class
-  /**
-   * @var array[] $resultMessages
-   */
-  protected $resultMessages = [];
 
   /**
-   * @param array $result
+   * @param string $message
+   * @param int    $status
    */
-  protected function addResultMessage($result) {
-    $this->resultMessages[] = $result;
+  protected function resultAdd($message, $status = ERR_NONE) {
+    $this->resultMessageList->add($message, $status);
   }
 
   /**
    * @return int
    */
-  protected function countResultMessages() {
-    return count($this->resultMessages);
+  protected function resultCount() {
+    return count($this->resultMessageList);
   }
 
   /**
    * @param template $template
    */
-  protected function templatizeResultMessages(template $template) {
-    foreach ($this->resultMessages as $error_message) {
-      $template->assign_block_vars('result', $error_message);
-    }
+  protected function resultTemplatize(template $template) {
+    $this->resultMessageList->templateAdd($template);
   }
 
-  protected function resetResultMessages() {
-    $this->resultMessages = [];
+  protected function resultReset() {
+    $this->resultMessageList->reset();
   }
   // TODO - move to separate class
 

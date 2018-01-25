@@ -6,8 +6,9 @@
 namespace Core;
 
 
+use \DBAL\DbQuery;
 use \DBAL\ActiveRecord;
-use Traits\TContainer;
+use \Traits\TContainer;
 
 /**
  * Class EntityDb
@@ -15,6 +16,9 @@ use Traits\TContainer;
  * Represents in-game entity which have representation in DB (aka one or more connected ActiveRecords)
  *
  * @package Core
+ *
+ * @method array asArray() Extracts values as array [$propertyName => $propertyValue] (from ActiveRecord)
+ * @method bool update() Updates DB record(s) in DB (from ActiveRecord)
  */
 class EntityDb extends Entity implements \IContainer {
   use TContainer;
@@ -46,6 +50,18 @@ class EntityDb extends Entity implements \IContainer {
   }
 
   /**
+   * Set flag "for update"
+   *
+   * @param bool $forUpdate - DbQuery::DB_FOR_UPDATE | DbQuery::DB_SHARED
+   */
+  public function setForUpdate($forUpdate = DbQuery::DB_FOR_UPDATE) {
+    $className = $this->_activeClass;
+    $className::setForUpdate($forUpdate);
+
+    return $this;
+  }
+
+  /**
    * @param int|float $id
    *
    * @return ActiveRecord
@@ -62,13 +78,6 @@ class EntityDb extends Entity implements \IContainer {
    */
   public function dbUpdate() {
     $this->_getContainer()->update();
-  }
-
-  /**
-   * @return array
-   */
-  public function asArray() {
-    return $this->_getContainer()->asArray();
   }
 
 }

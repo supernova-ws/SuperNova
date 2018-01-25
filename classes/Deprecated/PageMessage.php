@@ -183,24 +183,24 @@ class PageMessage extends PageDeprecated {
     $this->getRecipientData();
 
     if ($this->recipient_id_unsafe == $this->playerId) {
-      $this->addResultMessage(['MESSAGE' => $this->lang['msg_err_self_send'], 'STATUS' => ERR_ERROR]);
+      $this->resultAdd($this->lang['msg_err_self_send'], ERR_ERROR);
     }
 
     if ($this->doSend) {
       if (empty($this->recipient_id_unsafe)) {
-        $this->addResultMessage(['MESSAGE' => $this->lang['msg_err_player_not_found'], 'STATUS' => ERR_ERROR]);
+        $this->resultAdd($this->lang['msg_err_player_not_found'], ERR_ERROR);
       }
 
       if (!$this->sendText_unsafe) {
-        $this->addResultMessage(['MESSAGE' => $this->lang['msg_err_no_text'], 'STATUS' => ERR_ERROR]);
+        $this->resultAdd($this->lang['msg_err_no_text'], ERR_ERROR);
       }
 
-      if (!$this->countResultMessages()) {
+      if (!$this->resultCount()) {
         $this->wrapSendPm();
 
         $this->sendText_unsafe = '';
 
-        $this->addResultMessage(['MESSAGE' => $this->lang['msg_not_message_sent'], 'STATUS' => ERR_NONE]);
+        $this->resultAdd($this->lang['msg_not_message_sent'], ERR_NONE);
       }
     }
   }
@@ -217,7 +217,7 @@ class PageMessage extends PageDeprecated {
       'TEXT'           => htmlspecialchars($this->sendText_unsafe),
     ]);
 
-    $this->templatizeResultMessages($template);
+    $this->resultTemplatize($template);
 
     $recipientIdSafe = db_escape($this->recipient_id_unsafe);
     $message_query = doquery(

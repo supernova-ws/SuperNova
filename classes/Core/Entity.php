@@ -17,7 +17,6 @@ class Entity {
 
   public function __construct() {
     // Abstract class - just to remember
-    // $this->_activeRecord = new ActiveRecord();
   }
 
 }

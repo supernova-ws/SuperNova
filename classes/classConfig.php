@@ -73,6 +73,10 @@
  *
  * @property int|float  $player_metamatter_immortal   => 200000, // MM amount to reward account with Immortal status
  *
+ * @property int        $planet_capital_cost          => 25000, // Cost in DM to move Capital to current planet
+ * @property int        $planet_teleport_cost         => 50000, // Cost of planet teleportation
+ * @property int        $planet_teleport_timeout      => 86400, // Timeout for next teleportation
+ *
  * @property string     $player_levels                => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
  * @property string     $player_levels_calculated     => '2000-01-01 00:00:00', // Date and time where player level was calculated last
  *
@@ -258,8 +262,9 @@ class classConfig extends classPersistent {
     'payment_lot_price' => 1,     // Lot price in default currency
     'payment_lot_size'  => 2500,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
 
-    'planet_teleport_cost'    => 50000, //
-    'planet_teleport_timeout' => 86400, //
+    'planet_capital_cost'     => 25000, // Cost in DM to move Capital to current planet
+    'planet_teleport_cost'    => 50000, // Cost of planet teleportation
+    'planet_teleport_timeout' => 86400, // Timeout for next teleportation
 
     'player_delete_time'      => 3888000, //
     'player_max_colonies'     => -1, // Max player planet count (NOT including main planet)
