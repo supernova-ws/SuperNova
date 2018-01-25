@@ -57,4 +57,18 @@ class EntityDb extends Entity implements \IContainer {
     return $this->_container;
   }
 
+  /**
+   *
+   */
+  public function dbUpdate() {
+    $this->_getContainer()->update();
+  }
+
+  /**
+   * @return array
+   */
+  public function asArray() {
+    return $this->_getContainer()->asArray();
+  }
+
 }

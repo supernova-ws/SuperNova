@@ -1128,10 +1128,19 @@ MissionExplore.php
 
 [*] Поискать ENT_COMPAT, 'UTF-8 и позаменять на HelperString::htmlSafe()
 
-[*] Поменять PLANET_GOVERNOR_ID и PLANET_GOVERNOR_LEVEL на использование Planet\Planet
+
+
+[*]
+        - Сделать пул Губернаторов
+        - Запаковать старых игроков
+        - Поменять PLANET_GOVERNOR_ID и PLANET_GOVERNOR_LEVEL на использование Planet\Planet
 
 #ctv
 
+
+2018-01-25 05:28:57 43a11.2
+[@] Код
+    Небольшой рефакторинг Губернаторов
 
 
 2018-01-08 16:36:57 43a11.0

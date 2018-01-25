@@ -9,12 +9,12 @@ namespace Unit;
 use \classSupernova;
 use Planet\Planet;
 
-class Governor {
+class Governor extends Unit {
 //  protected $type = UNIT_GOVERNOR_PRIMARY;
 //  protected $typeIdField = 'PLANET_GOVERNOR_ID';
 //  protected $typeLevelField = 'PLANET_GOVERNOR_LEVEL';
 
-  protected $id = 0;
+  protected $snId = 0;
   protected $level = 0;
 
   /**
@@ -41,18 +41,18 @@ class Governor {
     $this->reset();
 
     $this->planet = $planet;
-    $this->getPlanetData();
+    $this->getExternalData();
   }
 
   /**
-   * @param $hireId
+   * @param int $hireId - Hire unit SN ID
    */
   public function hire($hireId) {
     if (!in_array($hireId, sn_get_groups('governors'))) {
       return;
     }
 
-    if ($hireId == $this->id && $this->getMaxLevel() && $this->getMaxLevel() >= $this->getLevel()) {
+    if ($hireId == $this->getSnId() && $this->getMaxLevel() && $this->getMaxLevel() >= $this->getLevel()) {
       return;
     }
 
@@ -62,7 +62,7 @@ class Governor {
 //    $build_data = eco_get_build_data($user, $this->planetRow, $hireId, $this->getId() == $hireId ? $this->getLevel() : 0);
     $this->planet->dbLoadRecord($this->planet->id);
 
-    $build_data = eco_get_build_data($user, $this->planet->_getContainer()->asArray(), $hireId, $this->getId() == $hireId ? $this->getLevel() : 0);
+    $build_data = eco_get_build_data($user, $this->planet->asArray(), $hireId, $this->getSnId() == $hireId ? $this->getLevel() : 0);
     if (
       $build_data['CAN'][BUILD_CREATE]
       &&
@@ -81,7 +81,7 @@ class Governor {
       )
     ) {
       $this->addLevel($hireId);
-      $this->planet->_getContainer()->update();
+      $this->planet->dbUpdate();
 //      DBStaticPlanet::db_planet_set_by_id($this->planet->id, "`{$this->typeIdField}` = {$this->id}, `{$this->typeLevelField}` = {$this->level}");
     }
     sn_db_transaction_commit();
@@ -91,8 +91,8 @@ class Governor {
   /**
    * @return int
    */
-  public function getId() {
-    return $this->id;
+  public function getSnId() {
+    return $this->snId;
   }
 
   /**
@@ -106,22 +106,23 @@ class Governor {
    * @return int
    */
   public function getMaxLevel() {
-    return $this->id ? get_unit_param($this->id, P_MAX_STACK) : 0;
+    $snId =  $this->getSnId();
+    return !empty($snId) ? get_unit_param($snId, P_MAX_STACK) : 0;
   }
 
   /**
    * @param $hireId
    */
   protected function addLevel($hireId) {
-    if ($this->id == $hireId) {
+    if ($this->getSnId() == $hireId) {
       $this->level++;
     } else {
       $this->level = 1;
     }
 
-    $this->id = $hireId;
+    $this->snId = $hireId;
 
-    $this->setPlanetData();
+    $this->setExternalData();
   }
 
 
@@ -129,17 +130,23 @@ class Governor {
     unset($this->unit);
     $this->planet = null;
 
-    $this->id = 0;
+    $this->snId = 0;
     $this->level = 0;
   }
 
-  protected function setPlanetData() {
-    $this->planet->PLANET_GOVERNOR_ID = $this->id;
+  /**
+   * Sets data on external sources from internal properties
+   */
+  protected function setExternalData() {
+    $this->planet->PLANET_GOVERNOR_ID = $this->getSnId();
     $this->planet->PLANET_GOVERNOR_LEVEL = $this->level;
   }
 
-  protected function getPlanetData() {
-    $this->id = !empty($this->planet->PLANET_GOVERNOR_ID) ? intval($this->planet->PLANET_GOVERNOR_ID) : 0;
+  /**
+   * Loads some data from external sources
+   */
+  protected function getExternalData() {
+    $this->snId = !empty($this->planet->PLANET_GOVERNOR_ID) ? intval($this->planet->PLANET_GOVERNOR_ID) : 0;
     $this->level = !empty($this->planet->PLANET_GOVERNOR_LEVEL) ? intval($this->planet->PLANET_GOVERNOR_LEVEL) : 0;
   }
 
