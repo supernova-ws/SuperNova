@@ -65,19 +65,21 @@ class PageImperium {
 //    $this->modelAdjustMinePercent();
 
     list($planets, $ques) = $this->getUpdatedUserPlanetsAndQues($user);
+    $fleets = $this->fleetGetFlyingToPlanets($planets);
 
     $template = gettemplate('imperium', $template);
 
-    templateFillPercent($template);
+    $template->assign_recursive(templateFillPercent());
 
-    $this->tplRenderPlanetsAndFleets($template, $planets);
+    $template->assign_recursive($this->tplRenderPlanets($planets, $fleets));
+    $template->assign_recursive($this->tplRenderFleets($fleets));
     $this->tplTotalPlanetInfo($template, $planets);
 
     foreach (self::GROUPS_TO_NAMES as $unit_group_id => $internalGroupName) {
       $template->assign_block_vars('prods', array(
         'NAME' => $this->lang['tech'][$unit_group_id],
       ));
-      $this->imperiumTemplatizeUnitGroup($user, $template, $unit_group_id, $planets, $ques);
+      $this->imperiumTemplatizeUnitGroup($user, $template, $unit_group_id, $planets, $ques, $fleets);
     }
 
     $template->assign_var('amount', count($planets) + 2);
@@ -150,8 +152,9 @@ class PageImperium {
    * @param int      $unit_group_id
    * @param array[]  $planets
    * @param array[]  $ques
+   * @param array    $fleets
    */
-  protected function imperiumTemplatizeUnitGroup(&$user, $template, $unit_group_id, $planets, $ques) {
+  protected function imperiumTemplatizeUnitGroup(&$user, $template, $unit_group_id, $planets, $ques, $fleets) {
     $sn_group_factories = sn_get_groups('factories');
 
     foreach (get_unit_param('techtree', $unit_group_id) as $unit_id) {
@@ -167,7 +170,7 @@ class PageImperium {
         switch ($unit_group_id) {
           /** @noinspection PhpMissingBreakStatementInspection */
           case UNIT_SHIPS:
-            $levelYellow = floatval($planet['fleet_list']['own']['total'][$unit_id]);
+            $levelYellow = !empty($fleets[$planet['id']]['own']['total'][$unit_id]) ? floatval($fleets[$planet['id']]['own']['total'][$unit_id]) : 0;
 
           case UNIT_STRUCTURES:
           case UNIT_STRUCTURES_SPECIAL:
@@ -246,27 +249,23 @@ class PageImperium {
   }
 
   /**
-   * @param template $template
-   * @param array[]  $planets
+   * @param array[] $planets
+   * @param array   $fleets
+   *
+   * @return array[][]
    */
-  protected function tplRenderPlanetsAndFleets($template, &$planets) {
+  protected function tplRenderPlanets(&$planets, $fleets) {
+    $result = [];
+
     $planet_density = sn_get_groups('planet_density');
 
-    $fleets = [];
-    foreach ($planets as $planetId => &$planet) {
+    foreach ($planets as $planetId => $planet) {
       $templatizedPlanet = tpl_parse_planet($planet);
+//      $planet['BUILDING_ID'] = $templatizedPlanet['BUILDING_ID'];
+//      $planet['hangar_que'] = $templatizedPlanet['hangar_que'];
+//      $planet['full_que'] = $templatizedPlanet;
 
-      $fleet_list = flt_get_fleets_to_planet($planet);
-      $templatizedPlanet += tpl_parse_planet_result_fleet($planet, $fleet_list);
-      if (!empty($fleet_list['own']['count'])) {
-        $fleets[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId($planet));
-      }
-
-      $planet['fleet_list'] = $templatizedPlanet['fleet_list'];
-      $planet['BUILDING_ID'] = $templatizedPlanet['BUILDING_ID'];
-      $planet['hangar_que'] = $templatizedPlanet['hangar_que'];
-      $planet['full_que'] = $templatizedPlanet;
-
+      $fleet_list = $fleets[$planetId];
       foreach ([RES_METAL, RES_CRYSTAL, RES_DEUTERIUM] as $resourceId) {
         if (empty($fleet_list['own']['total'][$resourceId])) {
           $templatizedPlanet['RES_' . $resourceId] = 0;
@@ -275,8 +274,9 @@ class PageImperium {
           $templatizedPlanet['RES_' . $resourceId . '_TEXT'] = HelperString::numberFloorAndFormat($fleet_list['own']['total'][$resourceId]);
         }
       }
+      $templatizedPlanet += tpl_parse_planet_result_fleet($planet, $fleet_list);
 
-      $template->assign_block_vars('planet', array_merge($templatizedPlanet, [
+      $templatizedPlanet += [
         'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['metal_max']),
         'METAL_PROD' => HelperString::numberFloorAndFormat($planet['metal_perhour']),
 
@@ -295,10 +295,46 @@ class PageImperium {
         'DENSITY_CLASS'      => $planet['density_index'],
         'DENSITY_RICHNESS'   => $planet_density[$planet['density_index']][UNIT_PLANET_DENSITY_RICHNESS],
         'DENSITY_CLASS_TEXT' => $this->lang['uni_planet_density_types'][$planet['density_index']],
-      ]));
+      ];
+
+      $result[] = $templatizedPlanet;
     }
 
-    tpl_assign_fleet($template, $fleets);
+    return [
+      '.' => [
+        'planet' => $result
+      ]
+    ];
+  }
+
+  /**
+   * @param array $fleets
+   *
+   * @return array
+   */
+  protected function tplRenderFleets($fleets) {
+    $fleetsRendered = [];
+    foreach ($fleets as $planetId => $fleet_list) {
+      if (!empty($fleet_list['own']['count'])) {
+        $fleetsRendered[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId(['id' => $planetId]));
+      }
+    }
+
+    return tpl_assign_fleet_generate($fleetsRendered);
+  }
+
+  /**
+   * @param array[] $planets
+   *
+   * @return array
+   */
+  protected function fleetGetFlyingToPlanets(&$planets) {
+    $fleets = [];
+    foreach ($planets as $planetId => &$planet) {
+      $fleets[$planet['id']] = flt_get_fleets_to_planet($planet);
+    }
+
+    return $fleets;
   }
 
   /**

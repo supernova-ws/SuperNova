@@ -17,48 +17,73 @@ function tpl_assign_fleet_compare($a, $b)
   }
 }
 
-function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets')
-{
-  if(!$fleets)
-  {
-    return;
+/**
+ * @param array  $fleets
+ * @param string $js_name
+ *
+ * @return array
+ */
+function tpl_assign_fleet_generate($fleets, $js_name = 'fleets') {
+  $result = [];
+  if (empty($fleets)) {
+    return $result;
   }
 
   usort($fleets, 'tpl_assign_fleet_compare');
 
-  foreach($fleets as $fleet_data)
-  {
-    $template->assign_block_vars($js_name, $fleet_data['fleet']);
+  foreach ($fleets as $fleet_data) {
+    $temp = $fleet_data['fleet'];
 
-    if($fleet_data['ships'])
-    {
-      foreach($fleet_data['ships'] as $ship_data)
-      {
-        $template->assign_block_vars("{$js_name}.ships", $ship_data);
-      }
+    if ($fleet_data['ships']) {
+      $temp['.']['ships'] = $fleet_data['ships'];
     }
+
+    $result['.'][$js_name][] = $temp;
   }
+
+  return $result;
 }
 
-// function that parses internal fleet representation (as array(id => count))
-function tpl_parse_fleet_sn($fleet, $fleet_id)
-{
+/**
+ * For backward compatibility
+ *
+ * @param template $template
+ * @param array    $fleets
+ * @param string   $js_name
+ *
+ * @deprecated
+ */
+function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets') {
+  if (!$fleets) {
+    return;
+  }
+
+  $template->assign_recursive(tpl_assign_fleet_generate($fleets, $js_name));
+}
+
+/**
+ * function that parses internal fleet representation (as array(id => count))
+ *
+ * @param $fleet
+ * @param $fleet_id
+ *
+ * @return mixed
+ */
+function tpl_parse_fleet_sn($fleet, $fleet_id) {
   global $lang, $user;
 
   $user_data = &$user;
 
   $return['fleet'] = array(
-    'ID'                 => $fleet_id,
+    'ID' => $fleet_id,
 
-    'METAL'              => $fleet[RES_METAL],
-    'CRYSTAL'            => $fleet[RES_CRYSTAL],
-    'DEUTERIUM'          => $fleet[RES_DEUTERIUM],
+    'METAL'     => $fleet[RES_METAL],
+    'CRYSTAL'   => $fleet[RES_CRYSTAL],
+    'DEUTERIUM' => $fleet[RES_DEUTERIUM],
   );
 
-  foreach ($fleet as $ship_id => $ship_amount)
-  {
-    if(in_array($ship_id, sn_get_groups('fleet')))
-    {
+  foreach ($fleet as $ship_id => $ship_amount) {
+    if (in_array($ship_id, sn_get_groups('fleet'))) {
       $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
@@ -206,7 +231,6 @@ function tpl_parse_planet_que($que, $planet, $que_id)
  */
 function tpl_parse_planet_result_fleet($planet, $fleet_list) {
   return [
-    'fleet_list'      => $fleet_list,
     'FLEET_OWN'       => $fleet_list['own']['count'],
     'FLEET_ENEMY'     => $fleet_list['enemy']['count'],
     'FLEET_NEUTRAL'   => $fleet_list['neutral']['count'],
@@ -277,11 +301,11 @@ function tpl_parse_planet($planet)
 
     // 'HANGAR'        => isset($hangar_que['que'][0]['id']) ? $lang['tech'][$hangar_que['que'][0]['id']] : '',
     'HANGAR'        => isset($hangar_que_first['id']) ? $lang['tech'][$hangar_que_first['id']] : '',
-    'hangar_que'    => $hangar_que,
+//    'hangar_que'    => $hangar_que,
 
     // 'DEFENSE'        => isset($defense_que['que'][0]['id']) ? $lang['tech'][$defense_que['que'][0]['id']] : '',
     'DEFENSE'        => isset($defense_que_first['id']) ? $lang['tech'][$defense_que_first['id']] : '',
-    'defense_que'    => $defense_que,
+//    'defense_que'    => $defense_que,
 
     'FIELDS_CUR'    => $planet['field_current'],
     'FIELDS_MAX'    => eco_planet_fields_max($planet),
@@ -422,10 +446,13 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
 }
 
 /**
- * @param template $template
+ * @return int[][]
  */
-function templateFillPercent($template) {
+function templateFillPercent() {
+  $result = [];
   for ($i = 100; $i >= 0; $i -= 10) {
-    $template->assign_block_vars('percent', array('PERCENT' => $i));
+    $result[] = ['PERCENT' => $i];
   }
+
+  return ['.' => ['percent' => $result]];
 }
