@@ -206,6 +206,7 @@ class PageOverview extends PageDeprecated {
 
       'PAGE_HEADER' => $this->lang['ov_overview'] . " - " . $this->lang['sys_planet_type'][$planetrow['planet_type']] . " {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]",
     ]);
+    tpl_parse_planet($planetrow, $fleets_to_planet);
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet);
 
     $this->resultMessageList->templateAdd($template);
