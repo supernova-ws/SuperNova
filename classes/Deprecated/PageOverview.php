@@ -101,6 +101,7 @@ class PageOverview extends PageDeprecated {
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     $template->assign_recursive($this->planet->tpl_planet_density_info($user_dark_matter));
 
+    $fleets_to_planet = [];
     $planet_count = 0;
     $planets_query = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
     foreach ($planets_query as $an_id => $planetRecord) {
@@ -108,8 +109,9 @@ class PageOverview extends PageDeprecated {
       $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
       sn_db_transaction_commit();
 
-      $fleets_to_planet = null;
-      $templatizedPlanet = tpl_parse_planet($updatedData['planet'], $fleets_to_planet);
+      $ftpLocal = [];
+      $templatizedPlanet = tpl_parse_planet($updatedData['planet'], $ftpLocal);
+      $fleets_to_planet += $ftpLocal;
 
       if ($planetRecord['planet_type'] == PT_MOON) {
         continue;
@@ -206,7 +208,6 @@ class PageOverview extends PageDeprecated {
 
       'PAGE_HEADER' => $this->lang['ov_overview'] . " - " . $this->lang['sys_planet_type'][$planetrow['planet_type']] . " {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]",
     ]);
-    tpl_parse_planet($planetrow, $fleets_to_planet);
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet);
 
     $this->resultMessageList->templateAdd($template);
