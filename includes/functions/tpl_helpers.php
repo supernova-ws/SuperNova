@@ -198,7 +198,55 @@ function tpl_parse_planet_que($que, $planet, $que_id)
   return $hangar_que;
 }
 
-function tpl_parse_planet($planet, &$fleets)
+/**
+ * @param array $planet
+ * @param array $fleet_list
+ *
+ * @return array
+ */
+function tpl_parse_planet_result_fleet($planet, $fleet_list) {
+  return [
+    'fleet_list'      => $fleet_list,
+    'FLEET_OWN'       => $fleet_list['own']['count'],
+    'FLEET_ENEMY'     => $fleet_list['enemy']['count'],
+    'FLEET_NEUTRAL'   => $fleet_list['neutral']['count'],
+    'PLANET_FLEET_ID' => !empty($fleet_list['own']['count']) ? getUniqueFleetId($planet) : 0,
+  ];
+}
+
+
+/**
+ * @param int $parentPlanetId
+ *
+ * @return array
+ */
+function tpl_parse_planet_moon($parentPlanetId) {
+  $moon_fill = 0;
+  $moon_fleets = [];
+
+  $moon = DBStaticPlanet::db_planet_by_parent($parentPlanetId);
+  if ($moon) {
+    $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
+    $moon_fleets = flt_get_fleets_to_planet($moon);
+  }
+
+  return [
+    'MOON_ID'    => $moon['id'],
+    'MOON_NAME'  => $moon['name'],
+    'MOON_IMG'   => $moon['image'],
+    'MOON_FILL'  => min(100, $moon_fill),
+    'MOON_ENEMY' => !empty($moon_fleets['enemy']['count']) ? $moon_fleets['enemy']['count'] : 0,
+
+    'MOON_PLANET' => $moon['parent_planet'],
+  ];
+}
+
+/**
+ * @param array $planet
+ *
+ * @return array
+ */
+function tpl_parse_planet($planet)
 {
   global $lang;
 
@@ -210,9 +258,7 @@ function tpl_parse_planet($planet, &$fleets)
   $defense_que = tpl_parse_planet_que($que, $planet, SUBQUE_DEFENSE); // TODO Заменить на que_tpl_parse_element($que_element);
   $defense_que_first = is_array($defense_que['que']) ? reset($defense_que['que']) : array();
 
-  $fleet_list = flt_get_fleets_to_planet($planet);
-
-  $result = array(
+  $result = [
     'ID'            => $planet['id'],
     'NAME'          => $planet['name'],
     'IMAGE'         => $planet['image'],
@@ -241,25 +287,15 @@ function tpl_parse_planet($planet, &$fleets)
     'FIELDS_MAX'    => eco_planet_fields_max($planet),
     'FILL'          => min(100, floor($planet['field_current'] / eco_planet_fields_max($planet) * 100)),
 
-    'fleet_list'      => $fleet_list,
-    'FLEET_OWN'       => $fleet_list['own']['count'],
-    'FLEET_ENEMY'     => $fleet_list['enemy']['count'],
-    'FLEET_NEUTRAL'   => $fleet_list['neutral']['count'],
-    'PLANET_FLEET_ID' => !empty($fleet_list['own']['count']) ? getUniqueFleetId($planet) : 0,
-
     'PLANET_GOVERNOR_ID' => $planet['PLANET_GOVERNOR_ID'],
     'PLANET_GOVERNOR_NAME' => $lang['tech'][$planet['PLANET_GOVERNOR_ID']],
     'PLANET_GOVERNOR_LEVEL' => $planet['PLANET_GOVERNOR_LEVEL'],
     'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($planet['PLANET_GOVERNOR_ID'], P_MAX_STACK),
-  );
-
-  if (!empty($fleet_list['own']['count'])) {
-    $fleets[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $result['PLANET_FLEET_ID']);
-  }
+  ];
 
   if(!empty($que['ques'][QUE_STRUCTURES][$planet['id_owner']][$planet['id']]))
   {
-    $result['building_que'] = array();
+    $result['building_que'] = [];
     $building_que = &$que['ques'][QUE_STRUCTURES][$planet['id_owner']][$planet['id']];
     foreach($building_que as $que_element)
     {

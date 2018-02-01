@@ -154,8 +154,6 @@ class PageImperium {
   protected function imperiumTemplatizeUnitGroup(&$user, $template, $unit_group_id, $planets, $ques) {
     $sn_group_factories = sn_get_groups('factories');
 
-//    $imperiumStats = [];
-
     foreach (get_unit_param('techtree', $unit_group_id) as $unit_id) {
       $unit_count = $unit_count_abs = 0;
       $block_vars = array();
@@ -256,7 +254,13 @@ class PageImperium {
 
     $fleets = [];
     foreach ($planets as $planetId => &$planet) {
-      $templatizedPlanet = tpl_parse_planet($planet, $fleets);
+      $templatizedPlanet = tpl_parse_planet($planet);
+
+      $fleet_list = flt_get_fleets_to_planet($planet);
+      $templatizedPlanet += tpl_parse_planet_result_fleet($planet, $fleet_list);
+      if (!empty($fleet_list['own']['count'])) {
+        $fleets[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId($planet));
+      }
 
       $planet['fleet_list'] = $templatizedPlanet['fleet_list'];
       $planet['BUILDING_ID'] = $templatizedPlanet['BUILDING_ID'];
@@ -264,11 +268,11 @@ class PageImperium {
       $planet['full_que'] = $templatizedPlanet;
 
       foreach ([RES_METAL, RES_CRYSTAL, RES_DEUTERIUM] as $resourceId) {
-        if (empty($templatizedPlanet['fleet_list']['own']['total'][$resourceId])) {
+        if (empty($fleet_list['own']['total'][$resourceId])) {
           $templatizedPlanet['RES_' . $resourceId] = 0;
         } else {
-          $templatizedPlanet['RES_' . $resourceId] = $templatizedPlanet['fleet_list']['own']['total'][$resourceId];
-          $templatizedPlanet['RES_' . $resourceId . '_TEXT'] = HelperString::numberFloorAndFormat($templatizedPlanet['fleet_list']['own']['total'][$resourceId]);
+          $templatizedPlanet['RES_' . $resourceId] = $fleet_list['own']['total'][$resourceId];
+          $templatizedPlanet['RES_' . $resourceId . '_TEXT'] = HelperString::numberFloorAndFormat($fleet_list['own']['total'][$resourceId]);
         }
       }
 

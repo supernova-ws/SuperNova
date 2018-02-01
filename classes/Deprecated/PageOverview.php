@@ -105,36 +105,26 @@ class PageOverview extends PageDeprecated {
     $planet_count = 0;
     $planets_query = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
     foreach ($planets_query as $an_id => $planetRecord) {
-      sn_db_transaction_start();
-      $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
-      sn_db_transaction_commit();
-
-      $ftpLocal = [];
-      $templatizedPlanet = tpl_parse_planet($updatedData['planet'], $ftpLocal);
-      $fleets_to_planet += $ftpLocal;
+      $fleet_list = flt_get_fleets_to_planet($planetRecord);
+      if (!empty($fleet_list['own']['count'])) {
+        $fleets_to_planet[$an_id] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId($planetRecord));
+      }
 
       if ($planetRecord['planet_type'] == PT_MOON) {
         continue;
       }
-      $moon = DBStaticPlanet::db_planet_by_parent($planetRecord['id']);
-      if ($moon) {
-        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
-      } else {
-        $moon_fill = 0;
-      }
-
-      $moon_fleets = flt_get_fleets_to_planet($moon);
-      $template->assign_block_vars('planet', array_merge($templatizedPlanet, array(
-        'MOON_ID'    => $moon['id'],
-        'MOON_NAME'  => $moon['name'],
-        'MOON_IMG'   => $moon['image'],
-        'MOON_FILL'  => min(100, $moon_fill),
-        'MOON_ENEMY' => $moon_fleets['enemy']['count'],
-
-        'MOON_PLANET' => $moon['parent_planet'],
-      )));
 
       $planet_count++;
+
+      sn_db_transaction_start();
+      $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
+      sn_db_transaction_commit();
+
+      $templatizedPlanet = tpl_parse_planet($updatedData['planet']);
+      $templatizedPlanet += tpl_parse_planet_result_fleet($updatedData['planet'], $fleet_list);
+      $templatizedPlanet += tpl_parse_planet_moon($planetRecord['id']);
+
+      $template->assign_block_vars('planet', $templatizedPlanet);
     }
 
     $fleets = flt_parse_fleets_to_events(fleet_and_missiles_list_incoming($user['id']));
