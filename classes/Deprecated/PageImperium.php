@@ -278,16 +278,16 @@ class PageImperium {
 
       $templatizedPlanet += [
         'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['metal_max']),
-        'METAL_PROD' => HelperString::numberFloorAndFormat($planet['metal_perhour']),
+        'METAL_PROD' => $planet['metal_perhour'],
 
         'CRYSTAL_CUR'  => prettyNumberStyledCompare($planet['crystal'], $planet['crystal_max']),
-        'CRYSTAL_PROD' => HelperString::numberFloorAndFormat($planet['crystal_perhour']),
+        'CRYSTAL_PROD' => $planet['crystal_perhour'],
 
         'DEUTERIUM_CUR'  => prettyNumberStyledCompare($planet['deuterium'], $planet['deuterium_max']),
-        'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($planet['deuterium_perhour']),
+        'DEUTERIUM_PROD' => $planet['deuterium_perhour'],
 
-        'ENERGY_CUR' => prettyNumberStyledDefault($planet['energy_max'] - $planet['energy_used']),
-        'ENERGY_MAX' => HelperString::numberFloorAndFormat($planet['energy_max']),
+        'ENERGY_CUR' => $planet['energy_max'] - $planet['energy_used'],
+        'ENERGY_MAX' => $planet['energy_max'],
 
         'TEMP_MIN' => $planet['temp_min'],
         'TEMP_MAX' => $planet['temp_max'],
@@ -372,16 +372,16 @@ class PageImperium {
       'FIELDS_MAX' => $imperiumStats['fields_max'],
 
       'METAL_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['metal']),
-      'METAL_PROD' => HelperString::numberFloorAndFormat($imperiumStats['metal_perhour']),
+      'METAL_PROD' => $imperiumStats['metal_perhour'],
 
       'CRYSTAL_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['crystal']),
-      'CRYSTAL_PROD' => HelperString::numberFloorAndFormat($imperiumStats['crystal_perhour']),
+      'CRYSTAL_PROD' => $imperiumStats['crystal_perhour'],
 
       'DEUTERIUM_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['deuterium']),
-      'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($imperiumStats['deuterium_perhour']),
+      'DEUTERIUM_PROD' => $imperiumStats['deuterium_perhour'],
 
-      'ENERGY_CUR' => HelperString::numberFloorAndFormat($imperiumStats['energy']),
-      'ENERGY_MAX' => HelperString::numberFloorAndFormat($imperiumStats['energy_max']),
+      'ENERGY_CUR' => $imperiumStats['energy'],
+      'ENERGY_MAX' => $imperiumStats['energy_max'],
 
       'TEMP_MIN' => $imperiumStats['temp_min'],
       'TEMP_MAX' => $imperiumStats['temp_max'],

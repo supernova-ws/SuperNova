@@ -17,12 +17,11 @@ class PTLTag {
    */
   public $resolved = '';
   /**
-   * PTL tag resolved with data from template. Include params - if any - for further processing
-   * Can be used as cache key
+   * Namespace for block refs
    *
-   * @var string $cacheKey
+   * @var string $namespace
    */
-  public $cacheKey = '';
+  public $namespace = '';
   /**
    * Array of tag params
    *
@@ -49,7 +48,7 @@ class PTLTag {
     $this->raw = $stringTag;
 
     // Separating params - so there are will be no false-positives for template's variable names
-    if(strpos($this->raw, '|') !== false) {
+    if (strpos($this->raw, '|') !== false) {
       $this->params = explode('|', $this->raw);
       $this->resolved = $this->params[0];
       unset($this->params[0]);
@@ -63,15 +62,16 @@ class PTLTag {
       $this->resolved = $this->resolveTemplateVars($this->resolved);
     }
 
+    // Is there any namespaces in tag?
+    if (strpos($this->resolved, '.') !== false) {
+      $this->namespace = substr($this->resolved, 0, strrpos($this->resolved, '.'));
+    }
+
     // Here so we potentially can use 2nd-level params - i.e. in template's variables
     if (count($this->params)) {
       $this->params = HelperArray::parseParamStrings($this->params);
       $this->params = array_intersect_key($this->params, $allowedParamsAsKeys);
       ksort($this->params);
-
-      $this->cacheKey = implode('|', array_merge(array($this->resolved), $this->params));
-    } else {
-      $this->cacheKey = $this->resolved;
     }
   }
 
@@ -125,8 +125,21 @@ class PTLTag {
     }
 
     unset($this->params[$paramName]);
+  }
 
-    $this->cacheKey = implode('|', array_merge(array($this->resolved), $this->params));
+  /**
+   * Generates unique cache key for tag
+   *
+   * @return string
+   */
+  public function getCacheKey() {
+    $result = [$this->resolved];
+
+    foreach ($this->params as $key => $value) {
+      $result[] = $key . '=' . $value;
+    }
+
+    return implode('|', $result);
   }
 
 }

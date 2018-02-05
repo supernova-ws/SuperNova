@@ -413,10 +413,10 @@ planet = {
                 <!-- DEFINE $FONT_SIZE = '1em' -->
               <!-- ENDIF -->
               <span class="a75 resource_container" style="font-size: {$FONT_SIZE};">
-                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.METAL_TEXT}<!-- ELSE -->{production.METAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
-                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.CRYSTAL_TEXT}<!-- ELSE -->{production.CRYSTAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
-                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.DEUTERIUM_TEXT}<!-- ELSE -->{production.DEUTERIUM_REST}<!-- ENDIF --></div></div><!-- ENDIF -->
-                <!-- IF production.DARK_MATTER && ! TEMPORARY --><div><div class="left">{L_sys_dark_matter_sh}</div><div class="fr">{production.DARK_MATTER_REST}</div></div><!-- ENDIF -->
+                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.METAL_TEXT}<!-- ELSE -->{production.METAL_REST_NUM|num|color}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.CRYSTAL_TEXT}<!-- ELSE -->{production.CRYSTAL_REST_NUM|num|color}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.DEUTERIUM_TEXT}<!-- ELSE -->{production.DEUTERIUM_REST_NUM|num|color}<!-- ENDIF --></div></div><!-- ENDIF -->
+                <!-- IF production.DARK_MATTER && ! TEMPORARY --><div><div class="left">{L_sys_dark_matter_sh}</div><div class="fr">{production.DARK_MATTER_REST_NUM|num|color}</div></div><!-- ENDIF -->
               </span>
 
 

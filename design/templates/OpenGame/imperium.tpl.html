@@ -103,7 +103,7 @@
         <!-- IF planet.RES_901 > 0 -->
         <span class="neutral">+{planet.RES_901_TEXT}</span><br />
         <!-- ENDIF -->
-        <span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span>
+        <span class="{$FIELD_COLOR}">{planet.METAL_PROD|num|format}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -124,7 +124,7 @@
         <!-- IF planet.RES_902 > 0 -->
         <span class="neutral">+{planet.RES_902_TEXT}</span><br />
         <!-- ENDIF -->
-        <span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span>
+        <span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD|num|format}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -145,7 +145,7 @@
         <!-- IF planet.RES_903 > 0 -->
         <span class="neutral">+{planet.RES_903_TEXT}</span><br />
         <!-- ENDIF -->
-        <span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
+        <span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD|num|format}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -153,8 +153,8 @@
     <td>{L_sys_energy}<br>{L_imp_production}</td>
     <!-- BEGIN planet -->
     <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
-      {planet.ENERGY_CUR}<br />
-      {planet.ENERGY_MAX}
+      {planet.ENERGY_CUR|num|color}<br />
+      {planet.ENERGY_MAX|num|format}
     </td>
     <!-- END planet -->
   </tr>

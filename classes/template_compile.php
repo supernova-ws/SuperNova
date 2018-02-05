@@ -302,13 +302,19 @@ class template_compile
     $varrefs = array();
 
     // This one will handle varrefs WITH namespaces
-    preg_match_all('#\{((?:[a-z0-9\-_]+\.)+)(\$)?([A-Z0-9\-_]+)\}#', $text_blocks, $varrefs, PREG_SET_ORDER);
+    preg_match_all('#\{((?:[a-z0-9\-_]+\.)+)(\$)?([A-Z0-9\-_]+)(?:(\|.+?)*)?\}#', $text_blocks, $varrefs, PREG_SET_ORDER);
 
     foreach ($varrefs as $var_val)
     {
       $namespace = $var_val[1];
       $varname = $var_val[3];
-      $new = $this->generate_block_varref($namespace, $varname, true, $var_val[2]);
+      $new = $this->generate_block_varref($namespace, $varname, $var_val[2]);
+
+      if(!empty($var_val[4])) {
+        $new = \Ptl\PtlVariableDecorator::decorate($var_val[0], $new, $this->template);
+      }
+
+      $new = "<?php echo $new; ?>";
 
       $text_blocks = str_replace($var_val[0], $new, $text_blocks);
     }
@@ -768,14 +774,19 @@ class template_compile
   }
 
   /**
-  * Generates a reference to the given variable inside the given (possibly nested)
-  * block namespace. This is a string of the form:
-  * ' . $this->_tpldata['parent'][$_parent_i]['$child1'][$_child1_i]['$child2'][$_child2_i]...['varname'] . '
-  * It's ready to be inserted into an "echo" line in one of the templates.
-  * NOTE: expects a trailing "." on the namespace.
-  * @access private
-  */
-  function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
+   * Generates a reference to the given variable inside the given (possibly nested)
+   * block namespace. This is a string of the form:
+   * ' . $this->_tpldata['parent'][$_parent_i]['$child1'][$_child1_i]['$child2'][$_child2_i]...['varname'] . '
+   * It's ready to be inserted into an "echo" line in one of the templates.
+   * NOTE: expects a trailing "." on the namespace.
+   *
+   * @param string $namespace
+   * @param string $varname
+   * @param bool   $defop
+   *
+   * @return string
+   */
+  private function generate_block_varref($namespace, $varname, $defop = false)
   {
     // Strip the trailing period.
     $namespace = substr($namespace, 0, -1);
@@ -786,7 +797,6 @@ class template_compile
 
     // Append the variable reference.
     $varref .= "['$varname']";
-    $varref = ($echo) ? "<?php echo $varref; ?>" : ((isset($varref)) ? $varref : '');
 
     return $varref;
   }

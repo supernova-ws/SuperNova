@@ -95,7 +95,6 @@ foreach ($sn_group_artifacts as $artifact_id) {
     'DESCRIPTION' => $lang['info'][$artifact_id]['description'],
     'EFFECT'      => $lang['info'][$artifact_id]['effect'],
     'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
-    'COST_TEXT'   => HelperString::numberFloorAndFormat($build_data[BUILD_CREATE][RES_DARK_MATTER]),
     'LEVEL'       => intval($artifact_level),
     'LEVEL_MAX'   => intval($artifact_data['max']),
     'BONUS'       => $artifact_data_bonus,

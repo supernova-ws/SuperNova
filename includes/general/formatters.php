@@ -47,7 +47,7 @@ function prettyNumberGetClass($number, $compareTo) {
  * @param int|float $number
  *
  * @return string
- *
+ * @see PtlVariableDecorator
  * // TODO - this should be made in templates
  */
 function prettyNumberStyledDefault($number) {

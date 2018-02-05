@@ -1140,7 +1140,16 @@ MissionExplore.php
     - На "Ресурсах" - убирать цену в дропдауне, если ядро равно текущему (?)
 
 
+[*] prettyNumberStyledDefault - заменить на параметры PTL-тэгов в темплейте: num|format
+        - HelperString::numberFloorAndFormat
+
 #ctv
+
+
+2018-02-05 13:03:26 43a11.8
+[!] Темплейты
+    Добавлен класс Ptl\PtlVariableDecorator для форматирования текста в блоках по разметке темплейта
+        - В блоках вызовы prettyNumberStyledDefault() заменены на форматирование внутри темплейтов;
 
 
 2018-02-01 10:46:35 43a11.7

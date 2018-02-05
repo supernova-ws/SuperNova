@@ -106,7 +106,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
  *
  * @return mixed
  */
-function tpl_parse_fleet_db($fleet, $index, $user_data = false){return sn_function_call('tpl_parse_fleet_db', array($fleet, $index, $user_data, &$result));}
+function tpl_parse_fleet_db($fleet, $index, $user_data = false){$result = null;return sn_function_call('tpl_parse_fleet_db', [$fleet, $index, $user_data, &$result]);}
 /**
  * @param array      $fleet
  * @param int        $index

@@ -230,8 +230,9 @@ class SkinV2 implements SkinInterface {
    */
   public function imageFromPTLTag($ptlTag) {
     // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению
-    if (!empty($this->container[$ptlTag->cacheKey])) {
-      return $this->container[$ptlTag->cacheKey];
+    $cacheKey = $ptlTag->getCacheKey();
+    if (!empty($this->container[$cacheKey])) {
+      return $this->container[$cacheKey];
     }
 
     // Шорткат
@@ -319,7 +320,7 @@ class SkinV2 implements SkinInterface {
       $image_string = "<img src=\"{$image_string}\" {$htmlParams} />";
     }
 
-    return $this->container[$ptlTag->cacheKey] = $image_string;
+    return $this->container[$ptlTag->getCacheKey()] = $image_string;
   }
 
   /**

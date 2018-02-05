@@ -81,20 +81,20 @@ function res_set_all(obj)
       <tr>
         <th height="22">{production.TYPE}<!-- IF production.LEVEL --> (<!-- IF production.LEVEL_TYPE -->{production.LEVEL_TYPE}&nbsp;<!-- ENDIF -->{production.LEVEL}<!-- IF production.LEVEL_BONUS > 0 --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF -->)<!-- ENDIF --></th>
         <th>
-          {production.METAL_TYPE}
-          <!-- IF production.METAL_FULL != '' && production.METAL_FULL != production.METAL_TYPE --><br />({production.METAL_FULL})<!-- ENDIF -->
+          {production.METAL_TYPE|num|color}
+          <!-- IF production.METAL_FULL != '' && production.METAL_FULL != production.METAL_TYPE --><br />({production.METAL_FULL|num|color})<!-- ENDIF -->
         </th>
         <th>
-          {production.CRYSTAL_TYPE}
-          <!-- IF production.CRYSTAL_FULL != '' && production.CRYSTAL_FULL != production.CRYSTAL_TYPE --><br />({production.CRYSTAL_FULL})<!-- ENDIF -->
+          {production.CRYSTAL_TYPE|num|color}
+          <!-- IF production.CRYSTAL_FULL != '' && production.CRYSTAL_FULL != production.CRYSTAL_TYPE --><br />({production.CRYSTAL_FULL|num|color})<!-- ENDIF -->
         </th>
         <th>
-          {production.DEUTERIUM_TYPE}
-          <!-- IF production.DEUTERIUM_FULL != '' && production.DEUTERIUM_FULL != production.DEUTERIUM_TYPE --><br />({production.DEUTERIUM_FULL})<!-- ENDIF -->
+          {production.DEUTERIUM_TYPE|num|color}
+          <!-- IF production.DEUTERIUM_FULL != '' && production.DEUTERIUM_FULL != production.DEUTERIUM_TYPE --><br />({production.DEUTERIUM_FULL|num|color})<!-- ENDIF -->
         </th>
         <th>
-          {production.ENERGY_TYPE}
-          <!-- IF production.ENERGY_FULL != '' && production.ENERGY_FULL != production.ENERGY_TYPE --><br />({production.ENERGY_FULL})<!-- ENDIF -->
+          {production.ENERGY_TYPE|num|color}
+          <!-- IF production.ENERGY_FULL != '' && production.ENERGY_FULL != production.ENERGY_TYPE --><br />({production.ENERGY_FULL|num|color})<!-- ENDIF -->
         </th>
         <th>
           <!-- IF production.LEVEL && production.P_MINING_IS_MANAGED -->
@@ -125,10 +125,10 @@ function res_set_all(obj)
   <!-- BEGIN resources -->
     <tr>
       <th>{resources.NAME}</th>
-      <th><div align="right">{resources.HOURLY}</div></th>
-      <th><div align="right">{resources.DAILY}</div></th>
-      <th><div align="right">{resources.WEEKLY}</div></th>
-      <th><div align="right">{resources.MONTHLY}</div></th>
+      <th><div align="right">{resources.HOURLY|num|color}</div></th>
+      <th><div align="right">{resources.DAILY|num|color}</div></th>
+      <th><div align="right">{resources.WEEKLY|num|color}</div></th>
+      <th><div align="right">{resources.MONTHLY|num|color}</div></th>
     </tr>
   <!-- END resources -->
 </tbody></table>
