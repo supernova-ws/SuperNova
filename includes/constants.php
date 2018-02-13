@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a11.10');
+define('SN_VERSION', '43a12.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1422,6 +1422,8 @@ define('UBE_REPORT_NOT_FOUND', 'UBE_REPORT_NOT_FOUND');
 
 define('UBE_REPORT_CYPHER', 'UBE_REPORT_CYPHER');
 define('UBE_REPORT_ID', 'UBE_REPORT_ID');
+define('UBE_OBJ_PREPARATOR', 'UBE_OBJ_PREPARATOR');
+define('UBE_OBJ_CALCULATOR', 'UBE_OBJ_CALCULATOR');
 define('UBE_TIME', 'UBE_TIME');
 define('UBE_TIME_SPENT', 'UBE_TIME_SPENT');
 
