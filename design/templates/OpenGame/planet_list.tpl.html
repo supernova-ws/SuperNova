@@ -47,11 +47,24 @@
           <img src="{I_[$PLANET_IMG_SIZE_PREFIX][planet.IMAGE]}" class="element_fill_wrap" go="" />
 
 
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="<!-- IF .planet.building_que -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_1" title="{planet.STRUCTURE}" go="build"/>
-
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="<!-- IF planet.HANGAR -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_2" title="{planet.HANGAR}" go="build" mode="fleet" />
-
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="<!-- IF planet.DEFENSE -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_3" title="{planet.DEFENSE}" go="build" mode="defense" />
+          <div class="icon_25per_left_1" title="{planet.STRUCTURE}" go="build">
+            <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="icon_fill <!-- IF planet.STRUCTURE_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+            <!-- IF planet.STRUCTURE_SLOTS -->
+            <span class="a75 left_top">{planet.STRUCTURE_SLOTS}</span>
+            <!-- ENDIF -->
+          </div>
+          <div class="icon_25per_left_2" title="{planet.HANGAR}" go="build" mode="fleet" >
+            <img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="icon_fill <!-- IF planet.HANGAR_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+            <!-- IF planet.HANGAR_SLOTS -->
+            <span class="a75 left_top">{planet.HANGAR_SLOTS}</span>
+            <!-- ENDIF -->
+          </div>
+          <div class="icon_25per_left_3" title="{planet.DEFENSE}" go="build" mode="defense">
+            <img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="icon_fill <!-- IF planet.DEFENSE_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+            <!-- IF planet.DEFENSE_SLOTS -->
+            <span class="a75 left_top">{planet.DEFENSE_SLOTS}</span>
+            <!-- ENDIF -->
+          </div>
 
           <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
           <span class="a75 icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" go="" mode="manage">

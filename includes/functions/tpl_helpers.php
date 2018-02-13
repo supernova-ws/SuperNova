@@ -298,14 +298,11 @@ function tpl_parse_planet($planet)
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
 
     'STRUCTURE' => isset($structure_que_first['id']) ? $lang['tech'][$structure_que_first['id']] : '',
-
-    // 'HANGAR'        => isset($hangar_que['que'][0]['id']) ? $lang['tech'][$hangar_que['que'][0]['id']] : '',
+    'STRUCTURE_SLOTS' => is_array($structure_que['que']) ? count($structure_que['que']) : 0,
     'HANGAR'        => isset($hangar_que_first['id']) ? $lang['tech'][$hangar_que_first['id']] : '',
-//    'hangar_que'    => $hangar_que,
-
-    // 'DEFENSE'        => isset($defense_que['que'][0]['id']) ? $lang['tech'][$defense_que['que'][0]['id']] : '',
+    'HANGAR_SLOTS' => is_array($hangar_que['que']) ? count($hangar_que['que']) : 0,
     'DEFENSE'        => isset($defense_que_first['id']) ? $lang['tech'][$defense_que_first['id']] : '',
-//    'defense_que'    => $defense_que,
+    'DEFENSE_SLOTS' => is_array($defense_que['que']) ? count($defense_que['que']) : 0,
 
     'FIELDS_CUR'    => $planet['field_current'],
     'FIELDS_MAX'    => eco_planet_fields_max($planet),

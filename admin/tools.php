@@ -284,8 +284,6 @@ switch ($mode) {
       $template->assign_block_vars('test', $test);
     }
 
-    $template->assign_block_vars('ar', ['DATA' => 12345.67]);
-
     display($template);
   break;
 }
