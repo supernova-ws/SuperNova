@@ -26,11 +26,11 @@ class PtlVariableDecorator {
    * @var string[] $allowedParams
    */
   protected static $allowedParams = array(
-    self::PARAM_NUMERIC        => '',
+    self::PARAM_NUMERIC       => '',
     // Will be dumped for all tags which does not have |num
-    self::PARAM_NUMERIC_CEIL   => self::PARAM_NUMERIC,
-    self::PARAM_NUMERIC_FLOOR  => self::PARAM_NUMERIC,
-    self::PARAM_NUMERIC_ROUND  => self::PARAM_NUMERIC,
+    self::PARAM_NUMERIC_CEIL  => self::PARAM_NUMERIC,
+    self::PARAM_NUMERIC_FLOOR => self::PARAM_NUMERIC,
+    self::PARAM_NUMERIC_ROUND => self::PARAM_NUMERIC,
 
     self::PARAM_NUMERIC_FORMAT => self::PARAM_NUMERIC,
     self::PARAM_NUMERIC_COLOR  => self::PARAM_NUMERIC,
@@ -74,7 +74,7 @@ class PtlVariableDecorator {
 
     if (array_key_exists(self::PARAM_NUMERIC, $ptlTag->params)) {
       // Just dump other params
-      foreach(static::$allowedParams as $paramName => $limitTag) {
+      foreach (static::$allowedParams as $paramName => $limitTag) {
         if ($limitTag != self::PARAM_NUMERIC || !array_key_exists($paramName, $ptlTag->params)) {
           continue;
         }

@@ -82,7 +82,7 @@ $PhalanxRange = GetPhalanxRange($HavePhalanx);
 $planet_precache_query = DBStaticPlanet::db_planet_list_in_system($uni_galaxy, $uni_system);
 if (!empty($planet_precache_query)) {
   foreach ($planet_precache_query as $planet_row) {
-    if(CheckAbandonPlanetState($planet_row)) {
+    if (CheckAbandonPlanetState($planet_row)) {
       continue;
     }
     $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
