@@ -7,27 +7,33 @@ namespace Ube\Ube4_1;
 
 
 class Ube4_1Calc {
-  const CONVERT_UNIT_PARAMS = [
-    UBE_ATTACK => 'attack',
-    UBE_ARMOR  => 'armor',
-    UBE_SHIELD => 'shield',
+  const BONUS_LIST = [
+    UBE_ATTACK => UBE_ATTACK,
+    UBE_ARMOR  => UBE_ARMOR,
+    UBE_SHIELD => UBE_SHIELD,
   ];
 
-  public $ube_combat_bonus_list;
-  public $ube_convert_techs;
+  const HP_DESTRUCTION_LIMIT_PERCENT = 75; // How much ship structure should be damaged for instant destruction chance, %
+  const DEFENSE_GIVEBACK_PERCENT = 75; // How much defence unit could be restored after destruction
+  const DEFENSE_GIVEBACK_MIN_PERCENT = 80; // Minimum percent of defence to give back
+  const DEFENSE_GIVEBACK_MAX_PERCENT = 120; // Maximum percent of defence to give back
+  const DEBRIS_FROM_SHIPS_MIN_PERCENT = 20; // Minimum amount of debris from destroyed ships
+  const DEBRIS_FROM_SHIPS_MAX_PERCENT = 40; // Maximum amount of debris from destroyed ships
+  const DEBRIS_FROM_CARGO_MIN_PERCENT = 30; // Minimum amount of debris dropped from cargo bays of destroyed ships
+  const DEBRIS_FROM_CARGO_MAX_PERCENT = 70; // Maximum amount of debris dropped from cargo bays of destroyed ships
+
+  const MOON_DEBRIS_MIN = 1000000; // Minimum amount of debris to span a moon
+  const MOON_CHANCE_MAX_PERCENT = 30; // Maximum chance to span a moon
+
 
   public function __construct() {
-    global $ube_combat_bonus_list, $ube_convert_techs;
-
-    $this->ube_combat_bonus_list = $ube_combat_bonus_list;
-    $this->ube_convert_techs = $ube_convert_techs;
   }
 
   public function sn_ube_combat(&$combat_data) {
     // TODO: Сделать атаку по типам,  когда они будут
 
-    $start = microtime(true);
-    $this->sn_ube_combat_prepare_first_round($combat_data);
+    $combat_data[UBE_TIME_SPENT] = microtime(true);
+    $this->sn_ube_combat_round_prepare($combat_data, 0);
 
     for ($round = 1; $round <= 10; $round++) {
       // Готовим данные для раунда
@@ -41,59 +47,10 @@ class Ube4_1Calc {
         break;
       }
     }
-    $combat_data[UBE_TIME_SPENT] = microtime(true) - $start;
+    $combat_data[UBE_TIME_SPENT] = microtime(true) - $combat_data[UBE_TIME_SPENT];
 
     // Делать это всегда - нам нужны результаты боя: луна->обломки->количество осташихся юнитов
     $this->sn_ube_combat_analyze($combat_data);
-  }
-
-  // ------------------------------------------------------------------------------------------------
-  protected function sn_ube_combat_prepare_first_round(&$combat_data) {
-    // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
-    $first_round_data = array();
-    foreach ($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
-      $fleet_info[UBE_COUNT] = is_array($fleet_info[UBE_COUNT]) ? $fleet_info[UBE_COUNT] : array();
-      $player_data = &$combat_data[UBE_PLAYERS][$fleet_info[UBE_OWNER]];
-      $fleet_info[UBE_FLEET_TYPE] = $player_data[UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS;
-
-      foreach ($this->ube_combat_bonus_list as $bonus_id => $bonus_value) {
-        // Вычисляем бонус игрока
-        $bonus_value = isset($player_data[UBE_BONUSES][$bonus_id]) ? $player_data[UBE_BONUSES][$bonus_id] : 0;
-        // Добавляем к бонусам флота бонусы игрока
-        $fleet_info[UBE_BONUSES][$bonus_id] += $bonus_value;
-      }
-
-      $first_round_data[$fleet_id][UBE_COUNT] = $fleet_info[UBE_PRICE] = array();
-      foreach ($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
-        if ($unit_count <= 0) {
-          continue;
-        }
-
-        $unit_info = get_unit_param($unit_id);
-        // Заполняем информацию о кораблях в информации флота
-        foreach ($this->ube_combat_bonus_list as $bonus_id => $bonus_value) {
-          $fleet_info[$bonus_id][$unit_id] = floor($unit_info[static::CONVERT_UNIT_PARAMS[$bonus_id]] * (1 + $fleet_info[UBE_BONUSES][$bonus_id]));
-        }
-        $fleet_info[UBE_AMPLIFY][$unit_id] = $unit_info[P_AMPLIFY];
-        // TODO: Переделать через get_ship_data()
-        $fleet_info[UBE_CAPACITY][$unit_id] = $unit_info[P_CAPACITY];
-        $fleet_info[UBE_TYPE][$unit_id] = $unit_info[P_UNIT_TYPE];
-        // TODO: Переделать через список ресурсов
-        $fleet_info[UBE_PRICE][RES_METAL]    [$unit_id] = $unit_info[P_COST][RES_METAL];
-        $fleet_info[UBE_PRICE][RES_CRYSTAL]  [$unit_id] = $unit_info[P_COST][RES_CRYSTAL];
-        $fleet_info[UBE_PRICE][RES_DEUTERIUM][$unit_id] = $unit_info[P_COST][RES_DEUTERIUM];
-        $fleet_info[UBE_PRICE][RES_DARK_MATTER][$unit_id] = $unit_info[P_COST][RES_DARK_MATTER];
-
-        // Копируем её в информацию о первом раунде
-        $first_round_data[$fleet_id][UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id] * $unit_count;
-        $first_round_data[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
-        $first_round_data[$fleet_id][UBE_ARMOR_REST][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id];
-        $first_round_data[$fleet_id][UBE_SHIELD_REST][$unit_id] = $fleet_info[UBE_SHIELD][$unit_id];
-      }
-    }
-    $combat_data[UBE_ROUNDS][0][UBE_FLEETS] = $first_round_data;
-    $combat_data[UBE_ROUNDS][1][UBE_FLEETS] = $first_round_data;
-    $this->sn_ube_combat_round_prepare($combat_data, 0);
   }
 
 // ------------------------------------------------------------------------------------------------
@@ -113,7 +70,7 @@ class Ube4_1Calc {
           continue;
         }
 
-// TODO:  Добавить процент регенерации щитов
+        // TODO:  Добавить процент регенерации щитов
 
         // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
         $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
@@ -123,18 +80,16 @@ class Ube4_1Calc {
         $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
         $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $unit_count;
         $fleet_data[UBE_SHIELD_REST][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id];
-        // $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * ($combat_data[UBE_OPTIONS][UBE_METHOD] ? $unit_count : 1);
-        // $fleet_data[UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR_BASE][$unit_id] * $unit_count;
       }
 
       // Суммируем данные по флоту
-      foreach ($this->ube_combat_bonus_list as $bonus_id) {
+      foreach (static::BONUS_LIST as $bonus_id) {
         $round_data[$fleet_type][$bonus_id][$fleet_id] += is_array($fleet_data[$bonus_id]) ? array_sum($fleet_data[$bonus_id]) : 0;
       }
     }
 
     // Суммируем данные по атакующим и защитникам
-    foreach ($this->ube_combat_bonus_list as $bonus_id) {
+    foreach (static::BONUS_LIST as $bonus_id) {
       $round_data[UBE_TOTAL][UBE_DEFENDERS][$bonus_id] = array_sum($round_data[UBE_DEFENDERS][$bonus_id]);
       $round_data[UBE_TOTAL][UBE_ATTACKERS][$bonus_id] = array_sum($round_data[UBE_ATTACKERS][$bonus_id]);
     }
@@ -153,14 +108,13 @@ class Ube4_1Calc {
   protected function sn_ube_combat_analyze(&$combat_data) {
     global $config;
 
-//  $combat_data[UBE_OUTCOME] = array();
+    $isSimulator = $combat_data[UBE_OPTIONS][UBE_SIMULATOR];
     $combat_data[UBE_OPTIONS][UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
 
     $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
     foreach (array(RES_CRYSTAL => 'rpg_exchange_crystal', RES_DEUTERIUM => 'rpg_exchange_deuterium', RES_DARK_MATTER => 'rpg_exchange_darkMatter') as $resource_id => $resource_name) {
       $exchange[$resource_id] = $config->$resource_name * $exchange[RES_METAL];
     }
-//  $total_resources_value = array_sum($exchange);
 
     // Переменные для быстрого доступа к подмассивам
     $outcome = &$combat_data[UBE_OUTCOME];
@@ -186,22 +140,8 @@ class Ube4_1Calc {
 
         // Восстановление обороны - 75% от уничтоженной
         if ($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE) {
-          $giveback_chance = 75; // TODO Configure
-          $units_lost = $unit_count - $units_left;
-          if ($combat_data[UBE_OPTIONS][UBE_SIMULATOR]) { // for simulation just return 75% of loss
-            $units_giveback = round($units_lost * $giveback_chance / 100);
-          } else {
-            if ($unit_count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
-              $units_giveback = round($units_lost * mt_rand($giveback_chance * 0.8, $giveback_chance * 1.2) / 100);
-            } else { //if there were less then 10 defense elements - calculating giveback per element
-              $units_giveback = 0;
-              for ($i = 1; $i <= $units_lost; $i++) {
-                if (mt_rand(1, 100) <= $giveback_chance) {
-                  $units_giveback++;
-                }
-              }
-            }
-          }
+          $units_giveback = $this->defenceGiveBack($unit_count, $units_left, $isSimulator);
+
           $units_left += $units_giveback;
           $fleet_outcome[UBE_DEFENCE_RESTORE][$unit_id] = $units_giveback;
         }
@@ -228,7 +168,16 @@ class Ube4_1Calc {
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if ($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
-              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
+              $debrisFraction = (
+                $isSimulator
+                  ? (
+                    static::DEBRIS_FROM_SHIPS_MIN_PERCENT +
+                    static::DEBRIS_FROM_SHIPS_MAX_PERCENT) / 2
+                  : mt_rand(
+                  static::DEBRIS_FROM_SHIPS_MIN_PERCENT,
+                  static::DEBRIS_FROM_SHIPS_MAX_PERCENT)
+                ) / 100;
+              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * $debrisFraction);
             }
 
             // ...в металле
@@ -266,7 +215,15 @@ class Ube4_1Calc {
           $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
+          $cargoDroppedFraction = (
+            $isSimulator
+              ? (static::DEBRIS_FROM_CARGO_MIN_PERCENT +
+                static::DEBRIS_FROM_CARGO_MAX_PERCENT) / 2
+              : mt_rand(
+              static::DEBRIS_FROM_CARGO_MIN_PERCENT,
+              static::DEBRIS_FROM_CARGO_MAX_PERCENT)
+            ) / 100;
+          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * $cargoDroppedFraction); // TODO: Configurize
           $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $exchange[$resource_id];
         }
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
@@ -300,31 +257,29 @@ class Ube4_1Calc {
 // ------------------------------------------------------------------------------------------------
   protected function sn_ube_combat_analyze_moon(&$outcome, $is_simulator) {
     $outcome[UBE_DEBRIS_TOTAL] = 0;
-    foreach (array(RES_METAL, RES_CRYSTAL) as $resource_id) // TODO via array
-    {
+    foreach ([RES_METAL, RES_CRYSTAL] as $resource_id) {
       $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
     }
 
     if ($outcome[UBE_DEBRIS_TOTAL]) {
-      // TODO uni_calculate_moon_chance
-      $moon_chance = min($outcome[UBE_DEBRIS_TOTAL] / 1000000, 30); // TODO Configure
-      $moon_chance = $moon_chance >= 1 ? $moon_chance : 0;
-      $outcome[UBE_MOON_CHANCE] = $moon_chance;
-      if ($moon_chance) {
-        if ($is_simulator || mt_rand(1, 100) <= $moon_chance) {
-          $outcome[UBE_MOON_SIZE] = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
+      if ($outcome[UBE_MOON_CHANCE] = \Universe::moonCalcChanceFromDebris($outcome[UBE_DEBRIS_TOTAL])) {
+        $outcome[UBE_MOON_SIZE] = $is_simulator
+          // On simulator moon always will be average size
+          ? round(max(1, $outcome[UBE_MOON_CHANCE] / 2) * 150 + 2000)
+          : \Universe::moonRollSize($outcome[UBE_DEBRIS_TOTAL]);
+        if ($outcome[UBE_MOON_CHANCE]) {
+          // Got moon
           $outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
 
-          if ($outcome[UBE_DEBRIS_TOTAL] <= 30000000) {
+          if ($outcome[UBE_DEBRIS_TOTAL] <= \Universe::moonMaxDebris()) {
             $outcome[UBE_DEBRIS_TOTAL] = 0;
-            $outcome[UBE_DEBRIS] = array();
+            $outcome[UBE_DEBRIS] = [];
           } else {
-            $moon_debris_spent = 30000000;
+            $moon_debris_spent = \Universe::moonMaxDebris();
             $moon_debris_left_percent = ($outcome[UBE_DEBRIS_TOTAL] - $moon_debris_spent) / $outcome[UBE_DEBRIS_TOTAL];
 
             $outcome[UBE_DEBRIS_TOTAL] = 0;
-            foreach (array(RES_METAL, RES_CRYSTAL) as $resource_id) // TODO via array
-            {
+            foreach ([RES_METAL, RES_CRYSTAL] as $resource_id) {
               $outcome[UBE_DEBRIS][$resource_id] = floor($outcome[UBE_DEBRIS][$resource_id] * $moon_debris_left_percent);
               $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
             }
@@ -475,7 +430,7 @@ class Ube4_1Calc {
 
 
   // ------------------------------------------------------------------------------------------------
-// Рассчитывает результат столкновения двух юнитов ака ход
+  // Рассчитывает результат столкновения двух юнитов ака ход
   protected function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options) {
     if ($defend_fleet_data[UBE_COUNT][$defend_unit_id] <= 0) {
       return;
@@ -489,7 +444,7 @@ class Ube4_1Calc {
     $amplify = $amplify ? $amplify : 1;
     $amplified_damage = floor($direct_damage * $amplify);
 
-    // Проверяем - не взорвался ли текущий юнит
+    // Проверяем - не взорвался ли текущий раненный юнит
     $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
 
     $defend_unit_base_defence = $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id] + $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
@@ -510,16 +465,23 @@ class Ube4_1Calc {
     $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
   }
 
+  /**
+   * @param $defend_fleet_data
+   * @param $defend_unit_id
+   * @param $amplified_damage
+   * @param $units_lost
+   * @param $units_boomed
+   * @param $combat_options
+   *
+   * @return bool
+   */
   protected function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed, &$combat_options) {
     $unit_is_lost = false;
 
     $units_boomed = $units_boomed ? $units_boomed : 0;
     $units_lost = $units_lost ? $units_lost : 0;
 
-    $boom_limit = 75; // Взрываемся на 75% прочности
     if ($defend_fleet_data[UBE_COUNT][$defend_unit_id] > 0 && $amplified_damage) {
-      // $defend_fleet_info = &$defend_fleet_data[UBE_FLEET_INFO];
-
       $damage_to_shield = min($amplified_damage, $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id]);
       $amplified_damage -= $damage_to_shield;
       $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] -= $damage_to_shield;
@@ -531,13 +493,13 @@ class Ube4_1Calc {
       // Если брони не осталось - юнит потерян
       if ($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] <= 0) {
         $unit_is_lost = true;
-      } // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
-      elseif ($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] <= 0) {
+      } elseif ($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] <= 0) {
+        // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
         $last_unit_hp = $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
         $last_unit_percent = $last_unit_hp / $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id] * 100;
 
-        $random = $combat_options[UBE_SIMULATOR] ? $boom_limit / 2 : mt_rand(0, 100);
-        if ($last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
+        $random = $combat_options[UBE_SIMULATOR] ? static::HP_DESTRUCTION_LIMIT_PERCENT / 2 : mt_rand(0, 100);
+        if ($last_unit_percent <= static::HP_DESTRUCTION_LIMIT_PERCENT && $last_unit_percent <= $random) {
           $unit_is_lost = true;
           $units_boomed++;
           $damage_to_armor += $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
@@ -560,6 +522,41 @@ class Ube4_1Calc {
     }
 
     return $unit_is_lost;
+  }
+
+  /**
+   * @param $unit_count
+   * @param $units_left
+   * @param $isSimulator
+   *
+   * @return int
+   */
+  protected function defenceGiveBack($unit_count, $units_left, $isSimulator) {
+    $units_lost = $unit_count - $units_left;
+    if ($isSimulator) {
+      // for simulation just return 75% of loss
+      $units_giveback = round($units_lost * static::DEFENSE_GIVEBACK_PERCENT / 100);
+    } else {
+      if ($unit_count > 10) {
+        // if there were more then 10 defense elements - mass-calculating giveback
+
+        // Calculating random part of return - it would be a decimal
+        $random = mt_rand(static::DEFENSE_GIVEBACK_MIN_PERCENT * 1000, static::DEFENSE_GIVEBACK_MAX_PERCENT * 1000) / (100 * 1000); // Trick to get random with high precision
+        // Limiting max return to 100% - in case if we messed with min/max chance and/or giveback
+        $random = min($random * static::DEFENSE_GIVEBACK_PERCENT, 100);
+        $units_giveback = round($units_lost * $random / 100);
+      } else {
+        // if there were less then 10 defense elements - calculating giveback per element
+        $units_giveback = 0;
+        for ($i = 1; $i <= $units_lost; $i++) {
+          if (mt_rand(1, 100) <= static::DEFENSE_GIVEBACK_PERCENT) {
+            $units_giveback++;
+          }
+        }
+      }
+    }
+
+    return $units_giveback;
   }
 
 }

@@ -55,98 +55,6 @@ if (BE_DEBUG === true) {
   require_once('ube_zi_helpers.php');
 }
 
-global $ube_combat_bonus_list, $ube_convert_techs, $ube_convert_to_techs;
-
-$ube_combat_bonus_list = array(
-  UBE_ATTACK => UBE_ATTACK,
-  UBE_ARMOR  => UBE_ARMOR,
-  UBE_SHIELD => UBE_SHIELD,
-);
-
-$ube_convert_techs = array(
-  TECH_WEAPON => UBE_ATTACK,
-  TECH_ARMOR  => UBE_ARMOR,
-  TECH_SHIELD => UBE_SHIELD,
-);
-
-$ube_convert_to_techs = array(
-  UBE_ATTACK => 'attack',
-  UBE_ARMOR  => 'armor',
-  UBE_SHIELD => 'shield',
-);
-
-
-// ------------------------------------------------------------------------------------------------
-//
-/**
- * Заполняет данные по флоту
- *
- * Через жопу для сохранения обратной совместимости
- *
- * @param $combat_data
- * @param $fleet
- * @param $is_attacker
- *
- * @return mixed
- *
- * @deprecated
- */
-function ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker) { return sn_function_call('ube_attack_prepare_fleet', array(&$combat_data, &$fleet, $is_attacker)); }
-
-/**
- * Заполняет данные по флоту
- *
- * Через жопу для сохранения обратной совместимости
- *
- * @param $combat_data
- * @param $fleet
- * @param $is_attacker
- *
- * @deprecated
- */
-function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker) {
-  /**
-   * @var \Ube\Ube4_1\Ube4_1Prepare $ubePreparator
-   */
-  $ubePreparator = $combat_data[UBE_OBJ_PREPARATOR];
-  $ubePreparator->sn_ube_attack_prepare_fleet($combat_data, $fleet, $is_attacker);
-//  $fleet_owner_id = $fleet['fleet_owner'];
-//  $fleet_id = $fleet['fleet_id'];
-//
-//  ube_attack_prepare_player($combat_data, $fleet_owner_id, $is_attacker);
-//
-//  $fleet_data = sys_unit_str2arr($fleet['fleet_array']);
-//
-//  $combat_data[UBE_FLEETS][$fleet_id][UBE_OWNER] = $fleet_owner_id;
-//  $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
-//  $fleet_info[UBE_FLEET_GROUP] = $fleet['fleet_group'];
-//  foreach ($fleet_data as $unit_id => $unit_count) {
-//    if (!$unit_count) {
-//      continue;
-//    }
-//
-//    $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
-//    if ($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-//      $fleet_info[UBE_COUNT][$unit_id] = $unit_count;
-//    }
-//  }
-//
-//  $fleet_info[UBE_RESOURCES] = array(
-//    RES_METAL     => $fleet['fleet_resource_metal'],
-//    RES_CRYSTAL   => $fleet['fleet_resource_crystal'],
-//    RES_DEUTERIUM => $fleet['fleet_resource_deuterium'],
-//  );
-//
-//  $fleet_info[UBE_PLANET] = array(
-//    // TODO: Брать имя и кэшировать ИД и имя планеты?
-//    PLANET_GALAXY => $fleet['fleet_start_galaxy'],
-//    PLANET_SYSTEM => $fleet['fleet_start_system'],
-//    PLANET_PLANET => $fleet['fleet_start_planet'],
-//    PLANET_TYPE   => $fleet['fleet_start_type'],
-//  );
-}
-
-
 // ------------------------------------------------------------------------------------------------
 // Рассылает письма всем участникам боя
 function sn_ube_message_send(&$combat_data) {
@@ -330,29 +238,27 @@ function sn_ube_combat_result_apply(&$combat_data) {
   }
 
   if ($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
-    $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], '', false);
+    $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], false);
     $outcome[UBE_MOON_NAME] = $moon_row['name'];
     unset($moon_row);
   } elseif ($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS) {
     DBStaticPlanet::db_planet_delete_by_id($planet_id);
   }
 
-  {
-    $bashing_list = array();
-    foreach ($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
-      if ($player_info[UBE_ATTACKER]) {
-        if ($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
-          $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
-        }
-        if ($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
-          $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-          db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
-        }
+  $bashing_list = array();
+  foreach ($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
+    if ($player_info[UBE_ATTACKER]) {
+      if ($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
+        $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+      }
+      if ($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
+        $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
+        db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
       }
     }
-    $bashing_list = implode(',', $bashing_list);
-    if ($bashing_list) {
-      doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
-    }
+  }
+  $bashing_list = implode(',', $bashing_list);
+  if ($bashing_list) {
+    doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
   }
 }

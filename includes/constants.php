@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.1');
+define('SN_VERSION', '43a12.2');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1767,6 +1767,7 @@ define('WATCHDOG_TIME_UNIX', 0);
 define('WATCHDOG_TIME_SQL', 1);
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
+define('PLAYER_INACTIVE_TIMEOUT', PERIOD_WEEK); // Player inactivity timeout to become 'i'-marked player
 
 define('EVENT_ANY', -2);
 define('EVENT_ALL', -1);

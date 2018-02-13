@@ -21,6 +21,16 @@ class DBStaticPlanet {
     return empty($result) ? null : $result;
   }
 
+  /**
+   * @param        $galaxy
+   * @param        $system
+   * @param        $planet
+   * @param        $planet_type
+   * @param bool   $for_update
+   * @param string $fields
+   *
+   * @return bool|mixed
+   */
   public static function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {
     return classSupernova::db_get_record_list(LOC_PLANET,
       "{{planets}}.`galaxy` = {$galaxy} AND {{planets}}.`system` = {$system} AND {{planets}}.`planet` = {$planet} AND {{planets}}.`planet_type` = {$planet_type}", true);

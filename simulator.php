@@ -28,7 +28,8 @@ if ($_POST['submit'] || $execute) {
   $replay = sn_ube_simulator_encode_replay($sym_defender, 'D');
   $replay .= sn_ube_simulator_encode_replay($sym_attacker, 'A');
 
-  $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
+  $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
+  $combat_data = $ubePrepare->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
   $combat_data[UBE_OPTIONS][UBE_METHOD] = classSupernova::$config->game_ube_method ? classSupernova::$config->game_ube_method : 0;
   $ubeCalc = new \Ube\Ube4_1\Ube4_1Calc();

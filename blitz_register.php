@@ -79,11 +79,6 @@ pdump($system_step, '$system_step');
       $string_data = explode(',', $string_data);
       $username_safe = $string_data[0];
 
-//      $user_new = player_create($username_safe, $string_data[1], '', array(
-//        'galaxy' => $galaxy,
-//        'system' => $system,
-//        'planet' => $planet,
-//      ), $create_result);
       $user_new = player_create($username_safe, sys_random_string(), array(
         'password_encoded_unsafe' => core_auth::password_encode($string_data[1], ''),
 
@@ -91,9 +86,8 @@ pdump($system_step, '$system_step');
         'system' => $system,
         'planet' => $planet,
       ));
-      // $user_new = &$create_result[F_LOGIN_USER];
 
-      $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], 30, '', false);
+      $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], Universe::MOON_MAX_SIZE, false);
 
       if(($system += $system_step) >= classSupernova::$config->game_maxSystem) {
         $galaxy++;

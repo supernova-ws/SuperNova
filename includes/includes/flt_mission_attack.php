@@ -7,7 +7,11 @@ require_once(SN_ROOT_PHYSICAL . 'includes/includes/ube_attack_calculate.php');
 */
 
 
-function flt_planet_capture(&$fleet_row, &$combat_data) { return sn_function_call('flt_planet_capture', array(&$fleet_row, &$combat_data, &$result)); }
+function flt_planet_capture(&$fleet_row, &$combat_data) {
+  $result = null;
+
+  return sn_function_call('flt_planet_capture', array(&$fleet_row, &$combat_data, &$result));
+}
 
 function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) {
   return $result;
@@ -34,13 +38,13 @@ function flt_mission_attack($mission_data, $save_report = true) {
     return null;
   }
 
+  $acs_fleet_list = empty($fleet_row['fleet_group']) ? [$fleet_row] : fleet_list_by_group($fleet_row['fleet_group']);
   $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $fleet_row['fleet_start_time']);
+
   $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
-  $combat_data = $ubePrepare->ube_attack_prepare($mission_data, $fleet_list_on_hold);
-  /**
-   * @var \Ube\Ube4_1\Ube4_1Calc $ubeCalc
-   */
-  $ubeCalc = $combat_data[UBE_OBJ_CALCULATOR];
+  $combat_data = $ubePrepare->prepareFromMissionArray($mission_data, $fleet_list_on_hold, $acs_fleet_list);
+
+  $ubeCalc = new \Ube\Ube4_1\Ube4_1Calc();
   $ubeCalc->sn_ube_combat($combat_data);
 
   flt_planet_capture($fleet_row, $combat_data);

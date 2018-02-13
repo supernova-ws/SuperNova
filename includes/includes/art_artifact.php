@@ -26,14 +26,26 @@ function art_use(&$user, &$planetrow, $unit_id)
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $unit_level--;
-          $moon_chance = $unit_id == ART_LHC ? uni_calculate_moon_chance($planetrow['debris_metal'] + $planetrow['debris_crystal']) : (
-            $unit_id == ART_HOOK_MEDIUM ? mt_rand(1100, 8999) : ($unit_id == ART_HOOK_SMALL ? 1100 : 8999)
-          );
-          $random = $unit_id == ART_LHC ? mt_rand(1, 100) : $moon_chance;
-          if($random <= $moon_chance)
+          switch ($unit_id) {
+            case ART_HOOK_SMALL:
+              $moonSize = \Universe::MOON_MIN_SIZE;
+            break;
+            case ART_HOOK_MEDIUM:
+              $moonSize = Universe::moonSizeRandom();
+            break;
+            case ART_HOOK_LARGE:
+              $moonSize = \Universe::MOON_MAX_SIZE;
+            break;
+            case ART_LHC:
+            default:
+              $moonSize = Universe::moonRollSize($planetrow['debris_metal'] + $planetrow['debris_crystal']);
+            break;
+          }
+
+          if($moonSize)
           {
-            $new_moon_row = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moon_chance);
-            $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_row['name'], uni_render_coordinates($planetrow), HelperString::numberFloorAndFormat($moon_chance));
+            $new_moon_row = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moonSize);
+            $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_row['name'], uni_render_coordinates($planetrow), HelperString::numberFloorAndFormat($moonSize));
           }
           else
           {

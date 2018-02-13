@@ -40,16 +40,16 @@ function sn_unit_relocate($unit_id, $from, $to) { }
 
 /**
  * @param array $user
- * @param array $planet
+ * @param array $planet ([])
  * @param int   $unit_id
- * @param bool  $for_update
- * @param bool  $plain
+ * @param bool  $for_update (false)
+ * @param bool  $plain (false)
  *
  * @return int|float|bool
  */
-function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, array(&$user, $planet, $unit_id, $for_update, $plain, &$result)); }
+function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, [&$user, $planet, $unit_id, $for_update, $plain, &$result]); }
 
-function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result) {
+function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false, &$result) {
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
 
