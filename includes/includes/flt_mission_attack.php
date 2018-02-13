@@ -34,7 +34,7 @@ function flt_mission_attack($mission_data, $save_report = true) {
     return null;
   }
 
-  $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $ube_time);
+  $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $fleet_row['fleet_start_time']);
   $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
   $combat_data = $ubePrepare->ube_attack_prepare($mission_data, $fleet_list_on_hold);
   /**
