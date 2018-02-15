@@ -29,7 +29,7 @@ class Ube4_1Prepare {
   public function prepareFromMissionArray(&$mission_data, &$fleet_list_on_hold, $acs_fleet_list) {
     /*
     UBE_OPTIONS[UBE_LOADED]
-    UBE_OPTIONS[UBE_SIMULATOR]
+    UBE_OPTIONS[UBE_SIMULATOR_STATIC]
     UBE_OPTIONS[UBE_EXCHANGE]
     UBE_OPTIONS[UBE_MOON_WAS]
     */
@@ -194,9 +194,9 @@ class Ube4_1Prepare {
   public function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
     $combat_data = [
       UBE_OPTIONS => [
-//      UBE_SIMULATOR    => sys_get_param_int('simulator'),
-        UBE_SIMULATOR    => 1,
-        UBE_MISSION_TYPE => MT_ATTACK,
+        UBE_SIMULATOR        => true,
+        UBE_SIMULATOR_STATIC => sys_get_param_int('simulator'),
+        UBE_MISSION_TYPE     => MT_ATTACK,
       ],
 
       UBE_PLAYERS => [],

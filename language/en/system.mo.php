@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a10.2
+* @version 43a12.4
 *
 */
 
@@ -826,6 +826,7 @@ $a_lang_array = (array(
   'ube_report_info_bbcode' => 'BBCode for posting in chat',
   'ube_report_info_sfr' => 'Battle finshed in one round by attacker loss<br />Possible SFR',
   'ube_report_info_debris' => 'Debris on orbit',
+  'ube_report_info_debris_simulator' => '(does not counting moon)',
   'ube_report_info_loot' => 'Loot',
   'ube_report_info_loss' => 'Battle losses',
   'ube_report_info_generate' => 'Page generation time',

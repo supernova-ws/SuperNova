@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.2');
+define('SN_VERSION', '43a12.4');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1433,6 +1433,7 @@ define('UBE_DEFENDER_ACTIVE', 'UBE_DEFENDER_ACTIVE');
 define('UBE_MISSION_TYPE', 'UBE_MISSION_TYPE');
 define('UBE_LOADED', 'UBE_LOADED');
 define('UBE_SIMULATOR', 'UBE_SIMULATOR');
+define('UBE_SIMULATOR_STATIC', 'UBE_SIMULATOR_STATIC');
 define('UBE_EXCHANGE', 'UBE_EXCHANGE');
 define('UBE_METHOD', 'UBE_METHOD');
 
@@ -1441,6 +1442,7 @@ define('UBE_OUTCOME', 'UBE_OUTCOME');
 define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');
 define('UBE_SFR', 'UBE_SFR');
 define('UBE_DEBRIS', 'UBE_DEBRIS');
+define('UBE_DEBRIS_ORIGINAL', 'UBE_DEBRIS_ORIGINAL');
 define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
 
 define('UBE_CAPTURE_RESULT', 'UBE_CAPTURE_RESULT');

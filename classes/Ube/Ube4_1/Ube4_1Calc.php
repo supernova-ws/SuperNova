@@ -22,9 +22,6 @@ class Ube4_1Calc {
   const DEBRIS_FROM_CARGO_MIN_PERCENT = 30; // Minimum amount of debris dropped from cargo bays of destroyed ships
   const DEBRIS_FROM_CARGO_MAX_PERCENT = 70; // Maximum amount of debris dropped from cargo bays of destroyed ships
 
-  const MOON_DEBRIS_MIN = 1000000; // Minimum amount of debris to span a moon
-  const MOON_CHANCE_MAX_PERCENT = 30; // Maximum chance to span a moon
-
 
   public function __construct() {
   }
@@ -56,7 +53,7 @@ class Ube4_1Calc {
 // ------------------------------------------------------------------------------------------------
 // Вычисление дополнительной информации для расчета раунда
   protected function sn_ube_combat_round_prepare(&$combat_data, $round) {
-    $is_simulator = $combat_data[UBE_OPTIONS][UBE_SIMULATOR];
+    $isSimulatorStatic = $combat_data[UBE_OPTIONS][UBE_SIMULATOR_STATIC];
 
     $round_data = &$combat_data[UBE_ROUNDS][$round];
     foreach ($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
@@ -73,8 +70,8 @@ class Ube4_1Calc {
         // TODO:  Добавить процент регенерации щитов
 
         // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
-        $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-        $fleet_data[UBE_SHIELD_BASE][$unit_id] = floor($fleet_info[UBE_SHIELD][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+        $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($isSimulatorStatic ? 1 : mt_rand(80, 120) / 100));
+        $fleet_data[UBE_SHIELD_BASE][$unit_id] = floor($fleet_info[UBE_SHIELD][$unit_id] * ($isSimulatorStatic ? 1 : mt_rand(80, 120) / 100));
         $fleet_data[UBE_ARMOR_BASE][$unit_id] = floor($fleet_info[UBE_ARMOR][$unit_id]);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
         $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
@@ -108,7 +105,7 @@ class Ube4_1Calc {
   protected function sn_ube_combat_analyze(&$combat_data) {
     global $config;
 
-    $isSimulator = $combat_data[UBE_OPTIONS][UBE_SIMULATOR];
+    $isSimulatorStatic = $combat_data[UBE_OPTIONS][UBE_SIMULATOR_STATIC];
     $combat_data[UBE_OPTIONS][UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
 
     $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
@@ -140,7 +137,7 @@ class Ube4_1Calc {
 
         // Восстановление обороны - 75% от уничтоженной
         if ($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE) {
-          $units_giveback = $this->defenceGiveBack($unit_count, $units_left, $isSimulator);
+          $units_giveback = $this->defenceGiveBack($unit_count, $units_left, $isSimulatorStatic);
 
           $units_left += $units_giveback;
           $fleet_outcome[UBE_DEFENCE_RESTORE][$unit_id] = $units_giveback;
@@ -169,7 +166,7 @@ class Ube4_1Calc {
             // Если это корабль - прибавляем потери к обломкам на орбите
             if ($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
               $debrisFraction = (
-                $isSimulator
+                $isSimulatorStatic
                   ? (
                     static::DEBRIS_FROM_SHIPS_MIN_PERCENT +
                     static::DEBRIS_FROM_SHIPS_MAX_PERCENT) / 2
@@ -216,7 +213,7 @@ class Ube4_1Calc {
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
           $cargoDroppedFraction = (
-            $isSimulator
+            $isSimulatorStatic
               ? (static::DEBRIS_FROM_CARGO_MIN_PERCENT +
                 static::DEBRIS_FROM_CARGO_MAX_PERCENT) / 2
               : mt_rand(
@@ -240,7 +237,7 @@ class Ube4_1Calc {
       if ($combat_data[UBE_OPTIONS][UBE_MOON_WAS]) {
         $outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
-        $this->sn_ube_combat_analyze_moon($outcome, $combat_data[UBE_OPTIONS][UBE_SIMULATOR]);
+        $this->sn_ube_combat_analyze_moon($outcome, $isSimulatorStatic);
       }
 
       // Лутаем ресурсы - если аттакер выиграл
@@ -261,13 +258,15 @@ class Ube4_1Calc {
       $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
     }
 
+    $outcome[UBE_DEBRIS_ORIGINAL] = $outcome[UBE_DEBRIS];
+
     if ($outcome[UBE_DEBRIS_TOTAL]) {
       if ($outcome[UBE_MOON_CHANCE] = \Universe::moonCalcChanceFromDebris($outcome[UBE_DEBRIS_TOTAL])) {
         $outcome[UBE_MOON_SIZE] = $is_simulator
           // On simulator moon always will be average size
           ? round(max(1, $outcome[UBE_MOON_CHANCE] / 2) * 150 + 2000)
           : \Universe::moonRollSize($outcome[UBE_DEBRIS_TOTAL]);
-        if ($outcome[UBE_MOON_CHANCE]) {
+        if ($outcome[UBE_MOON_SIZE]) {
           // Got moon
           $outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
 
@@ -498,7 +497,7 @@ class Ube4_1Calc {
         $last_unit_hp = $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
         $last_unit_percent = $last_unit_hp / $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id] * 100;
 
-        $random = $combat_options[UBE_SIMULATOR] ? static::HP_DESTRUCTION_LIMIT_PERCENT / 2 : mt_rand(0, 100);
+        $random = $combat_options[UBE_SIMULATOR_STATIC] ? static::HP_DESTRUCTION_LIMIT_PERCENT / 2 : mt_rand(0, 100);
         if ($last_unit_percent <= static::HP_DESTRUCTION_LIMIT_PERCENT && $last_unit_percent <= $random) {
           $unit_is_lost = true;
           $units_boomed++;

@@ -26,6 +26,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $unit_level--;
+          $updateDebris = false;
           switch ($unit_id) {
             case ART_HOOK_SMALL:
               $moonSize = \Universe::MOON_MIN_SIZE;
@@ -39,12 +40,13 @@ function art_use(&$user, &$planetrow, $unit_id)
             case ART_LHC:
             default:
               $moonSize = Universe::moonRollSize($planetrow['debris_metal'] + $planetrow['debris_crystal']);
+              $updateDebris = true;
             break;
           }
 
           if($moonSize)
           {
-            $new_moon_row = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moonSize);
+            $new_moon_row = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moonSize, $updateDebris);
             $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_row['name'], uni_render_coordinates($planetrow), HelperString::numberFloorAndFormat($moonSize));
           }
           else

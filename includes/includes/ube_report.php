@@ -567,9 +567,10 @@ function sn_ube_report_generate(&$combat_data, &$template_result) {
   }
 
   // Обломки
-  $debris = array();
-  foreach (array(RES_METAL, RES_CRYSTAL) as $resource_id) {
-    if ($resource_amount = $outcome[UBE_DEBRIS][$resource_id]) {
+  $debrisOutcome = $combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? $outcome[UBE_DEBRIS_ORIGINAL] : $outcome[UBE_DEBRIS];
+  $debris = [];
+  foreach ([RES_METAL, RES_CRYSTAL] as $resource_id) {
+    if ($resource_amount = $debrisOutcome[$resource_id]) {
       $debris[] = array(
         'NAME'   => $lang['tech'][$resource_id],
         'AMOUNT' => HelperString::numberFloorAndFormat($resource_amount),
@@ -595,6 +596,7 @@ function sn_ube_report_generate(&$combat_data, &$template_result) {
     'UBE_MISSION_TYPE'  => $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE],
     'MT_DESTROY'        => MT_DESTROY,
     'UBE_REPORT_CYPHER' => $combat_data[UBE_REPORT_CYPHER],
+    'UBE_IS_SIMULATOR'  => $combat_data[UBE_OPTIONS][UBE_SIMULATOR],
 
     'PLANET_TYPE_TEXT' => $lang['sys_planet_type_sh'][$template_result['PLANET_TYPE']],
 

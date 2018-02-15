@@ -26,7 +26,7 @@ if(sys_get_param_str('mode') == 'addit')
 
   sn_db_transaction_start();
   $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
-  uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], Universe::moonSizeRandom());
+  uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], Universe::moonSizeRandom(), false, ['name' => $MoonName]);
   sn_db_transaction_commit();
 
   messageBoxAdmin($lang['addm_done'], $lang['addm_title']);

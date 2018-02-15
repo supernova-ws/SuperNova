@@ -51,7 +51,7 @@ class Universe {
    */
   public static function moonRollSize($debrisTotal) {
     $roll = mt_rand(1, 100);
-    if($roll <= static::moonCalcChanceFromDebris($debrisTotal)) {
+    if ($roll <= static::moonCalcChanceFromDebris($debrisTotal)) {
       $moonSize = Universe::moonRollSizeSecondary($roll);
     } else {
       $moonSize = 0;

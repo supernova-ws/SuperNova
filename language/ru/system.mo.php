@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a10.2#
+* @version #43a12.4#
 *
 */
 
@@ -841,6 +841,7 @@ $a_lang_array = (array(
   'ube_report_info_bbcode' => 'BBCode для вставки в чат',
   'ube_report_info_sfr' => 'Бой закончился за один раунд проигрышем атакующего<br />Вероятна РМФ',
   'ube_report_info_debris' => 'Обломки на орбите',
+  'ube_report_info_debris_simulator' => '(не считая создания Луны)',
   'ube_report_info_loot' => 'Добыча',
   'ube_report_info_loss' => 'Боевые потери',
   'ube_report_info_generate' => 'Время генерации страницы',
