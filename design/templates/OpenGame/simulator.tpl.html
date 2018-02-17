@@ -33,22 +33,11 @@ function sym_set_all(group, value)
 }
 --></script>
 
-<h2>{COE_combatSimulator}</h2>
+<h2>{L_COE_combatSimulator}</h2>
 <form action='simulator.php' method='post'>
-<!--
-  Только для тестов
-  {L_ube_simulation} <input type="checkbox" name="simulator" checked="true" />
--->
+  {L_ube_simulation} <input type="checkbox" name="simulator" value="1" />
 <!--Проверка записи/чтения <input type="checkbox" name="reload" />-->
-  <table >
-<!--
-    <tr class="c_c">
-      <th>&nbsp;</th>
-      <th colspan="3">{L_sys_attacker}</th>
-      <th>{L_sys_defender}</th>
-    </tr>
--->
-
+  <table>
     <!-- BEGIN simulator -->
     <tr class="c_c">
       <!-- IF simulator.ID -->
