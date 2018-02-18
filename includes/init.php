@@ -52,6 +52,9 @@ classSupernova::init_global_objects();
 // AFTER init global objects 'cause vars.php uses some from config
 require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
 
+// Some time required to start from cold cache
+set_time_limit(60);
+
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
 SnBootstrap::init_debug_state();
