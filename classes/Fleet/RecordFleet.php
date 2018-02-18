@@ -185,7 +185,7 @@ class RecordFleet extends ActiveRecord {
    * @throws \Exception
    */
   public function changeResource($resourceId, $resourceCount) {
-    if(!array_key_exists($resourceId, $this->resources)) {
+    if(!array_key_exists($resourceId, $this->resources) || empty($resourceCount)) {
       return;
     }
 

@@ -161,7 +161,7 @@ class GlobalContainer extends ContainerPlus {
 
 
     // Models ----------------------------------------------------------------------------------------------------------
-    $gc->skinEntityClass = 'SkinV2';
+    $gc->skinEntityClass = \SkinV2::class;
     $gc->skinModel = function (GlobalContainer $gc) {
       return new \SkinModel($gc);
     };

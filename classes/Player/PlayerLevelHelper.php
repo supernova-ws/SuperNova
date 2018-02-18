@@ -133,8 +133,9 @@ class PlayerLevelHelper {
     $level = 0;
     do {
       $this->playerLevels[$level++] = $levelPoints;
+      $gotUser = doquery("SELECT 1 FROM `{{users}}` WHERE `total_points` > {$levelPoints} LIMIT 1", true);
       $levelPoints *= $multiplier;
-    } while (!empty($gotUser = doquery("SELECT 1 FROM `{{users}}` WHERE `total_points` > {$levelPoints} LIMIT 1", true)));
+    } while (!empty($gotUser));
   }
 
 }

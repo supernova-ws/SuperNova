@@ -6,12 +6,19 @@
 namespace Fleet;
 
 use \classSupernova;
+use Common\OutcomeManager;
 
 /**
  * Class MissionExplore
  * @package Fleet
  */
 class MissionExplore extends MissionData {
+  // -------------------------------------------------------------------------------------------------------------------
+  /**
+   * @var float[] $rates
+   */
+  protected static $rates;
+
   // -------------------------------------------------------------------------------------------------------------------
   /**
    * @var int $hardDmLimit
@@ -37,10 +44,30 @@ class MissionExplore extends MissionData {
 
   // -------------------------------------------------------------------------------------------------------------------
   /**
-   * @var float[] $rates
+   * @var array $outcome
    */
-  protected static $rates;
+  protected $outcome = [];
 
+  /**
+   * Primary outcome ID
+   *
+   * Shows global outcome
+   *
+   * @var int $outcomeType
+   */
+  protected $outcomeType = FLT_EXPEDITION_OUTCOME_NONE;
+
+  /**
+   * Secondary outcome data
+   *
+   * @var array $secondaryInfo
+   */
+  protected $secondaryInfo;
+
+  /**
+   * @var int $darkMatterFound
+   */
+  protected $darkMatterFound = 0;
 
   /**
    * How much ships LOST in expedition
@@ -61,52 +88,6 @@ class MissionExplore extends MissionData {
    */
   protected $resourcesFound = [];
 
-  protected $possibleOutcomes = [];
-
-  /**
-   * Random result which defines mission outcome
-   *
-   * @var int $randomValue
-   */
-  protected $randomValue = 0;
-
-  /**
-   * Primary outcome ID
-   *
-   * Shows global outcome
-   *
-   * @var int $outcomeType
-   */
-  protected $outcomeType = FLT_EXPEDITION_OUTCOME_NONE;
-
-  /**
-   * Current outcome description
-   *
-   * @var array $outcomeInfo
-   */
-  protected $outcomeInfo = [];
-
-  /**
-   * Shows secondary outcome if there is any
-   *
-   * Secondary outcome calculated as round((outcome['value'] - randomValue) / outcome['chance'] * 100, 6) - i.e. it is float percent
-   *
-   * @var float $secondaryPercent
-   */
-  protected $secondaryPercent = 0;
-
-  /**
-   * Secondary outcome description
-   *
-   * @var mixed $secondaryInfo
-   */
-  protected $secondaryInfo;
-
-  /**
-   * @var int $darkMatterFound
-   */
-  protected $darkMatterFound = 0;
-
   /**
    * @var string[] $message
    */
@@ -124,10 +105,22 @@ class MissionExplore extends MissionData {
     if (empty(static::$rates)) {
       static::$rates = classSupernova::$gc->economicHelper->getResourcesExchange();
     }
+
+    $this->shipsFound = [];
   }
 
   /**
-   * @throws \Exception
+   * @param float $multiplier
+   */
+  protected function applyShipLoss($multiplier) {
+    foreach ($this->fleetRecord->getShipList() as $unit_id => $unit_amount) {
+      $shipsLost = ceil($unit_amount * $multiplier);
+      $this->shipsLost[$unit_id] += $shipsLost;
+    }
+  }
+
+  /**
+   * Mission outcome: Lost all ships
    */
   protected function outcomeShipsLostAll() {
     $this->applyShipLoss(1);
@@ -135,31 +128,12 @@ class MissionExplore extends MissionData {
 
   /**
    * Mission outcome: Lost some ships
-   *
-   * @throws \Exception
    */
   protected function outcomeShipsLostPart() {
-    // Loosing from 2/10 to 9/10 of fleet
-    $fleetPartLost = $this->getRandomFleetPartLostMultiplier();
-    $this->applyShipLoss($fleetPartLost);
+    $this->applyShipLoss(1 / mt_rand(1, 3));
   }
 
-  /**
-   * @param float $multiplier
-   *
-   * @throws \Exception
-   */
-  protected function applyShipLoss($multiplier) {
-    foreach ($this->fleetRecord->getShipList() as $unit_id => $unit_amount) {
-      $shipsLost = ceil($unit_amount * $multiplier);
-      $this->shipsLost[$unit_id] += $shipsLost;
-      $this->fleetRecord->changeShipCount($unit_id, -$shipsLost);
-    }
-  }
 
-  /**
-   * @throws \Exception
-   */
   protected function outcomeShipsFound() {
     // Рассчитываем эквивалент найденного флота в метале
     $found_in_metal = min(
@@ -171,38 +145,38 @@ class MissionExplore extends MissionData {
     // 308 389 499 488 000 b x500
 
     // TODO - убрать рассовые корабли
+    $manager = new OutcomeManager();
     $can_be_found = $this->possibleShipsCosts();
-//    unset($can_be_found[SHIP_COLONIZER]);
-//    unset($can_be_found[SHIP_SPY]);
+    foreach ($can_be_found as $unitId => $temp) {
+      $manager->add($unitId, 1);
+    }
 
-    $this->shipsFound = [];
-    while (count($can_be_found) && $found_in_metal >= max($can_be_found)) {
-      $found_index = mt_rand(1, count($can_be_found)) - 1;
-      $found_ship = array_slice($can_be_found, $found_index, 1, true);
-      $found_ship_cost = reset($found_ship);
-      $found_ship_id = key($found_ship);
-
+    $foundFleet = [];
+    while (count($manager) && $found_in_metal >= 0) {
+      $foundUnitId = $manager->rollOutcome();
+      $found_ship_cost = $can_be_found[$foundUnitId];
       if ($found_ship_cost > $found_in_metal) {
-        unset($can_be_found[$found_ship_id]);
+        unset($can_be_found[$foundUnitId]);
+        $manager->remove($foundUnitId);
       } else {
         $found_ship_count = mt_rand(1, floor($found_in_metal / $found_ship_cost));
-        $this->shipsFound[$found_ship_id] += $found_ship_count;
+        $foundFleet[$foundUnitId] += $found_ship_count;
         $found_in_metal -= $found_ship_count * $found_ship_cost;
       }
     }
 
-    if (empty($this->shipsFound)) {
+    if (empty($foundFleet)) {
       $this->message[] = $this->lang['flt_mission_expedition']['outcomes'][$this->outcomeType]['no_result'];
     } else {
-      foreach ($this->shipsFound as $unit_id => $unit_amount) {
-        $this->fleetRecord->changeShipCount($unit_id, $unit_amount);
+      foreach ($foundFleet as $unit_id => $unit_amount) {
+        $this->shipsFound[$unit_id] += $unit_amount;
       }
     }
 
   }
 
   /**
-   * @throws \Exception
+   *
    */
   protected function outcomeResourcesFound() {
     // Рассчитываем количество найденных ресурсов
@@ -219,30 +193,26 @@ class MissionExplore extends MissionData {
       * $this->getRandomFoundResourcesMultiplier()
     );
 
+    $resourcesFound = [];
     // 30-70%% - metal
-    $this->resourcesFound[RES_METAL] = floor($found_in_metal * $this->getRandomFoundMetalMultiplier());
-    $found_in_metal -= $this->resourcesFound[RES_METAL];
+    $resourcesFound[RES_METAL] = floor($found_in_metal * $this->getRandomFoundMetalMultiplier());
+    $found_in_metal -= $resourcesFound[RES_METAL];
 
     // 50-100%% of rest - is crystal
     $found_in_crystal = floor($found_in_metal * static::$rates[RES_METAL] / static::$rates[RES_CRYSTAL]);
-    $this->resourcesFound[RES_CRYSTAL] = floor($this->getRandomFoundCrystalMultiplier() * $found_in_crystal);
-    $found_in_crystal -= $this->resourcesFound[RES_CRYSTAL];
+    $resourcesFound[RES_CRYSTAL] = floor($this->getRandomFoundCrystalMultiplier() * $found_in_crystal);
+    $found_in_crystal -= $resourcesFound[RES_CRYSTAL];
 
     // Rest - deuterium
-    $this->resourcesFound[RES_DEUTERIUM] = floor($found_in_crystal * static::$rates[RES_CRYSTAL] / static::$rates[RES_DEUTERIUM]);
+    $resourcesFound[RES_DEUTERIUM] = floor($found_in_crystal * static::$rates[RES_CRYSTAL] / static::$rates[RES_DEUTERIUM]);
 
-    if (array_sum($this->resourcesFound) <= 0) {
+    if (array_sum($resourcesFound) <= 0) {
       $this->message = $this->lang['flt_mission_expedition']['outcomes'][$this->outcomeType]['no_result'];
     } else {
-      foreach ($this->resourcesFound as $resourceId => $foundAmount) {
-        if (!$foundAmount) {
-          continue;
-        }
-
-        $this->fleetRecord->changeResource($resourceId, $foundAmount);
+      foreach ($resourcesFound as $resourceId => $foundAmount) {
+        $this->resourcesFound += $resourcesFound;
       }
     }
-
   }
 
   /**
@@ -253,18 +223,15 @@ class MissionExplore extends MissionData {
     $this->darkMatterFound = floor(
       min(
         $this->secondaryInfo[P_MULTIPLIER] * $this->fleetRecord->getCostInMetal() / static::$rates[RES_DARK_MATTER],
-        // Hard limit
+        // Hard limit - not counting game speed
         $this->hardDmLimit
       )
       // 75-100%%
-//      * mt_rand(750000, 1000000) / 1000000);
       * $this->getRandomFoundDmMultiplier()
     );
 
     if (!$this->darkMatterFound) {
       $this->message[] = $this->lang['flt_mission_expedition']['outcomes'][$this->outcomeType]['no_result'];
-    } else {
-      $this->dbAccountChangeDarkMatterAmount();
     }
   }
 
@@ -276,10 +243,15 @@ class MissionExplore extends MissionData {
       // Selecting selected variant
       $messages = $messages[$this->secondaryInfo[P_MESSAGE_ID]];
     }
+    $message =
+      // If there is only one string message - just adding it
+      is_string($messages)
+        ? $messages
+        // If there is array of possible messages - selecting one of them randomly
+        : (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
 
     // Adding outcome message to the front of other info
-    array_unshift($this->message, is_string($messages) ? $messages :
-      (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : ''));
+    array_unshift($this->message, $message);
   }
 
   /**
@@ -290,33 +262,13 @@ class MissionExplore extends MissionData {
       return;
     }
 
-//    var_dump('accomplished');
-//    return;
+    $this->outcome = $this->rollOutcome();
+    $this->outcomeType = $this->outcome[P_MISSION_EXPEDITION_OUTCOME];
+    if (!empty($this->outcome[P_MISSION_EXPEDITION_OUTCOME_SECONDARY])) {
+      // $this->rollSecondaryOutcome($this->outcome[P_MISSION_EXPEDITION_OUTCOME_SECONDARY]);
+      $this->secondaryInfo = OutcomeManager::rollArray($this->outcome[P_MISSION_EXPEDITION_OUTCOME_SECONDARY]);
+    }
 
-
-    $this->fillOutcomes();
-    $this->randomizeOutcome();
-
-//    $this->randomValue = 7; // TODO - REMOVE DEBUG!!!!!!!!!!!!!!!!
-
-    $this->getOutcomeInfo();
-    $this->getSecondaryOutcome();
-
-//    var_dump($this->randomValue);
-//    var_dump($this->outcomeType);
-//    var_dump($this->outcomeInfo);
-//    var_dump($this->secondaryPercent);
-//    var_dump($this->outcomeInfo);
-//    var_dump($this->possibleOutcomes);
-//    return;
-
-//    $mission_outcome = $this->outcomeInfo[P_MISSION_EXPEDITION_OUTCOME];
-
-    // Вычисляем вероятность выпадения данного числа в общем пуле
-//    $outcome_percent = ($this->outcomeInfo['value'] - $outcome_value) / $this->outcomeInfo['chance'];
-
-
-//    $msg_text_addon = '';
     switch ($this->outcomeType) {
       case FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL:
         $this->outcomeShipsLostAll();
@@ -346,90 +298,46 @@ class MissionExplore extends MissionData {
       break;
     }
 
-    $this->prependMainMessage();
 
-    // TODO - ДОПИСАТЬ!
+    // TODO - ДОПИСАТЬ В МОДУЛЕ!
     flt_mission_explore_addon_object($this);
 
-    return;
 
-//    db_user_set_by_id($this->fleetRecord->fleet_owner, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
     $this->dbPlayerUpdateExpeditionExpirience();
+    if (!empty($this->darkMatterFound)) {
+      $this->dbPlayerChangeDarkMatterAmount();
+    }
+    foreach ($this->shipsFound as $shipsFoundId => $shipsFoundAmount) {
+      $this->fleetRecord->changeShipCount($shipsFoundId, $shipsFoundAmount);
+    }
+    foreach ($this->shipsLost as $shipsLostId => $shipsLostAmount) {
+      $this->fleetRecord->changeShipCount($shipsLostId, -$shipsLostAmount);
+    }
+    foreach ($this->resourcesFound as $resourceId => $foundAmount) {
+      $this->fleetRecord->changeResource($resourceId, $foundAmount);
+    }
+    $this->dbFleetRecordUpdate();
 
-//    if ($this->darkMatterFound) {
-//      rpg_points_change($this->fleet['fleet_owner'], RPG_EXPEDITION, $this->darkMatterFound, 'Expedition Bonus');
-//      $this->message[] = sprintf($this->lang['flt_mission_expedition']['found_dark_matter'], $this->darkMatterFound);
-//    }
-
+    $this->prependMainMessage();
     $this->messageDumpUnits('found_dark_matter_new', [RES_DARK_MATTER => $this->darkMatterFound]);
     $this->messageDumpUnits('lost_fleet_new', $this->shipsLost);
     $this->messageDumpUnits('found_fleet_new', $this->shipsFound);
     $this->messageDumpUnits('found_resources_new', $this->resourcesFound);
-
-//    $this->fleetRecord->update();
-    $this->dbFleetRecordUpdate();
-
     $this->messageOutcome();
   }
 
   /**
+   * @return mixed|null
    */
-  protected function fillOutcomes() {
-    $this->possibleOutcomes = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
+  protected function rollOutcome() {
+    $possibleOutcomes = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
+
+    // Calculating chance that nothing happens
     $flt_stay_hours = ($this->fleetRecord->fleet_end_stay - $this->fleetRecord->fleet_start_time) / 3600 * $this->getGameExpeditionSpeed();
+    $nothingHappenChance = ceil($possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] / pow($flt_stay_hours, 1 / 1.7));
+    $possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = $nothingHappenChance;
 
-    $this->possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil($this->possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] / pow($flt_stay_hours, 1 / 1.7));
-
-    $chance_max = 0;
-    foreach ($this->possibleOutcomes as $key => &$value) {
-      // Removing outcomes without chances
-      if (empty($value['chance'])) {
-        unset($this->possibleOutcomes[$key]);
-        continue;
-      }
-      // Calculating limiting value for each outcome
-      $value['value'] = $value['chance'] + $chance_max;
-      $chance_max = $value['value'];
-    }
-  }
-
-  /**
-   * Wrapper for randomizing outcome
-   */
-  protected function randomizeOutcome() {
-    $lastOutcome = end($this->possibleOutcomes);
-    $chance_max = !is_array($lastOutcome) || empty($lastOutcome) ? 0 : $lastOutcome['value'];
-
-    $this->randomValue = $this->getRandomOutcomeValue(0, $chance_max);
-  }
-
-  /**
-   */
-  protected function getOutcomeInfo() {
-    $this->outcomeInfo = $this->possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE];
-    foreach ($this->possibleOutcomes as $key => $value) {
-      if ($this->randomValue <= $value['value']) {
-        $this->outcomeInfo = $value;
-        break;
-      }
-    }
-
-    $this->outcomeType = $this->outcomeInfo[P_MISSION_EXPEDITION_OUTCOME];
-  }
-
-  protected function getSecondaryOutcome() {
-    $this->secondaryPercent = round(($this->outcomeInfo['value'] - $this->randomValue) / $this->outcomeInfo['chance'] * 100, 6);
-
-    if (!empty($this->outcomeInfo[P_MISSION_EXPEDITION_OUTCOME_SECONDARY])) {
-      // First value is secondary outcome by default
-      $this->secondaryInfo = reset($this->outcomeInfo[P_MISSION_EXPEDITION_OUTCOME_SECONDARY]);
-      foreach ($this->outcomeInfo[P_MISSION_EXPEDITION_OUTCOME_SECONDARY] as $percent => $secondaryDescription) {
-        if ($percent <= $this->secondaryPercent) {
-          $this->secondaryInfo = $secondaryDescription;
-          break;
-        }
-      }
-    }
+    return OutcomeManager::rollArray($possibleOutcomes);
   }
 
   /**
@@ -443,10 +351,10 @@ class MissionExplore extends MissionData {
     }
 
     // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
-    $can_be_found = array();
+    $can_be_found = [];
     foreach ($this->fleetRecord->getShipList() as $shipId => $shipAmount) {
       $metalCost = $this->fleetRecord->getShipCostInMetal($shipId);
-      if (!empty($metalCost) && $metalCost < $max_metal_cost) {
+      if (!empty($metalCost) && $metalCost < $max_metal_cost && empty(get_unit_param($shipId, 'player_race'))) {
         $can_be_found[$ship_id] = $metalCost;
       }
     }
@@ -497,7 +405,7 @@ class MissionExplore extends MissionData {
     db_user_set_by_id($this->fleetRecord->fleet_owner, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
   }
 
-  protected function dbAccountChangeDarkMatterAmount() {
+  protected function dbPlayerChangeDarkMatterAmount() {
     rpg_points_change($this->fleet['fleet_owner'], RPG_EXPEDITION, $this->darkMatterFound, 'Expedition Bonus');
   }
 

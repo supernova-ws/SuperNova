@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.5');
+define('SN_VERSION', '43a12.6');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1282,6 +1282,8 @@ define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
 define('P_UNIT_PRODUCTION', 'production');
+
+define('P_CHANCE', 'chance');
 
 define('P_CHAT', 'chat');
 define('P_CHAT_COMMANDS', 'commands');

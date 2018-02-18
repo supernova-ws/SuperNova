@@ -545,57 +545,57 @@ $sn_data += array(
     GROUP_MISSION_EXPLORE_OUTCOMES => array(
       FLT_EXPEDITION_OUTCOME_NONE            => array(
         P_MISSION_EXPEDITION_OUTCOME => FLT_EXPEDITION_OUTCOME_NONE,
-        'chance'                     => 200,
+        P_CHANCE                     => 200,
       ),
       FLT_EXPEDITION_OUTCOME_LOST_FLEET      => array(
         P_MISSION_EXPEDITION_OUTCOME => FLT_EXPEDITION_OUTCOME_LOST_FLEET,
-        'chance'                     => 9,
+        P_CHANCE                     => 9,
       ),
       FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL  => array(
         P_MISSION_EXPEDITION_OUTCOME => FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL,
-        'chance'                     => 3,
+        P_CHANCE                     => 3,
       ),
       FLT_EXPEDITION_OUTCOME_FOUND_FLEET     => array(
         P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_FLEET,
-        'chance'                               => 200,
+        P_CHANCE                               => 200,
         'percent'                              => array(
           0 => 0.1,
           1 => 0.02,
           2 => 0.01,
         ),
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => array(
-          90  => [P_MULTIPLIER => 0.01, P_MESSAGE_ID => 2,],
-          99  => [P_MULTIPLIER => 0.02, P_MESSAGE_ID => 1,],
-          100 => [P_MULTIPLIER => 0.10, P_MESSAGE_ID => 0,],
-        ),
+        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
+          [P_CHANCE => 90, P_MULTIPLIER => 0.01, P_MESSAGE_ID => 2,],
+          [P_CHANCE =>  9, P_MULTIPLIER => 0.02, P_MESSAGE_ID => 1,],
+          [P_CHANCE =>  1, P_MULTIPLIER => 0.10, P_MESSAGE_ID => 0,],
+        ],
       ),
       FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
         P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES,
-        'chance'                               => 300,
+        P_CHANCE                               => 300,
         'percent'                              => array(
           0 => 0.1,
           1 => 0.050,
           2 => 0.025,
         ),
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => array(
-          90  => [P_MULTIPLIER => 0.025, P_MESSAGE_ID => 2,],
-          99  => [P_MULTIPLIER => 0.050, P_MESSAGE_ID => 1,],
-          100 => [P_MULTIPLIER => 0.100, P_MESSAGE_ID => 0,],
-        ),
+        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
+          [P_CHANCE => 90, P_MULTIPLIER => 0.025, P_MESSAGE_ID => 2,],
+          [P_CHANCE =>  9, P_MULTIPLIER => 0.050, P_MESSAGE_ID => 1,],
+          [P_CHANCE =>  1, P_MULTIPLIER => 0.100, P_MESSAGE_ID => 0,],
+        ],
       ),
       FLT_EXPEDITION_OUTCOME_FOUND_DM        => array(
         P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_DM,
-        'chance'                               => 100,
+        P_CHANCE                               => 100,
         'percent'                              => array(
           0 => 0.0100,
           1 => 0.0040,
           2 => 0.0010,
         ),
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => array(
-          90  => [P_MULTIPLIER => 0.0010, /*P_MESSAGE_ID => 2,*/],
-          99  => [P_MULTIPLIER => 0.0040, /*P_MESSAGE_ID => 1,*/],
-          100 => [P_MULTIPLIER => 0.0100, /*P_MESSAGE_ID => 0,*/],
-        ),
+        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
+          [P_CHANCE => 90, P_MULTIPLIER => 0.0010, /*P_MESSAGE_ID => 2,*/],
+          [P_CHANCE =>  9, P_MULTIPLIER => 0.0040, /*P_MESSAGE_ID => 1,*/],
+          [P_CHANCE =>  1, P_MULTIPLIER => 0.0100, /*P_MESSAGE_ID => 0,*/],
+        ],
       ),
       /*
       FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT => array(
