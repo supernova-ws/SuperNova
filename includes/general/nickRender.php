@@ -51,7 +51,7 @@ function playerNickOrder($array) {
   }
 
   // Adding what left of nick parts to resulting array
-  return array_merge($result, $array);
+  return array_merge_recursive_numeric($result, $array);
 }
 
 // Может принимать: (array)$user, $nick_render_array, $nick_render_array_html, $nick_render_string_compact
@@ -92,7 +92,7 @@ function player_nick_compact($nick_array) {
  */
 function player_nick_uncompact($nick_string) {
   $result = $nick_string;
-  if (is_string($nick_string) && strpos($nick_string, '{"') === 0) {
+  if (is_string($nick_string) && (strpos($nick_string, '{"') === 0 || strpos($nick_string, '["') === 0)) {
     $result = json_decode($nick_string, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
       $result = $nick_string;
@@ -259,3 +259,4 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
   return $result;
 }
+

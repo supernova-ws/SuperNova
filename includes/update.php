@@ -367,7 +367,14 @@ switch ($new_version) {
         }
 
         try {
-          upd_do_query("UPDATE `{{chat}}` SET `user` = '" . db_escape(json_encode(unserialize($row['user']))) . "' WHERE `messageid` = " . floatval($row['messageid']));
+          upd_do_query(
+            "UPDATE `{{chat}}` SET `user` = '" . db_escape(
+              json_encode(
+                unserialize($row['user'])
+                , JSON_FORCE_OBJECT
+              )
+            ) . "' WHERE `messageid` = " . floatval($row['messageid'])
+          );
         } catch (Exception $e) {
         };
       }
