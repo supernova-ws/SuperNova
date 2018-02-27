@@ -3,14 +3,60 @@
  * Created by Gorlum 04.12.2017 4:20
  */
 
-// TODO - поменять название
+global $nickSorting;
+$nickSorting = [
+  NICK_HTML,
+
+  NICK_FIRST,
+
+  NICK_RACE,
+  NICK_GENDER,
+  NICK_AWARD,
+  NICK_VACATION,
+  NICK_BIRTHSDAY,
+  NICK_PREMIUM,
+  NICK_AUTH_LEVEL,
+
+  NICK_HIGHLIGHT,
+  NICK_CLASS,
+  NICK_NICK_CLASS,
+  NICK_NICK,
+  NICK_NICK_CLASS_END,
+  NICK_ALLY_CLASS,
+  NICK_ALLY,
+  NICK_ALLY_CLASS_END,
+  NICK_CLASS_END,
+  NICK_HIGHLIGHT_END,
+
+  NICK_LAST,
+];
+
+/**
+ * Ordering nick parts according to predefined part order
+ *
+ * @param array $array
+ *
+ * @return array
+ */
+function playerNickOrder($array) {
+  global $nickSorting;
+
+  $result = [];
+  // Rearranging nick parts according to sort array
+  foreach ($nickSorting as $nickPartId) {
+    if (array_key_exists($nickPartId, $array)) {
+      $result[$nickPartId] = $array[$nickPartId];
+      unset($array[$nickPartId]);
+    }
+  }
+
+  // Adding what left of nick parts to resulting array
+  return array_merge($result, $array);
+}
+
 // Может принимать: (array)$user, $nick_render_array, $nick_render_array_html, $nick_render_string_compact
 function player_nick_render_to_html($result, $options = false) {
-  // TODO - обрабатывать разные случаи: $user, $render_nick_array, $string
-
-  if (is_string($result) && strpos($result, ':{i:')) {
-    $result = player_nick_uncompact($result);
-  }
+  $result = player_nick_uncompact($result);
 
   if (is_array($result)) {
     if (isset($result['id'])) {
@@ -20,32 +66,47 @@ function player_nick_render_to_html($result, $options = false) {
       $result = player_nick_render_array_to_html($result);
     }
     unset($result[NICK_HTML]);
-    // unset($result[NICK_ID]);
-    ksort($result);
-    $result = implode('', $result);
+    $result = implode('', playerNickOrder($result));
   }
 
   return $result;
 }
 
+/**
+ * Pack nick parts to string
+ *
+ * @param array $nick_array
+ *
+ * @return string
+ */
 function player_nick_compact($nick_array) {
-  ksort($nick_array);
-
-  return serialize($nick_array);
+  return json_encode(playerNickOrder($nick_array));
 }
 
+/**
+ * Unpacks nick parts from string - if necessary
+ *
+ * @param array|string $nick_string
+ *
+ * @return array|string
+ */
 function player_nick_uncompact($nick_string) {
-  try {
-    $result = unserialize($nick_string);
-    // ksort($result); // Всегда ksort-ый в player_nick_compact()
-  } catch (exception $e) {
-    $result = strpos($nick_string, ':{i:') ? null : $nick_string; // fallback if it is already string - for old chat strings, for example
+  $result = $nick_string;
+  if (is_string($nick_string) && strpos($nick_string, '{"') === 0) {
+    $result = json_decode($nick_string, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      $result = $nick_string;
+    }
   }
 
   return $result;
 }
 
-function player_nick_render_array_to_html($nick_array) { return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result)); }
+function player_nick_render_array_to_html($nick_array) {
+  $result = null;
+
+  return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result));
+}
 
 /**
  * @param array $nick_array
@@ -61,7 +122,6 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
     $iconCache['icon_vacation'] = classSupernova::$gc->skinModel->getImageCurrent('icon_vacation|html');
     $iconCache['icon_birthday'] = classSupernova::$gc->skinModel->getImageCurrent('icon_birthday|html');
   }
-  $iconGender = $iconCache['gender_' . $nick_array[NICK_GENDER]];
 
   // ALL STRING ARE UNSAFE!!!
   if (isset($nick_array[NICK_BIRTHSDAY])) {
@@ -73,10 +133,15 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if (isset($nick_array[NICK_GENDER])) {
-    $result[NICK_GENDER] = $iconGender;
+    $result[NICK_GENDER] = $iconCache['gender_' . $nick_array[NICK_GENDER]];
   }
 
-  if (isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
+  $highlight = null;
+  if (isset($nick_array[NICK_PREMIUM])) {
+    $highlight = classSupernova::$config->chat_highlight_premium;
+  }
+
+  if (isset($nick_array[NICK_AUTH_LEVEL])) {
     switch ($nick_array[NICK_AUTH_LEVEL]) {
       case 4:
         $highlight = classSupernova::$config->chat_highlight_developer;
@@ -93,14 +158,12 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
       case 1:
         $highlight = classSupernova::$config->chat_highlight_moderator;
       break;
-
-      default:
-        $highlight = isset($nick_array[NICK_PREMIUM]) ? classSupernova::$config->chat_highlight_premium : '';
     }
 
-    if ($highlight) {
-      list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
-    }
+  }
+
+  if ($highlight) {
+    list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
   }
 
   if (isset($nick_array[NICK_CLASS])) {
@@ -122,26 +185,30 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
 /**
  * @param array      $render_user
  * @param array|bool $options - [
- *   'color' => true,
- *   'icons' => true,
- *   'gender' => true,
- *   'birthday' => true,
- *   'ally' => true,
- * ]
+ *                            'color' => true,
+ *                            'icons' => true,
+ *                            'gender' => true,
+ *                            'birthday' => true,
+ *                            'ally' => true,
+ *                            ]
  *
  * @return mixed
  */
-function player_nick_render_current_to_array($render_user, $options = false) { return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result)); }
+function player_nick_render_current_to_array($render_user, $options = false) {
+  $result = null;
+
+  return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result));
+}
 
 /**
  * @param array      $render_user
  * @param array|bool $options - [
- *   'color' => true,
- *   'icons' => true,
- *   'gender' => true,
- *   'birthday' => true,
- *   'ally' => true,
- * ]
+ *                            'color' => true,
+ *                            'icons' => true,
+ *                            'gender' => true,
+ *                            'birthday' => true,
+ *                            'ally' => true,
+ *                            ]
  * @param array      $result
  *
  * @return mixed

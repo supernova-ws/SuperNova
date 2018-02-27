@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.7');
+define('SN_VERSION', '43a12.8');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1797,3 +1797,6 @@ define('PAGING_PAGE_SIZE_DEFAULT_PAYMENTS', 25); // Default page size for paymen
 define('PAGING_SIZE_MAX_DELTA', 3); // Maximum delta from current page to write all pages numbers when paging
 
 define('TEMPLATE_EXTRA_ARRAY', 'template_extra');
+
+define('PATCH_REGISTER', false);
+define('PATCH_PRE_CHECK', true);

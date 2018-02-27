@@ -262,10 +262,10 @@ switch ($new_version) {
     if (empty($update_tables['users']['skin'])) {
       upd_alter_table(
         'users',
-        array(
+        [
           "ADD COLUMN `template` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OpenGame' AFTER `que_processed`",
           "ADD COLUMN `skin` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'EpicBlue' AFTER `template`",
-        ),
+        ],
         empty($update_tables['users']['skin'])
       );
 
@@ -345,10 +345,43 @@ switch ($new_version) {
         WHERE acc.account_metamatter_total >= {$config->player_metamatter_immortal} AND award.id IS NULL;"
     );
 
+    // 2018-02-27 08:32:46 43a12.8
+    if (empty($update_tables['server_patches'])) {
+      upd_create_table(
+        'server_patches',
+        [
+          "`id` int unsigned COMMENT 'Patch internal ID'",
+          "`applied` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_applied` (`applied`)"
+        ],
+        'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+      );
+    }
+
+    updPatchApply(1, function () {
+      $q = upd_do_query("SELECT `messageid`, `user` FROM `{{chat}}`", true);
+      while ($row = db_fetch($q)) {
+        if (strpos($row['user'], 'a:') !== 0) {
+          continue;
+        }
+
+        try {
+          upd_do_query("UPDATE `{{chat}}` SET `user` = '" . db_escape(json_encode(unserialize($row['user']))) . "' WHERE `messageid` = " . floatval($row['messageid']));
+        } catch (Exception $e) {
+        };
+      }
+    });
+
     // #ctv
+//    updPatchApply(2, function() {
+//    }, PATCH_PRE_CHECK);
+
     upd_do_query('COMMIT;', true);
 
 //    $new_version = 43;
+//
+//  case 43:
 
 }
 upd_log_message('Upgrade complete.');
