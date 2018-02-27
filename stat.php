@@ -134,7 +134,13 @@ while ($row = db_fetch($query)) {
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
     empty($row['username']) ? $row['username'] = $row['name'] : false;
-    $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => empty($source), 'color' => empty($source)));
+    $row_stat['NAME'] = player_nick_render_to_html($row, [
+      'icons' => empty($source),
+      'color' => empty($source),
+      NICK_SORT => !empty($source) ?: $nickSortingStats,
+    ]);
+
+
 //      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
   } else {
     $row_stat['MEMBERS'] = $row['ally_members'];

@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.10');
+define('SN_VERSION', '43a12.11');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1590,6 +1590,7 @@ define('NICK_CLASS_END',      8450);
 define('NICK_HIGHLIGHT_END',  8600);
 
 define('NICK_LAST',           9999);
+define('NICK_SORT',          10000);
 
 // Настройки игрока
 define('PLAYER_OPTION_MENU_SORT', 1);

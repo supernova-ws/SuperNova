@@ -3,7 +3,7 @@
  * Created by Gorlum 04.12.2017 4:20
  */
 
-global $nickSorting;
+global $nickSorting, $nickSortingStats;
 $nickSorting = [
   NICK_HTML,
 
@@ -30,20 +30,51 @@ $nickSorting = [
 
   NICK_LAST,
 ];
+$nickSortingStats = [
+  NICK_HTML,
+
+  NICK_FIRST,
+
+  NICK_BIRTHSDAY,
+  NICK_VACATION,
+  NICK_PREMIUM,
+  NICK_AUTH_LEVEL,
+
+  NICK_HIGHLIGHT,
+  NICK_CLASS,
+  NICK_NICK_CLASS,
+  NICK_NICK,
+  NICK_NICK_CLASS_END,
+  NICK_ALLY_CLASS,
+  NICK_ALLY,
+  NICK_ALLY_CLASS_END,
+  NICK_CLASS_END,
+  NICK_HIGHLIGHT_END,
+
+  NICK_RACE,
+  NICK_GENDER,
+  NICK_AWARD,
+
+  NICK_LAST,
+];
+
 
 /**
  * Ordering nick parts according to predefined part order
  *
- * @param array $array
+ * @param array      $array
+ * @param null|array $options
  *
  * @return array
  */
-function playerNickOrder($array) {
+function playerNickOrder($array, $options = null) {
   global $nickSorting;
+
+  $currentSort = is_array($options[NICK_SORT]) ? $options[NICK_SORT] : $nickSorting;
 
   $result = [];
   // Rearranging nick parts according to sort array
-  foreach ($nickSorting as $nickPartId) {
+  foreach ($currentSort as $nickPartId) {
     if (array_key_exists($nickPartId, $array)) {
       $result[$nickPartId] = $array[$nickPartId];
       unset($array[$nickPartId]);
@@ -66,7 +97,7 @@ function player_nick_render_to_html($result, $options = false) {
       $result = player_nick_render_array_to_html($result);
     }
     unset($result[NICK_HTML]);
-    $result = implode('', playerNickOrder($result));
+    $result = implode('', playerNickOrder($result, $options));
   }
 
   return $result;

@@ -12,11 +12,11 @@
   <!-- IF SOURCE -->
     <!-- DEFINE $HEADER_COLSPAN = '4' -->
   <!-- ELSE -->
-    <!-- DEFINE $HEADER_COLSPAN = '6' -->
+    <!-- DEFINE $HEADER_COLSPAN = '5' -->
   <!-- ENDIF -->
 
 <!-- ELSE -->
-  <!-- DEFINE $HEADER_COLSPAN = '7' -->
+  <!-- DEFINE $HEADER_COLSPAN = '6' -->
 <!-- ENDIF -->
 
 <table width="519">
@@ -53,7 +53,7 @@
     <!-- IF SUBJECT == 1 -->
       <th class ="c_c">{L_sys_player}</th>
       <!-- IF ! SOURCE -->
-      <th class ="c_c"><img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}" /></th>
+      <!--<th class ="c_c"><img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}" /></th>-->
       <th class ="c_c">{L_sys_alliance}</th>
       <!-- ENDIF -->
     <!-- ELSE -->
@@ -84,15 +84,17 @@
       <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
       <!-- IF SUBJECT == 1 -->
         <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->" nowrap>
-          {stat.NAME}
-        </td>
-        <!-- IF ! SOURCE -->
-        <td class ="c_c">
-          <a href="index.php?page=imperator&int_user_id={stat.ID}<!-- IF SOURCE -->&source={SOURCE}<!-- ENDIF -->">
-            <img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}"  />
+          <a href="index.php?page=imperator&int_user_id={stat.ID}<!-- IF SOURCE -->&source={SOURCE}<!-- ENDIF -->" class="link">
+            {stat.NAME}
           </a>
         </td>
-        <td class="c_l" nowrap><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+        <!-- IF ! SOURCE -->
+        <!--<td class ="c_c">-->
+          <!--<a href="index.php?page=imperator&int_user_id={stat.ID}&lt;!&ndash; IF SOURCE &ndash;&gt;&source={SOURCE}&lt;!&ndash; ENDIF &ndash;&gt;">-->
+            <!--<img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}"  />-->
+          <!--</a>-->
+        <!--</td>-->
+        <td class="c_l" nowrap><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}" class="link"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
         <!-- ENDIF -->
       <!-- ELSE -->
         <td class="c_l"><a href="alliance.php?mode=ainfo&a={stat.ID}"><span class="<!-- IF USER_ALLY == stat.ID -->same_alliance<!-- ENDIF -->">{stat.NAME}</span></a></td>
