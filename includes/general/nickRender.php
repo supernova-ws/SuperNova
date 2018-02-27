@@ -51,8 +51,8 @@ $nickSortingStats = [
   NICK_CLASS_END,
   NICK_HIGHLIGHT_END,
 
-  NICK_RACE,
   NICK_GENDER,
+  NICK_RACE,
   NICK_AWARD,
 
   NICK_LAST,
