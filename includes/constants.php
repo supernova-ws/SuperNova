@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a13.2');
+define('SN_VERSION', '43a13.3');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1573,6 +1573,7 @@ define('NICK_AWARD',          3000);
 define('NICK_VACATION',       3500);
 define('NICK_BIRTHDAY',       4000);
 define('NICK_RANK',           4500);
+define('NICK_RANK_NO_TEXT',   4750);
 define('NICK_PREMIUM',        5000);
 define('NICK_AUTH_LEVEL',     6000);
 

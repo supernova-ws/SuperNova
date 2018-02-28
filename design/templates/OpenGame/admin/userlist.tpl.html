@@ -16,6 +16,14 @@
   jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function(){
     document.location = "index.php?page=admin/user_view&uid=" + jQuery(this).parent().attr('uid');
   });
+
+  jQuery(document).on('click', '.js_admin_ban', function(){
+    document.location = "admin/banned.php?name=" + jQuery(this).parent().attr('uname');
+  });
+
+  jQuery(document).on('click', '.js_admin_whois', function(){
+    openInNewTab("{GEOIP_WHOIS_URL}" + jQuery(this).parent().attr('uip'));
+  });
 </script>
 
 <h2>{PAGE_HEADER} ({USER_COUNT})</h2>
@@ -48,10 +56,14 @@
     <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
   </tr>
 
+  <!-- IF GEOIP_WHOIS_URL -->
+  <!-- DEFINE $GEOIP_CLASS = 'js_admin_whois' -->
+  <!-- ENDIF -->
+
   <!-- BEGIN user -->
-  <tr uid="{user.ID}" uname="{user.NAME_HTML}" class="highlight">
+  <tr uid="{user.ID}" uname="{user.NAME_HTML}" uip="{user.IP}" class="highlight">
     <td>{user.ID}</td>
-    <td>{user.NAME}</td>
+    <td class="c_l">{user.NAME}</td>
     <!-- IF METAMATTER -->
     <td>{user.METAMATTER}</td>
     <!-- ENDIF -->
@@ -60,32 +72,23 @@
     <td>{user.TIME_REGISTERED}</td>
     <td>{user.TIME_PLAYED}</td>
     <td>{user.ACTIVITY}</td>
-    <td>
-      <a href="admin/banned.php?name={user.NAME}">
-      <!-- IF user.BANNED -->
-        <span class="warning" title="{user.BAN_ISSUER} {L_adm_ban_msg_issued_date} {user.BAN_DATE}. {L_adm_bn_reas}: '{user.BAN_REASON}'">{user.BANNED}</span>
-      <!-- ELSE -->
-        {L_sys_no}
-      <!-- ENDIF -->
-      </a>
-    </td>
-
+    <!-- IF user.BANNED -->
+    <!-- DEFINE $BAN_CLASS = ' warning' -->
+    <td class="js_admin_ban {$BAN_CLASS}" title="{user.BAN_ISSUER} {L_adm_ban_msg_issued_date} {user.BAN_DATE}. {L_adm_bn_reas}: '{user.BAN_REASON}'">{user.BANNED}</td>
+    <!-- ELSE -->
+    <!-- DEFINE $BAN_CLASS = '' -->
+    <td class="js_admin_ban">{L_sys_no}</td>
+    <!-- ENDIF -->
     <!-- IF ! RESTRICTED -->
     <td>{user.VACATION}</td>
     <td>{user.EMAIL}</td>
 
-    <td>
-      <div style="display: flex; justify-content: space-between;">
-        <!-- IF user.IP_MULTI -->
-        <span style="display: inline-block;" class="error">{user.IP} ({user.IP_MULTI})</span>
-        <!-- ELSE -->
-        <span style="display: inline-block;">{user.IP}</span>
-        <!-- ENDIF -->
-        <!-- IF GEOIP_WHOIS_URL -->
-        <a target="_blank" class="link_external" style="margin-left: 1em" href="{GEOIP_WHOIS_URL}{user.IP}">whois</a>
-        <!-- ENDIF -->
-      </div>
-    </td>
+    <!-- IF user.IP_MULTI -->
+    <!-- DEFINE $IP_CLASS = ' error' -->
+    <!-- ELSE -->
+    <!-- DEFINE $IP_CLASS = '' -->
+    <!-- ENDIF -->
+    <td class="{$GEOIP_CLASS}{$IP_CLASS}">{user.IP}<!-- IF user.IP_MULTI -->  ({user.IP_MULTI})<!-- ENDIF --></td>
     <!-- IF GEOIP -->
     <th>{user.COUNTRY}</th>
     <!-- ENDIF -->

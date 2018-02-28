@@ -3722,10 +3722,12 @@ td.error_message {
 .rank-selected-not {
   border: 0.3em solid transparent;
 }
-.rank-nick {
+
+.rank.nick {
   display: inline-block;
   height: 16px;
   width: 16px;
+  background-image: url("../../images/ranks_sprite_small.png");
   /*height: 1.5em;*/
   /*width: 1.5em;*/
 }
@@ -3799,4 +3801,15 @@ td.error_message {
 }
 .rank.rank-20 {
   background-position: -900% -500%;
+}
+
+.js_admin_ban {
+  cursor: pointer;
+}
+.js_admin_whois {
+  /*border-bottom: 0.3em double;*/
+  /*text-align: left;*/
+  font-weight: bold;
+  margin-left: 1em;
+  cursor: pointer;
 }

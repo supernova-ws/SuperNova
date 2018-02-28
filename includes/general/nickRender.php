@@ -170,7 +170,10 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if (isset($nick_array[NICK_RANK])) {
-    $result[NICK_RANK] = "<div class='rank rank-{$nick_array[NICK_RANK]} rank-nick'></div>";
+    $rankName = "[{$nick_array[NICK_RANK]}] " . classSupernova::$lang['ranks'][$nick_array[NICK_RANK]];
+    $result[NICK_RANK] = "<div class='rank nick rank-{$nick_array[NICK_RANK]}'" .
+      (empty($nick_array[NICK_RANK_NO_TEXT]) ? " title='{$rankName}'" : '') .
+      "></div>";
   }
 
   if (isset($nick_array[NICK_GENDER])) {
@@ -281,6 +284,10 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
   if ($options === true || !empty($options['icons']) || !empty($options['player_rank'])) {
     $result[NICK_RANK] = classSupernova::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
+  }
+
+  if (!empty($options[NICK_RANK_NO_TEXT])) {
+    $result[NICK_RANK_NO_TEXT] = $options[NICK_RANK_NO_TEXT];
   }
 
   if ($options === true || (isset($options['color']) && $options['color'])) {

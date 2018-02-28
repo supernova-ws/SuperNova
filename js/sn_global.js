@@ -235,6 +235,11 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     document.location.assign(url);
   }
 
+  function openInNewTab(url) {
+    var win = window.open(url, '_blank');
+    win.focus();
+  }
+
   function sn_reload() {
     location.reload();
   }
