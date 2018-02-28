@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a12.12');
+define('SN_VERSION', '43a13.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1571,7 +1571,8 @@ define('NICK_RACE',           1000);
 define('NICK_GENDER',         2000);
 define('NICK_AWARD',          3000);
 define('NICK_VACATION',       3500);
-define('NICK_BIRTHSDAY',      4000);
+define('NICK_BIRTHDAY',       4000);
+define('NICK_RANK',           4500);
 define('NICK_PREMIUM',        5000);
 define('NICK_AUTH_LEVEL',     6000);
 
@@ -1801,3 +1802,6 @@ define('TEMPLATE_EXTRA_ARRAY', 'template_extra');
 
 define('PATCH_REGISTER', false);
 define('PATCH_PRE_CHECK', true);
+
+const PLAYER_RANK_20 = 20;
+const PLAYER_RANK_MAX = PLAYER_RANK_20;

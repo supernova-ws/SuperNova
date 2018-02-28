@@ -1,0 +1,16 @@
+<h1>{PAGE_HEADER}</h1>
+
+<div class="rank-table contFC flexW border_image_large">
+  <!-- BEGIN player_rank -->
+  <!-- IF player_rank.SELECTED -->
+  <!-- DEFINE $RANK_SELECTED = 'rank-selected' -->
+  <!-- ELSE -->
+  <!-- DEFINE $RANK_SELECTED = 'rank-selected-not' -->
+  <!-- ENDIF -->
+  <div class="cell {$RANK_SELECTED}">
+    <div class="rank rank-{player_rank.ID}">
+    </div>
+    [{player_rank.ID}] {player_rank.NAME}
+  </div>
+  <!-- END player_rank -->
+</div>

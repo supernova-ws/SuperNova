@@ -240,8 +240,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     'PLANET_DIAMETER'  => number_format($uni_galaxyRowPlanet['diameter'], 0, '', '.'),
 
     'USER_ID'         => $uni_galaxyRowUser['id'],
-    'USER_NAME'       => player_nick_render_to_html($uni_galaxyRowUser),
-    'USER_NAME_JS'    => js_safe_string(player_nick_render_to_html($uni_galaxyRowUser)),
+    'USER_NAME'       => $renderedNick = player_nick_render_to_html($uni_galaxyRowUser, ['icons' => true,]),
+    'USER_NAME_JS'    => js_safe_string($renderedNick),
     'USER_RANK'       => in_array($uni_galaxyRowUser['id'], $user_skip_list) ? '-' : $uni_galaxyRowUser['total_rank'],
     'USER_BANNED'     => $uni_galaxyRowUser['banaday'],
     'USER_VACATION'   => $uni_galaxyRowUser['vacation'],
@@ -290,8 +290,8 @@ foreach ($cached['users'] as $PlanetUser) {
   $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
   $template->assign_block_vars('users', array(
     'ID'         => $PlanetUser['id'],
-    'NAME'       => player_nick_render_to_html($PlanetUser, true),
-    'NAME_JS'    => js_safe_string(player_nick_render_to_html($PlanetUser, true)),
+    'NAME'       => $renderedNick = player_nick_render_to_html($PlanetUser, true),
+    'NAME_JS'    => js_safe_string($renderedNick),
     'RANK'       => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
     'AVATAR'     => $PlanetUser['avatar'],
     'ALLY_ID'    => $PlanetUser['ally_id'],

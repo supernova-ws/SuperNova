@@ -3,17 +3,16 @@
  * Created by Gorlum 04.12.2017 4:20
  */
 
-global $nickSorting, $nickSortingStats;
+global $nickSorting;
 $nickSorting = [
   NICK_HTML,
 
   NICK_FIRST,
 
-  NICK_RACE,
-  NICK_GENDER,
-  NICK_AWARD,
+  NICK_RANK,
+
+  NICK_BIRTHDAY,
   NICK_VACATION,
-  NICK_BIRTHSDAY,
   NICK_PREMIUM,
   NICK_AUTH_LEVEL,
 
@@ -28,18 +27,28 @@ $nickSorting = [
   NICK_CLASS_END,
   NICK_HIGHLIGHT_END,
 
+  NICK_GENDER,
+  NICK_RACE,
+  NICK_AWARD,
+
   NICK_LAST,
 ];
-$nickSortingStats = [
+/*
+ // Old nick sorting
+ $nickSorting = [
   NICK_HTML,
 
   NICK_FIRST,
 
-  NICK_BIRTHSDAY,
+  NICK_RACE,
+  NICK_GENDER,
+  NICK_AWARD,
   NICK_VACATION,
+  NICK_BIRTHDAY,
   NICK_PREMIUM,
   NICK_AUTH_LEVEL,
 
+  NICK_RANK,
   NICK_HIGHLIGHT,
   NICK_CLASS,
   NICK_NICK_CLASS,
@@ -51,12 +60,9 @@ $nickSortingStats = [
   NICK_CLASS_END,
   NICK_HIGHLIGHT_END,
 
-  NICK_GENDER,
-  NICK_RACE,
-  NICK_AWARD,
-
   NICK_LAST,
 ];
+*/
 
 
 /**
@@ -155,12 +161,16 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   // ALL STRING ARE UNSAFE!!!
-  if (isset($nick_array[NICK_BIRTHSDAY])) {
-    $result[NICK_BIRTHSDAY] = $iconCache['icon_birthday'];
+  if (isset($nick_array[NICK_BIRTHDAY])) {
+    $result[NICK_BIRTHDAY] = $iconCache['icon_birthday'];
   }
 
   if (isset($nick_array[NICK_VACATION])) {
     $result[NICK_VACATION] = $iconCache['icon_vacation'];
+  }
+
+  if (isset($nick_array[NICK_RANK])) {
+    $result[NICK_RANK] = "<div class='rank rank-{$nick_array[NICK_RANK]} rank-nick'></div>";
   }
 
   if (isset($nick_array[NICK_GENDER])) {
@@ -258,7 +268,7 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
 
   if ($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
-    $result[NICK_BIRTHSDAY] = '';
+    $result[NICK_BIRTHDAY] = '';
   }
 
   if ($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
@@ -267,6 +277,10 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
   if (($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {
     $result[NICK_VACATION] = $render_user['vacation'];
+  }
+
+  if ($options === true || !empty($options['icons']) || !empty($options['player_rank'])) {
+    $result[NICK_RANK] = classSupernova::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
   }
 
   if ($options === true || (isset($options['color']) && $options['color'])) {

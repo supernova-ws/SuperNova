@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a12.4#
+* @version #43a13.0#
 *
 */
 
@@ -33,7 +33,7 @@ if (!defined('INSIDE'))
 
 global $config;
 
-$a_lang_array = (array(
+$a_lang_array = [
   'sys_birthday' => 'День рождения',
   'sys_birthday_message' => '%1$s! Администрация СуперНовы сердечно поздравляет тебя с твоим Днем Рождения, который пришелся на %2$s и преподносит тебе в качестве подарка %3$d %4$s! От всей души желаем тебе успехов в игре и высоких рангов в статистике! Может это поздравление и запоздало, но лучше раньше, чем позже.',
 
@@ -145,17 +145,17 @@ $a_lang_array = (array(
 
   'sys_fleet_arrived'   => "Флот прибыл",
 
-  'sys_planet_type' => array(
+  'sys_planet_type' => [
     PT_PLANET => 'Планета', 
     PT_DEBRIS => 'Поле обломков', 
     PT_MOON   => 'Луна',
-  ),
+  ],
 
-  'sys_planet_type_sh' => array(
+  'sys_planet_type_sh' => [
     PT_PLANET => '(П)',
     PT_DEBRIS => '(О)',
     PT_MOON   => '(Л)',
-  ),
+  ],
 
   'sys_planet_expedition' => 'неисследованное пространство',
 
@@ -237,12 +237,12 @@ $a_lang_array = (array(
   'sys_first_round_crash_1'	=> 'Контакт с атакованным флотом потерян.',
   'sys_first_round_crash_2'	=> 'Это означает что он был уничтожен в первом раунде боя.',
 
-  'sys_ques' => array(
+  'sys_ques' => [
     QUE_STRUCTURES => 'Здания',
     QUE_HANGAR     => 'Верфь',
     SUBQUE_DEFENSE => 'Оборона',
     QUE_RESEARCH   => 'Исследования',
-  ),
+  ],
 
   'navbar_button_expeditions_short' => 'Экспа',
   'navbar_button_fleets' => 'Флоты',
@@ -360,7 +360,7 @@ $a_lang_array = (array(
   'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки. Изучите еще уровни Астрокартографии',
   'flt_stay_duration' => 'Время',
 
-  'flt_mission_expedition' => array(
+  'flt_mission_expedition' => [
     'msg_sender' => 'Отчет экспедиции',
     'msg_title' => 'Отчет экспедиции',
 
@@ -373,60 +373,60 @@ $a_lang_array = (array(
     'found_resources' => "Найдены ресурсы:\r\n",
     'found_fleet' => "Найдены корабли:\r\n",
     'lost_fleet' => "Потеряны следующие корабли:\r\n",
-    'outcomes' => array(
-      FLT_EXPEDITION_OUTCOME_NONE => array(
-        'messages' => array(
+    'outcomes' => [
+      FLT_EXPEDITION_OUTCOME_NONE => [
+        'messages' => [
           'Ваши исследователи ничего не обнаружили',
-        ),
-      ),
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
-        'messages' => array(
+      FLT_EXPEDITION_OUTCOME_LOST_FLEET => [
+        'messages' => [
           'Флот попал в черную дыру и частично утерян',
-        ),
-      ),
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
-        'messages' => array(
+      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
+        'messages' => [
           'Если бы вы только это видели! Оно такое красивое... Оно зовёт к себе... (связь с флотом утеряна)',
           // 'Отчёт флота %1$s. Мы завершили исследование сектора. Команда недовольна Эй, ты что делаешь на мостике?! (связь с флотом утеряна)',
           'Отчёт флота %1$s. Всё спокойно (помехи) (связь с флотом утеряна)',
           'АААААА! ЧТО ЭТО?! ОТКУДА ОНО ВЗЯ (связь с флотом утеряна)',
           'Обнаружен неизвестный объект. Он не отвечает на запросы стандартных протоколов. Высылаем зонд для проведения исследований (связь с флотом утеряна)',
-        ),
-      ),
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => array(
+      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'К сожалению, совокупной мощности всех компьютеров флота не хватило даже на контроль самого мелкого корабля. Попробуйте отправлять больше кораблей и/или более крупные корабли',
-        'messages' => array(
-          0 => array(
+        'messages' => [
+          0 => [
             'Вы нашли абсолютно новый флот',
-          ),
-          1 => array(
+          ],
+          1 => [
             'Вы нашли флот',
-          ),
-          2 => array(
+          ],
+          2 => [
             'Вы нашли б/у флот',
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
+      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => [
         'no_result' => 'Трюмы вашего флота оказались неспособны вместить хоть один контейнер с ресурсами. Попробуйте отправлять флот с большим количеством транспортников',
-        'messages' => array(
-          0 => array(
+        'messages' => [
+          0 => [
             'Вы нашли пиратский клад с ресурсами. Сколько же кораблей было уничтожено, что бы собрать столько добра?',
-          ),
-          1 => array(
+          ],
+          1 => [
             'Вы нашли заброшенную астероидную базу. Интересно, куда делись её обитатели? Исследовав руины, вы нашли несколько уцелевших складов с ресурсами',
-          ),
-          2 => array(
+          ],
+          2 => [
             'Вы наткнулись на уничтоженный транспортный конвой. Обыскав трюмы разбитых кораблей, вы обнаружили немного ресурсов',
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => array(
+      FLT_EXPEDITION_OUTCOME_FOUND_DM => [
         'no_result' => 'К сожалению, всех накопителей флота не хватило что бы собрать одну-единственую ТМ. Попробуйте отправлять флот побольше',
         'messages' => 'Ваш флот стал свидетелем рождения СуперНовы',
         // 'messages' => array(
@@ -434,10 +434,10 @@ $a_lang_array = (array(
         //   'Ваш флот стал свидетелем рождения СуперНовы 2',
         //   'Ваш флот стал свидетелем рождения СуперНовы 3',
         // ),
-      ),
+      ],
 
-    ),
-  ),
+    ],
+  ],
 
   // News page & a bit of imperator page
   'news_fresh'      => 'Свежие новости',
@@ -603,7 +603,7 @@ $a_lang_array = (array(
 
   // Messages
   'msg_from_admin' => 'Администрация Вселенной',
-  'msg_class' => array(
+  'msg_class' => [
     MSG_TYPE_OUTBOX => 'Отправленные сообщения',
     MSG_TYPE_SPY => 'Шпионские отчёты',
     MSG_TYPE_PLAYER => 'Сообщения от игроков',
@@ -615,7 +615,7 @@ $a_lang_array = (array(
     MSG_TYPE_EXPLORE => 'Отчёты экспедиций',
     MSG_TYPE_QUE => 'Сообщения очереди построек',
     MSG_TYPE_NEW => 'Все сообщения',
-  ),
+  ],
 
   'msg_que_research_from'    => 'Научно-исследовательский институт',
   'msg_que_research_subject' => 'Новая технология',
@@ -671,13 +671,13 @@ $a_lang_array = (array(
   'time_local' => 'Время у игрока',
   'time_server' => 'Время на сервере',
 
-  'sys_result' => array(
+  'sys_result' => [
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
     'error_dark_matter_change' => 'Ошибка изменения количества Тёмной Материи! Повторите операцию еще раз. Если ошибка повторится - сообщите Администрации сервера',
-  ),
+  ],
 
   // Arrays
-  'sys_build_result' => array(
+  'sys_build_result' => [
     BUILD_ALLOWED => 'Можно построить',
     BUILD_REQUIRE_NOT_MEET => 'Требования не удовлетворены',
     BUILD_AMOUNT_WRONG => 'Слишком много',
@@ -686,25 +686,25 @@ $a_lang_array = (array(
     BUILD_INDESTRUCTABLE => 'Нельзя уничтожить',
     BUILD_NO_RESOURCES => 'Не хватает ресурсов',
     BUILD_NO_UNITS => 'Нет юнитов',
-    BUILD_UNIT_BUSY => array(
+    BUILD_UNIT_BUSY => [
       0 => 'Строение занято',
       STRUC_LABORATORY => 'Идет исследование',
       STRUC_LABORATORY_NANO => 'Идет исследование',
-    ),
+    ],
     BUILD_QUE_FULL => 'Очередь полна',
     BUILD_SILO_FULL => 'Ракетная шахта заполнена',
     BUILD_MAX_REACHED => 'Вы уже построили и/или поставили в очередь максимальное количество юнитов данного типа',
     BUILD_SECTORS_NONE => 'Нет свободных секторов',
     BUILD_AUTOCONVERT_AVAILABLE => 'Доступна автоконвертация',
-  ),
+  ],
 
-  'sys_game_mode' => array(
+  'sys_game_mode' => [
     GAME_SUPERNOVA => 'СуперНова',
     GAME_OGAME     => 'оГейм',
     GAME_BLITZ     => 'Блиц-сервер',
-  ),
+  ],
 
-  'months' => array(
+  'months' => [
      1 =>'января',
      2 =>'февраля',
      3 =>'марта',
@@ -717,9 +717,9 @@ $a_lang_array = (array(
     10 =>'октября',
     11 =>'ноября',
     12 =>'декабря'
-  ),
+  ],
 
-  'weekdays' => array(
+  'weekdays' => [
     0 => 'Воскресенье',
     1 => 'Понедельник',
     2 => 'Вторник',
@@ -727,23 +727,23 @@ $a_lang_array = (array(
     4 => 'Четверг',
     5 => 'Пятница',
     6 => 'Суббота'
-  ),
+  ],
 
-  'user_level' => array(
+  'user_level' => [
     0 => 'Игрок',
     1 => 'Модератор',
     2 => 'Оператор',
     3 => 'Администратор',
     4 => 'Разработчик',
-  ),
+  ],
 
-  'user_level_shortcut' => array(
+  'user_level_shortcut' => [
     0 => 'И',
     1 => 'М',
     2 => 'О',
     3 => 'А',
     4 => 'Р',
-  ),
+  ],
 
   'sys_lessThen15min'   => '&lt; 15 мин',
 
@@ -793,7 +793,7 @@ $a_lang_array = (array(
 
   'sys_premium' => 'Премиум',
 
-  'mrc_period_list' => array(
+  'mrc_period_list' => [
     PERIOD_MINUTE    => '1 минута',
     PERIOD_MINUTE_3  => '3 минуты',
     PERIOD_MINUTE_5  => '5 минут',
@@ -805,7 +805,7 @@ $a_lang_array = (array(
     PERIOD_MONTH     => '30 дней',
     PERIOD_MONTH_2   => '60 дней',
     PERIOD_MONTH_3   => '90 дней',
-  ),
+  ],
 
   'sys_sector_buy' => 'Купить 1 сектор',
 
@@ -887,7 +887,7 @@ $a_lang_array = (array(
   'ube_report_msg_body_sfr' => 'Связь с флотом утеряна',
 
   'ube_report_capture' => 'Захват планеты',
-  'ube_report_capture_result' => array(
+  'ube_report_capture_result' => [
     UBE_CAPTURE_DISABLED => 'Захват планет отключён',
     UBE_CAPTURE_NON_PLANET => 'Захватывать можно только планеты',
     UBE_CAPTURE_NOT_A_WIN_IN_1_ROUND => 'Для захвата планеты бой должен закончиться победой в первом раунде',
@@ -898,7 +898,7 @@ $a_lang_array = (array(
     UBE_CAPTURE_TOO_LOW_POINTS => 'Можно захватывать планеты только у игроков, чье общее количество очков не менее чем в 2 раза больше количество очков у атакующего',
     UBE_CAPTURE_NOT_ENOUGH_SLOTS => 'Больше нет слотов захвата планеты',
     UBE_CAPTURE_SUCCESSFUL => 'Планета захвачена атакующим игроком',
-  ),
+  ],
 
   'sys_kilometers_short' => 'км',
 
@@ -912,7 +912,7 @@ $a_lang_array = (array(
 
   'sys_continue' => 'Продолжить',
 
-  'uni_planet_density_types' => array(
+  'uni_planet_density_types' => [
     PLANET_DENSITY_NONE => 'Не бывает',
     PLANET_DENSITY_ICE_HYDROGEN => 'Водородный лёд',
     PLANET_DENSITY_ICE_METHANE => 'Метановый лёд',
@@ -924,7 +924,7 @@ $a_lang_array = (array(
     PLANET_DENSITY_METAL_ORE => 'Руда',
     PLANET_DENSITY_METAL_PERIDOT => 'Оливин',
     PLANET_DENSITY_METAL_RAW => 'Металл',
-  ),
+  ],
 
   'sys_planet_density' => 'Плотность',
   'sys_planet_density_units' => 'кг/м&sup3;',
@@ -956,13 +956,13 @@ $a_lang_array = (array(
   'sys_colonies' => 'Колонии',
   'sys_radio' => 'Радио "Космос"',
 
-  'sys_auth_provider_list' => array(
+  'sys_auth_provider_list' => [
     ACCOUNT_PROVIDER_NONE => 'Таблица USERS',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица ACCOUNT',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральная таблица ACCOUNT',
-  ),
+  ],
 
-  'sys_login_messages' => array(
+  'sys_login_messages' => [
     LOGIN_UNDEFINED => 'Процесс логина не начался',
     LOGIN_SUCCESS => 'Вход успешен',
     LOGIN_ERROR_USERNAME_EMPTY => 'Имя игрока не может быть пустым',
@@ -1011,7 +1011,7 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Внутренняя ошибка - при смене пароля аккаунт не найден! Сообщите об этой ошибке Администрации!',
     AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'ВНУТРЕННЯЯ ОШИБКА! Нет аккаунтов для сброса пароля при корректном коде подтверждения! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
     LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET => 'ВНУТРЕННЯЯ ОШИБКА! СООБЩИТЕ АДМИНИСТРАЦИИ! Не установлен аккаунт при cookie_set()! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
- ),
+  ],
 
   'log_reg_email_title' => "Ваша регистрация на сервере %1\$s игры СуперНова",
   'log_reg_email_text' => "Подтверждение регистрации для %3\$s\r\n\r\n
@@ -1040,7 +1040,7 @@ $a_lang_array = (array(
   'sys_login_password_hide' => 'Скрыть пароль',
   'sys_password_repeat' => 'Повторите пароль',
 
-  'sys_game_disable_reason' => array(
+  'sys_game_disable_reason' => [
     GAME_DISABLE_NONE => 'Игра включена',
     GAME_DISABLE_REASON => 'Игра отключена. Игроки увидят сообщение',
     GAME_DISABLE_UPDATE => 'Игра обновляется',
@@ -1048,30 +1048,30 @@ $a_lang_array = (array(
     GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
     GAME_DISABLE_MAINTENANCE => 'Техобслуживание базы данных сервера',
     GAME_DISABLE_EVENT_BLACK_MOON => 'Чёрная Луна!',
-  ),
+  ],
 
   'sys_sector_purchase_log' => 'Пользователь {%2$d} {%1$s} купил 1 сектор на планете {%5$d} {%3$s} тип "%4$s" за %6$d ТМ',
 
   'sys_notes' => 'Заметки',
-  'sys_notes_priorities' => array(
+  'sys_notes_priorities' => [
     0 => 'Совсем не важная',
     1 => 'Не важная',
     2 => 'Обычная',
     3 => 'Важная',
     4 => 'Очень важная',
-  ),
+  ],
 
   'sys_milliseconds' => 'миллисекунд',
 
   'sys_gender' => 'Пол',
-  'sys_gender_list' => array(
+  'sys_gender_list' => [
     GENDER_UNKNOWN => 'Вырастет - само решит',
     GENDER_MALE => 'Мужской',
     GENDER_FEMALE => 'Женский',
-  ),
+  ],
 
   'imp_stat_header' => 'График изменений данных статистики',
-  'imp_stat_types' => array(
+  'imp_stat_types' => [
     'TOTAL_RANK' => 'Место в общей статистике',
     'TOTAL_POINTS' => 'Общее количество очков',
     // 'TOTAL_COUNT' => 'Общее количество ресурсов',
@@ -1090,7 +1090,7 @@ $a_lang_array = (array(
     'RES_RANK' => 'Место в статистике по свободным ресурсам',
     'RES_POINTS' => 'Количество очков за свободные ресурсы',
     //'RES_COUNT' => '',
-  ),
+  ],
 
   'sys_date' => 'Дата',
 
@@ -1108,13 +1108,13 @@ $a_lang_array = (array(
   'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
   'sys_blitz_registration_player_blitz_name' => 'Имя на Блиц-сервере',
   'sys_blitz_registration_price' => 'Стоимость подачи заявки',
-  'sys_blitz_registration_mode_list' => array(
+  'sys_blitz_registration_mode_list' => [
     BLITZ_REGISTER_DISABLED => 'Регистрация отключена',
     BLITZ_REGISTER_OPEN => 'Регистрация открыта',
     BLITZ_REGISTER_CLOSED => 'Регистрация закрыта',
     BLITZ_REGISTER_SHOW_LOGIN => 'Открыты логины и пароли',
     BLITZ_REGISTER_DISCLOSURE_NAMES => 'Подведение итогов',
-  ),
+  ],
 
   'survey' => 'Опрос',
   'survey_questions' => 'Варианты для выбора',
@@ -1134,20 +1134,20 @@ $a_lang_array = (array(
   'survey_result_sent' => 'Ваш голос учтен. Обновите страницу или воспользуйтесь ссылкой <a class="link" href="announce.php">Новости</a> что бы увидеть текущие результаты опроса',
   'survey_complete' => 'Опрос завершен',
 
-  'player_option_fleet_ship_sort' => array(
+  'player_option_fleet_ship_sort' => [
     PLAYER_OPTION_SORT_DEFAULT => 'Стандартная',
     PLAYER_OPTION_SORT_NAME => 'По названию',
     PLAYER_OPTION_SORT_ID => 'По ID',
     PLAYER_OPTION_SORT_SPEED => 'По скорости',
     PLAYER_OPTION_SORT_COUNT => 'По количеству',
-  ),
+  ],
 
-  'player_option_building_sort' => array(
+  'player_option_building_sort' => [
     PLAYER_OPTION_SORT_DEFAULT => 'Стандартная',
     PLAYER_OPTION_SORT_NAME => 'По названию',
     PLAYER_OPTION_SORT_ID => 'По ID',
     PLAYER_OPTION_SORT_CREATE_TIME_LENGTH => 'По времени постройки',
-  ),
+  ],
 
   'sys_sort' => 'Сортировка',
   'sys_sort_inverse' => 'В обратном порядке',
@@ -1158,11 +1158,11 @@ $a_lang_array = (array(
   'sys_login_register_message_title' => "Ваше имя и пароль для входа в игру",
   'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
 
-  'auth_provider_list' => array(
+  'auth_provider_list' => [
     ACCOUNT_PROVIDER_NONE => 'Таблица users',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
-  ),
+  ],
 
   'bld_autoconvert' => 'Автоматическая конвертация при создании на планете %3$s юнита {%1$d} "%4$s" в количесте %2$d ценой "%5$s". Debug: $resource_got = "%6$s", $exchange = %7$s""',
 
@@ -1209,4 +1209,30 @@ $a_lang_array = (array(
 
   'sys_module_error_not_found' => 'Модуль наград "%1$s" не найден или отключён!',
 
-));
+  'rank_page_title' => 'Воинские звания',
+  'rank' => 'Звание',
+  'ranks' => [
+    0  => 'Курсант',
+    1  => 'Рекрут',
+    2  => 'Рядовой',
+    3  => 'Ефрейтор',
+    4  => 'Капрал',
+    5  => 'Сержант',
+    6  => 'Старшина',
+    7  => 'Гардемарин',
+    8  => 'Мичман',
+    9  => 'Энсин',
+    10 => 'Лейтенант',
+    11 => 'Капитан',
+    12 => 'Майор',
+    13 => 'Подполковник',
+    14 => 'Полковник',
+    15 => 'Контр-Адмирал',
+    16 => 'Вице-Адмирал',
+    17 => 'Адмирал',
+    18 => 'Адмирал флота',
+    19 => 'Маршал',
+    20 => 'Генералиссимус',
+  ],
+
+];

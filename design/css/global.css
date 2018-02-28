@@ -433,3 +433,34 @@ tr.highlight:hover {
 tr.highlight.notice:hover {
    color: #d3ffe6;
 }
+
+.b-red {
+  border: 1px solid red;
+}
+.b-green {
+  border: 1px solid green;
+}
+.b-blue {
+  border: 1px solid blue;
+}
+.b-cyan {
+  border: 1px solid cyan;
+}
+.b-magenta {
+  border: 1px solid magenta;
+}
+.b-yellow {
+  border: 1px solid yellow;
+}
+.b-black {
+  border: 1px solid black;
+}
+.b-white {
+  border: 1px solid white;
+}
+.b-grey {
+  border: 1px solid grey;
+}
+.b-orange {
+  border: 1px solid orange;
+}

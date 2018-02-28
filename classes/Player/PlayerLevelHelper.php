@@ -7,6 +7,7 @@ namespace Player;
 
 use Common\GlobalContainer;
 use Bonus\ValueStorage;
+use classSupernova;
 use classConfig;
 
 class PlayerLevelHelper {
@@ -63,7 +64,11 @@ class PlayerLevelHelper {
    *
    * @return int
    */
-  public function getPointLevel($totalPoints) {
+  public function getPointLevel($totalPoints, $authLevel = false) {
+    if ($authLevel && classSupernova::$config->stats_hide_admins) {
+      return PLAYER_RANK_MAX;
+    }
+
     $playerLevels = $this->getPlayerLevels();
 
     $theLevel = null;
@@ -79,6 +84,9 @@ class PlayerLevelHelper {
     if ($theLevel === null) {
       end($playerLevels);
       $theLevel = key($playerLevels) + 1;
+    }
+    if ($theLevel > PLAYER_RANK_MAX) {
+      $theLevel = PLAYER_RANK_MAX;
     }
 
     return $theLevel;

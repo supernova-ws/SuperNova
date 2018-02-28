@@ -89,9 +89,13 @@
  * @property int|string $server_updater_id            => 0, // Server ID on update server
  * @property string     $server_updater_key           => '', // Server key on update server
  *
+ * @property int        $stats_hide_admins            => 1,  // Hide admins accounts from stat and stat of admins
+ * @property string     $stats_hide_player_list       => '', // Comma separated list of player IDs which stat to hide. Used for bots, for example
+ * @property int        $stats_hide_pm_link           => 0,  // Hide PM link from stat screen
  * @property int        $stats_history_days           => 14, // За сколько дней хранить статистику в базе
  * @property string     $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
  * @property string     $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
+ *
  * @property string     $var_stat_update              => '0' - SQL_DATE_TIME - when stat update was started
  * @property string     $var_stat_update_end          => '0' - SQL_DATE_TIME - ?????????
  * @property string     $var_stat_update_admin_forced => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console

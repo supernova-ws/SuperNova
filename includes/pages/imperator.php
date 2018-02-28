@@ -133,6 +133,9 @@ function sn_imperator_view($template = null) {
     'VACATION'             => $user_data['vacation'],
     'GENDER_TEXT'          => $lang['sys_gender_list'][$user_data['gender']],
 
+    'PLAYER_RANK_NUMBER'   => $playerRank = classSupernova::$gc->playerLevelHelper->getPointLevel($user_data['total_points'], $user_data['authlevel']),
+    'PLAYER_RANK_NAME'     => $lang['ranks'][$playerRank],
+
     'NEW_MESSAGES'         => $user_data['new_message'],
     'REGISTRATION_DATE'    => date(FMT_DATE_TIME, $user_data['register_time']),
 

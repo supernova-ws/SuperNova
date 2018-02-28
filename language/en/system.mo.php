@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a12.4
+* @version 43a13.0
 *
 */
 
@@ -1178,5 +1178,31 @@ $a_lang_array = (array(
   'sys_click_here_to_continue' => 'Click here to continue',
 
   'sys_module_error_not_found' => 'Award module "%1$s" not found or disabled!',
+
+  'rank_page_title' => 'Ranks list',
+  'rank' => 'Military Rank',
+  'ranks' => [
+    0  => 'Cadet',
+    1  => 'Recruit',
+    2  => 'Private',
+    3  => 'Lance Corporal',
+    4  => 'Corporal',
+    5  => 'Sergeant',
+    6  => 'Sergeant Major',
+    7  => 'Midshipman',
+    8  => 'Warrant Officer',
+    9  => 'Ensign',
+    10 => 'Lieutenant',
+    11 => 'Captain',
+    12 => 'Major',
+    13 => 'Lieutenant Colonel',
+    14 => 'Colonel',
+    15 => 'Rear Admiral',
+    16 => 'Vice Admiral',
+    17 => 'Admiral',
+    18 => 'Fleet Admiral',
+    19 => 'Marshal',
+    20 => 'Generalissimo',
+  ],
 
 ));

@@ -137,7 +137,6 @@ while ($row = db_fetch($query)) {
     $row_stat['NAME'] = player_nick_render_to_html($row, [
       'icons' => empty($source),
       'color' => empty($source),
-      NICK_SORT => !empty($source) ?: $nickSortingStats,
     ]);
 
 
