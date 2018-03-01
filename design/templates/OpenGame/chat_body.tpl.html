@@ -2,6 +2,13 @@
 <script type="text/javascript">
   var ally_id = "{ALLY}";
 </script>
+
+<script type="text/javascript">
+  jQuery(document).on("click", ".chat_a_nick", function () {
+    addSmiley($(this).attr("nick_stripped"));
+  });
+</script>
+
 <script type="text/javascript" src="js/chat.js?{C_var_db_update}"></script>
 
 <h1>{PAGE_HEADER}</h1>

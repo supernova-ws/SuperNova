@@ -1873,6 +1873,23 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   color: white;
 }
 
+.chat_a {
+  align-content: flex-start;
+  align-items: flex-start;
+
+}
+.chat_a_time, .chat_a_nick {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.chat_a_nick {
+  cursor: pointer;
+}
+.chat_a_time, .chat_a_text, .chat_a_nick {
+  line-height: 1.4545em;
+}
+
+
 /* Statistics page ************************************************************************************************************* */
 #stat_cell_min_max {
   position: relative;
@@ -3739,69 +3756,53 @@ td.error_message {
   background-size: 1000% 600%;
   background-image: url("../../images/ranks_sprite.png");
 }
-.rank.rank-0 {
-  background-position: 0 0;
-}
-.rank.rank-1 {
-  background-position: -200% 0;
-}
-.rank.rank-2 {
-  background-position: -300% 0;
-}
-.rank.rank-3 {
-  background-position: -400% 0;
-}
-.rank.rank-4 {
-  background-position: -600% 0;
-}
-.rank.rank-5 {
-  background-position: -700% 0;
-}
-.rank.rank-6 {
-  background-position: -800% 0;
-}
-.rank.rank-7 {
-  background-position: 0 -200%;
-}
-.rank.rank-8 {
-  background-position: -500% -200%;
-}
-.rank.rank-9 {
-  background-position: -500% -300%;
-}
-.rank.rank-10 {
-  background-position: -600% -300%;
-}
-.rank.rank-11 {
-  background-position: -700% -300%;
-}
-.rank.rank-12 {
-  background-position: 0 -500%;
-}
-.rank.rank-13 {
-  background-position: -100% -500%;
-}
-.rank.rank-14 {
-  background-position: -200% -500%;
-}
-.rank.rank-15 {
-  background-position: -400% -500%;
-}
-.rank.rank-16 {
-  background-position: -500% -500%;
-}
-.rank.rank-17 {
-  background-position: -600% -500%;
-}
-.rank.rank-18 {
-  background-position: -700% -500%;
-}
-.rank.rank-19 {
-  background-position: -800% -500%;
-}
-.rank.rank-20 {
-  background-position: -900% -500%;
-}
+.rank.rank-0 {background-position:    0  0;}
+.rank.rank-1 {background-position: -200% 0;}
+.rank.rank-2 {background-position: -300% 0;}
+.rank.rank-3 {background-position: -400% 0;}
+.rank.rank-4 {background-position: -600% 0;}
+.rank.rank-5 {background-position: -700% 0;}
+.rank.rank-6 {background-position: -800% 0;}
+
+/*
+!* Текущий расклад *!
+.rank.rank-7  {background-position: -000% -200%;}
+.rank.rank-8  {background-position: -500% -200%;}
+.rank.rank-9  {background-position: -500% -300%;}
+.rank.rank-10 {background-position: -600% -300%;}
+.rank.rank-11 {background-position: -700% -300%;}
+
+!* Ромбики *!
+.rank.rank-7  {background-position: -000% -200%;}
+.rank.rank-8  {background-position: -500% -200%;}
+.rank.rank-9  {background-position: -400% -200%;}
+.rank.rank-10 {background-position: -900% -200%;}
+.rank.rank-11 {background-position: -400% -300%;}
+
+!* Шестиконечная звезда *!
+.rank.rank-7  { background-position: -500% -300%; }
+.rank.rank-8  { background-position: -000% -400%; }
+.rank.rank-9  { background-position: -900% -300%; }
+.rank.rank-10 { background-position: -400% -400%; }
+.rank.rank-11 { background-position: -900% -400%; }
+*/
+
+/* Почти текущий расклад */
+.rank.rank-7  {background-position:     0 -200%;}
+.rank.rank-8  {background-position: -500% -200%;}
+.rank.rank-9  {background-position: -500% -300%;}
+.rank.rank-10 {background-position: -000% -400%;}
+.rank.rank-11 {background-position: -500% -400%;}
+
+.rank.rank-12 {background-position:     0 -500%;}
+.rank.rank-13 {background-position: -100% -500%;}
+.rank.rank-14 {background-position: -200% -500%;}
+.rank.rank-15 {background-position: -400% -500%;}
+.rank.rank-16 {background-position: -500% -500%;}
+.rank.rank-17 {background-position: -600% -500%;}
+.rank.rank-18 {background-position: -700% -500%;}
+.rank.rank-19 {background-position: -800% -500%;}
+.rank.rank-20 {background-position: -900% -500%;}
 
 .js_admin_ban {
   cursor: pointer;

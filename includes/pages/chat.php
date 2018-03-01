@@ -145,14 +145,11 @@ function sn_chat_msg_view($template = null)
       $chat_row['user'] = player_nick_render_to_html($chat_row['user']);
       $nick_stripped = htmlentities(strip_tags($chat_row['user']), ENT_QUOTES, 'utf-8');
       $nick = str_replace(strip_tags($chat_row['user']), $nick_stripped, $chat_row['user']);
-      if(!$history)
-      {
-        $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('({$nick_stripped})');\">{$nick}</span>";
-      }
 
       $template_result['.']['chat'][] = array(
         'TIME' => classSupernova::$gc->bbCodeParser->expandBbCode(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), AUTH_LEVEL_REGISTERED),
         'NICK' => $nick,
+        'NICK_STRIPPED' => $nick_stripped,
         'TEXT' => classSupernova::$gc->bbCodeParser->expandBbCode($chat_row['message'], intval($chat_row['authlevel'])),
       );
 
