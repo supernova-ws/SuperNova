@@ -1686,7 +1686,14 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 /* Shoutbox */
 #shoutbox {
   background-color: black;
-  overflow-y: hidden;
+
+  overflow: auto;
+  text-align: left;
+
+  vertical-align: text-top;
+  margin: 0.5em;
+
+  height: 30em;
 }
 #shoutbox img {
   vertical-align: top;
