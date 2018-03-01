@@ -15,9 +15,9 @@
 <!-- ENDIF -->
 
 <!-- BEGIN chat -->
-<div class="contFS chat_a">
+<div class="chat_a">
   <!-- IF chat.TIME --><div class="chat_a_time">[{chat.TIME}]&nbsp;</div><!-- ENDIF -->
-  <!-- IF chat.NICK --><div class="chat_a_nick contFS" nick_stripped="{chat.NICK_STRIPPED}">{chat.NICK}&gt;</div><!-- ENDIF -->
+  <!-- IF chat.NICK --><div js_chat_nick_stripped="{chat.NICK_STRIPPED}">{chat.NICK}&gt;</div><!-- ENDIF -->
   <!-- IF chat.TEXT --><div class="chat_a_text">{chat.TEXT}</div><!-- ENDIF -->
   <!-- IF chat.DISABLE --><div class="warning"><b>{L_chat_timeout}</b></div><!-- ENDIF -->
 </div>

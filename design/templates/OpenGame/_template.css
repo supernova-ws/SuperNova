@@ -1685,6 +1685,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Shoutbox */
 #shoutbox {
+  background-color: black;
   overflow-y: hidden;
 }
 #shoutbox img {
@@ -1692,6 +1693,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   margin: 0 0.1em 0 0;
 }
 #shoutbox .chat_private {
+  color: lightblue;
   font-style: italic;
 }
 #shoutbox span {
@@ -1699,13 +1701,18 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 /* Chat messages on table */
 #shoutbox > table {
+  background-color: black;
   border: 0;
   padding: 0;
   margin: 0.25em 0;
   border-collapse: collapse;
   width: 100%;
 }
+#shoutbox > table > tbody > tr {
+  background-color: black;
+}
 #shoutbox > table > tbody > tr > td {
+  background-color: black;
   border: 0;
   padding: 0;
   text-align: left;
@@ -1736,7 +1743,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 /* Nick colors in chat */
-.chat_nick_whisper, .chat_nick_msg {
+[safe_name], .chat_nick_msg {
   border-bottom: 0.1em dashed;
   font-weight: bold;
   cursor: pointer;
@@ -1874,19 +1881,23 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .chat_a {
+  display: flex;
+  justify-content: flex-start;
   align-content: flex-start;
   align-items: flex-start;
 
+  text-align: left;
+
+  line-height: 1.4545em;
 }
-.chat_a_time, .chat_a_nick {
+[js_chat_nick_stripped] {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+[js_chat_nick_stripped], .chat_a_time, .chat_a_private {
   flex-grow: 0;
   flex-shrink: 0;
-}
-.chat_a_nick {
-  cursor: pointer;
-}
-.chat_a_time, .chat_a_text, .chat_a_nick, .chat_a_private {
-  line-height: 1.4545em;
 }
 
 
@@ -3347,21 +3358,6 @@ td[go]:hover { /* Skin specific */
 .chat_message {
   background-color: black;
   color:white;
-}
-#shoutbox {
-  background-color: black;
-}
-#shoutbox .chat_private {
-  color: lightblue;
-}
-#shoutbox > table {
-  background-color: black;
-}
-#shoutbox > table > tbody > tr {
-  background-color: black;
-}
-#shoutbox > table > tbody > tr > td {
-  background-color: black;
 }
 #chat_msg_wrapper #msg {
   background-color: black;

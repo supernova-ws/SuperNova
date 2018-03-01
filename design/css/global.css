@@ -282,11 +282,7 @@ textarea {
 /* Containers ======================================================================================================= */
 /* Container Flex - Base Flex Container */
 /* One-line vertically centered, space distributed non-wrapping  */
-.contF,
-.contFJ,
-.contFS,
-.contFC
-{
+.contF, .contFJ, .contFS, .contFC {
   display: flex;
 
   justify-content: space-around;

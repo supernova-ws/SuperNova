@@ -39,6 +39,10 @@ function addMessage() {
   });
 }
 
+jQuery(document).on("click", "[js_chat_nick_stripped]", function () {
+  addSmiley("(" + $(this).attr("js_chat_nick_stripped") + ")");
+});
+
 function showMessage(initial) {
   if(chat_refreshing) {
     return;
