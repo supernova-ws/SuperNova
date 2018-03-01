@@ -152,15 +152,9 @@
       <!-- DEFINE $USER_CLASS_BIRTHDAY = '' -->
     <!-- ENDIF -->
 
-    <!-- IF galaxyrow.USER_VACATION -->
-      <!-- DEFINE $USER_CLASS_VACATION = 'vacation' -->
-    <!-- ELSE -->
-      <!-- DEFINE $USER_CLASS_VACATION = '' -->
-    <!-- ENDIF -->
-
     <th width=150 align=center nowrap>
       <!-- IF galaxyrow.USER_ID -->
-      <div class="button_pseudo uni_show_user {$USER_CLASS_BIRTHDAY} {$USER_CLASS_VACATION} {$USER_CLASS_BANNED}">
+      <div class="button_pseudo uni_show_user {$USER_CLASS_BIRTHDAY} {$USER_CLASS_BANNED}">
         <span class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       </div>
 
