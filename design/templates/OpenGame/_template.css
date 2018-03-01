@@ -1634,25 +1634,81 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #chat_msg_wrapper {
   width: 100%;
 }
+
+/*
+#shoutbox {border: 1px solid red;}
+
+#shoutbox > .chat_a {
+  border: 2px solid green;
+}
+#shoutbox > .chat_a > .chat_a_time {
+  background-color: #5f5f5f;
+}
+#shoutbox > .chat_a > .chat_a_time {
+  background-color: darkred;
+}
+#shoutbox > .chat_a > .chat_a_private, #shoutbox > .chat_a > [js_chat_nick_stripped] {
+  background-color: #9a5500;
+}
+#shoutbox > .chat_a > .chat_a_text {
+  background-color: darkgreen;
+}
+*/
+
+#shoutbox > .chat_a {
+  flex-wrap: wrap;
+  margin-top: 0.4em;
+
+  border-top: 1px solid blue;
+}
+#shoutbox > .chat_a > .chat_a_time {
+  width: 100%;
+}
+#shoutbox > .chat_a > .chat_a_private, #shoutbox > .chat_a > [js_chat_nick_stripped] {
+  padding-left: 0.5em;
+  width: 100%;
+}
+#shoutbox > .chat_a > .chat_a_text {
+  padding-left: 1em;
+}
+#chat_online_dragger {
+  cursor: pointer;
+  text-decoration: underline;
+}
+#chat_online_wrapper, #chat_aux_panel {
+  display: none;
+}
+
+
 @media only screen and (min-width : 52em) { /* 832px */
-  #shoutbox tr > td:first-child {
-    float: left;
+  /*#shoutbox {border: 1px solid orange;}*/
+
+  #shoutbox > .chat_a > .chat_a_time {
+    width: auto;
   }
-  #shoutbox tr > td:nth-child(2) {
-    margin-top: 0.4em;
+  #shoutbox > .chat_a > .chat_a_private, #shoutbox > .chat_a > [js_chat_nick_stripped] {
+    padding-left: 0;
+    width: auto;
+  }
+  #shoutbox > .chat_a > .chat_a_text {
+    padding-left: 1em;
+    width: 100%;
   }
 }
 @media only screen and (min-width : 60em) { /* 960px */
-  #shoutbox td {
-    float: none ;
+  /*#shoutbox {border: 1px solid yellow;}*/
+
+  #chat_online_wrapper, #chat_aux_panel {
     display: table-cell;
   }
-  #shoutbox tr  {
-    border-top: 0;
+
+  #chat_online_dragger {
+    display: none;
   }
-  #shoutbox td {
-    margin: 0;
-  }
+
+
+
+
   #chat_message_inputs {
     text-align: center;
   }
@@ -1665,8 +1721,25 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   }
 }
 @media only screen and (min-width : 64em) { /* 1024px */
+  /*#shoutbox {border: 1px solid green;}*/
+
   #chat_show_extra {
     display:none;
+  }
+}
+@media only screen and (min-width : 75em) { /* 1200px */
+  /*#shoutbox {border: 1px solid blue;}*/
+
+  #shoutbox > .chat_a {
+    flex-wrap: nowrap;
+    margin-top: 0;
+
+    border-top: 0;
+  }
+
+  #shoutbox > .chat_a > .chat_a_text {
+    padding-left: 0;
+    width: auto;
   }
 }
 
@@ -1688,11 +1761,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   background-color: black;
 
   overflow: auto;
+
   text-align: left;
-
   vertical-align: text-top;
-  margin: 0.5em;
 
+  margin: 0.5em;
   height: 30em;
 }
 #shoutbox img {
@@ -1734,20 +1807,20 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 /* Chat messages on div */
-#shoutbox > div {
-  margin: 0.2em 0;
-}
-#shoutbox > div:after { /* Float clear */
-  content: '';
-  display: block;
-  clear: both;
-}
-#shoutbox > div > div:not(:last-child) { /* All div except message should float left */
-  float: left;
-}
-#shoutbox > div > div:last-child { /* Message itself */
-  overflow: hidden;
-}
+/*#shoutbox > div {*/
+  /*margin: 0.2em 0;*/
+/*}*/
+/*#shoutbox > div:after { !* Float clear *!*/
+  /*content: '';*/
+  /*display: block;*/
+  /*clear: both;*/
+/*}*/
+/*#shoutbox > div > div:not(:last-child) { !* All div except message should float left *!*/
+  /*float: left;*/
+/*}*/
+/*#shoutbox > div > div:last-child { !* Message itself *!*/
+  /*overflow: hidden;*/
+/*}*/
 
 /* Nick colors in chat */
 [safe_name], .chat_nick_msg {
@@ -3745,8 +3818,8 @@ td.error_message {
 
 .rank.nick {
   display: inline-block;
-  height: 16px;
-  width: 16px;
+  height: 1.454545em;
+  width: 1.454545em;
   background-image: url("../../images/ranks_sprite_small.png");
   /*height: 1.5em;*/
   /*width: 1.5em;*/
