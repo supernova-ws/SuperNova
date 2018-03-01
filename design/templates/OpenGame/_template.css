@@ -1885,7 +1885,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .chat_a_nick {
   cursor: pointer;
 }
-.chat_a_time, .chat_a_text, .chat_a_nick {
+.chat_a_time, .chat_a_text, .chat_a_nick, .chat_a_private {
   line-height: 1.4545em;
 }
 
