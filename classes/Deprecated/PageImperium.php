@@ -62,8 +62,6 @@ class PageImperium {
   public function view(template $template = null) {
     global $user;
 
-//    $this->modelAdjustMinePercent();
-
     list($planets, $ques) = $this->getUpdatedUserPlanetsAndQues($user);
     $fleets = $this->fleetGetFlyingToPlanets($planets);
 
@@ -71,8 +69,8 @@ class PageImperium {
 
     $template->assign_recursive(templateFillPercent());
 
-    $template->assign_recursive($this->tplRenderPlanets($planets, $fleets));
-    $template->assign_recursive($this->tplRenderFleets($fleets));
+    $template->assign_recursive($this->tplRenderPlanets($user, $planets, $fleets));
+    $template->assign_recursive($this->tplRenderFleets($planets, $fleets));
     $this->tplTotalPlanetInfo($template, $planets);
 
     foreach (self::GROUPS_TO_NAMES as $unit_group_id => $internalGroupName) {
@@ -254,16 +252,13 @@ class PageImperium {
    *
    * @return array[][]
    */
-  protected function tplRenderPlanets(&$planets, $fleets) {
+  protected function tplRenderPlanets($user, &$planets, $fleets) {
     $result = [];
 
     $planet_density = sn_get_groups('planet_density');
 
     foreach ($planets as $planetId => $planet) {
-      $templatizedPlanet = tpl_parse_planet($planet);
-//      $planet['BUILDING_ID'] = $templatizedPlanet['BUILDING_ID'];
-//      $planet['hangar_que'] = $templatizedPlanet['hangar_que'];
-//      $planet['full_que'] = $templatizedPlanet;
+      $templatizedPlanet = tpl_parse_planet($user, $planet);
 
       $fleet_list = $fleets[$planetId];
       foreach ([RES_METAL, RES_CRYSTAL, RES_DEUTERIUM] as $resourceId) {
@@ -308,15 +303,16 @@ class PageImperium {
   }
 
   /**
-   * @param array $fleets
+   * @param array[] $planets
+   * @param array[] $fleets
    *
    * @return array
    */
-  protected function tplRenderFleets($fleets) {
+  protected function tplRenderFleets($planets, $fleets) {
     $fleetsRendered = [];
     foreach ($fleets as $planetId => $fleet_list) {
       if (!empty($fleet_list['own']['count'])) {
-        $fleetsRendered[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId(['id' => $planetId]));
+        $fleetsRendered[$planets[$planetId]['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], getUniqueFleetId(['id' => $planetId]));
       }
     }
 

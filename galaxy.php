@@ -239,6 +239,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     'PLANET_FLEET_ID'  => $planet_fleet_id,
     'PLANET_DIAMETER'  => number_format($uni_galaxyRowPlanet['diameter'], 0, '', '.'),
 
+    'IS_CAPITAL'      => $uni_galaxyRowUser['id_planet'] == $uni_galaxyRowPlanet['id'],
+
     'USER_ID'         => $uni_galaxyRowUser['id'],
     'USER_NAME'       => $renderedNick = player_nick_render_to_html($uni_galaxyRowUser, ['icons' => true,]),
     'USER_NAME_JS'    => js_safe_string($renderedNick),

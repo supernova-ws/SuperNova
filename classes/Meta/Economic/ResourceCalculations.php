@@ -99,6 +99,7 @@ class ResourceCalculations {
     $this->fillProductionMatrix($user, $planet_row);
     $this->applyDensityModifiers($planet_row['density_index']);
     $this->applyProductionSpeed();
+    $this->applyCapitalRates($user['id_planet'] == $planet_row['id']);
     $this->applyProductionModifiers($user, $planet_row);
 
     $this->productionCurrentMatrix = $this->productionFullMatrix;
@@ -151,6 +152,29 @@ class ResourceCalculations {
             $miningAmount *= $densityMultiplier;
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Applying game speed to mining rates
+   *
+   * @param bool $isCapital
+   */
+  protected function applyCapitalRates($isCapital) {
+    if (
+      !$isCapital
+      ||
+      empty(classSupernova::$gc->config->planet_capital_mining_rate)
+      ||
+      classSupernova::$gc->config->planet_capital_mining_rate == 1
+    ) {
+      return;
+    }
+
+    foreach ($this->productionFullMatrix as $resourceId => &$miningData) {
+      foreach ($miningData as $miningUnitId => &$miningAmount) {
+        $miningAmount *= classSupernova::$gc->config->planet_capital_mining_rate;
       }
     }
   }

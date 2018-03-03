@@ -641,16 +641,18 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
 
     $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
 
-    $template->assign_block_vars('topnav_planets', array(
+    $template->assign_block_vars('topnav_planets', [
       'ID'          => $CurPlanet['id'],
       'NAME'        => $CurPlanet['name'],
       'TYPE'        => $CurPlanet['planet_type'],
       'TYPE_TEXT'   => $lang['sys_planet_type_sh'][$CurPlanet['planet_type']],
+      'IS_CAPITAL'  => $CurPlanet['planet_type'] == PT_PLANET && $CurPlanet['id'] == $user['id_planet'],
+      'IS_MOON'     => $CurPlanet['planet_type'] == PT_MOON,
       'PLIMAGE'     => $CurPlanet['image'],
       'FLEET_ENEMY' => $fleet_listx['enemy']['count'],
       'COORDS'      => uni_render_coordinates($CurPlanet),
       'SELECTED'    => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
-    ));
+    ]);
   }
 
   $fleet_flying_list = tpl_get_fleets_flying($user);
@@ -756,6 +758,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
 
     'TUTORIAL_ENABLED' => $tutorial_enabled,
 
+    'PT_MOON'        => PT_MOON,
     'SUBQUE_FLEET'   => SUBQUE_FLEET,
     'QUE_RESEARCH'   => QUE_RESEARCH,
     'QUE_STRUCTURES' => QUE_STRUCTURES,

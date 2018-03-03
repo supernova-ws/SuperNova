@@ -66,19 +66,21 @@
  * @property float      $payment_currency_exchange_uah => 30,
  * @property float      $payment_currency_exchange_usd => 1,
  * @property float      $payment_currency_exchange_wmb => 18000,
- * @property float      $payment_currency_exchange_wme => 0.9,
- * @property float      $payment_currency_exchange_wmr => 60,
- * @property float      $payment_currency_exchange_wmu => 30,
- * @property float      $payment_currency_exchange_wmz => 1,
+ * @property float     $payment_currency_exchange_wme => 0.9,
+ * @property float     $payment_currency_exchange_wmr => 60,
+ * @property float     $payment_currency_exchange_wmu => 30,
+ * @property float     $payment_currency_exchange_wmz => 1,
  *
- * @property int|float  $player_metamatter_immortal   => 200000, // MM amount to reward account with Immortal status
+ * @property int|float $player_metamatter_immortal   => 200000, // MM amount to reward account with Immortal status
+ * ----- Planet settings
+ * @property int       $planet_capital_cost           => 25000, // Cost in DM to move Capital to current planet
+ * @property float     $planet_capital_mining_rate    => 2.0,   // Capital Mining rates
+ * @property float     $planet_capital_building_rate  => 2.0,   // Capital Building rates
+ * @property int       $planet_teleport_cost          => 50000, // Cost of planet teleportation
+ * @property int       $planet_teleport_timeout       => 86400, // Timeout for next teleportation
  *
- * @property int        $planet_capital_cost          => 25000, // Cost in DM to move Capital to current planet
- * @property int        $planet_teleport_cost         => 50000, // Cost of planet teleportation
- * @property int        $planet_teleport_timeout      => 86400, // Timeout for next teleportation
- *
- * @property string     $player_levels                => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
- * @property string     $player_levels_calculated     => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+ * @property string    $player_levels                => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
+ * @property string    $player_levels_calculated     => '2000-01-01 00:00:00', // Date and time where player level was calculated last
  *
  * @property int        $quest_total                  => 0, // Total number of quests
  *
@@ -266,9 +268,11 @@ class classConfig extends classPersistent {
     'payment_lot_price' => 1,     // Lot price in default currency
     'payment_lot_size'  => 2500,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
 
-    'planet_capital_cost'     => 25000, // Cost in DM to move Capital to current planet
-    'planet_teleport_cost'    => 50000, // Cost of planet teleportation
-    'planet_teleport_timeout' => 86400, // Timeout for next teleportation
+    'planet_capital_cost'          => 25000, // Cost in DM to move Capital to current planet
+    'planet_capital_mining_rate'   => 2.0,   // Capital Mining rates
+    'planet_capital_building_rate' => 2.0,   // Capital Building rates
+    'planet_teleport_cost'         => 50000, // Cost of planet teleportation
+    'planet_teleport_timeout'      => 86400, // Timeout for next teleportation
 
     'player_delete_time'      => 3888000, //
     'player_max_colonies'     => -1, // Max player planet count (NOT including main planet)

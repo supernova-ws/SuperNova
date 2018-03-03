@@ -11,7 +11,8 @@
   <tr class="c_c">
     <td width="{$CELL_HEADER}">{L_imp_name}</td>
     <!-- BEGIN planet -->
-      <td width="{$CELL_PLANET}">
+      <td width="{$CELL_PLANET}" style="vertical-align: top;">
+        <!-- IF planet.IS_MOON -->&#9789;<!-- ELSEIF planet.IS_CAPITAL -->&#9813;<!-- ENDIF -->
         <!-- IF planet.ID -->
           <a href="overview.php?cp={planet.ID}">{planet.NAME}</a>
         <!-- ELSE -->

@@ -26,41 +26,24 @@
 </div>
 
 <br />
-<h2>[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</h2>
+<h2>
+  <!-- IF IS_MOON -->&#9789;<!-- ELSEIF IS_CAPITAL -->&#9813;<!-- ENDIF -->
+  [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"
+</h2>
 
 <table align="center" class="markup">
   <tr>
     <th valign="top">
-      <!--&lt;!&ndash; IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID &ndash;&gt;-->
-        <!--<table class="border_image_small planet_overview-info">-->
-          <!--&lt;!&ndash; IF NEW_MESSAGES > 0 &ndash;&gt;-->
-            <!--<tr><th colspan="2"><a href="messages.php" class="link">-->
-              <!--{L_ov_you_have}-->
-              <!--&lt;!&ndash; IF NEW_MESSAGES == 1 &ndash;&gt;-->
-                <!--{L_ov_new_message}-->
-              <!--&lt;!&ndash; ELSE &ndash;&gt;-->
-                <!--{NEW_MESSAGES} {L_ov_new_messages}-->
-              <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-            <!--</a></th></tr>-->
-          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
-          <!--&lt;!&ndash; IF NEW_LEVEL_MINER &ndash;&gt;-->
-            <!--<tr><th colspan=2><a href="dark_matter.php" class="link">{L_ov_rpg_new_level_miner}</a></th></tr>-->
-          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
-          <!--&lt;!&ndash; IF NEW_LEVEL_RAID &ndash;&gt;-->
-            <!--<tr><th colspan=2><a href="dark_matter.php" class="link">{L_ov_rpg_new_level_raid}</a></th></tr>-->
-          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-        <!--</table>-->
-      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
       <table width="522">
         <tr>
           <th colspan=5 nowrap class="c_c">
             <table class="markup" width="100%">
               <tr>
                 <th class="c_l" nowrap>
-                  <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</a>
+                  <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">
+                    <!-- IF IS_MOON -->&#9789;<!-- ELSEIF IS_CAPITAL -->&#9813;<!-- ENDIF -->
+                    [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"
+                  </a>
                 </th>
                 <th class="c_r" nowrap width="11em">
                   <input type="button" name="rename" id="planet_rename" value="{L_ov_rename}" />

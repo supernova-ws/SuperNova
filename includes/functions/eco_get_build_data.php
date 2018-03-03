@@ -169,6 +169,17 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $mercenary = MRC_ENGINEER;
   }
 
+  if(
+    // If planet is capital
+    $user['id_planet'] == $planet['id']
+    &&
+    classSupernova::$gc->config->planet_capital_building_rate > 0
+    &&
+    in_array($unit_id, sn_get_groups(sn_get_groups(GROUP_CAPITAL_BUILDING_BONUS_GROUPS)))
+  ) {
+    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / classSupernova::$gc->config->planet_capital_building_rate;
+  }
+
   if($mercenary) {
     $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / mrc_modify_value($user, $planet, $mercenary, 1);
   }
@@ -176,14 +187,14 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   if(in_array($unit_id, sn_get_groups('governors')) || $only_dark_matter) {
     $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_DESTROY] = 0;
   } else {
-    $cost[RES_TIME][BUILD_CREATE]  = round($cost[RES_TIME][BUILD_CREATE] > 1 ? $cost[RES_TIME][BUILD_CREATE] : 1);
-    $cost[RES_TIME][BUILD_DESTROY] = round($cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? $cost[RES_TIME][BUILD_CREATE] / 2 : 1);
+    $cost[RES_TIME][BUILD_CREATE]  = $cost[RES_TIME][BUILD_CREATE] > 1 ? round($cost[RES_TIME][BUILD_CREATE]) : 1;
+    $cost[RES_TIME][BUILD_DESTROY] = $cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? round($cost[RES_TIME][BUILD_CREATE] / 2) : 1;
   }
 
   return $cost;
 }
 
-function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call('eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
+function eco_can_build_unit($user, $planet, $unit_id){$result = null;return sn_function_call('eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
 function sn_eco_can_build_unit($user, $planet, $unit_id, &$result) {
   global $config;
 
@@ -228,7 +239,7 @@ function eco_is_builds_in_que($planet_que, $unit_list)
   return $eco_is_builds_in_que;
 }
 
-function eco_unit_busy(&$user, &$planet, $unit_id){return sn_function_call('eco_unit_busy', array(&$user, &$planet, $unit_id, &$result));}
+function eco_unit_busy(&$user, &$planet, $unit_id){$result = null;return sn_function_call('eco_unit_busy', [&$user, &$planet, $unit_id, &$result]);}
 function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
 {
   global $config;

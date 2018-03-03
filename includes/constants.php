@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a13.13');
+define('SN_VERSION', '43a13.14');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -848,6 +848,7 @@ define('HULL_SIZE_HUGE', 5);
 
 // === UNITS
 define('GROUP_GROUP_ID_TO_NAMES', 'group_id_to_names');
+define('GROUP_CAPITAL_BUILDING_BONUS_GROUPS', 'GROUP_CAPITAL_BUILDING_BONUS_GROUPS');
 
 define('UNIT_ANY', 0);
 

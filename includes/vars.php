@@ -1236,6 +1236,8 @@ $sn_data += array(
       UNIT_PLANS        => 'plans',
     ],
 
+    GROUP_CAPITAL_BUILDING_BONUS_GROUPS => ['structures', 'defense','fleet',],
+
   ),
 );
 

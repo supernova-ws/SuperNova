@@ -9,9 +9,12 @@
     <th class="c_c" nowrap>
       <div class="contFJ">
         <div>
-          <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a>
-          {PLANET_TYPE_TEXT}
-          "{PLANET_NAME}"
+          <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">
+            <!-- IF IS_MOON -->&#9789;<!-- ELSEIF IS_CAPITAL -->&#9813;<!-- ENDIF -->
+            [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]
+            {PLANET_TYPE_TEXT}
+            "{PLANET_NAME}"
+          </a>
         </div>
         <button onclick="sn_redirect('overview.php');return false;"><span class="ok">{L_ov_return}</span></button>
       </div>
@@ -122,7 +125,17 @@
     <th class="c_l" colspan=4>{L_ov_manage_special}</th>
   </tr>
   <!-- IF PLANET_TYPE == 1 -->
-  <!-- IF ! IS_CAPITAL -->
+  <!-- IF IS_CAPITAL -->
+  <tr>
+    <th colspan="3">
+      <!-- IF CAN_CAPITAL -->
+      <!-- ELSE -->
+      <!-- DEFINE $CAPITAL_DISABLED = 'disabled="disabled"' -->
+      <!-- ENDIF -->
+      {Эта планета является столицей}
+    </th>
+  </tr>
+  <!-- ELSE -->
   <tr>
     <th colspan="3">
       <!-- IF CAN_CAPITAL -->

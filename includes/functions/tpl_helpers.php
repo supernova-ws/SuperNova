@@ -264,11 +264,12 @@ function tpl_parse_planet_moon($parentPlanetId) {
 }
 
 /**
+ * @param array $user
  * @param array $planet
  *
  * @return array
  */
-function tpl_parse_planet($planet) {
+function tpl_parse_planet($user, $planet) {
   global $lang;
 
   $que = que_get($planet['id_owner'], $planet['id'], false);
@@ -289,6 +290,8 @@ function tpl_parse_planet($planet) {
     'PLANET'      => $planet['planet'],
     'TYPE'        => $planet['planet_type'],
     'COORDINATES' => uni_render_coordinates($planet),
+    'IS_CAPITAL'  => $planet['planet_type'] == PT_PLANET && $planet['id'] == $user['id_planet'],
+    'IS_MOON'     => $planet['planet_type'] == PT_MOON,
 
     'METAL_PERCENT'     => $planet['metal_mine_porcent'] * 10,
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
