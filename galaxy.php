@@ -225,7 +225,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
   $birthday_array = $uni_galaxyRowUser['user_birthday'] ? date_parse($uni_galaxyRowUser['user_birthday']) : array();
-  $user_activity = floor((SN_TIME_NOW - $uni_galaxyRowUser['onlinetime']) / (60 * 60 * 24));
+  $playerSecondsInactive = SN_TIME_NOW - $uni_galaxyRowUser['onlinetime'];
+  $user_activity_days = floor(($playerSecondsInactive) / (60 * 60 * 24));
 
   $templatizedPlanet = array_merge([
     'PLANET_ID'        => $uni_galaxyRowPlanet['id'],
@@ -247,9 +248,9 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     'USER_RANK'       => in_array($uni_galaxyRowUser['id'], $user_skip_list) ? '-' : $uni_galaxyRowUser['total_rank'],
     'USER_BANNED'     => $uni_galaxyRowUser['banaday'],
     'USER_VACATION'   => $uni_galaxyRowUser['vacation'],
-    'USER_ACTIVITY'   => $user_activity,
-    'USER_ATTACKABLE' => $user_activity >= 7,
-    'USER_INACTIVE'   => $user_activity >= 28,
+    'USER_ACTIVITY'   => $user_activity_days,
+    'USER_ATTACKABLE' => $playerSecondsInactive >= PLAYER_INACTIVE_TIMEOUT,
+    'USER_INACTIVE'   => $playerSecondsInactive >= PLAYER_INACTIVE_TIMEOUT_LONG,
     'USER_PROTECTED'  => classSupernova::$gc->general->playerIsNoobByPoints($RowUserPoints),
     'USER_NOOB'       => classSupernova::$gc->general->playerIs1stStrongerThen2nd($CurrentPoints, $RowUserPoints),
     'USER_STRONG'     => classSupernova::$gc->general->playerIs1stStrongerThen2nd($RowUserPoints, $CurrentPoints),

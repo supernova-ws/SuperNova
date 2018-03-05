@@ -270,20 +270,28 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
   */
 
 
-  if ($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
-    $result[NICK_BIRTHDAY] = '';
+  if (($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
+    if(!empty($render_user['user_birthday'])) {
+      $result[NICK_BIRTHDAY] = '';
+    }
   }
 
   if ($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
-    $result[NICK_GENDER] = $render_user['gender'] == GENDER_UNKNOWN ? 'unknown' : ($render_user['gender'] == GENDER_FEMALE ? 'female' : 'male');
+    if (isset($render_user['gender'])) {
+      $result[NICK_GENDER] = $render_user['gender'] == GENDER_UNKNOWN ? 'unknown' : ($render_user['gender'] == GENDER_FEMALE ? 'female' : 'male');
+    }
   }
 
   if (($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {
-    $result[NICK_VACATION] = $render_user['vacation'];
+    if(isset($render_user['vacation'])) {
+      $result[NICK_VACATION] = $render_user['vacation'];
+    }
   }
 
   if ($options === true || !empty($options['icons']) || !empty($options['player_rank'])) {
-    $result[NICK_RANK] = classSupernova::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
+    if(isset($render_user['total_points'])) {
+      $result[NICK_RANK] = classSupernova::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
+    }
   }
 
   if (!empty($options[NICK_RANK_NO_TEXT])) {
@@ -300,11 +308,14 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
   }
 
   if ((isset($options['class']) && $options['class'])) {
-    $result[NICK_CLASS] = (isset($result_options[NICK_CLASS]) ? ' ' . $result_options[NICK_CLASS] : '') . $options['class'];
+//    $result[NICK_CLASS] = (isset($result_options[NICK_CLASS]) ? ' ' . $result_options[NICK_CLASS] : '') . $options['class'];
+    $result[NICK_CLASS] = (isset($options[NICK_CLASS]) ? ' ' . $options[NICK_CLASS] : '') . $options['class'];
   }
 
   if ($render_user['ally_tag'] && ($options === true || (isset($options['ally']) && $options['ally']))) {
-    $result[NICK_ALLY] = $render_user['ally_tag'];
+    if(isset($render_user['ally_tag'])) {
+      $result[NICK_ALLY] = $render_user['ally_tag'];
+    }
   }
 
   $result[NICK_NICK] = $render_user['username'];

@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a13.14');
+define('SN_VERSION', '43a13.16');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -77,6 +77,7 @@ define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
 define('PERIOD_MINUTE_15', PERIOD_MINUTE * 15);
 define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
 define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
+define('PERIOD_WEEK_4'   , PERIOD_WEEK * 4);
 define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
 define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
 
@@ -1776,6 +1777,9 @@ define('WATCHDOG_TIME_SQL', 1);
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
 define('PLAYER_INACTIVE_TIMEOUT', PERIOD_WEEK); // Player inactivity timeout to become 'i'-marked player
+const PLAYER_INACTIVE_TIMEOUT_LONG = PERIOD_WEEK_4; // Player inactivity to becone 'I'-marked player
+
+
 
 define('EVENT_ANY', -2);
 define('EVENT_ALL', -1);

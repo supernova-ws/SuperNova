@@ -17,113 +17,116 @@ $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
 
 global $sn_mvc;
-$sn_mvc = array(
-  'model'      => array(
-    'ajax' => array('AjaxController::controller'),
+$sn_mvc = [
+  'model'      => [
+    'ajax' => ['AjaxController::controller'],
 
-    'options'  => array('sn_options_model'),
-    'chat'     => array('sn_chat_model'),
-    'chat_add' => array('sn_chat_add_model'),
+    'options'  => ['sn_options_model'],
+    'chat'     => ['sn_chat_model'],
+    'chat_add' => ['sn_chat_add_model'],
 
-    'imperium' => ['\Deprecated\PageImperium::modelStatic'],
+    'imperium' => [\Deprecated\PageImperium::class . '::modelStatic'],
 
-    'admin/admin_ally' => array('sn_admin_ally_model'),
-  ),
-  'view'       => array(
-    'ajax' => array('AjaxController::view'),
+    'admin/admin_ally' => ['sn_admin_ally_model'],
+  ],
+  'view'       => [
+    'ajax' => ['AjaxController::view'],
 
-    'options'       => array('sn_options_view'),
-    'chat'          => array('sn_chat_view'),
-    'chat_msg'      => array('sn_chat_msg_view'),
-    'battle_report' => array('sn_battle_report_view'),
-    'contact'       => array('sn_contact_view'),
-    'imperator'     => array('sn_imperator_view'),
-    'imperium'      => ['\Deprecated\PageImperium::viewStatic'],
-    'techtree'      => array('sn_techtree_view'),
+    'options'       => ['sn_options_view'],
+    'chat'          => ['sn_chat_view'],
+    'chat_msg'      => ['sn_chat_msg_view'],
+    'battle_report' => ['sn_battle_report_view'],
+    'contact'       => ['sn_contact_view'],
+    'imperator'     => ['sn_imperator_view'],
+    'imperium'      => [\Deprecated\PageImperium::class . '::viewStatic'],
+    'techtree'      => ['sn_techtree_view'],
 
-    'admin/user_view'  => array('sn_admin_user_view_view'),
-    'admin/admin_ally' => array('sn_admin_ally_view'),
-  ),
-  'controller' => array(),
-  'i18n'       => array(
-    'options'   => array(
+    'admin/user_view'    => ['sn_admin_user_view_view'],
+    'admin/admin_ally'   => ['sn_admin_ally_view'],
+    'admin/admin_mining' => [\Deprecated\PageAdminMining::class . '::viewStatic'],
+  ],
+  'controller' => [],
+  'i18n'       => [
+    'options'   => [
       'options'  => 'options',
       'messages' => 'messages',
-    ),
-    'imperator' => array(
+    ],
+    'imperator' => [
       'overview' => 'overview',
-    ),
-  ),
+    ],
+  ],
 
-  'pages' => array(
-    'admin/user_view' => array(
+  'pages' => [
+    'admin/user_view' => [
       'filename' => 'admin/user_view',
-      'options'  => array(
+      'options'  => [
         'fleet_update_skip' => true,
-      ),
-    ),
+      ],
+    ],
 
-    'admin/admin_ally' => array(
+    'admin/admin_ally' => [
       'filename' => 'admin/admin_ally',
-      'options'  => array(
+      'options'  => [
         'fleet_update_skip' => true,
-      ),
-    ),
+      ],
+    ],
 
-    'chat'     => array(
-      'filename' => 'chat',
-      'options'  => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
-    'chat_add' => array(
-      'filename' => 'chat',
-      'options'  => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
-    'chat_msg' => array(
-      'filename' => 'chat',
-      'options'  => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
+    'admin/admin_mining' => [],
 
-    'contact'       => array(
+    'chat'     => [
+      'filename' => 'chat',
+      'options'  => [
+        'fleet_update_skip' => true,
+      ],
+    ],
+    'chat_add' => [
+      'filename' => 'chat',
+      'options'  => [
+        'fleet_update_skip' => true,
+      ],
+    ],
+    'chat_msg' => [
+      'filename' => 'chat',
+      'options'  => [
+        'fleet_update_skip' => true,
+      ],
+    ],
+
+    'contact'       => [
       'allow_anonymous' => true,
       'filename'        => 'contact',
-    ),
-    'imperator'     => array(
+    ],
+    'imperator'     => [
       'filename' => 'imperator',
-    ),
+    ],
     'imperium'      => [],
-    'options'       => array(
+    'options'       => [
       'filename' => 'options',
-    ),
-    'techtree'      => array(
+    ],
+    'techtree'      => [
       'filename' => 'techtree',
-    ),
-    'battle_report' => array(
+    ],
+    'battle_report' => [
       'filename' => 'battle_report',
-    ),
-    'ajax'          => array(),
-    'time_probe'    => array(
-      'options' => array(
+    ],
+    'ajax'          => [],
+    'time_probe'    => [
+      'options' => [
         'fleet_update_skip' => true,
-      ),
-    ),
+      ],
+    ],
 
-    'buildings' => array(
+    'buildings' => [
       // PAGE_OPTION_EARLY_HEADER => true,
       // PAGE_OPTION_TITLE => 'buildings',
-    ),
+    ],
 
-    'overview' => array(
+    'overview' => [
       // PAGE_OPTION_EARLY_HEADER => true,
       // PAGE_OPTION_TITLE => 'buildings',
-    ),
-  ),
-);
+    ],
+  ],
+];
 
 $note_priority_classes = array(
   4 => 'error',

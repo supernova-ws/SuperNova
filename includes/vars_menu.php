@@ -544,6 +544,11 @@ $sn_menu_admin = array(
     'ITEM' => 'adm_ban_unban',
     'LINK' => 'admin/banned.php',
   ),
+  'menu_admin_minig' => array(
+    'TYPE'  => 'lang',
+    'ITEM'  => 'menu_admin_minig',
+    'LINK'  => 'index.php?page=admin/admin_mining',
+  ),
 //  'menu_admin_player_list' => array(
 //    'TYPE'       => 'lang',
 //    'ITEM'       => 'adm_plrlst',

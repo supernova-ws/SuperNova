@@ -1,0 +1,68 @@
+<h1>{PAGE_NAME}</h1>
+
+<!-- IF ACTIVE_STATUS == 1 -->
+<!-- DEFINE $ACTIVE_SELECTED_1 = 'checked' -->
+<!-- ELSEIF ACTIVE_STATUS == 2 -->
+<!-- DEFINE $ACTIVE_SELECTED_2 = 'checked' -->
+<!-- ELSEIF ACTIVE_STATUS == 0 -->
+<!-- DEFINE $ACTIVE_SELECTED_0 = 'checked' -->
+<!-- ENDIF -->
+
+<script type="text/javascript">
+  $(document).on('click', "[name='ACTIVE_STATUS']", function () {
+    $("#filterForm").submit();
+  })
+</script>
+
+<form action="" method="get" id="filterForm">
+  <input type="hidden" name="page" value="admin/admin_mining"/>
+
+  <input type="radio" name="ACTIVE_STATUS" id="activeAll" value="0" {$ACTIVE_SELECTED_0}/>
+  <label for="activeAll"> { activeAll } </label>
+  <input type="radio" name="ACTIVE_STATUS" id="activeLong" value="1" {$ACTIVE_SELECTED_1}/>
+  <label for="activeLong"> { activeLong } </label>
+  <input type="radio" name="ACTIVE_STATUS" id="activeShort" value="2" {$ACTIVE_SELECTED_2}/>
+  <label for="activeShort"> { activeShort } </label>
+</form>
+
+<table>
+  <!-- IF .production && PAGER_MESSAGES -->
+  <tr class="c_c">
+    <td class="subheader" colspan="8">
+      {PAGER_MESSAGES}
+    </td>
+  </tr>
+  <!-- ENDIF -->
+
+  <tr class="c_l">
+    <th>'ID'</th>
+    <th>'NAME'</th>
+    <th>'RANK'</th>
+    <th>'TOTAL'</th>
+    <th>'METAL'</th>
+    <th>'CRYSTAL'</th>
+    <th>'DEUTERIUM'</th>
+    <th>'PERCENT'</th>
+  </tr>
+
+  <!-- BEGIN production -->
+  <tr class="c_r">
+    <td class="c_l">{production.ID}</td>
+    <td class="c_l">{production.NAME}</td>
+    <td>{production.RANK|num|format}</td>
+    <td>{production.TOTAL|num|format}</td>
+    <td>{production.METAL|num|format}</td>
+    <td>{production.CRYSTAL|num|format}</td>
+    <td>{production.DEUTERIUM|num|format}</td>
+    <td>{production.PERCENT}</td>
+  </tr>
+  <!-- END production -->
+
+  <!-- IF .production && PAGER_MESSAGES -->
+  <tr class="c_c">
+    <td class="subheader" colspan="8">
+      {PAGER_MESSAGES}
+    </td>
+  </tr>
+  <!-- ENDIF -->
+</table>
