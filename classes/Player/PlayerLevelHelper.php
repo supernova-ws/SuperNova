@@ -138,12 +138,11 @@ class PlayerLevelHelper {
 
     $levelPoints = $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_POINTS);
     !$levelPoints ? $levelPoints = 5000 * $this->valueStorage->getValue(UNIT_SERVER_SPEED_MINING) : false;
-    $level = 0;
-    do {
-      $this->playerLevels[$level++] = $levelPoints;
-      $gotUser = doquery("SELECT 1 FROM `{{users}}` WHERE `total_points` > {$levelPoints} LIMIT 1", true);
+
+    for($level = 0; $level <= PLAYER_RANK_MAX; $level++) {
+      $this->playerLevels[$level] = $levelPoints;
       $levelPoints *= $multiplier;
-    } while (!empty($gotUser));
+    }
   }
 
 }
