@@ -35,15 +35,16 @@ class OutcomeManager implements \Countable {
   /**
    * Roll element from predefined array
    *
-   * @param iterable $iterable - [P_CHANCE => (int), ...(payload)]
+   * @param iterable|array $iterable - [P_CHANCE => (int), ...(payload)]
    *
    * @return mixed|null
    */
   public static function rollArray($iterable) {
-    $manager = new static();
     if (!is_iterable($iterable) || empty($iterable)) {
       return null;
     }
+
+    $manager = new static();
 
     foreach ($iterable as $element) {
       if (!is_array($element) || empty($element[P_CHANCE])) {
@@ -52,14 +53,17 @@ class OutcomeManager implements \Countable {
       $manager->add($element, $element[P_CHANCE]);
     }
 
-    return $manager->rollOutcome();
+    $result = $manager->rollOutcome();
+    unset($manager);
+
+    return $result;
   }
 
   /**
    * Adds outcome to internal array
    *
    * @param mixed $outcome - Outcome which can be selected
-   * @param int   $chance  - Chance of this particular outcome. Should be integer. Sum of all chances can be above mt_getrandmax()
+   * @param int   $chance - Chance of this particular outcome. Should be integer. Sum of all chances can be above mt_getrandmax()
    */
   public function add($outcome, $chance) {
     $this->outcomes[] = $outcome;
@@ -70,7 +74,7 @@ class OutcomeManager implements \Countable {
    * Removed outcome from list
    *
    * @param mixed     $outcome - Outcome to be removed
-   * @param bool|null $strict  - Strict search flag
+   * @param bool|null $strict - Strict search flag
    */
   public function remove($outcome, $strict = null) {
     if (($index = array_search($outcome, $this->outcomes, $strict)) !== false) {
@@ -98,7 +102,7 @@ class OutcomeManager implements \Countable {
    */
   public function getOutcome($rolled) {
     foreach ($this->chances as $index => $chance) {
-      if ($chance <= $rolled) {
+      if ($rolled <= $chance) {
         break;
       }
       $rolled -= $chance;

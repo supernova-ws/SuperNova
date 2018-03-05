@@ -266,7 +266,7 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
 
   $metal_cost = 0;
   foreach ($cost as $resource_id => $resource_value) {
-    $metal_cost += $rates[$resource_id] * $resource_value;
+    $metal_cost += $rates[$resource_id] / $rates[$in_resource] * $resource_value;
   }
 
   return $metal_cost;
