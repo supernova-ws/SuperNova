@@ -336,7 +336,7 @@ function upd_db_changeset_apply($db_changeset) {
  * @param int $id
  */
 function updPatchExists($id) {
-  $q = upd_do_query("SELECT 1 FROM {{server_patches}} WHERE `id` = " . intval($id), true);
+  $q = upd_do_query("SELECT 1 FROM `{{server_patches}}` WHERE `id` = " . intval($id), true);
 
   return !empty(db_fetch($q));
 }
@@ -345,7 +345,7 @@ function updPatchExists($id) {
  * @param int $id
  */
 function updPatchRegister($id) {
-  upd_do_query("INSERT INTO {{server_patches}} SET `id` = " . intval($id));
+  upd_do_query("INSERT INTO `{{server_patches}}` SET `id` = " . intval($id));
 }
 
 /**
