@@ -380,16 +380,16 @@ switch ($new_version) {
       }
     });
 
-    // 2018-03-07 09:23:41 43a13.23
-    updPatchApply(2, function() {
+    // 2018-03-07 09:23:41 43a13.23 + 2018-03-07 12:00:47 43a13.24
+    updPatchApply(2, function() use ($update_tables) {
       upd_alter_table('festival_gifts', [
         "ADD COLUMN `disclosure` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `amount`",
         "ADD COLUMN `message` VARCHAR(4096) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `disclosure`",
       ], empty($update_tables['festival_gifts']['disclosure']));
-    }, PATCH_PRE_CHECK);
+    });
 
 //    // #ctv
-//    updPatchApply(3, function() {
+//    updPatchApply(3, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
     upd_do_query('COMMIT;', true);
