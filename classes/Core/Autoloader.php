@@ -54,13 +54,12 @@ class Autoloader {
       static::$autoloaderRegistered = true;
     }
 
-    $absoluteClassRoot = str_replace('\\', '/', $absoluteClassRoot);
+    $absoluteClassRoot = str_replace('\\', '/', SN_ROOT_PHYSICAL . $absoluteClassRoot);
 
     if(!($absoluteClassRoot = realpath($absoluteClassRoot))) {
-      // TODO - throw exception
+      // TODO - throw new \Exception("There is some error when installing autoloader for '{$absoluteClassRoot}' class prefix '{$classPrefix}'");
       return;
     }
-
     $absoluteClassRoot = str_replace('\\', '/', $absoluteClassRoot) . '/';
 
     if($classPrefix && strrpos($classPrefix, 1) != '\\') {
@@ -68,7 +67,7 @@ class Autoloader {
     }
 
     static::$folders[] = [
-      static::P_FOLDER => SN_ROOT_PHYSICAL . $absoluteClassRoot,
+      static::P_FOLDER => $absoluteClassRoot,
       static::P_PREFIX => $classPrefix,
     ];
   }
