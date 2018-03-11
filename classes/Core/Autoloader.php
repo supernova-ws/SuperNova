@@ -68,17 +68,18 @@ class Autoloader {
     }
 
     static::$folders[] = [
-      static::P_FOLDER => $absoluteClassRoot,
+      static::P_FOLDER => SN_ROOT_PHYSICAL . $absoluteClassRoot,
       static::P_PREFIX => $classPrefix,
     ];
   }
 
-  /**
-   * @param string $relativeClassRoot - relative path to root class folder from game root (where index.php lies)
-   */
-  public static function registerRelative($relativeClassRoot) {
-    static::register(SN_ROOT_PHYSICAL . $relativeClassRoot);
-  }
+//  /**
+//   * @param string $relativeClassRoot - relative path to root class folder from game root (where index.php lies)
+//   * @param string $classPrefix - PHP class prefix to ignore. Can be whole namespace or part of it
+//   */
+//  public static function registerRelative($relativeClassRoot, $classPrefix = '') {
+//    static::register(SN_ROOT_PHYSICAL . $relativeClassRoot, $classPrefix);
+//  }
 
   public static function reset() {
     static::$folders = [];
