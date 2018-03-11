@@ -5,13 +5,13 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a9.13#';
+  public $versionCommitted = '#43a13.26#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a9.13# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a13.26# copyright © 2009-2017 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -133,7 +133,12 @@ class sn_module {
     );
   }
 
-  function __construct($filename = __FILE__) {
+  /**
+   * sn_module constructor.
+   *
+   * @param string $filename
+   */
+  public function __construct($filename = __FILE__) {
     global $sn_module;
 
     // Getting module PHP class name
@@ -160,6 +165,9 @@ class sn_module {
 
     // Registering module
     $sn_module[$class_module_name] = $this;
+
+    // Registering classes with autoloader
+    \Core\Autoloader::register($this->manifest['root_relative'] . '/classes/');
   }
 
   protected function __patch_menu(&$sn_menu_extra, &$menu_patch) {
