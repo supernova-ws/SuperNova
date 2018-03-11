@@ -10,14 +10,21 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a13.26');
+define('SN_VERSION', '43a13.28');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 
+define('FMT_DATE_SQL', 'Y-m-d');
+define('FMT_TIME_SQL', 'H:i:s');
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+define('SN_TODAY_SQL', date('Y-m-d', SN_TIME_NOW));
+define('SN_TODAY_UNIX', strtotime(SN_TODAY_SQL));
+
+const SN_DATE_PREHISTORIC_SQL = '2000-01-01';
+define('SN_DATE_PREHISTORIC_UNIX', strtotime(SN_DATE_PREHISTORIC_SQL));
 
 define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
 
@@ -1654,6 +1661,7 @@ define('PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE', 54);
 define('PLAYER_OPTION_QUEST_LIST_FILTER', 55);
 define('PLAYER_OPTION_LOGIN_REWARDED_LAST', 56);
 define('PLAYER_OPTION_LOGIN_REWARDED_LAST_VIEWED', 57);
+define('PLAYER_OPTION_LOGIN_REWARD_STREAK_BEGAN', 58);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

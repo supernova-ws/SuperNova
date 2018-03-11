@@ -96,7 +96,8 @@ class userOptions extends oldArrayAccessNd {
 
     PLAYER_OPTION_QUEST_LIST_FILTER => QUEST_STATUS_ALL,
 
-    PLAYER_OPTION_LOGIN_REWARDED_LAST => '2000-01-01',
+    PLAYER_OPTION_LOGIN_REWARDED_LAST => SN_DATE_PREHISTORIC_SQL,
+    PLAYER_OPTION_LOGIN_REWARD_STREAK_BEGAN => SN_DATE_PREHISTORIC_SQL,
   );
 
   public $data = array(); // Container // TODO - make protected
@@ -171,16 +172,16 @@ class userOptions extends oldArrayAccessNd {
     $this->user_change($user_id);
   }
 
-  public function user_change($user_id) {
+  public function user_change($user_id, $forceLoad = false) {
     $this->loaded = false;
     $this->user_id = round(floatval($user_id));
-    $this->load();
+    $this->load($forceLoad);
   }
   protected function cached_name() {
     return 'options_' . $this->user_id;
   }
 
-  protected function load() {
+  protected function load($forceLoad = false) {
     global $sn_cache;
 
     if($this->loaded) {
@@ -197,11 +198,13 @@ class userOptions extends oldArrayAccessNd {
     }
 
     $field_name = $this->cached_name();
-    $a_data = $sn_cache->$field_name;
+    if(!$forceLoad) {
+      $a_data = $sn_cache->$field_name;
 
-    if(!empty($a_data)) {
-      $this->data = array_replace_recursive($this->data, $a_data);
-      return;
+      if(!empty($a_data)) {
+        $this->data = array_replace_recursive($this->data, $a_data);
+        return;
+      }
     }
 
     $query = doquery("SELECT * FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} FOR UPDATE");
@@ -211,4 +214,5 @@ class userOptions extends oldArrayAccessNd {
     }
     $sn_cache->$field_name = $this->data;
   }
+
 }

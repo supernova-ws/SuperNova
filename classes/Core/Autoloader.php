@@ -5,11 +5,19 @@
 
 namespace Core;
 
-
+/**
+ * Class Autoloader
+ *
+ * One of core class to supply autoload facilities to the engine
+ *
+ * @package Core
+ */
 class Autoloader {
+  const P_FOLDER = 'P_FOLDER';
+  const P_PREFIX = 'P_PREFIX';
 
   /**
-   * @var string[] $folders
+   * @var string[][] $folders - [[P_FOLDER => (str)$absoluteFolder, P_PREFIX => (str)$prefixToIgnore]]
    */
   protected static $folders = [];
 
@@ -19,9 +27,14 @@ class Autoloader {
    * @param string $class - Fully-qualified path with namespaces
    */
   public static function autoloader($class) {
-    $classFile = str_replace('\\', '/', $class);
-    foreach(static::$folders as $folder) {
-      $classFullFileName = str_replace('\\', '/', $folder . $classFile) . DOT_PHP_EX;
+    foreach(static::$folders as $data) {
+      $theClassFile = $class;
+
+      if($data[static::P_PREFIX] && strrpos($class, $data[static::P_PREFIX]) !== false) {
+        $theClassFile = substr($class, strlen($data[static::P_PREFIX]));
+      }
+
+      $classFullFileName = str_replace('\\', '/', $data[static::P_FOLDER] . $theClassFile) . DOT_PHP_EX;
       if(file_exists($classFullFileName) && is_file($classFullFileName)) {
         require_once($classFullFileName);
         if(method_exists($class, '_constructorStatic')) {
@@ -33,8 +46,9 @@ class Autoloader {
 
   /**
    * @param string $absoluteClassRoot - absolute path to root class folder
+   * @param string $classPrefix - PHP class prefix to ignore. Can be whole namespace or part of it
    */
-  public static function register($absoluteClassRoot) {
+  public static function register($absoluteClassRoot, $classPrefix = '') {
     if(!static::$autoloaderRegistered) {
       spl_autoload_register(array(__CLASS__, 'autoloader'));
       static::$autoloaderRegistered = true;
@@ -43,14 +57,20 @@ class Autoloader {
     $absoluteClassRoot = str_replace('\\', '/', $absoluteClassRoot);
 
     if(!($absoluteClassRoot = realpath($absoluteClassRoot))) {
+      // TODO - throw exception
       return;
     }
 
     $absoluteClassRoot = str_replace('\\', '/', $absoluteClassRoot) . '/';
 
-    if(!isset(static::$folders[$absoluteClassRoot])) {
-      static::$folders[$absoluteClassRoot] = $absoluteClassRoot;
+    if($classPrefix && strrpos($classPrefix, 1) != '\\') {
+      $classPrefix .= '\\';
     }
+
+    static::$folders[] = [
+      static::P_FOLDER => $absoluteClassRoot,
+      static::P_PREFIX => $classPrefix,
+    ];
   }
 
   /**
