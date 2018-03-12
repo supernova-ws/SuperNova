@@ -35,7 +35,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
     $this->pageSize = max(intval($pageSize), PAGING_PAGE_SIZE_MINIMUM);
     $this->currentPage = max(intval($currentPage), 1);
 
-    $this->db = isset($db) ? $db : \classSupernova::$gc->db;
+    $this->db = isset($db) ? $db : \SN::$gc->db;
 
     $this->query();
   }

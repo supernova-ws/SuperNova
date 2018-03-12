@@ -189,15 +189,15 @@ function tpl_render_menu($template) {
 
   if (isset($template_result['MENU_CUSTOMIZE'])) {
     $template->assign_vars(array(
-      'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
-      'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
-      'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'    => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
-      'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'   => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
-      'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
-      'PLAYER_OPTION_MENU_WHITE_TEXT'       => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
-      'PLAYER_OPTION_MENU_OLD'              => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
+      'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => SN::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'    => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+      'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'   => SN::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+      'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+      'PLAYER_OPTION_MENU_WHITE_TEXT'       => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
+      'PLAYER_OPTION_MENU_OLD'              => SN::$user_options[PLAYER_OPTION_MENU_OLD],
       'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE')
-        ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
+        ? SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
     ));
   }
 
@@ -315,7 +315,7 @@ function sn_display($page, $title = '') {
  * @param $planetrow
  */
 function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, $config, $lang, $planetrow) {
-  if (classSupernova::$headerRendered) {
+  if (SN::$headerRendered) {
     return;
   }
 
@@ -390,12 +390,12 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
     'title'              => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
     'ADV_SEO_JAVASCRIPT' => $config->adv_seo_javascript,
 
-    'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+    'SOUND_ENABLED'                        => SN::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED'     => SN::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => SN::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
     'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
-    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
+    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => SN::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
   ));
   $template->assign_recursive($template_result);
 
@@ -410,7 +410,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
   displayP($template);
   ob_end_flush();
 
-  classSupernova::$headerRendered = true;
+  SN::$headerRendered = true;
 
   ob_start();
 }
@@ -423,7 +423,7 @@ function renderFooter() {
   $templateFooter->assign_vars([
     'SN_TIME_NOW'      => SN_TIME_NOW,
     'SN_VERSION'       => SN_VERSION,
-    'ADMIN_EMAIL'      => classSupernova::$config->game_adminEmail,
+    'ADMIN_EMAIL'      => SN::$config->game_adminEmail,
     'CURRENT_YEAR'     => date('Y', SN_TIME_NOW),
     'DB_PATCH_VERSION' => dbPatchGetCurrent(),
   ]);
@@ -435,7 +435,7 @@ function renderFooter() {
  * @return mixed|string
  */
 function playerFontSize() {
-  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
+  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : SN::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
   if (strpos($font_size, '%') !== false) {
     // Размер шрифта в процентах
     $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
@@ -498,7 +498,7 @@ function renderCss($is_login) {
   cssAddFileName('design/css/global', $standard_css);
   $is_login ? cssAddFileName('design/css/login', $standard_css) : false;
   cssAddFileName(TEMPLATE_PATH . '/_template', $standard_css);
-  cssAddFileName(classSupernova::$gc->theUser->getSkinPath() . 'skin', $standard_css);
+  cssAddFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
   cssAddFileName('design/css/global_override', $standard_css);
 
   // Prepending standard CSS files
@@ -661,7 +661,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
   que_tpl_parse($template, QUE_STRUCTURES, $user, $planetrow, null, true);
-  que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
+  que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !SN::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
   que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
 
   tpl_navbar_extra_buttons($sn_mvc, $template);
@@ -745,17 +745,17 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'GAME_STRUCTURES_DISABLED' => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,
     'GAME_HANGAR_DISABLED'     => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
 
-    'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
-    'PLAYER_OPTION_NAVBAR_PLANET_OLD'             => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
-    'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE],
-    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'       => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
-    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
-    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
-    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS'  => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'    => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'    => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
-    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'          => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
+    'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'        => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
+    'PLAYER_OPTION_NAVBAR_PLANET_OLD'             => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
+    'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE],
+    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'       => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
+    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
+    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS'  => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'    => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'    => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
+    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'          => SN::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
 
     'TUTORIAL_ENABLED' => $tutorial_enabled,
 
@@ -939,7 +939,7 @@ function gettemplate($files, $template = null, $template_path = null) {
   !is_object($template) ? $template = new template(SN_ROOT_PHYSICAL) : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
-  $templateName = getSkinPathTemplate(classSupernova::$gc->theUser->getSkinPath());
+  $templateName = getSkinPathTemplate(SN::$gc->theUser->getSkinPath());
   !$template_path || !is_string($template_path) ? $template_path = SN_ROOT_PHYSICAL . 'design/templates/' : false;
   $template->set_custom_template($template_path . $templateName . '/', $templateName, TEMPLATE_DIR);
 

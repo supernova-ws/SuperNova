@@ -10,8 +10,8 @@ if($fleet_ship_sort = sys_get_param_id('sort_elements')) {
   if(!empty($lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));
-    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT] = $fleet_ship_sort;
-    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE] = sys_get_param_id('sort_elements_inverse', 0);
+    SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT] = $fleet_ship_sort;
+    SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE] = sys_get_param_id('sort_elements_inverse', 0);
   }
   die();
 }
@@ -50,8 +50,8 @@ foreach(sn_get_groups('fleet') as $n => $unit_id) {
   }
 }
 
-$fleet_ship_sort = classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT];
-$fleet_ship_sort_inverse = classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE];
+$fleet_ship_sort = SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT];
+$fleet_ship_sort_inverse = SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE];
 if($fleet_ship_sort || $fleet_ship_sort_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
   switch($fleet_ship_sort) {
     case PLAYER_OPTION_SORT_NAME: $fleet_ship_sort_field = 'NAME'; break;
@@ -104,10 +104,10 @@ $template->assign_vars(array(
   'PLANET_RESOURCES'   => HelperString::numberFloorAndFormat($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
   'PLANET_DEUTERIUM'   => HelperString::numberFloorAndFormat($planetrow['deuterium']),
 
-  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
+  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
 ));
 
 $template->assign_recursive($template_result);

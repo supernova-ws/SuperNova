@@ -14,7 +14,7 @@ require_once('db/db_queries.php');
 function db_change_units_perform($query, $tablename, $object_id) {
   $query = implode(',', $query);
   if($query && $object_id) {
-    return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
+    return SN::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
   }
 }
 
@@ -74,61 +74,61 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) 
  * @return bool Текущий статус транзакции
  */
 function sn_db_transaction_check($transaction_should_be_started = null) {
-  return classSupernova::db_transaction_check($transaction_should_be_started);
+  return SN::db_transaction_check($transaction_should_be_started);
 }
 function sn_db_transaction_start($level = '') {
-  return classSupernova::db_transaction_start($level);
+  return SN::db_transaction_start($level);
 }
 function sn_db_transaction_commit() {
-  return classSupernova::db_transaction_commit();
+  return SN::db_transaction_commit();
 }
 function sn_db_transaction_rollback() {
-  return classSupernova::db_transaction_rollback();
+  return SN::db_transaction_rollback();
 }
 
 
 
 
 function db_error() {
-  return classSupernova::$db->db_error();
+  return SN::$db->db_error();
 }
 function sn_db_connect() {
-  return classSupernova::$db->sn_db_connect();
+  return SN::$db->sn_db_connect();
 }
 function sn_db_disconnect() {
-  return classSupernova::$db->db_disconnect();
+  return SN::$db->db_disconnect();
 }
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  return classSupernova::$db->doquery($query, $table, $fetch, $skip_query_check);
+  return SN::$db->doquery($query, $table, $fetch, $skip_query_check);
 }
 function db_fetch(&$query) {
-  return classSupernova::$db->db_fetch($query);
+  return SN::$db->db_fetch($query);
 }
 function db_fetch_row(&$query) {
-  return classSupernova::$db->db_fetch_row($query);
+  return SN::$db->db_fetch_row($query);
 }
 function db_escape($unescaped_string) {
-  return classSupernova::$db->db_escape($unescaped_string);
+  return SN::$db->db_escape($unescaped_string);
 }
 function db_insert_id() {
-  return classSupernova::$db->db_insert_id();
+  return SN::$db->db_insert_id();
 }
 function db_num_rows(&$result) {
-  return classSupernova::$db->db_num_rows($result);
+  return SN::$db->db_num_rows($result);
 }
 function db_affected_rows() {
-  return classSupernova::$db->db_affected_rows();
+  return SN::$db->db_affected_rows();
 }
 // Информационные функции
 function db_get_client_info() {
-  return classSupernova::$db->db_get_client_info();
+  return SN::$db->db_get_client_info();
 }
 function db_get_server_info() {
-  return classSupernova::$db->db_get_server_info();
+  return SN::$db->db_get_server_info();
 }
 function db_get_host_info() {
-  return classSupernova::$db->db_get_host_info();
+  return SN::$db->db_get_host_info();
 }
 function db_server_stat() {
-  return classSupernova::$db->db_get_server_stat();
+  return SN::$db->db_get_server_stat();
 }

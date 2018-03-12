@@ -173,11 +173,11 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     // If planet is capital
     $user['id_planet'] == $planet['id']
     &&
-    classSupernova::$gc->config->planet_capital_building_rate > 0
+    SN::$gc->config->planet_capital_building_rate > 0
     &&
     in_array($unit_id, sn_get_groups(sn_get_groups(GROUP_CAPITAL_BUILDING_BONUS_GROUPS)))
   ) {
-    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / classSupernova::$gc->config->planet_capital_building_rate;
+    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / SN::$gc->config->planet_capital_building_rate;
   }
 
   if($mercenary) {

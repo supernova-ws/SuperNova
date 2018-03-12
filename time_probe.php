@@ -23,7 +23,7 @@ if($font_size = sys_get_param_str('font_size')) {
   }
 
   sn_setcookie(SN_COOKIE_F, $font_size, SN_TIME_NOW + PERIOD_YEAR);
-  classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;
+  SN::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;
 } else {
   $user_time_diff = playerTimeDiff::user_time_diff_get();
   if($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {

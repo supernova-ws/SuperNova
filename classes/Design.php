@@ -28,7 +28,7 @@ class Design {
    * @param GlobalContainer $gc
    */
   public function __construct(GlobalContainer $gc) {
-    $this->gameConfig = classSupernova::$gc->config;
+    $this->gameConfig = SN::$gc->config;
 
     // Prefix faq:// resolves to FAQ's URL - if configured
     if (is_object($this->gameConfig) && !empty($this->gameConfig->url_faq)) {

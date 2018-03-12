@@ -20,7 +20,7 @@
  * @deprecated
  */
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-  $user = classSupernova::db_get_record_by_id(LOC_USER, $user_id_unsafe);
+  $user = SN::db_get_record_by_id(LOC_USER, $user_id_unsafe);
 
   return (is_array($user) &&
     (
@@ -43,7 +43,7 @@ function db_get_user_by_where($where_safe) {
 
   if (!empty($where_safe)) {
     // Вытаскиваем запись
-    $user = classSupernova::db_query_select(
+    $user = SN::db_query_select(
       "SELECT * FROM {{users}} WHERE {$where_safe}",
       true
     );
@@ -91,7 +91,7 @@ function dbPlayerByIdOrName($username_unsafe, $player = null, $like = false) {
  * @deprecated
  */
 function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
-  return classSupernova::db_get_record_list(LOC_USER, $user_filter);
+  return SN::db_get_record_list(LOC_USER, $user_filter);
 }
 
 
@@ -100,7 +100,7 @@ function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
  * @deprecated
  */
 function db_user_set_by_id($user_id, $set) {
-  return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
+  return SN::db_upd_record_by_id(LOC_USER, $user_id, $set);
 }
 
 
@@ -108,19 +108,19 @@ function db_user_set_by_id($user_id, $set) {
  * @deprecated
  */
 function db_user_list_set_mass_mail(&$owners_list, $set) {
-  return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
+  return SN::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
 }
 /**
  * @deprecated
  */
 function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
-  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
+  return SN::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
 }
 /**
  * @deprecated
  */
 function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
+  return SN::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
 }
 
 
@@ -140,7 +140,7 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
  * TODO - это вообще-то надо хранить в конфигурации
  */
 function db_user_last_registered_username() {
-  $user = classSupernova::db_query_select(
+  $user = SN::db_query_select(
     'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
     true
   );

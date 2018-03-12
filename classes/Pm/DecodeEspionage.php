@@ -15,8 +15,8 @@ class DecodeEspionage {
    * @param MissionEspionageReport $missionReport
    */
   public static function decode($missionReport) {
-    $lang = \classSupernova::$lang;
-    $general = \classSupernova::$gc->general;
+    $lang = \SN::$lang;
+    $general = \SN::$gc->general;
 
     $template = gettemplate('msg_message_spy');
 

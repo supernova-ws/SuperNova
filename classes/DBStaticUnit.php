@@ -11,7 +11,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_by_id($unit_id) {
-    $unit = classSupernova::db_get_record_by_id(LOC_UNIT, $unit_id);
+    $unit = SN::db_get_record_by_id(LOC_UNIT, $unit_id);
     if (is_array($unit)) {
       _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);
     }
@@ -21,7 +21,7 @@ class DBStaticUnit {
 
   public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
-    classSupernova::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+    SN::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
     return
       !$unit_snid
@@ -67,7 +67,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_set_by_id($unit_record_id, $set) {
-    return classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_record_id, $set);
+    return SN::db_upd_record_by_id(LOC_UNIT, $unit_record_id, $set);
   }
 
   /**
@@ -76,11 +76,11 @@ class DBStaticUnit {
    * @return array|bool|false|mysqli_result|null
    */
   public static function db_unit_set_insert($set) {
-    return classSupernova::db_ins_record(LOC_UNIT, $set);
+    return SN::db_ins_record(LOC_UNIT, $set);
   }
 
   public static function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
-    return classSupernova::db_del_record_list(LOC_UNIT,
+    return SN::db_del_record_list(LOC_UNIT,
       "`unit_location_type` = {$unit_location_type}" .
       ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
       ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .

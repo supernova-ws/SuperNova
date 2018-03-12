@@ -22,7 +22,7 @@ class PlayerToAccountTranslate {
     if(!empty(static::$db)) {
       return;
     }
-    static::$db = classSupernova::$db;
+    static::$db = SN::$db;
   }
 
   /**

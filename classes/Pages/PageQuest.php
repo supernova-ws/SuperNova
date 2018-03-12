@@ -5,7 +5,7 @@
 
 namespace Pages;
 
-use \classSupernova;
+use \SN;
 
 class PageQuest extends PageAjax {
   protected $allowedActions = array(
@@ -41,7 +41,7 @@ class PageQuest extends PageAjax {
    * Finishes current tutorial
    */
   public function saveFilter() {
-    classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] = $this->filterQuestStatus;
+    SN::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] = $this->filterQuestStatus;
     return array(
       'quest' => array(
         'filterQuestStatus' => $this->filterQuestStatus,

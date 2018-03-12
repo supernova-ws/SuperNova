@@ -5,7 +5,7 @@ namespace Common;
 use Bonus\BonusCatalog;
 use Bonus\ValueStorage;
 use Bonus\ValueBonused;
-use \classSupernova;
+use \SN;
 use \General;
 use \Core\Watchdog;
 use \Core\Repository;
@@ -87,9 +87,9 @@ class GlobalContainer extends ContainerPlus {
     // Services --------------------------------------------------------------------------------------------------------
     // Default db
     $gc->db = function (GlobalContainer $c) {
-      classSupernova::$db = new \db_mysql($c);
+      SN::$db = new \db_mysql($c);
 
-      return classSupernova::$db;
+      return SN::$db;
     };
 
     $gc->debug = function (/** @noinspection PhpUnusedParameterInspection */
@@ -176,7 +176,7 @@ class GlobalContainer extends ContainerPlus {
 //    };
 //
 //    $gc->dbOperator = function (GlobalContainer $c) {
-//      return new \classConfig(classSupernova::$cache_prefix);
+//      return new \classConfig(SN::$cache_prefix);
 //    };
 //
 //    $gc->localePlayer = function (GlobalContainer $c) {

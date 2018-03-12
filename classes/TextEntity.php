@@ -34,7 +34,7 @@ class TextEntity extends \Common\ContainerPlus {
     parent::__construct($values);
 
     // TODO
-    $this->model = new TextModel(classSupernova::$gc);
+    $this->model = new TextModel(SN::$gc);
   }
 
   /**
@@ -78,8 +78,8 @@ class TextEntity extends \Common\ContainerPlus {
     $result = $this->toArray();
 
     if (!empty($result)) {
-      $result['title'] = classSupernova::$gc->bbCodeParser->expandBbCode($result['title'], AUTH_LEVEL_SYSTEM, $encodeOptions);
-      $result['content'] = classSupernova::$gc->bbCodeParser->expandBbCode($result['content'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+      $result['title'] = SN::$gc->bbCodeParser->expandBbCode($result['title'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+      $result['content'] = SN::$gc->bbCodeParser->expandBbCode($result['content'], AUTH_LEVEL_SYSTEM, $encodeOptions);
     }
 
     return $result;

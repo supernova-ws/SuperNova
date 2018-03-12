@@ -5,7 +5,7 @@
 
 namespace Bonus;
 
-use classSupernova;
+use SN;
 use \Common\GlobalContainer;
 use \classConfig;
 

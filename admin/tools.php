@@ -23,7 +23,7 @@ switch ($mode) {
       'STATUS'  => ERR_NONE,
       'MESSAGE' => number_format(memory_get_usage()) . ' - memory Before',
     ];
-    $t = new \General\LogCounterShrinker(classSupernova::$gc);
+    $t = new \General\LogCounterShrinker(SN::$gc);
     $template_result['.']['result'][] = $t->process();
     unset($t);
     $template_result['.']['result'][] = [
@@ -33,14 +33,14 @@ switch ($mode) {
   break;
 
   case ADM_TOOL_CONFIG_RELOAD:
-    classSupernova::$config->db_loadAll();
-    classSupernova::$db->schema()->clear();
+    SN::$config->db_loadAll();
+    SN::$db->schema()->clear();
 
-    classSupernova::$config->db_loadItem('game_watchlist');
-    if (classSupernova::$config->game_watchlist) {
-      classSupernova::$config->game_watchlist_array = explode(';', classSupernova::$config->game_watchlist);
+    SN::$config->db_loadItem('game_watchlist');
+    if (SN::$config->game_watchlist) {
+      SN::$config->game_watchlist_array = explode(';', SN::$config->game_watchlist);
     } else {
-      unset(classSupernova::$config->game_watchlist_array);
+      unset(SN::$config->game_watchlist_array);
     }
   break;
 
@@ -60,12 +60,12 @@ switch ($mode) {
   break;
 
   case ADM_TOOL_FORCE_ALL:
-    classSupernova::$config->db_saveItem('db_version', 37);
+    SN::$config->db_saveItem('db_version', 37);
     require_once('../includes/update.php');
   break;
 
   case ADM_TOOL_FORCE_LAST:
-    classSupernova::$config->db_saveItem('db_version', floor(classSupernova::$config->db_version - 1));
+    SN::$config->db_saveItem('db_version', floor(SN::$config->db_version - 1));
     require_once('../includes/update.php');
   break;
 
@@ -276,8 +276,8 @@ switch ($mode) {
 //      ),
 //    );
 
-    classSupernova::$config->__ptl_test = 'config_ptl_test';
-    classSupernova::$config->__ptl_test_array = array('value' => 'config_ptl_test_array');
+    SN::$config->__ptl_test = 'config_ptl_test';
+    SN::$config->__ptl_test_array = array('value' => 'config_ptl_test_array');
 
     foreach ($tests as $test) {
       $test['CONSTRUCTION'] = str_replace(array('{', '}'), array('&#123;', '&#125;'), $test['SAMPLE']);

@@ -6,7 +6,7 @@
 namespace Core;
 
 
-use \classSupernova;
+use \SN;
 
 class SnBootstrap {
 
@@ -30,7 +30,7 @@ class SnBootstrap {
           ?
           " (exec: {$executionTime}s" .
           ", display: {$displayTime}s"
-          . (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB: ' . round(classSupernova::$db->time_mysql_total, 6) . 's' : '')
+          . (class_exists('SN') && is_object(SN::$db) ? ', DB: ' . round(SN::$db->time_mysql_total, 6) . 's' : '')
           . ")"
           : ''
         )
@@ -62,7 +62,7 @@ class SnBootstrap {
     defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
     defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
 
-    if (defined('BE_DEBUG') || classSupernova::$config->debug) {
+    if (defined('BE_DEBUG') || SN::$config->debug) {
       @define('BE_DEBUG', true);
       @ini_set('display_errors', 1);
       @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);

@@ -73,7 +73,7 @@ function prettyNumberStyledCompare($number, $compareTo) {
 function pretty_time($seconds) {
   $day = floor($seconds / (24 * 3600));
 
-  return sprintf('%s%02d:%02d:%02d', $day ? $day . classSupernova::$lang['sys_day_short'] . ' ' : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
+  return sprintf('%s%02d:%02d:%02d', $day ? $day . SN::$lang['sys_day_short'] . ' ' : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
 
 function sys_time_human($time, $full = false) {

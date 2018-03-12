@@ -186,7 +186,7 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = fa
  * @return float|int
  */
 function getValueFromStorage($unitSnId, $plain = false) {
-  $valueObject = classSupernova::$gc->valueStorage->getValueObject($unitSnId);
+  $valueObject = SN::$gc->valueStorage->getValueObject($unitSnId);
 
   return $plain ? $valueObject->base : $valueObject->getValue();
 }
@@ -239,7 +239,7 @@ function get_mm_cost($plain = false) {
 }
 
 function sn_get_mm_cost($plain = false, &$result) {
-  return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : 20000;
+  return $result = SN::$config->payment_currency_exchange_mm_ ? SN::$config->payment_currency_exchange_mm_ : 20000;
 }
 
 /**
@@ -254,7 +254,7 @@ function get_exchange_rate($currency_symbol) {
   $config_field = 'payment_currency_exchange_' . $currency_symbol;
 
   // Заворачиваем получение стоимости ММ через перекрываемую процедуру
-  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : classSupernova::$config->$config_field);
+  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : SN::$config->$config_field);
 
   return $exchange_rate;
 }
@@ -264,12 +264,12 @@ function sys_stat_get_user_skip_list() {
 
   $user_skip_list = array();
 
-  if (classSupernova::$config->stats_hide_admins) {
+  if (SN::$config->stats_hide_admins) {
     $user_skip_list[] = '`authlevel` > 0';
   }
 
-  if (classSupernova::$config->stats_hide_player_list) {
-    $temp = explode(',', classSupernova::$config->stats_hide_player_list);
+  if (SN::$config->stats_hide_player_list) {
+    $temp = explode(',', SN::$config->stats_hide_player_list);
     foreach ($temp as $user_id) {
       $user_id = floatval($user_id);
       if ($user_id) {
@@ -292,7 +292,7 @@ function sys_stat_get_user_skip_list() {
 }
 
 function market_get_autoconvert_cost() {
-  return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
+  return SN::$config->rpg_cost_exchange ? SN::$config->rpg_cost_exchange * 3 : 3000;
 }
 
 function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) {
@@ -468,12 +468,12 @@ function getLocationFromContext($context = []) {
 
 // MAIL ----------------------------------------------------------------------------------------------------------------
 function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
-  $from = trim($from ? $from : classSupernova::$config->game_adminEmail);
+  $from = trim($from ? $from : SN::$config->game_adminEmail);
 
   $head = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain') . "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: " . classSupernova::$config->game_adminEmail . " \r\n";
+  $head .= "Return-Path: " . SN::$config->game_adminEmail . " \r\n";
   $head .= "From: {$from} \r\n";
   $head .= "Sender: {$from} \r\n";
   $head .= "Reply-To: {$from} \r\n";

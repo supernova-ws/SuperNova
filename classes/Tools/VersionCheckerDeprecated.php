@@ -6,7 +6,7 @@
 namespace Tools;
 
 use \classConfig;
-use \classSupernova;
+use \SN;
 
 class VersionCheckerDeprecated {
   /**
@@ -48,7 +48,7 @@ class VersionCheckerDeprecated {
   }
 
   public function __construct() {
-    $this->config = classSupernova::$config;
+    $this->config = SN::$config;
   }
 
   /**

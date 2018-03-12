@@ -418,9 +418,9 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   // Okay. Now skipping protection checks for inactive longer then 1 week
   if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60*60*24*7)) {
     if(
-      (classSupernova::$gc->general->playerIsNoobByPoints($enemy_points) && !classSupernova::$gc->general->playerIsNoobByPoints($user_points))
+      (SN::$gc->general->playerIsNoobByPoints($enemy_points) && !SN::$gc->general->playerIsNoobByPoints($user_points))
       ||
-      (classSupernova::$gc->general->playerIs1stStrongerThen2nd($user_points, $enemy_points))
+      (SN::$gc->general->playerIs1stStrongerThen2nd($user_points, $enemy_points))
     ) {
       if($mission != MT_HOLD) {
         return $result = ATTACK_NOOB;

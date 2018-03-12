@@ -155,9 +155,9 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   static $iconCache = array();
 
   if (empty($iconCache['gender_' . $nick_array[NICK_GENDER]])) {
-    $iconCache['gender_' . $nick_array[NICK_GENDER]] = classSupernova::$gc->skinModel->getImageCurrent("gender_{$nick_array[NICK_GENDER]}|html");
-    $iconCache['icon_vacation'] = classSupernova::$gc->skinModel->getImageCurrent('icon_vacation|html');
-    $iconCache['icon_birthday'] = classSupernova::$gc->skinModel->getImageCurrent('icon_birthday|html');
+    $iconCache['gender_' . $nick_array[NICK_GENDER]] = SN::$gc->skinModel->getImageCurrent("gender_{$nick_array[NICK_GENDER]}|html");
+    $iconCache['icon_vacation'] = SN::$gc->skinModel->getImageCurrent('icon_vacation|html');
+    $iconCache['icon_birthday'] = SN::$gc->skinModel->getImageCurrent('icon_birthday|html');
   }
 
   // ALL STRING ARE UNSAFE!!!
@@ -170,7 +170,7 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if (isset($nick_array[NICK_RANK])) {
-    $rankName = "[{$nick_array[NICK_RANK]}] " . classSupernova::$lang['ranks'][$nick_array[NICK_RANK]];
+    $rankName = "[{$nick_array[NICK_RANK]}] " . SN::$lang['ranks'][$nick_array[NICK_RANK]];
     $result[NICK_RANK] = "<div class='rank nick rank-{$nick_array[NICK_RANK]}'" .
       (empty($nick_array[NICK_RANK_NO_TEXT]) ? " title='{$rankName}'" : '') .
       "></div>";
@@ -182,25 +182,25 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
 
   $highlight = null;
   if (isset($nick_array[NICK_PREMIUM])) {
-    $highlight = classSupernova::$config->chat_highlight_premium;
+    $highlight = SN::$config->chat_highlight_premium;
   }
 
   if (isset($nick_array[NICK_AUTH_LEVEL])) {
     switch ($nick_array[NICK_AUTH_LEVEL]) {
       case 4:
-        $highlight = classSupernova::$config->chat_highlight_developer;
+        $highlight = SN::$config->chat_highlight_developer;
       break;
 
       case 3:
-        $highlight = classSupernova::$config->chat_highlight_admin;
+        $highlight = SN::$config->chat_highlight_admin;
       break;
 
       case 2:
-        $highlight = classSupernova::$config->chat_highlight_operator;
+        $highlight = SN::$config->chat_highlight_operator;
       break;
 
       case 1:
-        $highlight = classSupernova::$config->chat_highlight_moderator;
+        $highlight = SN::$config->chat_highlight_moderator;
       break;
     }
 
@@ -290,7 +290,7 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
   if ($options === true || !empty($options['icons']) || !empty($options['player_rank'])) {
     if(isset($render_user['total_points'])) {
-      $result[NICK_RANK] = classSupernova::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
+      $result[NICK_RANK] = SN::$gc->playerLevelHelper->getPointLevel($render_user['total_points'], $render_user['authlevel']);
     }
   }
 

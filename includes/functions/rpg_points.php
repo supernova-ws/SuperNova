@@ -47,7 +47,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
           $comment = call_user_func_array('sprintf', $comment);
         }
 //        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
-        classSupernova::$auth->account->metamatter_change($change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
+        SN::$auth->account->metamatter_change($change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
         $dark_matter = -$dark_matter_exists;
       }
     } else {
@@ -55,7 +55,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     }
     $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
     !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
-    $rows_affected = classSupernova::$db->db_affected_rows();
+    $rows_affected = SN::$db->db_affected_rows();
   }
 
   if($rows_affected || !$dark_matter) {

@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #43a13.3#
+ * @version #43a14.1#
  *
  * userlist.php v2
  **/
@@ -21,7 +21,7 @@ if ($user['authlevel'] < 3) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
 }
 
-ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '256M');
+ini_set('memory_limit', SN::$config->stats_php_memory ? SN::$config->stats_php_memory : '256M');
 
 lng_include('admin');
 
@@ -52,7 +52,7 @@ if (($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid
 
       case ACTION_USE:
         // Impersonate
-        classSupernova::$auth->impersonate($user_selected);
+        SN::$auth->impersonate($user_selected);
       break;
     }
   } else {
@@ -111,7 +111,7 @@ $template->assign_vars(array(
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
   'METAMATTER'      => isset($sn_module['unit_res_metamatter']),
-  'GEOIP_WHOIS_URL' => classSupernova::$config->geoip_whois_url,
+  'GEOIP_WHOIS_URL' => SN::$config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],
   'PAGE_HEADER' => $is_players_online_page ? $lang['adm_ul_title_online'] : $lang['adm_ul_title'],

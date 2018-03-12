@@ -108,11 +108,11 @@ class _SnCacheInternal {
   */
   public static function cache_set($location_type, $record_id, $record, $force_overwrite = false, $skip_lock = false) {
     // нет идентификатора - выход
-    if (!($record_id = $record[classSupernova::$location_info[$location_type][P_ID]])) {
+    if (!($record_id = $record[SN::$location_info[$location_type][P_ID]])) {
       return;
     }
 
-    $in_transaction = classSupernova::db_transaction_check(false);
+    $in_transaction = SN::db_transaction_check(false);
     if (
       $force_overwrite
       ||

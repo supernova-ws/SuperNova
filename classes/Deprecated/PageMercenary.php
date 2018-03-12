@@ -6,7 +6,7 @@
 namespace Deprecated;
 
 use \Exception;
-use \classSupernova;
+use \SN;
 use \DBStaticUnit;
 use \template;
 
@@ -51,7 +51,7 @@ class PageMercenary {
     lng_include('mrc_mercenary');
     lng_include('infos');
 
-    $this->config = classSupernova::$config;
+    $this->config = SN::$config;
     $this->lang = $lang;
     $this->sn_powerup_buy_discounts = $sn_powerup_buy_discounts;
 

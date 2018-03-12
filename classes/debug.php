@@ -79,7 +79,7 @@ class debug {
     );
 
     $result = array();
-    $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
+    $transaction_id = SN::db_transaction_check(false) ? SN::$transaction_id : SN::$transaction_id++;
     $result[] = "tID {$transaction_id}";
     foreach($backtrace as $a_trace) {
       if(in_array($a_trace['function'], $exclude_functions)) {
@@ -134,7 +134,7 @@ class debug {
       }
     }
 
-    if($deadlock && ($q = db_fetch(classSupernova::$db->mysql_get_innodb_status()))) {
+    if($deadlock && ($q = db_fetch(SN::$db->mysql_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = _SnCacheInternal::$locks;
       $error_backtrace['cSN_data'] = _SnCacheInternal::$data;
@@ -202,14 +202,14 @@ class debug {
   function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
     global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
 
-    if(empty(classSupernova::$db->connected)) {
+    if(empty(SN::$db->connected)) {
       // TODO - писать ошибку в файл
       die('SQL server currently unavailable. Please contact Administration...');
     }
 
     sn_db_transaction_rollback();
 
-    if(classSupernova::$config->debug == 1) {
+    if(SN::$config->debug == 1) {
       echo "<h2>{$title}</h2><br><font color=red>" . htmlspecialchars($message) . "</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
@@ -249,7 +249,7 @@ class debug {
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
     global $user, $lang, $sys_log_disabled;
 
-    if(empty(classSupernova::$db->connected)) {
+    if(empty(SN::$db->connected)) {
       // TODO - писать ошибку в файл
       die('SQL server currently unavailable. Please contact Administration...');
     }

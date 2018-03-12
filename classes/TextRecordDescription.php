@@ -23,7 +23,7 @@ class TextRecordDescription {
    * @param db_mysql|null $db
    */
   public function __construct($db = null) {
-    $this->db = empty($db) ? classSupernova::$gc->db : $db;
+    $this->db = empty($db) ? SN::$gc->db : $db;
   }
 
 }

@@ -31,7 +31,7 @@ if ($_POST['submit'] || $execute) {
   $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
   $combat_data = $ubePrepare->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
-  $combat_data[UBE_OPTIONS][UBE_METHOD] = classSupernova::$config->game_ube_method ? classSupernova::$config->game_ube_method : 0;
+  $combat_data[UBE_OPTIONS][UBE_METHOD] = SN::$config->game_ube_method ? SN::$config->game_ube_method : 0;
   $ubeCalc = new \Ube\Ube4_1\Ube4_1Calc();
   $ubeCalc->sn_ube_combat($combat_data);
   // Это используется для тестов - отключено в стандартном режиме

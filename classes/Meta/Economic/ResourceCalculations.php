@@ -5,7 +5,7 @@
 
 namespace Meta\Economic;
 
-use \classSupernova;
+use \SN;
 
 class ResourceCalculations {
   /**
@@ -42,7 +42,7 @@ class ResourceCalculations {
 
     static::$mineSpeedNormal = game_resource_multiplier(true);
     static::$mineSpeedCurrent = game_resource_multiplier();
-    static::$storageScaling = classSupernova::$config->eco_scale_storage ? static::$mineSpeedNormal : 1;
+    static::$storageScaling = SN::$config->eco_scale_storage ? static::$mineSpeedNormal : 1;
 
     static::$groupFactories = sn_get_groups('factories');
 
@@ -53,14 +53,14 @@ class ResourceCalculations {
       }
     }
 
-    static::$basicPlanetIncomeTable[RES_METAL][0] = floatval(classSupernova::$config->metal_basic_income);
-    static::$basicPlanetIncomeTable[RES_CRYSTAL][0] = floatval(classSupernova::$config->crystal_basic_income);
-    static::$basicPlanetIncomeTable[RES_DEUTERIUM][0] = floatval(classSupernova::$config->deuterium_basic_income);
-    static::$basicPlanetIncomeTable[RES_ENERGY][0] = floatval(classSupernova::$config->energy_basic_income);
+    static::$basicPlanetIncomeTable[RES_METAL][0] = floatval(SN::$config->metal_basic_income);
+    static::$basicPlanetIncomeTable[RES_CRYSTAL][0] = floatval(SN::$config->crystal_basic_income);
+    static::$basicPlanetIncomeTable[RES_DEUTERIUM][0] = floatval(SN::$config->deuterium_basic_income);
+    static::$basicPlanetIncomeTable[RES_ENERGY][0] = floatval(SN::$config->energy_basic_income);
 
-    static::$basicPlanetStorageTable[RES_METAL][0] = floatval(classSupernova::$config->eco_planet_storage_metal);
-    static::$basicPlanetStorageTable[RES_CRYSTAL][0] = floatval(classSupernova::$config->eco_planet_storage_crystal);
-    static::$basicPlanetStorageTable[RES_DEUTERIUM][0] = floatval(classSupernova::$config->eco_planet_storage_deuterium);
+    static::$basicPlanetStorageTable[RES_METAL][0] = floatval(SN::$config->eco_planet_storage_metal);
+    static::$basicPlanetStorageTable[RES_CRYSTAL][0] = floatval(SN::$config->eco_planet_storage_crystal);
+    static::$basicPlanetStorageTable[RES_DEUTERIUM][0] = floatval(SN::$config->eco_planet_storage_deuterium);
     static::$basicPlanetStorageTable[RES_ENERGY][0] = 0;
   }
 
@@ -165,16 +165,16 @@ class ResourceCalculations {
     if (
       !$isCapital
       ||
-      empty(classSupernova::$gc->config->planet_capital_mining_rate)
+      empty(SN::$gc->config->planet_capital_mining_rate)
       ||
-      classSupernova::$gc->config->planet_capital_mining_rate == 1
+      SN::$gc->config->planet_capital_mining_rate == 1
     ) {
       return;
     }
 
     foreach ($this->productionFullMatrix as $resourceId => &$miningData) {
       foreach ($miningData as $miningUnitId => &$miningAmount) {
-        $miningAmount *= classSupernova::$gc->config->planet_capital_mining_rate;
+        $miningAmount *= SN::$gc->config->planet_capital_mining_rate;
       }
     }
   }

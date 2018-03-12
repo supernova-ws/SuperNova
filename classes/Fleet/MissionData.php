@@ -131,14 +131,14 @@ class MissionData {
    * @return \classLocale
    */
   protected function getDefaultLang() {
-    return \classSupernova::$lang;
+    return \SN::$lang;
   }
 
   /**
    * @return \General
    */
   protected function getDefaultGeneral() {
-    return \classSupernova::$gc->general;
+    return \SN::$gc->general;
   }
 
 }

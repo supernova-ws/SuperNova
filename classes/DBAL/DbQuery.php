@@ -7,7 +7,7 @@ namespace DBAL;
 
 use \HelperArray;
 use \db_mysql;
-use \classSupernova;
+use \SN;
 
 /**
  * Class DbQuery
@@ -100,7 +100,7 @@ class DbQuery {
    */
   // TODO - $db should be supplied externally
   public function __construct($db = null) {
-    $this->db = empty($db) ? classSupernova::$gc->db : $db;
+    $this->db = empty($db) ? SN::$gc->db : $db;
   }
 
   /**

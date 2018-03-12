@@ -62,9 +62,9 @@ if ($mode == 1) {
   $planet = $planetrow['planet'];
 }
 
-$uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > classSupernova::$config->game_maxGalaxy ? classSupernova::$config->game_maxGalaxy : $uni_galaxy);
-$uni_system = $uni_system < 1 ? 1 : ($uni_system > classSupernova::$config->game_maxSystem ? classSupernova::$config->game_maxSystem : $uni_system);
-$planet = $planet < 1 ? 1 : ($planet > classSupernova::$config->game_maxPlanet + 1 ? classSupernova::$config->game_maxPlanet + 1 : $planet);
+$uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > SN::$config->game_maxGalaxy ? SN::$config->game_maxGalaxy : $uni_galaxy);
+$uni_system = $uni_system < 1 ? 1 : ($uni_system > SN::$config->game_maxSystem ? SN::$config->game_maxSystem : $uni_system);
+$planet = $planet < 1 ? 1 : ($planet > SN::$config->game_maxPlanet + 1 ? SN::$config->game_maxPlanet + 1 : $planet);
 
 $planetcount = 0;
 $lunacount = 0;
@@ -109,7 +109,7 @@ foreach (sn_get_groups('flt_recyclers') as $recycler_id) {
 
 $user_skip_list = sys_stat_get_user_skip_list();
 $fleetsTotalIncomeOwn = array();
-$config_game_max_planet = classSupernova::$config->game_maxPlanet + 1;
+$config_game_max_planet = SN::$config->game_maxPlanet + 1;
 for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   unset($uni_galaxyRowPlanet);
   unset($uni_galaxyRowMoon);
@@ -251,9 +251,9 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     'USER_ACTIVITY'   => $user_activity_days,
     'USER_ATTACKABLE' => $playerSecondsInactive >= PLAYER_INACTIVE_TIMEOUT,
     'USER_INACTIVE'   => $playerSecondsInactive >= PLAYER_INACTIVE_TIMEOUT_LONG,
-    'USER_PROTECTED'  => classSupernova::$gc->general->playerIsNoobByPoints($RowUserPoints),
-    'USER_NOOB'       => classSupernova::$gc->general->playerIs1stStrongerThen2nd($CurrentPoints, $RowUserPoints),
-    'USER_STRONG'     => classSupernova::$gc->general->playerIs1stStrongerThen2nd($RowUserPoints, $CurrentPoints),
+    'USER_PROTECTED'  => SN::$gc->general->playerIsNoobByPoints($RowUserPoints),
+    'USER_NOOB'       => SN::$gc->general->playerIs1stStrongerThen2nd($CurrentPoints, $RowUserPoints),
+    'USER_STRONG'     => SN::$gc->general->playerIs1stStrongerThen2nd($RowUserPoints, $CurrentPoints),
     'USER_AUTH'       => $uni_galaxyRowUser['authlevel'],
     'USER_ADMIN'      => $lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
     'USER_BIRTHDAY'   => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? date(FMT_DATE, SN_TIME_NOW) : 0,
@@ -316,8 +316,8 @@ foreach ($cached['allies'] as $PlanetAlly) {
   }
 }
 
-$is_missile = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
-$colspan = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
+$is_missile = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
+$colspan = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
 
 /** @noinspection SqlResolve */
 $ally_count = doquery("SELECT COUNT(*) AS ally_count FROM `{{alliance}}`;", '', true);
@@ -328,9 +328,9 @@ $system_name = doquery("select `universe_name` from `{{universe}}` where `univer
 
 $template->assign_vars(array(
 //     'rows'                => $Result,
-    'userCount'             => classSupernova::$config->users_amount,
+    'userCount'             => SN::$config->users_amount,
     'ALLY_COUNT'            => $ally_count['ally_count'],
-    'PLANET_EXPEDITION'     => classSupernova::$config->game_maxPlanet + 1,
+    'PLANET_EXPEDITION'     => SN::$config->game_maxPlanet + 1,
     'curPlanetID'           => $planetrow['id'],
     'curPlanetG'            => $planetrow['galaxy'],
     'curPlanetS'            => $planetrow['system'],
@@ -349,13 +349,13 @@ $template->assign_vars(array(
     'fleet_max'             => $fleetmax,
     'ALLY_ID'               => $user['ally_id'],
     'USER_ID'               => $user['id'],
-    'ACT_SPIO'              => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
-    'ACT_SPY'               => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
-    'ACT_WRITE'             => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
-    'ACT_STATISTICS'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
-    'ACT_INFO'              => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
-    'ACT_FRIEND'            => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
-    'opt_uni_tooltip_time'  => classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
+    'ACT_SPIO'              => SN::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
+    'ACT_SPY'               => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
+    'ACT_WRITE'             => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
+    'ACT_STATISTICS'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
+    'ACT_INFO'              => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
+    'ACT_FRIEND'            => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
+    'opt_uni_tooltip_time'  => SN::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
     'opt_uni_avatar_user'   => $user['opt_uni_avatar_user'],
     'opt_uni_avatar_ally'   => $user['opt_uni_avatar_ally'],
     'ACT_MISSILE'           => $is_missile,
@@ -371,8 +371,8 @@ $template->assign_vars(array(
     'COL_SPAN_NEW'          => $colspan + 4,
     'COL_SPAN_NEW_COLONIZE' => $colspan - 2,
 
-    'PLAYER_OPTION_UNIVERSE_OLD'              => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
-    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
+    'PLAYER_OPTION_UNIVERSE_OLD'              => SN::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
+    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => SN::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
   )
 );
 

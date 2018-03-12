@@ -117,7 +117,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       if($message_class_email && $config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
       {
         if($message_type == MSG_TYPE_SPY) {
-          @$result = mymail($owner_row['email'], $subject, classSupernova::$lang['sys_spy_activity'], '', true);
+          @$result = mymail($owner_row['email'], $subject, SN::$lang['sys_spy_activity'], '', true);
         } else {
           @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
         }

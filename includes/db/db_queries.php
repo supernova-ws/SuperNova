@@ -274,9 +274,9 @@ function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $d
 function db_player_name_exists($player_name_unsafe) {
   sn_db_transaction_check(true);
 
-  $player_name_safe = classSupernova::$db->db_escape($player_name_unsafe);
+  $player_name_safe = SN::$db->db_escape($player_name_unsafe);
 
-  $player_name_exists = classSupernova::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+  $player_name_exists = SN::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
   return !empty($player_name_exists);
 }
 
@@ -287,6 +287,6 @@ function db_player_name_exists($player_name_unsafe) {
  */
 // OK v4.7
 function db_player_get_max_id() {
-  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{users}}`", true);
+  $max_user_id = SN::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{users}}`", true);
   return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
 }

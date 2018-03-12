@@ -44,7 +44,7 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
     throw new ExceptionSnLocalized('adm_mm_err_points_empty', ERR_ERROR);
   }
 
-  $account = new Account(classSupernova::$auth->account->db);
+  $account = new Account(SN::$auth->account->db);
 
   if (!empty($accountIdOrName_unsafe)) {
     if (

@@ -188,10 +188,10 @@ class OldDbChangeSet {
         if($conditions[P_LOCATION] != LOC_NONE) {
           switch($conditions['action'])
           {
-            case SQL_OP_DELETE: $result = classSupernova::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result; break;
-            case SQL_OP_UPDATE: $result = classSupernova::db_upd_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR], $conditions[P_FIELDS_STR]) && $result; break;
-            case SQL_OP_INSERT: $result = classSupernova::db_ins_record($conditions[P_LOCATION], $conditions[P_FIELDS_STR]) && $result; break;
-            default: die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
+            case SQL_OP_DELETE: $result = SN::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result; break;
+            case SQL_OP_UPDATE: $result = SN::db_upd_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR], $conditions[P_FIELDS_STR]) && $result; break;
+            case SQL_OP_INSERT: $result = SN::db_ins_record($conditions[P_LOCATION], $conditions[P_FIELDS_STR]) && $result; break;
+            default: die('Неподдерживаемая операция в SN::db_changeset_apply');
           }
         } else {
           $result = doquery($conditions[P_QUERY_STR]) && $result;

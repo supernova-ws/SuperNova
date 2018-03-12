@@ -5,7 +5,7 @@
 
 namespace Fleet;
 
-use \classSupernova;
+use \SN;
 use Common\OutcomeManager;
 
 /**
@@ -103,7 +103,7 @@ class MissionExplore extends MissionData {
     parent::__construct($missionArray);
 
     if (empty(static::$rates)) {
-      static::$rates = classSupernova::$gc->economicHelper->getResourcesExchange();
+      static::$rates = SN::$gc->economicHelper->getResourcesExchange();
     }
 
     $this->shipsFound = [];
@@ -388,8 +388,8 @@ class MissionExplore extends MissionData {
 
   protected function messageOutcome() {
     $msg_text = sprintf(implode("\r\n", $this->message), $this->fleetRecord->id, uni_render_coordinates($this->fleet, 'fleet_end_'));
-    $msg_sender = classSupernova::$lang['flt_mission_expedition']['msg_sender'];
-    $msg_title = classSupernova::$lang['flt_mission_expedition']['msg_title'];
+    $msg_sender = SN::$lang['flt_mission_expedition']['msg_sender'];
+    $msg_title = SN::$lang['flt_mission_expedition']['msg_title'];
     $this->msgSendMessage($msg_sender, $msg_title, $msg_text);
   }
 
@@ -418,7 +418,7 @@ class MissionExplore extends MissionData {
    * @return float|int
    */
   protected function getGameExpeditionSpeed() {
-    return classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1;
+    return SN::$config->game_speed_expedition ? SN::$config->game_speed_expedition : 1;
   }
 
   protected function getGameMiningSpeed() {

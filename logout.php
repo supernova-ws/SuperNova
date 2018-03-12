@@ -12,4 +12,4 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 // sn_sys_logout(true);
 // core_auth::logout(true);
-classSupernova::$auth->logout(true);
+SN::$auth->logout(true);

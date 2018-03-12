@@ -13,24 +13,24 @@ class StatUpdateLauncher {
 
   public static function unlock() {
     if (
-      classSupernova::$config->game_disable != GAME_DISABLE_STAT || SN_TIME_NOW - strtotime(classSupernova::$config->pass()->var_stat_update_end) <= STATS_RUN_INTERVAL_MINIMUM
+      SN::$config->game_disable != GAME_DISABLE_STAT || SN_TIME_NOW - strtotime(SN::$config->pass()->var_stat_update_end) <= STATS_RUN_INTERVAL_MINIMUM
     ) {
       return;
     }
-    $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run(classSupernova::$config->stats_schedule, classSupernova::$config->var_stat_update, true));
-    classSupernova::$config->pass()->game_disable = GAME_DISABLE_NONE;
-    classSupernova::$config->pass()->var_stat_update = SN_TIME_SQL;
-    classSupernova::$config->pass()->var_stat_update_next = $next_run;
-    classSupernova::$config->pass()->var_stat_update_end = SN_TIME_SQL;
-    classSupernova::$debug->warning('Stat worked too long - watchdog unlocked', 'Stat WARNING');
+    $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run(SN::$config->stats_schedule, SN::$config->var_stat_update, true));
+    SN::$config->pass()->game_disable = GAME_DISABLE_NONE;
+    SN::$config->pass()->var_stat_update = SN_TIME_SQL;
+    SN::$config->pass()->var_stat_update_next = $next_run;
+    SN::$config->pass()->var_stat_update_end = SN_TIME_SQL;
+    SN::$debug->warning('Stat worked too long - watchdog unlocked', 'Stat WARNING');
   }
 
 
   public static function scheduler_process() {
     global $user, $lang;
 
-    $config = &classSupernova::$config;
-    $debug = &classSupernova::$debug;
+    $config = &SN::$config;
+    $debug = &SN::$debug;
 
     $is_admin_request = false;
 

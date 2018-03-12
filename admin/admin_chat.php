@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #42a27.15#
+ * @version #43a14.1#
  **/
 
 define('INSIDE', true);
@@ -38,7 +38,7 @@ while ($e = db_fetch($query)) {
 
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['adm_ch_ttle'],
-  'msg_num'     => classSupernova::$gc->db->db_num_rows($query),
+  'msg_num'     => SN::$gc->db->db_num_rows($query),
 ));
 
 display($template);

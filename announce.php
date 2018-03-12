@@ -48,8 +48,8 @@ if ($user['authlevel'] >= 3) {
     }
 
     if ($announce_time <= SN_TIME_NOW) {
-      if ($announce_time > classSupernova::$config->var_news_last && $announce_time == SN_TIME_NOW) {
-        classSupernova::$config->db_saveItem('var_news_last', $announce_time);
+      if ($announce_time > SN::$config->var_news_last && $announce_time == SN_TIME_NOW) {
+        SN::$config->db_saveItem('var_news_last', $announce_time);
       }
 
       if (sys_get_param_int('news_mass_mail')) {

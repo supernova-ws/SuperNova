@@ -5,7 +5,7 @@
 
 namespace Bonus;
 
-use \classSupernova;
+use \SN;
 
 class ValueBonused {
 
@@ -48,7 +48,7 @@ class ValueBonused {
     $this->value = $this->base;
     $this->bonusValues = [];
 
-    $this->bonusCatalog = \classSupernova::$gc->bonusCatalog;
+    $this->bonusCatalog = \SN::$gc->bonusCatalog;
   }
 
 
@@ -91,7 +91,7 @@ class ValueBonused {
     }
 
     foreach ($this->bonusList->getBonusAtoms() as $unitId => $bonusAtom) {
-      $amount = classSupernova::$gc->valueStorage->getValue($unitId, $context);
+      $amount = SN::$gc->valueStorage->getValue($unitId, $context);
 
       $this->bonusValues[$unitId] = $bonusAtom->adjustValue($this->value, $amount, $this->base);
     }

@@ -6,7 +6,7 @@
 namespace Deprecated;
 
 
-use classSupernova;
+use SN;
 use DBAL\DbSqlPaging;
 use Helpers\PagingRenderer;
 
@@ -45,7 +45,7 @@ ORDER BY
 ;";
 
 
-    // View all at one page //    $iterator = classSupernova::$db->selectIterator($stringSqlQuery);
+    // View all at one page //    $iterator = SN::$db->selectIterator($stringSqlQuery);
     $iterator = new DbSqlPaging($stringSqlQuery, 50, sys_get_param_int(PagingRenderer::KEYWORD));
     $pager = new PagingRenderer($iterator, 'index.php?page=admin/admin_mining&ACTIVE_STATUS=' . intval($filterActive));
 
@@ -71,9 +71,9 @@ ORDER BY
       '.'              => ['production' => $render],
       'PAGER_MESSAGES' => $pager ? $pager->render() : '',
       'ACTIVE_STATUS'  => $filterActive,
-      'PAGE_NAME'      => classSupernova::$lang['menu_admin_minig'],
+      'PAGE_NAME'      => SN::$lang['menu_admin_minig'],
     ]);
-    display($template, classSupernova::$lang['menu_admin_minig']);
+    display($template, SN::$lang['menu_admin_minig']);
   }
 
 }

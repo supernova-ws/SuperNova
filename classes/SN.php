@@ -4,13 +4,13 @@ use Vector\Vector;
 use Common\GlobalContainer;
 
 /**
- * Class classSupernova
+ * Class SN
  *
  * Singleton
  */
-class classSupernova {
+class SN {
   /**
-   * @var classSupernova $_sn
+   * @var SN $_sn
    */
   protected static $_sn;
 
@@ -178,16 +178,16 @@ class classSupernova {
     ),
   );
 
-  /**
-   * @return classSupernova
-   */
-  public static function sn() {
-    if (!isset(self::$_sn)) {
-      self::$_sn = new self();
-    }
-
-    return self::$_sn;
-  }
+//  /**
+//   * @return SN
+//   */
+//  public static function sn() {
+//    if (!isset(self::$_sn)) {
+//      self::$_sn = new self();
+//    }
+//
+//    return self::$_sn;
+//  }
 
   public function __construct() {
 
@@ -689,7 +689,7 @@ class classSupernova {
 
     // Initializing global 'cache' object
     $sn_cache = static::$cache = self::$gc->cache;
-    $tables = classSupernova::$db->schema()->getSnTables();
+    $tables = SN::$db->schema()->getSnTables();
     empty($tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global "config" object

@@ -5,7 +5,7 @@
 
 namespace Fleet;
 
-use \classSupernova;
+use \SN;
 use \DBStaticPlanet;
 
 class MissionEspionage extends MissionData {
@@ -18,7 +18,7 @@ class MissionEspionage extends MissionData {
   private $target_message = '';
 
   public function flt_mission_spy() {
-    $lang = classSupernova::$lang;
+    $lang = SN::$lang;
     $fleet_array = sys_unit_str2arr($this->fleet['fleet_array']);
 
     if (isset($this->dst_user['id']) && isset($this->dst_planet['id']) && isset($this->src_user['id']) && $fleet_array[SHIP_SPY] >= 1) {

@@ -23,7 +23,7 @@ foreach($constants['user'] as $constantName => $constantValue) {
 
 $spent = array();
 
-$result = classSupernova::$db->doquery("SELECT
+$result = SN::$db->doquery("SELECT
   CONCAT(log_dark_matter_reason, '_', IF(sign(sum(log_dark_matter_amount)) > 0, 1, -1)) as `BALANCE`,
   log_dark_matter_reason as `REASON`,
   sum(log_dark_matter_amount) as `DM_AMOUNT`,
@@ -33,7 +33,7 @@ FROM `{{log_dark_matter}}`
 GROUP BY log_dark_matter_reason, IF(sign((log_dark_matter_amount)) > 0, 1, -1) ORDER BY sum(log_dark_matter_amount) DESC;
 ");
 
-while($row = classSupernova::$db->db_fetch($result)) {
+while($row = SN::$db->db_fetch($result)) {
   $row['CONSTANT'] = $rpgConstants[$row['REASON']];
 
   $row['DM_AMOUNT_TEXT'] = HelperString::numberFloorAndFormat($row['DM_AMOUNT']);
@@ -45,7 +45,7 @@ while($row = classSupernova::$db->db_fetch($result)) {
   $spent[$row['BALANCE']] = $row;
 }
 
-$result = classSupernova::$db->doquery("SELECT
+$result = SN::$db->doquery("SELECT
   CONCAT(reason, '_', IF(sign(sum(amount)) > 0, 1, -1)) as `BALANCE`,
   reason as `REASON`,
   sum(amount) as `MM_AMOUNT`,
@@ -55,7 +55,7 @@ FROM `{{log_metamatter}}`
 GROUP BY reason, if(sign((amount)) > 0, 1, -1) ORDER BY sum(amount) DESC;
 ");
 
-while($row = classSupernova::$db->db_fetch($result)) {
+while($row = SN::$db->db_fetch($result)) {
   if(empty($spent[$row['BALANCE']])) {
     $spent[$row['BALANCE']] = array();
   }
@@ -83,7 +83,7 @@ $template = gettemplate("admin/admin_analyze_matter", true);
 foreach ($spent as $row) {
   $template->assign_block_vars('spent', $row);
 }
-$fromDate = classSupernova::$db->doquery("SELECT min(log_dark_matter_timestamp) FROM `{{log_dark_matter}}`;", true);
+$fromDate = SN::$db->doquery("SELECT min(log_dark_matter_timestamp) FROM `{{log_dark_matter}}`;", true);
 $template->assign_var("MIN_DATE", reset($fromDate));
 
 

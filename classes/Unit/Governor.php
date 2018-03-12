@@ -6,7 +6,7 @@
 
 namespace Unit;
 
-use \classSupernova;
+use \SN;
 use Planet\Planet;
 
 class Governor extends Unit {
@@ -72,8 +72,8 @@ class Governor extends Unit {
         $user['id'],
         RPG_GOVERNOR,
         -$build_data[BUILD_CREATE][RES_DARK_MATTER],
-        sprintf(classSupernova::$lang['ov_governor_purchase'],
-          classSupernova::$lang['tech'][$hireId],
+        sprintf(SN::$lang['ov_governor_purchase'],
+          SN::$lang['tech'][$hireId],
           $hireId,
           $this->level,
           uni_render_planet_object_full($this->planet, false, true)

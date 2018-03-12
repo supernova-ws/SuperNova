@@ -78,5 +78,5 @@ function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
  * @return int|null
  */
 function dbPatchGetCurrent() {
-  return classSupernova::$db->selectValue("SELECT MAX(`id`) FROM {{server_patches}}");
+  return SN::$db->selectValue("SELECT MAX(`id`) FROM {{server_patches}}");
 }

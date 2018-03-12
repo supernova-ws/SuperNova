@@ -88,7 +88,7 @@ class StatCalculator {
     sn_db_transaction_start();
     $i = 0;
     // Блокируем всех пользователей
-    classSupernova::db_lock_tables('users');
+    SN::db_lock_tables('users');
     $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
     $row_num = count($user_list);
     // while($player = db_fetch($query))

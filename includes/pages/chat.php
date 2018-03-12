@@ -28,7 +28,7 @@ function sn_chat_model()
   }
 
   $template_result['.']['smiles'] = array();
-  foreach(classSupernova::$gc->design->getSmilesList() as $auth_level => $replaces) {
+  foreach(SN::$gc->design->getSmilesList() as $auth_level => $replaces) {
     if($auth_level > $user_auth_level) {
       continue;
     }
@@ -147,10 +147,10 @@ function sn_chat_msg_view($template = null)
       $nick = str_replace(strip_tags($chat_row['user']), $nick_stripped, $chat_row['user']);
 
       $template_result['.']['chat'][] = array(
-        'TIME' => classSupernova::$gc->bbCodeParser->expandBbCode(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), AUTH_LEVEL_REGISTERED),
+        'TIME' => SN::$gc->bbCodeParser->expandBbCode(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), AUTH_LEVEL_REGISTERED),
         'NICK' => $nick,
         'NICK_STRIPPED' => $nick_stripped,
-        'TEXT' => classSupernova::$gc->bbCodeParser->expandBbCode($chat_row['message'], intval($chat_row['authlevel'])),
+        'TEXT' => SN::$gc->bbCodeParser->expandBbCode($chat_row['message'], intval($chat_row['authlevel'])),
       );
 
       $last_message = max($last_message, $chat_row['messageid']);

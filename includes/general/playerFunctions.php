@@ -84,7 +84,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
       $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
       $colonies = $astrotech - $expeditions;
 
-      $user[UNIT_PLAYER_COLONIES_MAX] = classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
+      $user[UNIT_PLAYER_COLONIES_MAX] = SN::$config->player_max_colonies < 0 ? $colonies : min(SN::$config->player_max_colonies, $colonies);
     }
 
     return $user[UNIT_PLAYER_COLONIES_MAX];
@@ -92,7 +92,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
     $expeditions = get_player_max_expeditons($user, $astrotech);
     $colonies = $astrotech - $expeditions;
 
-    return classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
+    return SN::$config->player_max_colonies < 0 ? $colonies : min(SN::$config->player_max_colonies, $colonies);
   }
 }
 

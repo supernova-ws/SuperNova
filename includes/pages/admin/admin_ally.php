@@ -74,7 +74,7 @@ function sn_admin_ally_view_all($template = null) {
   };
 
   $template->assign_vars([
-    'PAGE_HEADER' => classSupernova::$lang['admin_ally_list'],
+    'PAGE_HEADER' => SN::$lang['admin_ally_list'],
   ]);
 
   return $template;

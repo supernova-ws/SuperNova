@@ -9,9 +9,9 @@ function eco_get_total_cost($unit_id, $unit_level) {
     $sn_group_resources_all = sn_get_groups('resources_all');
     $sn_group_resources_loot = sn_get_groups('resources_loot');
 
-    $rate[RES_METAL] = classSupernova::$config->rpg_exchange_metal;
-    $rate[RES_CRYSTAL] = classSupernova::$config->rpg_exchange_crystal / classSupernova::$config->rpg_exchange_metal;
-    $rate[RES_DEUTERIUM] = classSupernova::$config->rpg_exchange_deuterium / classSupernova::$config->rpg_exchange_metal;
+    $rate[RES_METAL] = SN::$config->rpg_exchange_metal;
+    $rate[RES_CRYSTAL] = SN::$config->rpg_exchange_crystal / SN::$config->rpg_exchange_metal;
+    $rate[RES_DEUTERIUM] = SN::$config->rpg_exchange_deuterium / SN::$config->rpg_exchange_metal;
   }
 
   $unit_cost_data = get_unit_param($unit_id, 'cost');
@@ -62,9 +62,9 @@ function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $
   } elseif (in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   } elseif ($unit_id == RES_DARK_MATTER) {
-    $mercenary_level = $user[$unit_db_name] + ($plain || $user['user_as_ally'] ? 0 : classSupernova::$auth->account->account_metamatter);
+    $mercenary_level = $user[$unit_db_name] + ($plain || $user['user_as_ally'] ? 0 : SN::$auth->account->account_metamatter);
   } elseif ($unit_id == RES_METAMATTER) {
-    $mercenary_level = classSupernova::$auth->account->account_metamatter; //$user[$unit_db_name];
+    $mercenary_level = SN::$auth->account->account_metamatter; //$user[$unit_db_name];
   } elseif (in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
@@ -237,7 +237,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'requ
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
-  if ($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && classSupernova::$config->empire_mercenary_temporary)) {
+  if ($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && SN::$config->empire_mercenary_temporary)) {
     foreach ($sn_data_unit[$field] as $require_id => $require_level) {
       $level_got = mrc_get_level($user, $planetrow, $require_id);
       $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);
@@ -261,7 +261,7 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
   static $rates;
 
   if (!$rates) {
-    $rates = classSupernova::$gc->economicHelper->getResourcesExchange();
+    $rates = SN::$gc->economicHelper->getResourcesExchange();
   }
 
   $metal_cost = 0;

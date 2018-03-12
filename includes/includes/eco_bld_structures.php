@@ -170,7 +170,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
 
     $unit_info['type'] == UNIT_STRUCTURES && !$planet_fields_queable ? $build_data['RESULT'][BUILD_CREATE] = BUILD_SECTORS_NONE : false;
-    $unit_autoconvert_can = !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
+    $unit_autoconvert_can = !SN::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
 
 
     $unit_autoconvert_can ? $build_data['RESULT'][BUILD_CREATE] = BUILD_AUTOCONVERT_AVAILABLE : false;
@@ -328,8 +328,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     ));
   }
 
-  $sort_option = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT, $que_type)];
-  $sort_option_inverse = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT_INVERSE, $que_type)];
+  $sort_option = SN::$user_options[array(PLAYER_OPTION_BUILDING_SORT, $que_type)];
+  $sort_option_inverse = SN::$user_options[array(PLAYER_OPTION_BUILDING_SORT_INVERSE, $que_type)];
   if($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
     switch($sort_option) {
       case PLAYER_OPTION_SORT_NAME:
@@ -407,7 +407,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'MARKET_AUTOCONVERT_COST_TEXT'         => HelperString::numberFloorAndFormat(market_get_autoconvert_cost()),
     'CAN_AUTOCONVERT'                      => $user_dark_matter >= market_get_autoconvert_cost(),
     'BUILD_AUTOCONVERT_AVAILABLE'          => BUILD_AUTOCONVERT_AVAILABLE,
-    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
+    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => SN::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
 
     'SORT_OPTION'         => $sort_option,
     'SORT_OPTION_INVERSE' => $sort_option_inverse,

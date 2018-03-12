@@ -47,7 +47,7 @@ function sn_options_model() {
           die();
         }
 
-        $query = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
+        $query = SN::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
         foreach($query as $planet) {
           DBStaticPlanet::db_planet_set_by_id($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
@@ -77,7 +77,7 @@ function sn_options_model() {
 
     $player_options = sys_get_param('options');
     if(!empty($player_options)) {
-      if($player_options[PLAYER_OPTION_TUTORIAL_CURRENT] == classSupernova::$config->tutorial_first_item) {
+      if($player_options[PLAYER_OPTION_TUTORIAL_CURRENT] == SN::$config->tutorial_first_item) {
         $player_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
       }
 
@@ -85,7 +85,7 @@ function sn_options_model() {
         // TODO - Когда будет больше параметров - сделать больше проверок
         $value = intval($value);
       });
-      classSupernova::$user_options->offsetSet($player_options);
+      SN::$user_options->offsetSet($player_options);
     }
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
@@ -134,7 +134,7 @@ function sn_options_model() {
           throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
         }
 
-        if(!classSupernova::$auth->password_change(sys_get_param('db_password'), $new_password)) {
+        if(!SN::$auth->password_change(sys_get_param('db_password'), $new_password)) {
           throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
         }
 
@@ -148,7 +148,7 @@ function sn_options_model() {
     }
 
     $user['email'] = sys_get_param_str('db_email');
-    classSupernova::$gc->theUser->setSkinName(sys_get_param_str('skin_name'));
+    SN::$gc->theUser->setSkinName(sys_get_param_str('skin_name'));
     $user['lang'] = sys_get_param_str('langer', $user['lang']);
 
     $user['design'] = sys_get_param_int('design');
@@ -226,7 +226,7 @@ function sn_options_model() {
 
     $user_options_safe = db_escape($user['options']);
     db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
-      `skin` = '" . classSupernova::$gc->theUser->getSkinName() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
+      `skin` = '" . SN::$gc->theUser->getSkinName() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
       {$user_birthday}"
     );
@@ -263,7 +263,7 @@ function sn_options_view($template = null) {
       $template_result['.']['skin_list'][] = array(
         'VALUE'    => $entry,
         'NAME'     => $entry,
-        'SELECTED' => classSupernova::$gc->theUser->getSkinName() == $entry,
+        'SELECTED' => SN::$gc->theUser->getSkinName() == $entry,
       );
     }
   }
@@ -273,7 +273,7 @@ function sn_options_view($template = null) {
     $template_result['.']['planet_sort_options'][] = array(
       'VALUE'    => $key,
       'NAME'     => $value,
-      'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT] == $key,
+      'SELECTED' => SN::$user_options[PLAYER_OPTION_PLANET_SORT] == $key,
     );
   }
 
@@ -311,56 +311,56 @@ function sn_options_view($template = null) {
   $template->assign_vars(array(
     'USER_ID'      => $user['id'],
 
-    'ACCOUNT_NAME' => sys_safe_output(classSupernova::$auth->account->account_name),
+    'ACCOUNT_NAME' => sys_safe_output(SN::$auth->account->account_name),
 
     'USER_AUTHLEVEL' => $user['authlevel'],
 
-    'menu_customize_show_hide_button'         => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
-    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'       => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'       => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'        => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
-    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'       => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
-    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS'     => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
-    'PLAYER_OPTION_MENU_WHITE_TEXT'           => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
-    'PLAYER_OPTION_MENU_OLD'                  => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
-    'PLAYER_OPTION_UNIVERSE_OLD'              => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
-    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
-    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS'    => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
-    'PLAYER_OPTION_TECH_TREE_TABLE'           => classSupernova::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
-    'sound_enabled'                           => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'PLAYER_OPTION_ANIMATION_DISABLED'        => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-    'PLAYER_OPTION_PROGRESS_BARS_DISABLED'    => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
-    'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
+    'menu_customize_show_hide_button'         => SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'       => SN::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'       => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'        => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'       => SN::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS'     => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    'PLAYER_OPTION_MENU_WHITE_TEXT'           => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
+    'PLAYER_OPTION_MENU_OLD'                  => SN::$user_options[PLAYER_OPTION_MENU_OLD],
+    'PLAYER_OPTION_UNIVERSE_OLD'              => SN::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
+    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => SN::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
+    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS'    => SN::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
+    'PLAYER_OPTION_TECH_TREE_TABLE'           => SN::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
+    'sound_enabled'                           => SN::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED'        => SN::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED'    => SN::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+    'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
 
-    'PLAYER_OPTION_TUTORIAL_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
-    'PLAYER_OPTION_TUTORIAL_WINDOWED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
-    'PLAYER_OPTION_TUTORIAL_CURRENT'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT],
+    'PLAYER_OPTION_TUTORIAL_DISABLED'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
+    'PLAYER_OPTION_TUTORIAL_WINDOWED'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
+    'PLAYER_OPTION_TUTORIAL_CURRENT'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT],
 
-    'PLAYER_OPTION_NAVBAR_PLANET_OLD'     => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
-    'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE],
+    'PLAYER_OPTION_NAVBAR_PLANET_OLD'     => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
+    'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data'      => htmlspecialchars($user['username']),
     'opt_mail1_data'      => $user['email'],
-    'opt_mail2_data'      => sys_safe_output(classSupernova::$auth->account->account_email),
+    'opt_mail2_data'      => sys_safe_output(SN::$auth->account->account_email),
 
-    'PLAYER_OPTION_PLANET_SORT_INVERSE'    => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE],
-    'PLAYER_OPTION_FLEET_SPY_DEFAULT'      => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
-    'PLAYER_OPTION_TOOLTIP_DELAY'          => classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
-    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
+    'PLAYER_OPTION_PLANET_SORT_INVERSE'    => SN::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE],
+    'PLAYER_OPTION_FLEET_SPY_DEFAULT'      => SN::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
+    'PLAYER_OPTION_TOOLTIP_DELAY'          => SN::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
+    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => SN::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
 
-    'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'       => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
-    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
-    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'      => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
-    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
-    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
-    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
+    'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'       => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
+    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => SN::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
+    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'   => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'      => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
+    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
+    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
 
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'" : '',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'" : '',
@@ -373,12 +373,12 @@ function sn_options_view($template = null) {
 
     'config_game_email_pm' => $config->game_email_pm,
 
-    'user_settings_esp'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
-    'user_settings_mis'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE],
-    'user_settings_wri'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
-    'user_settings_statistics' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
-    'user_settings_info'       => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
-    'user_settings_bud'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
+    'user_settings_esp'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
+    'user_settings_mis'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE],
+    'user_settings_wri'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
+    'user_settings_statistics' => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
+    'user_settings_info'       => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
+    'user_settings_bud'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
 
     'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
 

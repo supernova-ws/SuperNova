@@ -6,7 +6,7 @@
 namespace Deprecated;
 
 use DBStaticPlanet;
-use classSupernova;
+use SN;
 use HelperString;
 use Exception;
 use Planet\Planet;
@@ -34,9 +34,9 @@ class PageOverview extends PageDeprecated {
   public function __construct() {
     parent::__construct();
 
-    $this->lang = classSupernova::$lang;
-    $this->config = classSupernova::$config;
-    $this->auth = classSupernova::$auth;
+    $this->lang = SN::$lang;
+    $this->config = SN::$config;
+    $this->auth = SN::$auth;
 
     lng_include('overview');
     lng_include('mrc_mercenary');

@@ -19,7 +19,7 @@ class PlayerDataCache {
   protected $player_id;
 
   public function __construct() {
-    $this->cache = classSupernova::$cache;
+    $this->cache = SN::$cache;
   }
 
   /**

@@ -7,7 +7,7 @@ namespace Bonus;
 
 use Common\ContainerPlus;
 use Common\GlobalContainer;
-use \classSupernova;
+use \SN;
 
 
 /**
@@ -42,7 +42,7 @@ class ValueStorage extends ContainerPlus {
   public function __construct(array $values = array()) {
     parent::__construct($values);
 
-    $this->gc = classSupernova::$gc;
+    $this->gc = SN::$gc;
 
     $this->initValues();
   }

@@ -39,7 +39,7 @@ class SkinModel {
     $this->skins = array();
 
     // Берем текущий скин
-    $this->activeSkin = $this->getSkin(classSupernova::$gc->theUser->getSkinPath());
+    $this->activeSkin = $this->getSkin(SN::$gc->theUser->getSkinPath());
   }
 
   /**

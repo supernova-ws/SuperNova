@@ -166,7 +166,7 @@ class SkinV2 implements SkinInterface {
    * @return string
    */
   public static function image_url($image_tag, $template) {
-    return classSupernova::$gc->skinModel->getImageCurrent($image_tag, $template);
+    return SN::$gc->skinModel->getImageCurrent($image_tag, $template);
   }
 
   /**

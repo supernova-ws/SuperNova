@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a13.42#
+ * version #43a14.1#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a13.42# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a14.1# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -177,7 +177,7 @@ class core_auth extends sn_module {
     self::$main_provider = new auth_local();
 
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
-    self::$db = classSupernova::$db;
+    self::$db = SN::$db;
 
     self::$device = new RequestInfo();
     $this->is_player_register = sys_get_param('player_register') ? true : false;
@@ -847,7 +847,7 @@ class core_auth extends sn_module {
 
     $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
 
-    classSupernova::log_file("$message - $caller_name");
+    SN::log_file("$message - $caller_name");
     if($die) {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }

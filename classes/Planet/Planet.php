@@ -12,7 +12,7 @@ use Unit\Governor;
 use DBStaticPlanet;
 use Exception;
 use HelperString;
-use classSupernova;
+use SN;
 
 /**
  * Class Planet
@@ -131,11 +131,11 @@ class Planet extends EntityDb {
       $planet_name_text = uni_render_planet($this->asArray());
       if (rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost,
         sprintf(
-          classSupernova::$lang['sys_sector_purchase_log'],
+          SN::$lang['sys_sector_purchase_log'],
           $user['username'],
           $user['id'],
           $planet_name_text,
-          classSupernova::$lang['sys_planet_type'][$this->planet_type],
+          SN::$lang['sys_planet_type'][$this->planet_type],
           $this->id,
           $sector_cost
         )
@@ -166,11 +166,11 @@ class Planet extends EntityDb {
 
     try {
       if ($this->planet_type != PT_PLANET) {
-        throw new exception(classSupernova::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
+        throw new exception(SN::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
       }
 
       if ($this->density_index == ($new_density_index = sys_get_param_id('density_type'))) {
-        throw new exception(classSupernova::$lang['ov_core_err_same_density'], ERR_WARNING);
+        throw new exception(SN::$lang['ov_core_err_same_density'], ERR_WARNING);
       }
 
       sn_db_transaction_start();
@@ -182,13 +182,13 @@ class Planet extends EntityDb {
 
       if (!isset($density_price_chart[$new_density_index])) {
         // Hack attempt
-        throw new exception(classSupernova::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
+        throw new exception(SN::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
       }
 
       $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
       $transmute_cost = $density_price_chart[$new_density_index];
       if ($user_dark_matter < $transmute_cost) {
-        throw new exception(classSupernova::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
+        throw new exception(SN::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
       }
 
       $sn_data_planet_density = sn_get_groups('planet_density');
@@ -208,9 +208,9 @@ class Planet extends EntityDb {
           $this->id,
           uni_render_coordinates($this->asArray()),
           $planet_density_index,
-          classSupernova::$lang['uni_planet_density_types'][$planet_density_index],
+          SN::$lang['uni_planet_density_types'][$planet_density_index],
           $new_density_index,
-          classSupernova::$lang['uni_planet_density_types'][$new_density_index],
+          SN::$lang['uni_planet_density_types'][$new_density_index],
           $new_density
         )
       );
@@ -222,7 +222,7 @@ class Planet extends EntityDb {
       $this->density_index = $new_density_index;
       $result = array(
         'STATUS'  => ERR_NONE,
-        'MESSAGE' => sprintf(classSupernova::$lang['ov_core_err_none'], classSupernova::$lang['uni_planet_density_types'][$planet_density_index], classSupernova::$lang['uni_planet_density_types'][$new_density_index], $new_density),
+        'MESSAGE' => sprintf(SN::$lang['ov_core_err_none'], SN::$lang['uni_planet_density_types'][$planet_density_index], SN::$lang['uni_planet_density_types'][$new_density_index], $new_density),
       );
     } catch (Exception $e) {
       sn_db_transaction_rollback();
@@ -275,7 +275,7 @@ class Planet extends EntityDb {
         'COST_TEXT_CLASS' => prettyNumberGetClass($density_cost, $user_dark_matter),
         'REST'            => $user_dark_matter - $density_cost,
         'ID'              => $density_price_index,
-        'TEXT'            => classSupernova::$lang['uni_planet_density_types'][$density_price_index],
+        'TEXT'            => SN::$lang['uni_planet_density_types'][$density_price_index],
       );
       $result[] = $density_price_data;
     }
@@ -287,7 +287,7 @@ class Planet extends EntityDb {
         'densities' => $result,
       ],
       'PLANET_DENSITY_INDEX' => $planet_density_index,
-      'PLANET_CORE_TEXT'     => \classSupernova::$lang['uni_planet_density_types'][$planet_density_index],
+      'PLANET_CORE_TEXT'     => \SN::$lang['uni_planet_density_types'][$planet_density_index],
     ];
   }
 
@@ -308,11 +308,11 @@ class Planet extends EntityDb {
       'PLANET_SYSTEM'    => $this->system,
       'PLANET_PLANET'    => $this->planet,
       'PLANET_TYPE'      => $this->planet_type,
-      'PLANET_TYPE_TEXT' => classSupernova::$lang['sys_planet_type'][$this->planet_type],
+      'PLANET_TYPE_TEXT' => SN::$lang['sys_planet_type'][$this->planet_type],
       'PLANET_DEBRIS'    => $this->debris_metal + $this->debris_crystal,
 
       'PLANET_GOVERNOR_ID'         => $governor_id,
-      'PLANET_GOVERNOR_NAME'       => classSupernova::$lang['tech'][$governor_id],
+      'PLANET_GOVERNOR_NAME'       => SN::$lang['tech'][$governor_id],
       'PLANET_GOVERNOR_LEVEL'      => $governor_level_plain,
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $this->asArray(), $governor_id, false, false) - $governor_level_plain,
       'PLANET_GOVERNOR_LEVEL_MAX'  => get_unit_param($governor_id, P_MAX_STACK),

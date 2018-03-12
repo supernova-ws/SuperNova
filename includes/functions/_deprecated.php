@@ -25,5 +25,5 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
  * @deprecated
  */
 function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
-  return classSupernova::$gc->fleetDispatcher->sn_RestoreFleetToPlanet($fleet_row, $start, $only_resources, $safe_fleet, $result);
+  return SN::$gc->fleetDispatcher->sn_RestoreFleetToPlanet($fleet_row, $start, $only_resources, $safe_fleet, $result);
 }

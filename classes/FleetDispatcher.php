@@ -45,9 +45,9 @@ class FleetDispatcher {
 
   public function dispatch() {
     if (
-      classSupernova::$options['fleet_update_skip']
+      SN::$options['fleet_update_skip']
       ||
-      classSupernova::gameIsDisabled()
+      SN::gameIsDisabled()
       ||
       !$this->getLock()
     ) {

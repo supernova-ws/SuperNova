@@ -334,8 +334,8 @@ class template_compile
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'C_\\1\'][\'\\2\'])) ? $this->_rootref[\'C_\\1\'][\'\\2\'] : ((isset(classSupernova::$config[\'\\1\'][\'\\2\'])) ? classSupernova::$config[\'\\1\'][\'\\2\'] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'C_\\1\'])) ? $this->_rootref[\'C_\\1\'] : ((isset(classSupernova::$config[\'\\1\'])) ? classSupernova::$config[\'\\1\'] : \'{ C_\\1 }\')); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'C_\\1\'][\'\\2\'])) ? $this->_rootref[\'C_\\1\'][\'\\2\'] : ((isset(SN::$config[\'\\1\'][\'\\2\'])) ? SN::$config[\'\\1\'][\'\\2\'] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'C_\\1\'])) ? $this->_rootref[\'C_\\1\'] : ((isset(SN::$config[\'\\1\'])) ? SN::$config[\'\\1\'] : \'{ C_\\1 }\')); ?>', $text_blocks);
     }
     // transform vars prefixed by D_ into global defined constant
     if (strpos($text_blocks, '{D_') !== false)

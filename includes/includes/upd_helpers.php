@@ -20,10 +20,10 @@ function upd_do_query($query, $no_log = false) {
 
   if (strpos($query, '{{') !== false) {
     foreach ($update_tables as $tableName => $cork) {
-      $query = str_replace("{{{$tableName}}}", classSupernova::$db->db_prefix . $tableName, $query);
+      $query = str_replace("{{{$tableName}}}", SN::$db->db_prefix . $tableName, $query);
     }
   }
-  $result = classSupernova::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+  $result = SN::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
 
   return $result;
 }
@@ -105,7 +105,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
     $update_indexes_full[$tableName][$r1['Key_name']][$r1['Column_name']] = $r1;
   }
 
-  $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
+  $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(SN::$db_name) . "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
   while ($r1 = db_fetch($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
@@ -153,7 +153,7 @@ function upd_alter_table($table, $alters, $condition = true) {
 function upd_drop_table($table_name) {
   global $config;
 
-  classSupernova::$db->db_sql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  SN::$db->db_sql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }
@@ -188,7 +188,7 @@ function upd_create_table($table_name, $declaration, $tableOptions = '') {
     }
     upd_do_query('set foreign_key_checks = 1;', true);
     upd_load_table_info($table_name, false);
-    classSupernova::$db->schema()->clear();
+    SN::$db->schema()->clear();
   }
 
   return $result;

@@ -81,12 +81,12 @@ class Account {
   public function __construct($db = null) {
     $this->reset();
 
-    $this->db = is_object($db) ? $db : classSupernova::$db;
+    $this->db = is_object($db) ? $db : SN::$db;
 
     $this->sn_root_path = SN_ROOT_RELATIVE;
     $this->cookie_name = SN_COOKIE;
     $this->cookie_name_impersonate = $this->cookie_name . AUTH_COOKIE_IMPERSONATE_SUFFIX;
-    $this->secret_word = classSupernova::$sn_secret_word;
+    $this->secret_word = SN::$sn_secret_word;
 
     $snTableNames = $this->db->schema()->getSnTables();
     foreach($this->table_check as $table_name) {
@@ -421,7 +421,7 @@ class Account {
       if(!$result) {
         $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
       }
-      $result = classSupernova::$db->db_affected_rows();
+      $result = SN::$db->db_affected_rows();
 
       $this->awardImmortal($metamatter, $config, $sn_module);
     }

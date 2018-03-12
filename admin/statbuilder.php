@@ -18,9 +18,9 @@ global $lang, $user;
 
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_forced') && SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_end'))
+if(SN_TIME_NOW >= SN::$config->db_loadItem('var_stat_update_admin_forced') && SN_TIME_NOW >= SN::$config->db_loadItem('var_stat_update_end'))
 {
-  classSupernova::$config->db_saveItem('var_stat_update_admin_forced', SN_TIME_NOW + 120);
+  SN::$config->db_saveItem('var_stat_update_admin_forced', SN_TIME_NOW + 120);
 
   $script = '<script type="text/javascript">
   $(document).ready(function() {

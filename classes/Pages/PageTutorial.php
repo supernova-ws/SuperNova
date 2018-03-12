@@ -5,7 +5,7 @@
 
 namespace Pages;
 
-use \classSupernova;
+use \SN;
 use \userOptions;
 
 class PageTutorial extends PageAjax {
@@ -35,10 +35,10 @@ class PageTutorial extends PageAjax {
     /**
      * @var \TextEntity $text
      */
-    $text = classSupernova::$gc->textModel->$method($this->id);
+    $text = SN::$gc->textModel->$method($this->id);
     $result = $text->toArrayParsedBBC(HTML_ENCODE_MULTILINE_JS);
     if (!$text->isEmpty()) {
-      classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT] = $text->id;
+      SN::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT] = $text->id;
     }
 
     return array(
@@ -52,7 +52,7 @@ class PageTutorial extends PageAjax {
   protected function block2ValueList() {
     $result = array();
 
-    $text = classSupernova::$gc->textModel->getById($this->id);
+    $text = SN::$gc->textModel->getById($this->id);
     $array = $text->toArrayParsedBBC(HTML_ENCODE_MULTILINE_JS);
     foreach ($array as $key => $value) {
       $result[] = array(
@@ -72,13 +72,13 @@ class PageTutorial extends PageAjax {
       return false;
     }
 
-    if (classSupernova::$gc->textModel->getById($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT])->isEmpty()) {
+    if (SN::$gc->textModel->getById($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT])->isEmpty()) {
       return false;
     }
 
     // Checking if there is new tutorial appears after user finished old one
     if ($this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED]) {
-      $next = classSupernova::$gc->textModel->next($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT]);
+      $next = SN::$gc->textModel->next($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT]);
       if (!$next->isEmpty()) {
         $this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
       } else {
@@ -121,7 +121,7 @@ class PageTutorial extends PageAjax {
    * Finishes current tutorial
    */
   public function ajaxFinish() {
-    classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 1;
+    SN::$user_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 1;
   }
 
   // Renderers +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -134,8 +134,8 @@ class PageTutorial extends PageAjax {
     $block = new self();
 
     if ($result = $block
-      ->setUserOptions(classSupernova::$user_options)
-      ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
+      ->setUserOptions(SN::$user_options)
+      ->setId(SN::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
       ->isBlockEnabled()
     ) {
       $template->assign_recursive(array(
@@ -144,7 +144,7 @@ class PageTutorial extends PageAjax {
       ));
     }
 
-//    $template->assign_var('PLAYER_OPTION_TUTORIAL_WINDOWED', classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED]);
+//    $template->assign_var('PLAYER_OPTION_TUTORIAL_WINDOWED', SN::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED]);
 
     return $result;
   }

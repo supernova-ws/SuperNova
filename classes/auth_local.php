@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a13.42# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a14.1# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -116,14 +116,14 @@ class auth_local extends auth_abstract {
 
     // Fallback to local DB
     if(!$this->manifest['active']) {
-      $this->db = classSupernova::$db;
+      $this->db = SN::$db;
 
       $this->provider_id = ACCOUNT_PROVIDER_LOCAL;
 
       $this->domain = null;
       $this->sn_root_path = SN_ROOT_RELATIVE;
       $this->cookie_name = SN_COOKIE;
-      $this->secret_word = classSupernova::$sn_secret_word;
+      $this->secret_word = SN::$sn_secret_word;
 
       $this->manifest['active'] = true;
     }
@@ -242,7 +242,7 @@ class auth_local extends auth_abstract {
       sn_db_transaction_commit();
 
       if(!is_email($email_unsafe)) {
-        classSupernova::$debug->error("Email is invalid: '{$email_unsafe}'", 'Invalid email for password restoration');
+        SN::$debug->error("Email is invalid: '{$email_unsafe}'", 'Invalid email for password restoration');
       }
 
       @$result = mymail($email_unsafe,
@@ -679,7 +679,7 @@ class auth_local extends auth_abstract {
 
     $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
 
-    classSupernova::log_file("$message - $caller_name");
+    SN::log_file("$message - $caller_name");
     if($die) {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }

@@ -122,7 +122,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['crystal_perhour'] = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
-  $RetValue = classSupernova::db_ins_record(LOC_PLANET,
+  $RetValue = SN::db_ins_record(LOC_PLANET,
     "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
       `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}', `position_original` = '{$planet['position_original']}',
       `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `field_max_original` = '{$planet['field_max_original']}',
@@ -185,7 +185,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $size 
 
       $moon_image = !empty($options['image']) ? $options['image'] : 'mond';
 
-      $moon_row = classSupernova::db_ins_record(LOC_PLANET,
+      $moon_row = SN::db_ins_record(LOC_PLANET,
         "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = '{$moon_image}',
           `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
           `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',
@@ -307,14 +307,14 @@ function uni_render_coordinates_planet_object($from) {
  */
 function uni_render_planet_object_full($from, $html_safe = true, $include_id = false) {
   if (empty($from->id)) {
-    $result = classSupernova::$lang['sys_planet_expedition'];
+    $result = SN::$lang['sys_planet_expedition'];
   } else {
     $from_planet_id = $include_id ? (
       'ID {' . ($from->id ? $from->id : 0) . '} '
     ) : '';
 
     $from_planet_type = isset($from->planet_type) ? $from->planet_type : 0;
-    $from_planet_type = ($from_planet_type ? ' ' . classSupernova::$lang['sys_planet_type_sh'][$from_planet_type] : '');
+    $from_planet_type = ($from_planet_type ? ' ' . SN::$lang['sys_planet_type_sh'][$from_planet_type] : '');
 
     $result = $from_planet_id . uni_render_coordinates_planet_object($from) . $from_planet_type . (isset($from->name) ? ' ' . $from->name : '');
     $result = $html_safe ? HelperString::htmlEncode($result, HTML_ENCODE_PREFORM | HTML_ENCODE_SPACE) : $result;

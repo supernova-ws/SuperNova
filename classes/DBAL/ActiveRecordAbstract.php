@@ -80,7 +80,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * @return \db_mysql
    */
   public static function db() {
-    empty(static::$db) ? static::$db = \classSupernova::services()->db : false;
+    empty(static::$db) ? static::$db = \SN::services()->db : false;
 
     return static::$db;
   }

@@ -30,7 +30,7 @@ function qst_render_page(classLocale $lang, array $user, template $template) {
     $user_id = $user['id'];
   }
 
-  $quest_list = qst_get_quests($user_id, classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER]);
+  $quest_list = qst_get_quests($user_id, SN::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER]);
   $template->assign_vars(array(
     'AUTHLEVEL' => $user['authlevel'],
     'TOTAL'     => count($quest_list),
@@ -42,7 +42,7 @@ function qst_render_page(classLocale $lang, array $user, template $template) {
     'QUEST_STATUS_STARTED'     => QUEST_STATUS_STARTED,
     'QUEST_STATUS_COMPLETE'    => QUEST_STATUS_COMPLETE,
 
-    'PLAYER_OPTION_QUEST_LIST_FILTER' => classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER],
+    'PLAYER_OPTION_QUEST_LIST_FILTER' => SN::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER],
   ));
 
   foreach ($lang['qst_status_list'] as $statusId => $statusName) {
@@ -136,7 +136,7 @@ function questPageModelManage(classLocale $lang, template $template, &$mode) {
   }
 
   $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
-  classSupernova::$config->pass()->quest_total = $query['count'];
+  SN::$config->pass()->quest_total = $query['count'];
 
   return $questManaged;
 }

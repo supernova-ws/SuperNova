@@ -30,7 +30,7 @@ class EconomicHelper {
 //    } elseif ($gc instanceof GlobalContainer) {
 //      $this->config = $gc->config;
 //    } else {
-//      $this->config = \classSupernova::$config;
+//      $this->config = \SN::$config;
 //    }
 
     $this->config = $gc->config;

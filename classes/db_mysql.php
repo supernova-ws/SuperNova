@@ -226,7 +226,7 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     set_error_handler([$this, 'handlerQueryWarning']);
-    $sqlquery = $this->db_sql_query($sql) or classSupernova::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    $sqlquery = $this->db_sql_query($sql) or SN::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
@@ -399,7 +399,7 @@ class db_mysql {
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
 
-    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
+    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['CONSTRAINT_NAME'];
 

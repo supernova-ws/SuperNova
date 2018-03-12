@@ -150,9 +150,9 @@ while ($row = db_fetch($query)) {
   $template->assign_block_vars('stat', $row_stat);
 }
 
-$next_run = sys_schedule_get_prev_run(classSupernova::$config->stats_schedule, classSupernova::$config->var_stat_update, true);
+$next_run = sys_schedule_get_prev_run(SN::$config->stats_schedule, SN::$config->var_stat_update, true);
 $template->assign_vars(array(
-  'REFRESH_DATE' => classSupernova::$config->var_stat_update ? date(FMT_DATE_TIME, strtotime(classSupernova::$config->var_stat_update) + SN_CLIENT_TIME_DIFF) : '',
+  'REFRESH_DATE' => SN::$config->var_stat_update ? date(FMT_DATE_TIME, strtotime(SN::$config->var_stat_update) + SN_CLIENT_TIME_DIFF) : '',
   'NEXT_DATE' => $next_run ? date(FMT_DATE_TIME, $next_run + SN_CLIENT_TIME_DIFF) : '',
   'RANGE' => $range,
   'SUBJECT' => $who,
@@ -161,7 +161,7 @@ $template->assign_vars(array(
   // TODO - Для блица - вытаскивать blitz_player_id и подсвечивать пользователя на блице
   'USER_ID' => $source ? 0 : $user['id'],
   'SOURCE' => $source,
-  'STATS_HIDE_PM_LINK' => classSupernova::$config->stats_hide_pm_link || $source,
+  'STATS_HIDE_PM_LINK' => SN::$config->stats_hide_pm_link || $source,
 ));
 
 display($template, $lang['stat_header']);

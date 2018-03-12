@@ -32,7 +32,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     if(!$user['ally']['player']['id']) {
       // sn_sys_logout(false, true);
       // core_auth::logout(false);
-      classSupernova::$auth->logout(false);
+      SN::$auth->logout(false);
       $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
     }
     // TODO UNCOMMENT
@@ -51,7 +51,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id'])) {
     // sn_sys_logout(false, true);
     // core_auth::logout(false);
-    classSupernova::$auth->logout(false);
+    SN::$auth->logout(false);
     $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
 
@@ -65,5 +65,5 @@ sys_user_options_unpack($user);
 global $sn_page_name, $sn_mvc;
 if(!empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_EARLY_HEADER])) {
   $title = !empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE]) ? $sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE] : '';
-  renderHeader($page, $title, $template_result, false, $user, classSupernova::$config, $lang, $planetrow);
+  renderHeader($page, $title, $template_result, false, $user, SN::$config, $lang, $planetrow);
 }

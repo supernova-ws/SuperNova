@@ -374,7 +374,7 @@ function que_recalculate($old_que) {
 }
 
 function que_get($user_id, $planet_id = null, $que_type = false, $for_update = false) {
-  return classSupernova::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
+  return SN::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
 }
 
 function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data, $unit_level = 0, $unit_amount = 1, $build_mode = BUILD_CREATE) {
@@ -683,7 +683,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     $xp_incoming = array();
     foreach($unit_changes as $user_id => $planet_changes) {
       foreach($planet_changes as $planet_id => $changes) {
-        $planet_this = $planet_id ? classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id) : array();
+        $planet_this = $planet_id ? SN::db_get_record_by_id(LOC_PLANET, $planet_id) : array();
         foreach($changes as $unit_id => $unit_value) {
           $que_id = que_get_unit_que($unit_id);
           $unit_level_new = mrc_get_level($user, $planet_this, $unit_id, false, true) + $unit_value;

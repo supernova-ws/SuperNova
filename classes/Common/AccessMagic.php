@@ -34,7 +34,7 @@ class AccessMagic implements \IContainer {
    * @param GlobalContainer|null $services
    */
   public function __construct(GlobalContainer $services = null) {
-    $this->services = empty($services) ? \classSupernova::$gc : $services;
+    $this->services = empty($services) ? \SN::$gc : $services;
   }
 
 

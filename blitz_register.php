@@ -3,8 +3,8 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
-  $error_message = classSupernova::$config->game_mode == GAME_BLITZ ? 'sys_blitz_page_disabled' : (
-    !classSupernova::$config->game_blitz_register ? 'sys_blitz_registration_disabled' : ''
+  $error_message = SN::$config->game_mode == GAME_BLITZ ? 'sys_blitz_page_disabled' : (
+    !SN::$config->game_blitz_register ? 'sys_blitz_registration_disabled' : ''
   );
 
   if($error_message) {
@@ -14,10 +14,10 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
 
 }
 
-$current_round = intval(classSupernova::$config->db_loadItem('game_blitz_register_round'));
-$current_price = intval(classSupernova::$config->db_loadItem('game_blitz_register_price'));
+$current_round = intval(SN::$config->db_loadItem('game_blitz_register_round'));
+$current_price = intval(SN::$config->db_loadItem('game_blitz_register_price'));
 
-if(classSupernova::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
+if(SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
   sn_db_transaction_start();
   $user = db_user_by_id($user['id'], true);
   $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
@@ -25,15 +25,15 @@ if(classSupernova::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER
     if(empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
       doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
       //mm_points_change($user['id'], RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
-      classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
+      SN::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
     }
   } elseif (sys_get_param_str('register_me_not') && !empty($is_registered)) {
     doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
     // mm_points_change($user['id'], RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
-    classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
+    SN::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
   $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
-  classSupernova::$config->db_saveItem('game_blitz_register_users', $registered_count['count']);
+  SN::$config->db_saveItem('game_blitz_register_users', $registered_count['count']);
   sn_db_transaction_commit();
 }
 
@@ -62,8 +62,8 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     shuffle($imported_string);
 
     $new_players = count($imported_string);
-    $system_count = ceil($new_players / classSupernova::$config->game_maxGalaxy);
-    $system_step = floor(classSupernova::$config->game_maxSystem / $system_count);
+    $system_count = ceil($new_players / SN::$config->game_maxGalaxy);
+    $system_step = floor(SN::$config->game_maxSystem / $system_count);
 
 pdump($system_count, '$system_count');
 pdump($system_step, '$system_step');
@@ -73,7 +73,7 @@ pdump($system_step, '$system_step');
 
     $galaxy = 1;
     $system = $system_step;
-    $planet = round(classSupernova::$config->game_maxPlanet / 2);
+    $planet = round(SN::$config->game_maxPlanet / 2);
 
     foreach($imported_string as &$string_data) {
       $string_data = explode(',', $string_data);
@@ -89,14 +89,14 @@ pdump($system_step, '$system_step');
 
       $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], Universe::MOON_MAX_SIZE, false);
 
-      if(($system += $system_step) >= classSupernova::$config->game_maxSystem) {
+      if(($system += $system_step) >= SN::$config->game_maxSystem) {
         $galaxy++;
         $system = $system_step;
       }
     }
     doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
 
-    classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->users_amount + $new_players);
+    SN::$config->db_saveItem('users_amount', SN::$config->users_amount + $new_players);
     // generated_string
   } elseif(sys_get_param_str('import_result') && ($blitz_result_string = sys_get_param_str('blitz_result_string'))) {
     $blitz_result = explode(';', $blitz_result_string);
@@ -118,8 +118,8 @@ pdump($system_step, '$system_step');
     $blitz_result = array();
   }
 
-  if(classSupernova::$config->game_mode == GAME_BLITZ) {
-    $blitz_result = array(classSupernova::$config->db_loadItem('var_stat_update'));
+  if(SN::$config->game_mode == GAME_BLITZ) {
+    $blitz_result = array(SN::$config->db_loadItem('var_stat_update'));
     $query = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
     while($row = db_fetch($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
@@ -188,7 +188,7 @@ while($row = db_fetch($query)) {
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),
   );
 
-  if(classSupernova::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES) {
+  if(SN::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES) {
     // Вот так хитро, что бы не было не единого шанса попадания на страницу данных об игроках Блиц-сервера до закрытия раунда
     $tpl_player_data = array_merge($tpl_player_data, array(
       'ID' => $row['id'],
@@ -207,12 +207,12 @@ while($row = db_fetch($query)) {
 }
 
 $template->assign_vars(array(
-  'GAME_BLITZ' => classSupernova::$config->game_mode == GAME_BLITZ,
+  'GAME_BLITZ' => SN::$config->game_mode == GAME_BLITZ,
 
-  'REGISTRATION_OPEN' => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_OPEN,
-  'REGISTRATION_CLOSED' => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_CLOSED,
-  'REGISTRATION_SHOW_LOGIN' => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
-  'REGISTRATION_DISCLOSURE_NAMES' => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
+  'REGISTRATION_OPEN' => SN::$config->game_blitz_register == BLITZ_REGISTER_OPEN,
+  'REGISTRATION_CLOSED' => SN::$config->game_blitz_register == BLITZ_REGISTER_CLOSED,
+  'REGISTRATION_SHOW_LOGIN' => SN::$config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
+  'REGISTRATION_DISCLOSURE_NAMES' => SN::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
 
   'PLAYER_REGISTERED' => !empty($player_registered),
   'BLITZ_NAME' => $player_registered['blitz_name'],

@@ -11,7 +11,7 @@ for ($i = 0; $i <= 20; $i++) {
   $template->assign_block_vars('player_rank', [
     'ID' => $i,
     'NAME' => $lang['ranks'][$i],
-    'SELECTED' => $i == classSupernova::$gc->playerLevelHelper->getPointLevel($user['total_points'], $user['authlevel']),
+    'SELECTED' => $i == SN::$gc->playerLevelHelper->getPointLevel($user['total_points'], $user['authlevel']),
   ]);
 }
 

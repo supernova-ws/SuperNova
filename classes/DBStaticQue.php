@@ -3,7 +3,7 @@
 class DBStaticQue {
 
   public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false) {
-    return classSupernova::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
+    return SN::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
   }
 
   public static function db_que_list_stat() {
@@ -11,15 +11,15 @@ class DBStaticQue {
   }
 
   public static function db_que_set_time_left_by_id($que_id, $que_time_left) {
-    return classSupernova::db_upd_record_by_id(LOC_QUE, $que_id, "`que_time_left` = {$que_time_left}");
+    return SN::db_upd_record_by_id(LOC_QUE, $que_id, "`que_time_left` = {$que_time_left}");
   }
 
   public static function db_que_set_insert($set) {
-    return classSupernova::db_ins_record(LOC_QUE, $set);
+    return SN::db_ins_record(LOC_QUE, $set);
   }
 
   public static function db_que_delete_by_id($que_id) {
-    return classSupernova::db_del_record_by_id(LOC_QUE, $que_id);
+    return SN::db_del_record_by_id(LOC_QUE, $que_id);
   }
 
   public static function db_que_planet_change_owner($planet_id, $new_owner_id) {

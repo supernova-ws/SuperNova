@@ -79,7 +79,7 @@ function flt_mission_explore(&$mission_data) {
       }
       $ship_data[$unit_id][P_COST_METAL] = get_unit_cost_in($unit_info[P_COST]);
     }
-    $rates = classSupernova::$gc->economicHelper->getResourcesExchange();
+    $rates = SN::$gc->economicHelper->getResourcesExchange();
   }
 
   $fleet_row = $mission_data['fleet'];

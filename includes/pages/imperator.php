@@ -57,7 +57,7 @@ function sn_imperator_view($template = null) {
 
   $stat_array = array();
   $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
-  $stat_count = classSupernova::$db->db_affected_rows();
+  $stat_count = SN::$db->db_affected_rows();
   while($row = db_fetch($query)) {
     foreach($stat_fields as $field_db_name => $field_template_name) {
       // $stat_count - $row['stat_code'] - для реверсирования ID статы в JS
@@ -133,7 +133,7 @@ function sn_imperator_view($template = null) {
     'VACATION'             => $user_data['vacation'],
     'GENDER_TEXT'          => $lang['sys_gender_list'][$user_data['gender']],
 
-    'PLAYER_RANK_NUMBER'   => $playerRank = classSupernova::$gc->playerLevelHelper->getPointLevel($user_data['total_points'], $user_data['authlevel']),
+    'PLAYER_RANK_NUMBER'   => $playerRank = SN::$gc->playerLevelHelper->getPointLevel($user_data['total_points'], $user_data['authlevel']),
     'PLAYER_RANK_NAME'     => $lang['ranks'][$playerRank],
 
     'NEW_MESSAGES'         => $user_data['new_message'],

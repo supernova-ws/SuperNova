@@ -27,7 +27,7 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
    * @covers ::dbPrepareQuery
    */
   public function testDbData() {
-    $this->assertEquals(\classSupernova::services()->db, RecordActiveAbstractObject::db());
+    $this->assertEquals(\SN::services()->db, RecordActiveAbstractObject::db());
 
     $db = new \db_mysql(new GlobalContainer());
     RecordActiveAbstractObject::setDb($db);
@@ -160,7 +160,7 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
    */
   public function testConstructor() {
     $object = new RecordActiveAbstractObject();
-    $this->assertAttributeEquals(\classSupernova::$gc, 'services', $object);
+    $this->assertAttributeEquals(\SN::$gc, 'services', $object);
     $this->assertAttributeEquals(true, '_isNew', $object);
 //    $this->assertEquals(0, $object->id);
 //

@@ -84,7 +84,7 @@ class RequestInfo {
   protected $write_full_url = false;
 
   public function __construct() {
-    $this->write_full_url = !classSupernova::$config->security_write_full_url_disabled;
+    $this->write_full_url = !SN::$config->security_write_full_url_disabled;
 
     // Инфа об устройстве и браузере - общая для всех
     sn_db_transaction_start();

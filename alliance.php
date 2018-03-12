@@ -2,7 +2,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if (classSupernova::$config->game_mode == GAME_BLITZ) {
+if (SN::$config->game_mode == GAME_BLITZ) {
   messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }

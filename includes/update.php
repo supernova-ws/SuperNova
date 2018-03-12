@@ -34,8 +34,8 @@ global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $u
 
 $config->reset();
 $config->db_loadAll();
-$config->db_prefix = classSupernova::$db->db_prefix; // Оставить пока для совместимости
-$config->cache_prefix = classSupernova::$cache_prefix;
+$config->db_prefix = SN::$db->db_prefix; // Оставить пока для совместимости
+$config->cache_prefix = SN::$cache_prefix;
 $config->debug = 0;
 
 
@@ -413,7 +413,7 @@ upd_log_message('Upgrade complete.');
 
 upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
 
-classSupernova::$cache->unset_by_prefix('lng_');
+SN::$cache->unset_by_prefix('lng_');
 
 if ($new_version) {
   $config->db_saveItem('db_version', $new_version);
@@ -428,7 +428,7 @@ if($user['authlevel'] >= 3) {
   print(str_replace("\r\n", '<br>', $upd_log));
 }
 */
-classSupernova::$db->schema()->clear();
+SN::$db->schema()->clear();
 
 upd_log_message('Restoring server status');
 $config->db_saveItem('game_disable', $old_server_status);

@@ -5,7 +5,7 @@
 
 namespace Deprecated;
 
-use \classSupernova;
+use \SN;
 use \classLocale;
 use \DBAL\DbQuery;
 use DBAL\DbSqlPaging;
@@ -140,10 +140,10 @@ class PageMessage extends PageDeprecated {
 
     global $sn_message_class_list;
 
-    $this->lang = classSupernova::$lang;
+    $this->lang = SN::$lang;
     $this->messageClassList = $sn_message_class_list;
 
-    $this->db = classSupernova::$gc->db;
+    $this->db = SN::$gc->db;
 
     $this->loadParams();
   }

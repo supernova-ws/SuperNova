@@ -20,8 +20,8 @@ function sys_maintenance()
   foreach($queries as &$query)
   {
     $query['result'] = doquery($query['query']);
-    $query['error']  = classSupernova::$db->db_error();
-    $query['affected_rows']  = classSupernova::$db->db_affected_rows();
+    $query['error']  = SN::$db->db_error();
+    $query['affected_rows']  = SN::$db->db_affected_rows();
   }
 
   return $queries;

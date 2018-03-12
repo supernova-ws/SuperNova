@@ -14,8 +14,8 @@ lng_include('affilates');
 
 $template = gettemplate('affilates', true);
 
-$rpg_bonus_minimum = classSupernova::$config->rpg_bonus_minimum;
-$rpg_bonus_divisor = classSupernova::$config->rpg_bonus_divisor ? classSupernova::$config->rpg_bonus_divisor : 10;
+$rpg_bonus_minimum = SN::$config->rpg_bonus_minimum;
+$rpg_bonus_divisor = SN::$config->rpg_bonus_divisor ? SN::$config->rpg_bonus_divisor : 10;
 
 $affilates = db_referrals_list_by_id($user['id']);
 while ($affilate = db_fetch($affilates))
@@ -32,11 +32,11 @@ while ($affilate = db_fetch($affilates))
   $gained += $affilate_gain;
 }
 
-$bannerURL  = SN_ROOT_VIRTUAL_PARENT . classSupernova::$config->int_banner_URL;
+$bannerURL  = SN_ROOT_VIRTUAL_PARENT . SN::$config->int_banner_URL;
 $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
 $bannerURL .= "id={$user['id']}";
 
-$userbarURL  = SN_ROOT_VIRTUAL_PARENT . classSupernova::$config->int_userbar_URL;
+$userbarURL  = SN_ROOT_VIRTUAL_PARENT . SN::$config->int_userbar_URL;
 $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
 $userbarURL .= "id={$user['id']}";
 

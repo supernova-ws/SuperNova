@@ -55,7 +55,7 @@ class BonusAtomAbilityTest extends \PHPUnit_Framework_TestCase {
     /**
      * @var ValueBonused $valueBonused
      */
-    \classSupernova::$gc = new GlobalContainer();
+    \SN::$gc = new GlobalContainer();
     $valueBonused = $this->getMockBuilder(ValueBonused::class)
       ->setConstructorArgs([UNIT_TEST_ID_STRING_0, $baseValue])
       ->getMock();
