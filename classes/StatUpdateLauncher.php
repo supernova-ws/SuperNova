@@ -18,10 +18,6 @@ class StatUpdateLauncher {
       return;
     }
     $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run(classSupernova::$config->stats_schedule, classSupernova::$config->var_stat_update, true));
-//    classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_NONE);
-//    classSupernova::$config->db_saveItem('var_stat_update', SN_TIME_SQL);
-//    classSupernova::$config->db_saveItem('var_stat_update_next', $next_run);
-//    classSupernova::$config->db_saveItem('var_stat_update_end', SN_TIME_SQL);
     classSupernova::$config->pass()->game_disable = GAME_DISABLE_NONE;
     classSupernova::$config->pass()->var_stat_update = SN_TIME_SQL;
     classSupernova::$config->pass()->var_stat_update_next = $next_run;

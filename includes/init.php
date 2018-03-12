@@ -341,7 +341,6 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
-// classSupernova::$config->fleet_update_last
 classSupernova::$gc->watchdog->checkConfigTimeDiff(
   'fleet_update_last',
   classSupernova::$config->fleet_update_interval,

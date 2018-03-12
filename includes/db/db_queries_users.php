@@ -101,7 +101,6 @@ function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
  */
 function db_user_set_by_id($user_id, $set) {
   return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
-  // return classSupernova::db_set_user_by_id($user_id, $set);
 }
 
 

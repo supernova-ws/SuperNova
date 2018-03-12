@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #42a4#
+ * version #43a13.42#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #42a4# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a13.42# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -177,7 +177,6 @@ class core_auth extends sn_module {
     self::$main_provider = new auth_local();
 
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
-    // self::$db = !is_object($db) ? classSupernova::$db : $db;
     self::$db = classSupernova::$db;
 
     self::$device = new RequestInfo();

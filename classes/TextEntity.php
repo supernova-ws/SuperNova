@@ -34,7 +34,6 @@ class TextEntity extends \Common\ContainerPlus {
     parent::__construct($values);
 
     // TODO
-//    $this->model = classSupernova::$gc->TextModel;
     $this->model = new TextModel(classSupernova::$gc);
   }
 

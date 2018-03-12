@@ -136,8 +136,6 @@ $template->assign_vars(array(
 
   'STATS_HIDE_ADMINS' => classSupernova::$config->stats_hide_admins,
   'STATS_HIDE_PM_LINK' => classSupernova::$config->stats_hide_pm_link,
-//  'STATS_HIDE_PLAYER_LIST' => classSupernova::$config->stats_hide_player_list,
-//  'STATS_SCHEDULE' => classSupernova::$config->stats_hide_player_list,
 ));
 
 foreach($lang['sys_game_disable_reason'] as $id => $name) {
@@ -166,7 +164,6 @@ foreach($lang_list as $lang_id => $lang_data) {
   $template->assign_block_vars('game_languages', array(
     'ID'   => $lang_id,
     'NAME' => "{$lang_data['LANG_NAME_NATIVE']} ({$lang_data['LANG_NAME_ENGLISH']})",
-//    'SELECTED' => $lang_id == classSupernova::$config->game_default_language ? 'SELECTED' : '',
   ));
 }
 

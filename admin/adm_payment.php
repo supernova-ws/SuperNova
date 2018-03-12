@@ -3,7 +3,7 @@
 /**
  * adm_payment.php
  *
- * @version #43a8.2#
+ * @version #43a13.42#
  * @copyright 2013-2015 by Gorlum for http://supernova.ws
 */
 
@@ -46,15 +46,6 @@ $flt_module = sys_get_param_str('flt_module');
 $flt_status = sys_get_param_int('flt_status', -1);
 $flt_test = sys_get_param_int('flt_test', 0);
 
-//var_dump($_SERVER);
-//var_dump(SN_ROOT_RELATIVE);
-//var_dump(SN_ROOT_VIRTUAL);
-//die();
-
-//$query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
-
-
-//$query = classSupernova::$gc->db->selectIterator(
 $query = new \DBAL\DbSqlPaging(
   "SELECT * FROM `{{payment}}` WHERE 1 " .
 ($flt_payer > 0 ? "AND payment_user_id = {$flt_payer} " : '') .

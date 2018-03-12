@@ -411,7 +411,6 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses) {
   $quest_rewards_allowed = questAllowedRewardsList();
   if (!empty($total_rewards)) {
     foreach ($total_rewards as $user_id => $planet_data) {
-//      $user_row = classSupernova::db_get_record_by_id(LOC_USER, $user_id);
       $user_row = db_user_by_id($user_id);
       foreach ($planet_data as $planet_id => $unit_data) {
         $local_changeset = array();
