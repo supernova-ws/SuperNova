@@ -420,12 +420,13 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
 function renderFooter() {
   $templateFooter = gettemplate('_page_90_footer', true);
 
-  $templateFooter->assign_vars(array(
-    'SN_TIME_NOW'  => SN_TIME_NOW,
-    'SN_VERSION'   => SN_VERSION,
-    'ADMIN_EMAIL'  => classSupernova::$config->game_adminEmail,
-    'CURRENT_YEAR' => date('Y', SN_TIME_NOW),
-  ));
+  $templateFooter->assign_vars([
+    'SN_TIME_NOW'      => SN_TIME_NOW,
+    'SN_VERSION'       => SN_VERSION,
+    'ADMIN_EMAIL'      => classSupernova::$config->game_adminEmail,
+    'CURRENT_YEAR'     => date('Y', SN_TIME_NOW),
+    'DB_PATCH_VERSION' => dbPatchGetCurrent(),
+  ]);
 
   displayP($templateFooter);
 }

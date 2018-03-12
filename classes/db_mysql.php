@@ -243,6 +243,18 @@ class db_mysql {
   }
 
   /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return int|null
+   */
+  public function selectValue($query, $skip_query_check = false) {
+    $row = $this->doquery($query, '', true, $skip_query_check);
+
+    return !empty($row) ? intval(reset($row)) : null;
+  }
+
+  /**
    * @param \DBAL\DbQuery $dbQuery
    *
    * @return array|null

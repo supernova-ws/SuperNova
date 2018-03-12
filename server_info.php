@@ -29,6 +29,8 @@ $template->assign_vars(array(
   'FLEET_SPEED_PLAIN' => flt_server_flight_speed_multiplier(true),
   'RESOURCE_MULTIPLIER' => game_resource_multiplier(),
   'RESOURCE_MULTIPLIER_PLAIN' => game_resource_multiplier(true),
+
+  'DB_PATCH_VERSION' => dbPatchGetCurrent(),
 ));
 
 display($template);
