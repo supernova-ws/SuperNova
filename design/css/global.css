@@ -460,3 +460,23 @@ tr.highlight.notice:hover {
 .b-orange {
   border: 1px solid orange;
 }
+
+
+/* ---------- FIX for Google Chrome v65 */
+
+/*html,*/
+/*body,*/
+/*#__page,*/
+/*#__page > table.markup,*/
+/*#__page > table.markup > tbody,*/
+#__page > table.markup > tbody > tr > td:nth-child(2)
+/*#__navbar_wrapper*/
+/*#__content_wrapper*/
+/*#__addition_wrapper*/
+/*#__content*/
+{
+
+  /*border: 1px solid red;*/
+  overflow-y: auto;
+  /*max-width: 88vw;*/
+}
