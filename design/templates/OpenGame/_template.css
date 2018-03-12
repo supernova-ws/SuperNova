@@ -3396,7 +3396,7 @@ input[type=checkbox] {
   color: red;
 }
 .news_link {
-  color: green;
+  color: #ade;
 }
 .survey_header, .survey_voted {
   background-color: #233452;
