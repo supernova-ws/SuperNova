@@ -67,7 +67,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
-    $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+    $page_header = $lang['eco_bld_research_page_name'] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } elseif($que_type == QUE_MERCENARY) {
 //    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
 //      messageBox($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
@@ -411,6 +411,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     'SORT_OPTION'         => $sort_option,
     'SORT_OPTION_INVERSE' => $sort_option_inverse,
+
+    'QUE_RESEARCH' => QUE_RESEARCH,
   );
 
   $template->assign_recursive($template_result);
