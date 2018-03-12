@@ -388,8 +388,18 @@ switch ($new_version) {
       ], empty($update_tables['festival_gifts']['disclosure']));
     });
 
+    // 2018-03-12 13:23:10 43a13.33
+    updPatchApply(3, function() use ($update_tables) {
+      upd_alter_table('player_options',
+        [
+          "MODIFY COLUMN `value` VARCHAR(16000) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
+        ],
+        $update_tables['player_options']['value']['Type'] == 'varchar(1900)'
+      );
+    });
+
 //    // #ctv
-//    updPatchApply(3, function() use ($update_tables) {
+//    updPatchApply(4, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
     upd_do_query('COMMIT;', true);

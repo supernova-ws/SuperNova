@@ -114,9 +114,9 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
 }
 
 /**
- * @param string   $table
- * @param string[] $alters
- * @param bool     $condition
+ * @param string          $table
+ * @param string|string[] $alters
+ * @param bool            $condition
  *
  * @return bool|mysqli_result|void
  */
