@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a21.13
+* @version 43a14.3
 *
 */
 
@@ -81,33 +81,39 @@ $a_lang_array = array(
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
   'opt_navbar_resourcebar_description' => 'Resourcebar - resource panel',
   'opt_navbar_buttons_title' => 'Setup navbar buttons',
-  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Vertical resourcebar',
-  'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Wide Research button (old look)',
-  'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Disable Expeditions button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Disable Flying Fleets button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH' => 'Disable Research button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Disable Planet button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
-  'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER' => 'Disable MetaMatter button',
-  'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
-  'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
-  'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Disable table borders (if any)',
-  'PLAYER_OPTION_TECH_TREE_TABLE' => 'View Technology Tree as table (old view)',
-  'PLAYER_OPTION_ANIMATION_DISABLED' => 'Disable animation effects',
-  'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => 'Disable progress bars',
+  'opt_player_options' => [
+    PLAYER_OPTION_NAVBAR_PLANET_VERTICAL        => 'Vertical resourcebar',
+    PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE => 'Disable storage capacity in resourcebar',
+    PLAYER_OPTION_NAVBAR_PLANET_OLD             => 'Use old tabled resource view',
 
-  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => 'Use old fleet selection view',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => 'Do not show ship speed',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => 'Do not show ship capacity',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => 'Do not show ship fuel consumption',
+    PLAYER_OPTION_NAVBAR_RESEARCH_WIDE          => 'Wide Research button (old look)',
+    PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH       => 'Disable Research button',
+    PLAYER_OPTION_NAVBAR_DISABLE_PLANET         => 'Disable Planet button',
+    PLAYER_OPTION_NAVBAR_DISABLE_HANGAR         => 'Disable Hangar button',
+    PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS    => 'Disable Expeditions button',
+    PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS  => 'Disable Flying Fleets button',
+    PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Disable Quest button',
+    PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER    => 'Disable MetaMatter button',
 
-  'PLAYER_OPTION_TUTORIAL_DISABLED' => 'Disable tutorial',
-  'PLAYER_OPTION_TUTORIAL_WINDOWED' => 'Show tutorial in popup window',
-  'PLAYER_OPTION_TUTORIAL_CURRENT' => 'Reset tutorial - tutorial will starts from begin',
+    PLAYER_OPTION_UNIVERSE_OLD                  => 'Использовать старый вид "Обзора Вселенной"',
+    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE     => 'Отключить кнопку колонизации',
+    PLAYER_OPTION_DESIGN_DISABLE_BORDERS        => 'Disable table borders (if any)',
+    PLAYER_OPTION_TECH_TREE_TABLE               => 'View Technology Tree as table (old view)',
+    PLAYER_OPTION_FLEET_SHIP_SELECT_OLD         => 'Use old fleet selection view',
+    PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED         => 'Do not show ship speed',
+    PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY      => 'Do not show ship capacity',
+    PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION   => 'Do not show ship fuel consumption',
+    PLAYER_OPTION_TUTORIAL_DISABLED             => 'Disable tutorial',
+    PLAYER_OPTION_TUTORIAL_WINDOWED             => 'Show tutorial in popup window',
+    PLAYER_OPTION_TUTORIAL_CURRENT              => 'Reset tutorial - tutorial will starts from begin',
 
-  'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Use old tabled resource view',
-  'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => 'Disable storage capacity in resourcebar',
+    PLAYER_OPTION_PLANET_SORT_INVERSE           => 'Reverse order',
+    PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE        => 'Hide autoconvert button',
+
+    PLAYER_OPTION_SOUND_ENABLED                 => 'Enable game sounds',
+    PLAYER_OPTION_ANIMATION_DISABLED            => 'Disable animation effects',
+    PLAYER_OPTION_PROGRESS_BARS_DISABLED        => 'Disable progress bars',
+  ],
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
@@ -127,8 +133,6 @@ $a_lang_array = array(
   'opt_msg_avatar_error_writing' => 'Error saving avatar file. Please, contact server Administration',
   'opt_msg_avatar_error_upload' => 'Error loading avatar image %1. Please, contact server Administration',
   'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
-
-
 
   'untoggleip' => 'Disable IP check',
   'untoggleip_tip' => 'Check IP means that you will not be able to log in under his own name with two different IP. Testing gives you the advantage in security!',
@@ -195,12 +199,8 @@ $a_lang_array = array(
   'opt_mail_optional_description' => 'Personal messages from other players and notifications about internal game events (like combat reports, expedition reports etc) will be sent to this e-mail',
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
 
-  'opt_sound_enabled' => 'Включить звуки в игре',
-
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
-
-  'opt_build_autoconvert_hide' => 'Hide autoconvert button',
 
   'opt_universe_title' => 'Universe',
 

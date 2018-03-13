@@ -608,6 +608,17 @@ $sn_data += array(
       */
     ),
 
+    GROUP_DESIGN_OPTION_BLOCKS => [
+      GROUP_DESIGN_BLOCK_TUTORIAL      => [],
+      GROUP_DESIGN_BLOCK_FLEET_COMPOSE => [],
+      GROUP_DESIGN_BLOCK_UNIVERSE      => [],
+      GROUP_DESIGN_BLOCK_NAVBAR        => [],
+      GROUP_DESIGN_BLOCK_RESOURCEBAR   => [],
+      GROUP_DESIGN_BLOCK_PLANET_SORT   => [],
+      GROUP_DESIGN_BLOCK_COMMON_ONE    => [],
+      GROUP_DESIGN_BLOCK_COMMON_TWO    => [],
+    ],
+
     'planet_images' => array(
       'trocken'    => array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10'),
       'dschjungel' => array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10'),

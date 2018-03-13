@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a14.1');
+define('SN_VERSION', '43a14.3');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1819,3 +1819,13 @@ define('PATCH_PRE_CHECK', true);
 
 const PLAYER_RANK_20 = 20;
 const PLAYER_RANK_MAX = PLAYER_RANK_20;
+
+const GROUP_DESIGN_OPTION_BLOCKS = 'GROUP_DESIGN_OPTION_BLOCKS';
+const GROUP_DESIGN_BLOCK_TUTORIAL = 0; //+
+const GROUP_DESIGN_BLOCK_FLEET_COMPOSE = 1; //+
+const GROUP_DESIGN_BLOCK_UNIVERSE = 2; //+
+const GROUP_DESIGN_BLOCK_NAVBAR = 3; //+
+const GROUP_DESIGN_BLOCK_RESOURCEBAR = 4; //+
+const GROUP_DESIGN_BLOCK_PLANET_SORT = 6; //+
+const GROUP_DESIGN_BLOCK_COMMON_ONE = 7; //+
+const GROUP_DESIGN_BLOCK_COMMON_TWO = 8; //+

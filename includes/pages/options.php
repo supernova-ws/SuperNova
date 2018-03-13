@@ -7,243 +7,82 @@
  */
 
 function sn_options_model() {
-  global $user, $user_option_list, $lang, $template_result, $config;
+  global $user, $template_result;
 
   $language_new = sys_get_param_str('langer', $user['lang']);
-
-  if($language_new != $user['lang']) {
-    $lang->lng_switch($language_new);
+  if ($language_new != $user['lang']) {
+    SN::$lang->lng_switch($language_new);
   }
 
   lng_include('options');
   lng_include('messages');
 
-  $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
+  sys_user_options_unpack($user);
 
-  if(sys_get_param_str('mode') == 'change') {
-    if($user['authlevel'] > 0) {
-      $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
-      DBStaticPlanet::db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
-      db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
-      $user['admin_protection'] = $planet_protection;
+  $savedOk = false;
+  if (sys_get_param_str('mode') == 'change') {
+    if (!is_array($template_result['.']['result'])) {
+      $template_result['.']['result'] = [];
     }
 
-    if(sys_get_param_int('vacation') && !$config->user_vacation_disable) {
-      sn_db_transaction_start();
-      if($user['authlevel'] < 3) {
-        if($user['vacation_next'] > SN_TIME_NOW) {
-          messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
-          die();
-        }
+    $user = sn_options_admin_protection($user);
+    $user = sn_options_vacation($user);
+    $user = sn_options_gender($user);
+    $user = sn_options_change_birthday($user);
+    $user = sn_options_deprecated($user);
+    sn_options_player_standard();
 
-        if(fleet_count_flying($user['id'])) {
-          messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
-          die();
-        }
+    $template_result['.']['result'][] = sn_options_change_password();
+    list($user, $usernameResult) = sn_options_change_username($user);
+    $template_result['.']['result'] = array_merge($template_result['.']['result'], $usernameResult);
 
-        $que = que_get($user['id'], false);
-        if(!empty($que)) {
-          messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
-          die();
-        }
+    sn_options_timediff(
+      sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
+      sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
+      sys_get_param_int('opt_time_diff_clear')
+    );
 
-        $query = SN::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
-        foreach($query as $planet) {
-          DBStaticPlanet::db_planet_set_by_id($planet['id'],
-            "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
-            metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
-            metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
-            fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
-          );
-        }
-        $user['vacation'] = SN_TIME_NOW + $config->player_vacation_time;
-      } else {
-        $user['vacation'] = SN_TIME_NOW;
-      }
-      sn_db_transaction_commit();
-    }
-
-    foreach($user_option_list as $option_group_id => $option_group) {
-      foreach($option_group as $option_name => $option_value) {
-        if($user[$option_name] !== null) {
-          $user[$option_name] = sys_get_param_str($option_name);
-        } else {
-          $user[$option_name] = $option_value;
-        }
-      }
-    }
-    $options = sys_user_options_pack($user);
-
-
-    $player_options = sys_get_param('options');
-    if(!empty($player_options)) {
-      if($player_options[PLAYER_OPTION_TUTORIAL_CURRENT] == SN::$config->tutorial_first_item) {
-        $player_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
-      }
-
-      array_walk($player_options, function (&$value) {
-        // TODO - Когда будет больше параметров - сделать больше проверок
-        $value = intval($value);
-      });
-      SN::$user_options->offsetSet($player_options);
-    }
-
-    $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
-    $username_safe = db_escape($username);
-    if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
-      // проверка на корректность
-      sn_db_transaction_start();
-      $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
-      if(!$name_check || $name_check['player_id'] == $user['id']) {
-        $user = db_user_by_id($user['id'], true);
-        switch($config->game_user_changename) {
-          case SERVER_PLAYER_NAME_CHANGE_PAY:
-            if(mrc_get_level($user, [], RES_DARK_MATTER) < $config->game_user_changename_cost) {
-              $template_result['.']['result'][] = array(
-                'STATUS'  => ERR_ERROR,
-                'MESSAGE' => $lang['opt_msg_name_change_err_no_dm'],
-              );
-              break;
-            }
-            rpg_points_change($user['id'], RPG_NAME_CHANGE, -$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
-
-          case SERVER_PLAYER_NAME_CHANGE_FREE:
-            db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-            doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
-            // TODO: Change cookie to not force user relogin
-            // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-            $template_result['.']['result'][] = array(
-              'STATUS'  => ERR_NONE,
-              'MESSAGE' => $lang['opt_msg_name_changed']
-            );
-            $user['username'] = $username;
-          break;
-        }
-      } else {
-        $template_result['.']['result'][] = array(
-          'STATUS'  => ERR_ERROR,
-          'MESSAGE' => $lang['opt_msg_name_change_err_used_name'],
-        );
-      }
-      sn_db_transaction_commit();
-    }
-
-    if($new_password = sys_get_param('newpass1')) {
-      try {
-        if($new_password != sys_get_param('newpass2')) {
-          throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
-        }
-
-        if(!SN::$auth->password_change(sys_get_param('db_password'), $new_password)) {
-          throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
-        }
-
-        throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
-      } catch(Exception $e) {
-        $template_result['.']['result'][] = array(
-          'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
-          'MESSAGE' => $e->getMessage()
-        );
-      }
-    }
+    require_once('includes/includes/sys_avatar.php');
+    $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
+    $template_result['.']['result'][] = $avatar_upload_result;
 
     $user['email'] = sys_get_param_str('db_email');
     SN::$gc->theUser->setSkinName(sys_get_param_str('skin_name'));
     $user['lang'] = sys_get_param_str('langer', $user['lang']);
-
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');
-    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
+    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + SN::$config->player_delete_time);
 
-    $gender = sys_get_param_int('gender', $user['gender']);
-    !isset($lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
-    $user['gender'] = $user['gender'] == GENDER_UNKNOWN ? $gender : $user['gender'];
+    \DBAL\DbQuery::build(SN::$db)
+      ->setTable('users')
+      ->setValues([
+        'email'                    => $user['email'],
+        'lang'                     => $user['lang'],
+        'avatar'                   => $user['avatar'],
+        'design'                   => $user['design'],
+        'noipcheck'                => $user['noipcheck'],
+        'deltime'                  => $user['deltime'],
+        'vacation'                 => $user['vacation'],
+        'gender'                   => $user['gender'],
+        'skin'                     => SN::$gc->theUser->getSkinName(),
+        'user_birthday'            => $user['user_birthday'],
+        'user_birthday_celebrated' => $user['user_birthday_celebrated'],
+        'options'                  => $user['options'],
+      ])
+      ->setWhereArray(['id' => $user['id']])
+      ->doUpdate();
 
-    try {
-      if($user['birthday']) {
-        throw new exception();
-      }
-
-      $user_birthday = sys_get_param_str_unsafe('user_birthday');
-      if(!$user_birthday || $user_birthday == $FMT_DATE) {
-        throw new exception();
-      }
-
-      // Some black magic to parse any valid date format - those that contains all three "d", "m" and "Y" and any of the delimeters "\", "/", ".", "-"
-      $pos['d'] = strpos(FMT_DATE, 'd');
-      $pos['m'] = strpos(FMT_DATE, 'm');
-      $pos['Y'] = strpos(FMT_DATE, 'Y');
-      asort($pos);
-      $i = 0;
-      foreach($pos as &$position) {
-        $position = ++$i;
-      }
-
-      $regexp = "/" . preg_replace(array('/\\\\/', '/\//', '/\./', '/\-/', '/d/', '/m/', '/Y/'), array('\\\\\\', '\/', '\.', '\-', '(\d?\d)', '(\d?\d)', '(\d{4})'), FMT_DATE) . "/";
-      if(!preg_match($regexp, $user_birthday, $match)) {
-        throw new exception();
-      }
-
-      if(!checkdate($match[$pos['m']], $match[$pos['d']], $match[$pos['Y']])) {
-        throw new exception();
-      }
-
-      $user['user_birthday'] = db_escape("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
-      // EOF black magic! Now we have valid SQL date in $user['user_birthday'] - independent of date format
-
-      $year = date('Y', SN_TIME_NOW);
-      if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > SN_TIME_NOW) {
-        $year--;
-      }
-      $user['user_birthday_celebrated'] = db_escape("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
-
-      $user_birthday = ", `user_birthday` = '{$user['user_birthday']}', `user_birthday_celebrated` = '{$user['user_birthday_celebrated']}'";
-    } catch(exception $e) {
-      $user_birthday = '';
-    }
-
-    require_once('includes/includes/sys_avatar.php');
-
-    $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
-    $template_result['.']['result'][] = $avatar_upload_result;
-
-    $user_time_diff = playerTimeDiff::user_time_diff_get();
-    if(sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED')) {
-      playerTimeDiff::user_time_diff_set(array(
-        PLAYER_OPTION_TIME_DIFF              => sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
-        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-        PLAYER_OPTION_TIME_DIFF_FORCED       => 1,
-        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-      ));
-    } elseif(sys_get_param_int('opt_time_diff_clear') || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-      playerTimeDiff::user_time_diff_set(array(
-        PLAYER_OPTION_TIME_DIFF              => '',
-        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-        PLAYER_OPTION_TIME_DIFF_FORCED       => 0,
-        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-      ));
-    }
-
-    $user_options_safe = db_escape($user['options']);
-    db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
-      `skin` = '" . SN::$gc->theUser->getSkinName() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
-      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
-      {$user_birthday}"
-    );
-
-    $template_result['.']['result'][] = array(
-      'STATUS'  => ERR_NONE,
-      'MESSAGE' => $lang['opt_msg_saved']
-    );
-  } elseif(sys_get_param_str('result') == 'ok') {
-    $template_result['.']['result'][] = array(
-      'STATUS'  => ERR_NONE,
-      'MESSAGE' => $lang['opt_msg_saved']
-    );
+    $savedOk = true;
+  } elseif (sys_get_param_str('result') == 'ok') {
+    $savedOk = true;
   }
 
-  $user = db_user_by_id($user['id']);
-  $options = sys_user_options_unpack($user);
+  if ($savedOk) {
+    $template_result['.']['result'][] = array(
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => SN::$lang['opt_msg_saved']
+    );
+  }
 }
 
 //-------------------------------
@@ -258,8 +97,8 @@ function sn_options_view($template = null) {
   $template = gettemplate('options', $template);
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
-  while(($entry = $dir->read()) !== false) {
-    if(is_dir("skins/{$entry}") && $entry[0] != '.') {
+  while (($entry = $dir->read()) !== false) {
+    if (is_dir("skins/{$entry}") && $entry[0] != '.') {
       $template_result['.']['skin_list'][] = array(
         'VALUE'    => $entry,
         'NAME'     => $entry,
@@ -269,7 +108,7 @@ function sn_options_view($template = null) {
   }
   $dir->close();
 
-  foreach($lang['opt_planet_sort_options'] as $key => &$value) {
+  foreach ($lang['opt_planet_sort_options'] as $key => &$value) {
     $template_result['.']['planet_sort_options'][] = array(
       'VALUE'    => $key,
       'NAME'     => $value,
@@ -277,7 +116,7 @@ function sn_options_view($template = null) {
     );
   }
 
-  foreach($lang['sys_gender_list'] as $key => $value) {
+  foreach ($lang['sys_gender_list'] as $key => $value) {
     $template_result['.']['gender_list'][] = array(
       'VALUE'    => $key,
       'NAME'     => $value,
@@ -286,7 +125,7 @@ function sn_options_view($template = null) {
   }
 
   $lang_list = lng_get_list();
-  foreach($lang_list as $lang_id => $lang_data) {
+  foreach ($lang_list as $lang_id => $lang_data) {
     $template_result['.']['languages'][] = array(
       'VALUE'    => $lang_id,
       'NAME'     => $lang_data['LANG_NAME_NATIVE'],
@@ -295,8 +134,8 @@ function sn_options_view($template = null) {
   }
 
 
-  if(isset($lang['menu_customize_show_hide_button_state'])) {
-    foreach($lang['menu_customize_show_hide_button_state'] as $key => $value) {
+  if (isset($lang['menu_customize_show_hide_button_state'])) {
+    foreach ($lang['menu_customize_show_hide_button_state'] as $key => $value) {
       $template->assign_block_vars('menu_customize_show_hide_button_state', array(
         'ID'   => $key,
         'NAME' => $value,
@@ -308,39 +147,27 @@ function sn_options_view($template = null) {
   $time_now_parsed = getdate($user['deltime']);
 
   $user_time_diff = playerTimeDiff::user_time_diff_get();
-  $template->assign_vars(array(
-    'USER_ID'      => $user['id'],
+
+
+  sn_options_add_standard($template);
+
+  $template->assign_vars([
+    'USER_ID' => $user['id'],
 
     'ACCOUNT_NAME' => sys_safe_output(SN::$auth->account->account_name),
 
     'USER_AUTHLEVEL' => $user['authlevel'],
 
-    'menu_customize_show_hide_button'         => SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
-    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'       => SN::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'       => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'        => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
-    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'       => SN::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
-    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS'     => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
-    'PLAYER_OPTION_MENU_WHITE_TEXT'           => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
-    'PLAYER_OPTION_MENU_OLD'                  => SN::$user_options[PLAYER_OPTION_MENU_OLD],
-    'PLAYER_OPTION_UNIVERSE_OLD'              => SN::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
-    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => SN::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
-    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS'    => SN::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
-    'PLAYER_OPTION_TECH_TREE_TABLE'           => SN::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
-    'sound_enabled'                           => SN::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'PLAYER_OPTION_ANIMATION_DISABLED'        => SN::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-    'PLAYER_OPTION_PROGRESS_BARS_DISABLED'    => SN::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
-    'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
-    'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION'     => SN::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
+    'menu_customize_show_hide_button'     => SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => SN::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'    => SN::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'   => SN::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    'PLAYER_OPTION_MENU_WHITE_TEXT'       => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
+    'PLAYER_OPTION_MENU_OLD'              => SN::$user_options[PLAYER_OPTION_MENU_OLD],
 
-    'PLAYER_OPTION_TUTORIAL_DISABLED'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
-    'PLAYER_OPTION_TUTORIAL_WINDOWED'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
-    'PLAYER_OPTION_TUTORIAL_CURRENT'     => SN::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT],
-
-    'PLAYER_OPTION_NAVBAR_PLANET_OLD'     => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
-    'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE],
+    'PLAYER_OPTION_TUTORIAL_CURRENT_ID' => PLAYER_OPTION_TUTORIAL_CURRENT,
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data'      => htmlspecialchars($user['username']),
@@ -351,16 +178,6 @@ function sn_options_view($template = null) {
     'PLAYER_OPTION_FLEET_SPY_DEFAULT'      => SN::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
     'PLAYER_OPTION_TOOLTIP_DELAY'          => SN::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
     'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => SN::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
-
-    'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'       => SN::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
-    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => SN::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
-    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'   => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'      => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
-    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
-    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
-    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
-    'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
 
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'" : '',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'" : '',
@@ -404,13 +221,22 @@ function sn_options_view($template = null) {
 
     'DARK_MATTER' => prettyNumberStyledCompare($config->game_user_changename_cost, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
 
-    'PAGE_HEADER' => $lang['opt_header'],
-  ));
+    'GROUP_DESIGN_BLOCK_TUTORIAL'      => GROUP_DESIGN_BLOCK_TUTORIAL,
+    'GROUP_DESIGN_BLOCK_FLEET_COMPOSE' => GROUP_DESIGN_BLOCK_FLEET_COMPOSE,
+    'GROUP_DESIGN_BLOCK_UNIVERSE'      => GROUP_DESIGN_BLOCK_UNIVERSE,
+    'GROUP_DESIGN_BLOCK_NAVBAR'        => GROUP_DESIGN_BLOCK_NAVBAR,
+    'GROUP_DESIGN_BLOCK_RESOURCEBAR'   => GROUP_DESIGN_BLOCK_RESOURCEBAR,
+    'GROUP_DESIGN_BLOCK_PLANET_SORT'   => GROUP_DESIGN_BLOCK_PLANET_SORT,
+    'GROUP_DESIGN_BLOCK_COMMON_ONE'    => GROUP_DESIGN_BLOCK_COMMON_ONE,
+    'GROUP_DESIGN_BLOCK_COMMON_TWO'    => GROUP_DESIGN_BLOCK_COMMON_TWO,
 
-  foreach($user_option_list as $option_group_id => $option_group) {
-    if($option_group_id == OPT_MESSAGE) {
-      foreach($sn_message_class_list as $message_class_id => $message_class_data) {
-        if($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm)) {
+    'PAGE_HEADER' => $lang['opt_header'],
+  ]);
+
+  foreach ($user_option_list as $option_group_id => $option_group) {
+    if ($option_group_id == OPT_MESSAGE) {
+      foreach ($sn_message_class_list as $message_class_id => $message_class_data) {
+        if ($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm)) {
           $option_name = $message_class_data['name'];
 
           $template->assign_block_vars("options_{$option_group_id}", array(
@@ -422,8 +248,8 @@ function sn_options_view($template = null) {
         }
       }
     } else {
-      foreach($option_group as $option_name => $option_value) {
-        if(array_key_exists($option_name, $user_option_types)) {
+      foreach ($option_group as $option_name => $option_value) {
+        if (array_key_exists($option_name, $user_option_types)) {
           $option_type = $user_option_types[$option_name];
         } else {
           $option_type = 'switch';
@@ -441,4 +267,397 @@ function sn_options_view($template = null) {
   }
 
   return $template;
+}
+
+//-------------------------------
+
+/**
+ * @param $user
+ *
+ * @return array
+ */
+function sn_options_gender($user) {
+  $gender = sys_get_param_int('gender', $user['gender']);
+  !isset(SN::$lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
+  $user['gender'] = $user['gender'] == GENDER_UNKNOWN ? $gender : $user['gender'];
+
+  return $user;
+}
+
+function sn_options_timediff($timeDiff, $force, $clear) {
+//  $timeDiff = sys_get_param_int('PLAYER_OPTION_TIME_DIFF');
+//  $force = sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED');
+//  $clear = sys_get_param_int('opt_time_diff_clear');
+  $user_time_diff = playerTimeDiff::user_time_diff_get();
+  if ($force) {
+    playerTimeDiff::user_time_diff_set(array(
+      PLAYER_OPTION_TIME_DIFF              => $timeDiff,
+      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
+      PLAYER_OPTION_TIME_DIFF_FORCED       => 1,
+      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+    ));
+  } elseif ($clear || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
+    playerTimeDiff::user_time_diff_set(array(
+      PLAYER_OPTION_TIME_DIFF              => '',
+      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
+      PLAYER_OPTION_TIME_DIFF_FORCED       => 0,
+      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+    ));
+  }
+}
+
+/**
+ * @param $user
+ * @param $FMT_DATE
+ * @param $pos
+ * @param $match
+ *
+ * @return array
+ */
+function sn_options_change_birthday($user) {
+  $user_birthday = sys_get_param_str_unsafe('user_birthday');
+  $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
+
+  if ($user['birthday'] || empty($user_birthday) || $user_birthday == $FMT_DATE) {
+    return $user;
+  }
+
+  try {
+    // Some black magic to parse any valid date format - those that contains all three "d", "m" and "Y" and any of the delimeters "\", "/", ".", "-"
+    $pos['d'] = strpos(FMT_DATE, 'd');
+    $pos['m'] = strpos(FMT_DATE, 'm');
+    $pos['Y'] = strpos(FMT_DATE, 'Y');
+    asort($pos);
+    $i = 0;
+    foreach ($pos as &$position) {
+      $position = ++$i;
+    }
+
+    $regexp = "/" . preg_replace(array('/\\\\/', '/\//', '/\./', '/\-/', '/d/', '/m/', '/Y/'), array('\\\\\\', '\/', '\.', '\-', '(\d?\d)', '(\d?\d)', '(\d{4})'), FMT_DATE) . "/";
+    if (!preg_match($regexp, $user_birthday, $match)) {
+      throw new Exception();
+    }
+
+    if (!checkdate($match[$pos['m']], $match[$pos['d']], $match[$pos['Y']])) {
+      throw new Exception();
+    }
+
+    $user_birthday_new_unescaped = "{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}";
+    $user['user_birthday'] = $user_birthday_new_unescaped;
+    // EOF black magic! Now we have valid SQL date in $user['user_birthday'] - independent of date format
+
+    $year = date('Y', SN_TIME_NOW);
+    if (mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > SN_TIME_NOW) {
+      $year--;
+    }
+    $user['user_birthday_celebrated'] = "{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}";
+  } catch (exception $e) {
+    $user['user_birthday'] = null;
+    $user['user_birthday_celebrated'] = null;
+  }
+
+  return $user;
+}
+
+/**
+ * @return array
+ */
+function sn_options_change_password() {
+  $result = [];
+  if (!($new_password = sys_get_param('newpass1'))) {
+    return $result;
+  }
+
+  try {
+    if ($new_password != sys_get_param('newpass2')) {
+      throw new Exception('opt_err_pass_unmatched', ERR_WARNING);
+    }
+
+    if (!SN::$auth->password_change(sys_get_param('db_password'), $new_password)) {
+      throw new Exception('opt_err_pass_wrong', ERR_WARNING);
+    }
+
+    throw new Exception('opt_msg_pass_changed', ERR_NONE);
+  } catch (Exception $e) {
+    $result = [
+      'STATUS'  => in_array($e->getCode(), [ERR_NONE, ERR_WARNING, ERR_ERROR]) ? $e->getCode() : ERR_ERROR,
+      'MESSAGE' => SN::$lang[$e->getMessage()],
+    ];
+  }
+
+  return $result;
+}
+
+function sn_options_player_standard() {
+  $player_options = sys_get_param('options');
+  if (empty($player_options)) {
+    return;
+  }
+
+  if ($player_options[PLAYER_OPTION_TUTORIAL_CURRENT]) {
+    $player_options[PLAYER_OPTION_TUTORIAL_CURRENT] = SN::$config->tutorial_first_item;
+    $player_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
+  } else {
+    unset($player_options[PLAYER_OPTION_TUTORIAL_CURRENT]);
+  }
+
+  array_walk($player_options, function (&$value) {
+    // TODO - Когда будет больше параметров - сделать больше проверок
+    $value = intval($value);
+  });
+  SN::$user_options->offsetSet($player_options);
+}
+
+/**
+ * @param array $user
+ *
+ * @return array
+ */
+function sn_options_change_username($user) {
+  $config = SN::$config;
+  $lang = SN::$lang;
+
+  $result = [];
+
+  $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
+  if (
+    empty($username)
+    || $user['username'] == $username
+    || $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_NONE
+    || !sys_get_param_int('username_confirm')
+    || strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)
+  ) {
+    return [$user, $result];
+  }
+
+  // проверка на корректность
+  sn_db_transaction_start();
+  $username_safe = db_escape($username);
+  $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+  if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
+    $user = db_user_by_id($user['id'], true);
+    switch ($config->game_user_changename) {
+      /** @noinspection PhpMissingBreakStatementInspection */
+      case SERVER_PLAYER_NAME_CHANGE_PAY:
+        if (mrc_get_level($user, [], RES_DARK_MATTER) < $config->game_user_changename_cost) {
+          $result[] = [
+            'STATUS'  => ERR_ERROR,
+            'MESSAGE' => $lang['opt_msg_name_change_err_no_dm'],
+          ];
+          break;
+        }
+        rpg_points_change(
+          $user['id'],
+          RPG_NAME_CHANGE,
+          -$config->game_user_changename_cost,
+          vsprintf('Пользователь ID %1$d сменил имя с "%2$s" на "%3$s"', [$user['id'], $user['username'], $username,])
+        );
+
+      case SERVER_PLAYER_NAME_CHANGE_FREE:
+        db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
+        doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+        // TODO: Change cookie to not force user relogin
+        // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+        $result[] = [
+          'STATUS'  => ERR_NONE,
+          'MESSAGE' => $lang['opt_msg_name_changed']
+        ];
+        $user['username'] = $username;
+      break;
+    }
+  } else {
+    $result[] = [
+      'STATUS'  => ERR_ERROR,
+      'MESSAGE' => $lang['opt_msg_name_change_err_used_name'],
+    ];
+  }
+  sn_db_transaction_commit();
+
+  return [$user, $result];
+}
+
+/**
+ * Set old options
+ *
+ * @param array $user
+ *
+ * @return array
+ * @deprecated
+ */
+function sn_options_deprecated($user) {
+  global $user_option_list;
+
+  foreach ($user_option_list as $option_group_id => $option_group) {
+    foreach ($option_group as $option_name => $option_value) {
+      if ($user[$option_name] !== null) {
+        $user[$option_name] = sys_get_param_str($option_name);
+      } else {
+        $user[$option_name] = $option_value;
+      }
+    }
+  }
+
+  sys_user_options_pack($user);
+
+  return $user;
+}
+
+/**
+ * @param array $user
+ *
+ * @return array
+ */
+function sn_options_admin_protection($user) {
+  if ($user['authlevel'] <= AUTH_LEVEL_REGISTERED) {
+    return $user;
+  }
+
+  $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
+  DBStaticPlanet::db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
+  db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
+  $user['admin_protection'] = $planet_protection;
+
+  return $user;
+}
+
+/**
+ * @param array $user
+ *
+ * @return array
+ */
+function sn_options_vacation($user) {
+  $config = SN::$config;
+  $lang = SN::$lang;
+
+  if (!sys_get_param_int('vacation') || $config->user_vacation_disable) {
+    return $user;
+  }
+
+  sn_db_transaction_start();
+  if ($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
+    if ($user['vacation_next'] > SN_TIME_NOW) {
+      messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+      die();
+    }
+
+    if (fleet_count_flying($user['id'])) {
+      messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+      die();
+    }
+
+    $que = que_get($user['id'], false);
+    if (!empty($que)) {
+      messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
+      die();
+    }
+
+    $query = SN::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
+    foreach ($query as $planet) {
+      DBStaticPlanet::db_planet_set_by_id($planet['id'],
+        "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
+        metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
+        metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
+        fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
+      );
+    }
+    $user['vacation'] = SN_TIME_NOW + $config->player_vacation_time;
+  } else {
+    $user['vacation'] = SN_TIME_NOW;
+  }
+  sn_db_transaction_commit();
+
+  return $user;
+}
+
+
+/**
+ * @param template $template
+ * @param string   $blockName
+ * @param int      $blockId
+ * @param int[]    $optionsNavBar
+ * @param array    $options
+ */
+function sn_options_render_block($template, $blockName, $blockId, $optionsNavBar, $options = []) {
+  $template->assign_block_vars('player_options', [
+    'ID'   => $blockId,
+    'NAME' => $blockName,
+  ]);
+
+  foreach ($optionsNavBar as $optionId) {
+    $template->assign_block_vars('player_options.option', [
+      'ID'         => $optionId,
+      'VALUE'      => SN::$user_options[$optionId],
+      'NAME'       => SN::$lang['opt_player_options'][$optionId],
+      'ALWAYS_OFF' => !empty($options[$optionId]['always_off']),
+      'CLASS'      => !empty($options[$optionId]['class']) ? $options[$optionId]['class'] : 'cell',
+    ]);
+  }
+}
+
+/**
+ * @param $template
+ */
+function sn_options_add_standard($template) {
+  sn_options_render_block($template, '', 5, [
+  ]);
+
+
+  // 8
+  sn_options_render_block($template, '', GROUP_DESIGN_BLOCK_COMMON_TWO,
+    [
+      PLAYER_OPTION_SOUND_ENABLED,
+      PLAYER_OPTION_ANIMATION_DISABLED,
+      PLAYER_OPTION_PROGRESS_BARS_DISABLED,
+    ],
+    [
+      PLAYER_OPTION_SOUND_ENABLED          => ['class' => 'header'],
+      PLAYER_OPTION_ANIMATION_DISABLED     => ['class' => 'header'],
+      PLAYER_OPTION_PROGRESS_BARS_DISABLED => ['class' => 'header'],
+    ]
+  );
+  // 7
+  sn_options_render_block($template, '', GROUP_DESIGN_BLOCK_COMMON_ONE, [
+    PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE,
+    PLAYER_OPTION_DESIGN_DISABLE_BORDERS,
+    PLAYER_OPTION_TECH_TREE_TABLE,
+  ]);
+  // 6
+  sn_options_render_block($template, '', GROUP_DESIGN_BLOCK_PLANET_SORT, [
+    PLAYER_OPTION_PLANET_SORT_INVERSE,
+  ]);
+  // 4
+  sn_options_render_block($template, SN::$lang['opt_navbar_resourcebar_description'], GROUP_DESIGN_BLOCK_RESOURCEBAR, [
+    PLAYER_OPTION_NAVBAR_PLANET_VERTICAL,
+    PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE,
+    PLAYER_OPTION_NAVBAR_PLANET_OLD,
+  ]);
+  // 3
+  sn_options_render_block($template, SN::$lang['opt_navbar_buttons_title'], GROUP_DESIGN_BLOCK_NAVBAR, [
+    PLAYER_OPTION_NAVBAR_RESEARCH_WIDE,
+    PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH,
+    PLAYER_OPTION_NAVBAR_DISABLE_PLANET,
+    PLAYER_OPTION_NAVBAR_DISABLE_HANGAR,
+    PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS,
+    PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS,
+    PLAYER_OPTION_NAVBAR_DISABLE_QUESTS,
+    PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER,
+  ]);
+  // 2
+  sn_options_render_block($template, SN::$lang['galaxyvision_options'], GROUP_DESIGN_BLOCK_UNIVERSE, [
+    PLAYER_OPTION_UNIVERSE_OLD,
+    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE,
+  ]);
+  // 1
+  sn_options_render_block($template, SN::$lang['option_fleet_send'], GROUP_DESIGN_BLOCK_FLEET_COMPOSE, [
+    PLAYER_OPTION_FLEET_SHIP_SELECT_OLD,
+    PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION,
+    PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED,
+    PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY,
+  ]);
+  // 0
+  sn_options_render_block($template, SN::$lang['opt_tutorial'], GROUP_DESIGN_BLOCK_TUTORIAL, [
+    PLAYER_OPTION_TUTORIAL_DISABLED,
+    // PLAYER_OPTION_TUTORIAL_WINDOWED,
+    PLAYER_OPTION_TUTORIAL_CURRENT,
+  ], [PLAYER_OPTION_TUTORIAL_CURRENT => ['always_off' => true]]);
 }

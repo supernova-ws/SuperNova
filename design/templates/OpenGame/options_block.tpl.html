@@ -1,0 +1,26 @@
+<!-- BEGIN player_options -->
+<!-- IF player_options.ID == $OPTION_BLOCK_CURRENT -->
+
+<!-- IF player_options.NAME -->
+<div class="header options_block_header">
+  {player_options.NAME}
+</div>
+<!-- ENDIF -->
+
+<!-- IF .player_options.option -->
+<!-- BEGIN option -->
+<div class="option_block_option {option.CLASS}">
+  <!-- IF option.VALUE && ! option.ALWAYS_OFF -->
+  <!-- DEFINE $PLAYER_OPTION_THIS_CHECKED = 'checked="checked"' -->
+  <!-- ELSE -->
+  <!-- DEFINE $PLAYER_OPTION_THIS_CHECKED = '' -->
+  <!-- ENDIF -->
+  <input type="hidden" name="options[{option.ID}]" value="0"/>
+  <input type="checkbox" name="options[{option.ID}]" value="1" id="PLAYER_OPTION_{option.ID}" {$PLAYER_OPTION_THIS_CHECKED} />
+  <label for="PLAYER_OPTION_{option.ID}">{option.NAME}</label>
+</div>
+<!-- END option -->
+<!-- ENDIF -->
+
+<!-- ENDIF -->
+<!-- END player_options -->

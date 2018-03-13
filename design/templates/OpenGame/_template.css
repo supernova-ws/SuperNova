@@ -3890,3 +3890,10 @@ td.error_message {
   margin-left: 1em;
   cursor: pointer;
 }
+
+.options_block_header {
+}
+
+.option_block_option {
+  text-align: left;
+}

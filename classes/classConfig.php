@@ -10,53 +10,58 @@
  *
  * @package supernova
  *
- * @property string     $db_prefix - REMOVE! Just for compatibility!
+ * @property string     $db_prefix                     - REMOVE! Just for compatibility!
  *
- * @property string     $ali_bonus_members           => 10, // Minimum alliance size to start using bonus
+ * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
  *
  * @property string     $auth_vkontakte_app_id
  * @property string     $auth_vkontakte_app_key
  * @property string     $auth_vkontakte_token
  * @property int        $auth_vkontakte_token_expire
  *
- * @property string     $COOKIE_NAME                  => 'SuperNova'
+ * @property string     $COOKIE_NAME                   => 'SuperNova'
  *
- * @property int        $empire_mercenary_base_period => PERIOD_MONTH, // Base hire period for price calculations
- * @property int        $empire_mercenary_temporary   => 0, // Temporary empire-wide mercenaries
+ * @property int        $empire_mercenary_base_period  => PERIOD_MONTH, // Base hire period for price calculations
+ * @property int        $empire_mercenary_temporary    => 0, // Temporary empire-wide mercenaries
  *
- * @property int        $fleet_update_interval        => 4 second  // how often fleets should be updated
- * @property int        $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
- * @property int        $fleet_update_lock            => ''  // SQL time when lock was acquired
+ * @property int        $fleet_update_interval         => 4 second  // how often fleets should be updated
+ * @property int        $fleet_update_last             => SN_TIME_NOW // unixtime - when fleet was updated last
+ * @property int        $fleet_update_lock             => ''  // SQL time when lock was acquired
  *
- * @property string     $game_adminEmail              => 'root@localhost',    // Admin's email to show to users
+ * @property string     $game_adminEmail               => 'root@localhost',    // Admin's email to show to users
  *
- * @property string     $game_default_language        => 'ru'
- * @property string     $game_default_skin            => 'skins/EpicBlue/'
- * @property string     $game_default_template        => 'OpenGame'
+ * @property string     $game_default_language         => 'ru'
+ * @property string     $game_default_skin             => 'skins/EpicBlue/'
+ * @property string     $game_default_template         => 'OpenGame'
  *
- * @property int        $game_disable                 => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
- * @property string     $game_disable_reason          => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
+ * @property int        $game_disable                  => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
+ * @property string     $game_disable_reason           => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
  *
- * @property int        $game_maxGalaxy               => 5
- * @property int        $game_maxSystem               => 199
- * @property int        $game_maxPlanet               => 15
+ * @property int        $game_maxGalaxy                => 5
+ * @property int        $game_maxSystem                => 199
+ * @property int        $game_maxPlanet                => 15
  *
- * @property string     $game_name                    Server name as it would be seen through game
+ * @property string     $game_name                     Server name as it would be seen through game
  *
- * @property int        $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
- * @property int        $game_news_overview           How much last news to show in Overview page. Default - 3
- * @property int        $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
+ * @property int        $metal_basic_income            => 40,
+ * @property int        $crystal_basic_income          => 20,
+ * @property int        $deuterium_basic_income        => 0,
+ * @property int        $energy_basic_income           => 0,
  *
- * @property int        $game_noob_factor             => 5    // Multiplier to divide "stronger" and "weaker" users
- * @property int        $game_noob_points             => 5000 // Below this point user threated as noob. 0 to disable
+ * @property int        $game_news_actual              How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
+ * @property int        $game_news_overview            How much last news to show in Overview page. Default - 3
+ * @property int        $game_news_overview_show       How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  *
- * @property string     $int_format_date              => 'd.m.Y' // Date default format
- * @property string     $int_format_time              => 'H:i:s' // Time default format
+ * @property int        $game_noob_factor              => 5    // Multiplier to divide "stronger" and "weaker" users
+ * @property int        $game_noob_points              => 5000 // Below this point user threated as noob. 0 to disable
  *
- * @property int        $menu_server_name_disabled    => 0
- * @property int        $menu_launch_date_disabled    => 0
- * @property int        $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
- * @property int        $menu_server_logo_disabled    => 0
+ * @property string     $int_format_date               => 'd.m.Y' // Date default format
+ * @property string     $int_format_time               => 'H:i:s' // Time default format
+ *
+ * @property int        $menu_server_name_disabled     => 0
+ * @property int        $menu_launch_date_disabled     => 0
+ * @property int        $menu_server_logo              => MENU_SERVER_LOGO_DEFAULT
+ * @property int        $menu_server_logo_disabled     => 0
  *
  * @property string     $payment_currency_default      => 'USD',
  * @property float      $payment_currency_exchange_dm_ => 20000,
@@ -66,56 +71,69 @@
  * @property float      $payment_currency_exchange_uah => 30,
  * @property float      $payment_currency_exchange_usd => 1,
  * @property float      $payment_currency_exchange_wmb => 18000,
- * @property float     $payment_currency_exchange_wme => 0.9,
- * @property float     $payment_currency_exchange_wmr => 60,
- * @property float     $payment_currency_exchange_wmu => 30,
- * @property float     $payment_currency_exchange_wmz => 1,
+ * @property float      $payment_currency_exchange_wme => 0.9,
+ * @property float      $payment_currency_exchange_wmr => 60,
+ * @property float      $payment_currency_exchange_wmu => 30,
+ * @property float      $payment_currency_exchange_wmz => 1,
  *
- * @property int|float $player_metamatter_immortal   => 200000, // MM amount to reward account with Immortal status
+ * @property int        $tutorial_first_item           ID of first item of tutorial
+ *
+ * @property int        $url_faq                       URL of FAQ root
+ *
+ * @property int        $users_amount                  => 1 - Total users count
+ * @property int        $var_online_user_count         => 0, // Current online user count
+ *
+ * @property int        $quest_total                   => 0, // Total number of quests
+ *
+ * @property float      $resource_multiplier           => 1, // aka Mining speed
+ * @property float      $game_speed                    => 1, // Game speed aka Building/Research speed
+ * @property float      $fleet_speed                   => 1, // Fleet speed
+ * @property float      $game_speed_expedition         => 1, // Game expedition speed
+ *
+ *
+ * ----- Player settings
+ * @property int|float  $player_metamatter_immortal    => 200000, // MM amount to reward account with Immortal status
+ *
+ * @property int        $game_user_changename          => 2, // Is user allowed to change name after registration?
+ * @property int        $game_user_changename_cost     => 100000, // Change name cost for paid changename
+ *
+ * @property int        $user_vacation_disable         => 0, // Disable vacation mode for players
+ * @property int        $player_vacation_time          => PERIOD_WEEK, // Minimal vacation length in seconds
+ * @property int        $player_vacation_timeout       => PERIOD_WEEK, // Timeout after leaving vacation to start new one in seconds
+ *
+ * @property string     $player_levels                 => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
+ * @property string     $player_levels_calculated      => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+ *
+ * @property int        $player_delete_time            => 3888000, //
+ *
+ *
+ *
  * ----- Planet settings
- * @property int       $planet_capital_cost           => 25000, // Cost in DM to move Capital to current planet
- * @property float     $planet_capital_mining_rate    => 2.0,   // Capital Mining rates
- * @property float     $planet_capital_building_rate  => 2.0,   // Capital Building rates
- * @property int       $planet_teleport_cost          => 50000, // Cost of planet teleportation
- * @property int       $planet_teleport_timeout       => 86400, // Timeout for next teleportation
+ * @property int        $planet_capital_cost           => 25000, // Cost in DM to move Capital to current planet
+ * @property float      $planet_capital_mining_rate    => 2.0,   // Capital Mining rates
+ * @property float      $planet_capital_building_rate  => 2.0,   // Capital Building rates
+ * @property int        $planet_teleport_cost          => 50000, // Cost of planet teleportation
+ * @property int        $planet_teleport_timeout       => 86400, // Timeout for next teleportation
  *
- * @property string    $player_levels                => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
- * @property string    $player_levels_calculated     => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+ * @property string     $server_updater_check_auto     => 0, // Server autocheck version
+ * @property int        $server_updater_check_last     => 0, // Server last check time
+ * @property int        $server_updater_check_period   => PERIOD_DAY, // Server autocheck period
+ * @property int        $server_updater_check_result   => SNC_VER_NEVER, // Server last check result
+ * @property int|string $server_updater_id             => 0, // Server ID on update server
+ * @property string     $server_updater_key            => '', // Server key on update server
  *
- * @property int        $quest_total                  => 0, // Total number of quests
+ * @property int        $stats_hide_admins             => 1,  // Hide admins accounts from stat and stat of admins
+ * @property string     $stats_hide_player_list        => '', // Comma separated list of player IDs which stat to hide. Used for bots, for example
+ * @property int        $stats_hide_pm_link            => 0,  // Hide PM link from stat screen
+ * @property int        $stats_history_days            => 14, // За сколько дней хранить статистику в базе
+ * @property string     $stats_minimal_interval        => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
+ * @property string     $stats_schedule                => '04:00:00' - Schedule for running stat updates - see readme.txt
  *
- * @property string     $server_updater_check_auto    => 0, // Server autocheck version
- * @property int        $server_updater_check_last    => 0, // Server last check time
- * @property int        $server_updater_check_period  => PERIOD_DAY, // Server autocheck period
- * @property int        $server_updater_check_result  => SNC_VER_NEVER, // Server last check result
- * @property int|string $server_updater_id            => 0, // Server ID on update server
- * @property string     $server_updater_key           => '', // Server key on update server
- *
- * @property int        $stats_hide_admins            => 1,  // Hide admins accounts from stat and stat of admins
- * @property string     $stats_hide_player_list       => '', // Comma separated list of player IDs which stat to hide. Used for bots, for example
- * @property int        $stats_hide_pm_link           => 0,  // Hide PM link from stat screen
- * @property int        $stats_history_days           => 14, // За сколько дней хранить статистику в базе
- * @property string     $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
- * @property string     $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
- *
- * @property string     $var_stat_update              => '0' - SQL_DATE_TIME - when stat update was started
- * @property string     $var_stat_update_end          => '0' - SQL_DATE_TIME - ?????????
- * @property string     $var_stat_update_admin_forced => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
- * @property string     $var_stat_update_next         => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
- * @property string     $var_stat_update_msg          => 'Update never started' - Last stat update message
- *
- * @property float      $resource_multiplier          => 1, // aka Mining speed
- * @property float      $game_speed                   => 1, // Game speed aka Building/Research speed
- * @property float      $fleet_speed                  => 1, // Fleet speed
- * @property float      $game_speed_expedition        => 1, // Game expedition speed
- *
- * @property int        $tutorial_first_item          ID of first item of tutorial
- *
- * @property int        $url_faq                      URL of FAQ root
- *
- * @property int        $users_amount                 => 1 - Total users count
- *
- * @property int        $var_online_user_count        => 0, // Current online user count
+ * @property string     $var_stat_update               => '0' - SQL_DATE_TIME - when stat update was started
+ * @property string     $var_stat_update_end           => '0' - SQL_DATE_TIME - ?????????
+ * @property string     $var_stat_update_admin_forced  => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
+ * @property string     $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
+ * @property string     $var_stat_update_msg           => 'Update never started' - Last stat update message
  *
  */
 class classConfig extends classPersistent {
@@ -164,15 +182,18 @@ class classConfig extends classPersistent {
     'chat_timeout'             => 900, // in seconds. Default = 15 min
 
     'COOKIE_NAME'                  => 'SuperNova',
-    'crystal_basic_income'         => 20,
     'debug'                        => 0,
     'Defs_Cdr'                     => 30,
-    'deuterium_basic_income'       => 0,
     'eco_scale_storage'            => 1,
     'eco_stockman_fleet'           => '', // Black Market - Starting amount of s/h ship merchant to sell
     'eco_stockman_fleet_populate'  => 1,  // Populate empty Stockman fleet with ships or not
     'empire_mercenary_base_period' => PERIOD_MONTH, // Base
     'empire_mercenary_temporary'   => 0, // Temporary empire-wide mercenaries
+
+    // Planet basic income
+    'metal_basic_income'           => 40,
+    'crystal_basic_income'         => 20,
+    'deuterium_basic_income'       => 0,
     'energy_basic_income'          => 0,
 
     // Bashing protection settings
@@ -215,8 +236,9 @@ class classConfig extends classPersistent {
 
     'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccounts)
 
-    'game_speed'                => 1, // Game speed
-    'game_speed_expedition'     => 1, // Game expedition speed
+    'game_speed'            => 1, // Game speed
+    'game_speed_expedition' => 1, // Game expedition speed
+
     'game_user_changename'      => 2, // Is user allowed to change name after registration?
     'game_user_changename_cost' => 100000, // Change name cost for paid changename
 
@@ -245,8 +267,6 @@ class classConfig extends classPersistent {
 
     'locale_cache_disable' => 0, // Disable locale caching
 
-    'metal_basic_income' => 40,
-
     'menu_server_name_disabled' => 0,
     'menu_launch_date_disabled' => 0,
     'menu_server_logo'          => MENU_SERVER_LOGO_DEFAULT,
@@ -274,8 +294,10 @@ class classConfig extends classPersistent {
     'planet_teleport_cost'         => 50000, // Cost of planet teleportation
     'planet_teleport_timeout'      => 86400, // Timeout for next teleportation
 
-    'player_delete_time'      => 3888000, //
-    'player_max_colonies'     => -1, // Max player planet count (NOT including main planet)
+    'player_delete_time'  => 3888000, //
+    'player_max_colonies' => -1, // Max player planet count (NOT including main planet)
+
+    'user_vacation_disable'   => 0, // Disable vacation mode for players
     'player_vacation_time'    => PERIOD_WEEK, //
     'player_vacation_timeout' => PERIOD_WEEK, //
 
@@ -360,7 +382,6 @@ class classConfig extends classPersistent {
     'user_birthday_gift'      => 0, // User birthday gift
     'user_birthday_range'     => PERIOD_MONTH, // How far in past can be user birthday for giving him gift
 
-    'user_vacation_disable' => 0,
 
     'var_db_update'     => 0, // Time of last DB update
     'var_db_update_end' => 0, // Time when last DB update should end. Need to prevent duplicate update
