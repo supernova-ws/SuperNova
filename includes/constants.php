@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a14.3');
+define('SN_VERSION', '43a14.5');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1078,6 +1078,8 @@ define('UNIT_AWARD_MEDAL_BLITZ_R0_PLACE3', 2203); // Блиц-сервер, уч
 define('UNIT_AWARD_MEDAL_2016_WOMEN_DAY_BEST', 2204);  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2016 года
 define('UNIT_AWARD_MEDAL_2017_WOMEN_DAY_BEST', 2205);  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2017 года
 define('UNIT_AWARD_MEDAL_2017_WOMEN_DAY_QUEEN', 2206);  // Медаль Королевы Весны за максимум полученной ММ/максимум полученных подарков от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_BEST_CAVALIER', 2207); // 2205  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_SPRING_QUEEN', 2208); // 2206 // Медаль Королевы Весны за максимум полученной ММ/максимум полученных подарков от Мужчины во время ивента 8 марта 2017 года
 
 define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
 define('UNIT_AWARD_MEMORY_IMMORTAL', 2301);  // Бессмертный
@@ -1118,6 +1120,9 @@ define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_DIAMOND', 2331); // СуперНовый
 define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_1ST', 2332); // Лучший Гость - СуперНовый Год - 2018
 define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_2ND', 2333); // Лучший Гость - СуперНовый Год - 2018
 define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_3RD', 2334); // Лучший Гость - СуперНовый Год - 2018
+
+define('UNIT_AWARD_MEMORY_8_MARCH_MAN_MEMORIAL', 2335); // 2310 old  // Значек за подарок Женщине от Мужчины во время ивента 8 марта - универсальный
+
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
