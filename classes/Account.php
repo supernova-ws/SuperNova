@@ -1,5 +1,7 @@
 <?php
 
+use \DBAL\DbQuery;
+
 /**
  * User: Gorlum
  * Date: 24.08.2015
@@ -549,6 +551,29 @@ class Account {
         }
       }
     }
+  }
+
+  /**
+   * @param string|array $where
+   * @param string|array $group
+   *
+   * @return bool|mysqli_result|null
+   */
+  public function getMetamatterSum($where = '', $group = '') {
+    if(is_array($where) && !empty($where)) {
+      $where = implode(' AND ', $where);
+    }
+    if(is_array($group) && !empty($group)) {
+      $group = implode(',', $group);
+    }
+
+    $sql = "SELECT SUM(`amount`) as 'mm', reason, account_id, account_name, user_id, username
+          FROM `{{log_metamatter}}`"
+      . (!empty($where) ? ' WHERE ' . $where : '')
+      . (!empty($group) ? ' GROUP BY ' . $group : '')
+    ;
+
+    return $this->db->doquery($sql);
   }
 
 }

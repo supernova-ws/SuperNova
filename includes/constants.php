@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a14.7');
+define('SN_VERSION', '43a14.10');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -300,6 +300,7 @@ define('RPG_EVENT_BIRTHDAY_COMPILED', 46);
 define('RPG_BATCH_OPERATION', 47);
 define('RPG_EVENT_MARCH8', 48);
 define('RPG_LOGIN_TOKEN', 49);
+define('RPG_EVENT_MARCH8_REWARD', 50);
 
 
 
@@ -1078,8 +1079,10 @@ define('UNIT_AWARD_MEDAL_BLITZ_R0_PLACE3', 2203); // Блиц-сервер, уч
 define('UNIT_AWARD_MEDAL_2016_WOMEN_DAY_BEST', 2204);  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2016 года
 define('UNIT_AWARD_MEDAL_2017_WOMEN_DAY_BEST', 2205);  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2017 года
 define('UNIT_AWARD_MEDAL_2017_WOMEN_DAY_QUEEN', 2206);  // Медаль Королевы Весны за максимум полученной ММ/максимум полученных подарков от Мужчины во время ивента 8 марта 2017 года
-define('UNIT_AWARD_MEDAL_8_MARCH_BEST_CAVALIER', 2207); // 2205  // Медаль Лучшему Кавалеру за максимум потраченной ММ/максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2017 года
-define('UNIT_AWARD_MEDAL_8_MARCH_SPRING_QUEEN', 2208); // 2206 // Медаль Королевы Весны за максимум полученной ММ/максимум полученных подарков от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_BEST_CAVALIER_AMOUNT', 2207); // Медаль Лучшему Кавалеру за максимум потраченной ММ Женщине от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_BEST_CAVALIER_COUNT', 2208); // Медаль Лучшему Кавалеру за максимум одаренных женщин Женщине от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_SPRING_QUEEN_AMOUNT', 2209); // Медаль Королевы Весны за максимум полученной ММ от Мужчины во время ивента 8 марта 2017 года
+define('UNIT_AWARD_MEDAL_8_MARCH_SPRING_QUEEN_COUNT', 2210); // Медаль Королевы Весны за максимум полученных подарков от Мужчины во время ивента 8 марта 2017 года
 
 define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
 define('UNIT_AWARD_MEMORY_IMMORTAL', 2301);  // Бессмертный
