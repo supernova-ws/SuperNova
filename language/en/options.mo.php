@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a14.3
+* @version 43a14.17
 *
 */
 
@@ -50,7 +50,7 @@ $a_lang_array = array(
   'opt_msg_name_change_err_used_name' => 'Someone else already owns this name',
   'opt_msg_name_change_err_no_dm' => 'There is not enough DM to change name',
 
-  'username_old' => 'Old name',
+  'username_old' => 'Current name',
   'username_new' => 'New name',
   'username_change_confirm' => 'Change name',
   'username_change_confirm_payed' => 'for',
@@ -199,12 +199,14 @@ $a_lang_array = array(
   'opt_mail_optional_description' => 'Personal messages from other players and notifications about internal game events (like combat reports, expedition reports etc) will be sent to this e-mail',
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
 
-  'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
-  'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
+  'opt_account_name' => 'You login<br />Login is used to enter game. Usually this is email you entered on registration',
+  'opt_game_user_name' => 'Name in the game (nickname)<br />Other players in game will see your nickname - not your login',
 
   'opt_universe_title' => 'Universe',
 
   'option_fleets' => 'Fleets',
   'option_fleet_send' => 'Fleet send',
+
+  'option_change_nick_disabled' => 'Player nickname change forbidden by server settings',
 
 );

@@ -115,7 +115,8 @@
                 <input type="text" name="username" value="{opt_usern_data}" maxlength="32" size="32" {$DISABLE_USERNAME_CONFIRM} />
               </div>
             <!-- ELSE -->
-              {opt_usern_data}
+            <div>{opt_usern_data}</div>
+            <div class="notice">{L_option_change_nick_disabled}</div>
             <!-- ENDIF -->
           </th>
         </tr>

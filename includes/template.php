@@ -1011,16 +1011,18 @@ function tpl_get_fleets_flying(&$user) {
 
 /**
  * @param template $template
- * @param string   $name
+ * @param string   $blockName
  * @param mixed    $values
+ * @param string   $keyName   - Name for key name
+ * @param string   $valueName - Name for value name
  */
-function tpl_assign_select(&$template, $name, $values) {
+function tpl_assign_select(&$template, $blockName, $values, $keyName = 'KEY', $valueName = 'VALUE') {
   !is_array($values) ? $values = array($values => $values) : false;
 
   foreach ($values as $key => $value) {
-    $template->assign_block_vars($name, array(
-      'KEY'   => htmlentities($key, ENT_COMPAT, 'UTF-8'),
-      'VALUE' => htmlentities($value, ENT_COMPAT, 'UTF-8'),
+    $template->assign_block_vars($blockName, array(
+      $keyName   => HelperString::htmlSafe($key),
+      $valueName => HelperString::htmlSafe($value),
     ));
   }
 }

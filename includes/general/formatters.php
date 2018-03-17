@@ -152,3 +152,48 @@ function ip2longu($ip) {
 function datePart($fullDate) {
   return (int)strtotime(date('Y-m-d', $fullDate));
 }
+
+
+/**
+ * Fall-back function to support old, serialize()-d data
+ *
+ * @param string $var
+ *
+ * @return mixed|string
+ * @deprecated
+ */
+function unserializeOrJsonDecode($var, $asArray = true) {
+  // Variable is not a string - returning it back
+  if (!is_string($var)) {
+    return $var;
+  }
+
+  set_error_handler(
+  /**
+   * @param $errno
+   * @param $errstr
+   * @param $errfile
+   * @param $errline
+   *
+   * @return bool
+   * @throws ErrorException
+   */
+    function ($errno, $errstr, $errfile, $errline) {
+      throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+    }
+  );
+
+  try {
+    $result = unserialize($var);
+  } catch (ErrorException $e) {
+    // String is not a serialized variable. May be it's a json?
+    $result = json_decode($var, $asArray);
+    if (JSON_ERROR_NONE != json_last_error()) {
+      $result = $var;
+    }
+  } finally {
+    restore_error_handler();
+  }
+
+  return $result;
+}

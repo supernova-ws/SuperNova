@@ -34,6 +34,9 @@ if(sys_get_param('save')) {
   SN::$config->game_disable_reason     = sys_get_param_str_unsafe('game_disable_reason');
   SN::$config->server_updater_check_auto = sys_get_param_int('server_updater_check_auto');
 
+  SN::$config->game_user_changename      = sys_get_param_int('game_user_changename', SN::$config->game_user_changename);
+  SN::$config->game_user_changename_cost = sys_get_param_int('game_user_changename_cost', SN::$config->game_user_changename_cost);
+
   SN::$config->eco_scale_storage       = sys_get_param_int('eco_scale_storage');
 
   SN::$config->game_default_language   = sys_get_param_str_unsafe('game_default_language', DEFAULT_LANG);
@@ -111,7 +114,7 @@ if(sys_get_param('save')) {
   $template->assign_var('MESSAGE', $lang['adm_opt_saved']);
 }
 
-$template->assign_vars(array(
+$template->assign_vars([
   'ALLOW_BUFFING' => SN::$config->allow_buffing,
   'ALLY_HELP_WEAK' => SN::$config->ally_help_weak,
   'GAME_EMAIL_PM' => SN::$config->game_email_pm,
@@ -136,28 +139,15 @@ $template->assign_vars(array(
 
   'STATS_HIDE_ADMINS' => SN::$config->stats_hide_admins,
   'STATS_HIDE_PM_LINK' => SN::$config->stats_hide_pm_link,
-));
 
-foreach($lang['sys_game_disable_reason'] as $id => $name) {
-  $template->assign_block_vars('sys_game_disable_reason', array(
-    'ID'   => $id,
-    'NAME' => $name,
-  ));
-}
+  'GAME_CHANGE_NAME'      => SN::$config->game_user_changename,
+  'GAME_CHANGE_NAME_COST' => SN::$config->game_user_changename_cost,
+]);
 
-foreach($lang['sys_game_mode'] as $mode_id => $mode_name) {
-  $template->assign_block_vars('game_modes', array(
-    'ID'   => $mode_id,
-    'NAME' => $mode_name,
-  ));
-}
-
-foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response) {
-  $template->assign_block_vars('ver_response', array(
-    'ID'   => $ver_id,
-    'NAME' => js_safe_string($ver_response),
-  ));
-}
+tpl_assign_select($template, 'change_name_options', SN::$lang['adm_opt_player_change_name_options']);
+tpl_assign_select($template, 'sys_game_disable_reason', SN::$lang['sys_game_disable_reason'], 'ID', 'NAME');
+tpl_assign_select($template, 'game_modes', SN::$lang['sys_game_mode'], 'ID', 'NAME');
+tpl_assign_select($template, 'ver_response', SN::$lang['adm_opt_ver_response'], 'ID', 'NAME');
 
 $lang_list = lng_get_list();
 foreach($lang_list as $lang_id => $lang_data) {

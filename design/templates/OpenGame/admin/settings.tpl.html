@@ -353,8 +353,8 @@
           <!-- ELSE -->
           <!-- DEFINE $GAME_LANGUAGE = '' -->
           <!-- ENDIF -->
-          <option value="{game_languages.ID}" {$GAME_LANGUAGE}>{game_languages.NAME}
-            <!-- END game_languages -->
+          <option value="{game_languages.ID}" {$GAME_LANGUAGE}>{game_languages.NAME}</option>
+          <!-- END game_languages -->
         </select>
       </div>
       <div class="cell">
@@ -371,6 +371,24 @@
         </label>
         <input id="game_news_overview" name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" />
         {L_adm_opt_game_zero_disable}
+      </div>
+      <div class="cell">
+        <label for="game_user_changename">{L_adm_opt_player_change_name}</label>
+        <select name="game_user_changename" id="game_user_changename">
+          <!-- BEGIN change_name_options -->
+          <!-- IF change_name_options.KEY == GAME_CHANGE_NAME -->
+          <!-- DEFINE $SELECTED = 'selected' -->
+          <!-- ELSE -->
+          <!-- DEFINE $SELECTED = '' -->
+          <!-- ENDIF -->
+          <option value="{change_name_options.KEY}" {$SELECTED}>{change_name_options.VALUE}</option>
+          <!-- END change_name_options -->
+        </select>
+      </div>
+      <div class="cell">
+        <label for="game_user_changename_cost">{L_adm_opt_player_change_name_cost}</label>
+        <input type="text" name="game_user_changename_cost" value="{C_game_user_changename_cost}" size="10" maxlength="20" id="game_user_changename_cost"/>
+        {L_sys_dark_matter}
       </div>
 
       <div class="header">

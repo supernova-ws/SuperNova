@@ -49,14 +49,14 @@
         <div class="subheader">
           <ul>
             {L_qst_conditions}
-            <li class="info">{quest.QUEST_UNIT_AMOUNT}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</li>
+            <li class="info">{quest.QUEST_UNIT_AMOUNT|num|format}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</li>
           </ul>
         </div>
         <div class="subheader">
           <ul>
             {L_qst_rewards}
             <!-- BEGIN quest_rewards_list -->
-            <li class="ok">{quest_rewards_list.AMOUNT}&nbsp;x&nbsp;{quest_rewards_list.NAME}</li>
+            <li class="ok">{quest_rewards_list.AMOUNT|num|format}&nbsp;x&nbsp;{quest_rewards_list.NAME}</li>
             <!-- END quest_rewards_list -->
           </ul>
         </div>

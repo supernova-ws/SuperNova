@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a6.0
+* @version 43a14.17
 *
 */
 
@@ -283,6 +283,13 @@ $a_lang_array = array(
   'adm_opt_game_default_language' => 'Язык интерфейса',
   'adm_opt_game_default_skin' => 'Оформление/Шкурка',
   'adm_opt_game_default_template' => 'Шаблон',
+  'adm_opt_player_change_name' => 'Смена ника игроком',
+  'adm_opt_player_change_name_options' => [
+    SERVER_PLAYER_NAME_CHANGE_NONE => 'Смена ника запрещена',
+    SERVER_PLAYER_NAME_CHANGE_FREE => 'Бесплатная смена ника',
+    SERVER_PLAYER_NAME_CHANGE_PAY => 'Смена ника за ТМ',
+  ],
+  'adm_opt_player_change_name_cost' => 'Стоимость в ТМ за смену ника',
   'adm_opt_empire_mercenary_temporary' => 'Временные наемники',
   'adm_opt_empire_mercenary_temporary_base' => 'Базовое время для найма, секунд',
   'adm_opt_empire_mercenary_temporary_hint' => 'При включении опции все наемники будут преобразованы во временные с базовым сроком действия<br />При отключении опции все наемники будут преобразованы в постоянные. При этом рекрутированные наемники, не доступные по требованиям найма, хотя и не смогут быть проапгрейжены, но все равно будут активны - т.е. будут оказывать влияние на игру',

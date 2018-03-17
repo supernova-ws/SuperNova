@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a6.0
+* @version 43a14.17
 *
 */
 
@@ -275,6 +275,13 @@ $a_lang_array = (array(
   'adm_opt_game_default_language' => 'Default language',
   'adm_opt_game_default_skin' => 'Skin',
   'adm_opt_game_default_template' => 'Template',
+  'adm_opt_player_change_name' => 'Player can change nickname',
+  'adm_opt_player_change_name_options' => [
+    SERVER_PLAYER_NAME_CHANGE_NONE => 'Name change is forbidden',
+    SERVER_PLAYER_NAME_CHANGE_FREE => 'Player can chane nickname',
+    SERVER_PLAYER_NAME_CHANGE_PAY  => 'Player can change nickname for DM',
+  ],
+  'adm_opt_player_change_name_cost' => 'DM cost for player to change nickname',
   'adm_opt_empire_mercenary_temporary' => 'Temporary mercenaries',
   'adm_opt_empire_mercenary_temporary_base' => 'Base hire period, seconds',
   'adm_opt_empire_mercenary_temporary_hint' => 'When switching this option on all permanent Mercenaries would be converted to temporary with base active period<br />When switching this option off all active Mercenaries would be converted to permanent ones. If newly converted Mercenaries are not accessible for hiring they can not be bought but still be active and will affect game',

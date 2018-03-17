@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a14.3
+* @version 43a14.17
 *
 */
 
@@ -44,7 +44,7 @@ $a_lang_array = (array(
   'opt_msg_name_change_err_used_name' => 'Это имя принадлежит другому пользователю',
   'opt_msg_name_change_err_no_dm' => 'Не хватает ТМ для смены имени',
 
-  'username_old' => 'Старое имя',
+  'username_old' => 'Текущее имя',
   'username_new' => 'Новое имя',
   'username_change_confirm' => 'Сменить имя',
   'username_change_confirm_payed' => 'за',
@@ -198,11 +198,13 @@ $a_lang_array = (array(
   'opt_mail_permanent_description' => 'К этому почтовому адресу привязывается игровой аккаунт. Ввести его можно только один раз. Все системные уведомления (например, о смене пароля) отправляются именно на этот адрес',
 
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
-  'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
+  'opt_game_user_name' => 'Имя в игре (ник)<br />По этим именем вы будете видны другим игрокам сервера',
 
   'opt_universe_title' => 'Вселенная',
 
   'option_fleets' => 'Флоты',
   'option_fleet_send' => 'Отправка флота',
+
+  'option_change_nick_disabled' => 'Смена ника запрещена настройками сервера',
 
 ));
