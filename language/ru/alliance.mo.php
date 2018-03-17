@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a28.2
+* @version 43a14.18
 *
 */
 
@@ -55,9 +55,9 @@ $a_lang_array = (array(
   'ali_dip_err_offer_accept_own' => 'Нельзя принять за другого свое предложение!',
   'ali_dip_err_offer_empty' => 'Не указано предложение',
   'ali_dip_relation_none' => 'Нет отношений',
-  'ali_dip_relation_change' => 'Мы приняли предложение Альянса',
-  'ali_dip_relation_change_to' => 'изменить отношения на',
-  'ali_dip_relation_accept' => 'принял наше предложение изменить отношения на',
+  'ali_dip_relation_change_auto_accept' => 'Альянс "%1$s" изменил отношение к Альянсу "%2$s" на "%3$s"',
+  'ali_dip_relation_change_own' => 'Мы приняли предложение Альянса "%2$s" изменить отношения на "%3$s"',
+  'ali_dip_relation_change_other' => 'Альянс "%1$s" принял наше предложение изменить отношения на "%3$s"',
   'ali_dip_relations' => array(
     ALLY_DIPLOMACY_NEUTRAL => 'Нейтралитет',
     ALLY_DIPLOMACY_WAR => 'Война',

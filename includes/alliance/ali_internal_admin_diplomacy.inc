@@ -16,6 +16,7 @@ $page_title = $lang['ali_dip_title'];
 
 $ally_name_safe = db_escape($user['ally_name']);
 
+$autoAccept = false;
 if(sys_get_param_str('ali_dip_offer_make'))
 {
   $alliance_negotiation_relation = sys_get_param_str('alliance_negotiation_relation');
@@ -70,6 +71,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
   else
   {
     $accept_offer = true;
+    $autoAccept = true;
     $negotiation = array(
       'alliance_negotiation_ally_id' => $alliance_negotiation_contr_ally_id,
       'alliance_negotiation_ally_name' => $contr_ally_row['ally_name'],
@@ -156,8 +158,29 @@ if($accept_offer)
         (alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$negotiation['alliance_negotiation_ally_id']});"
   );
 
-  msg_ali_send("{$lang['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$lang['ali_dip_relation_change_to']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
-  msg_ali_send("{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$lang['ali_dip_relation_accept']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
+  if ($autoAccept) {
+    $messages = [
+      'own'   => 'ali_dip_relation_change_auto_accept',
+      'other' => 'ali_dip_relation_change_auto_accept',
+    ];
+  } else {
+    $messages = [
+      'own'   => 'ali_dip_relation_change_own',
+      'other' => 'ali_dip_relation_change_other',
+    ];
+  }
+
+  foreach ($messages as &$theMessage) {
+    $theMessage = vsprintf(SN::$lang[$theMessage], [
+      $negotiation['alliance_negotiation_contr_ally_name'],
+      $negotiation['alliance_negotiation_ally_name'],
+      $lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']],
+    ]);
+  }
+
+  msg_ali_send($messages['own'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
+  msg_ali_send($messages['other'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
+
   sn_db_transaction_commit();
 }
 

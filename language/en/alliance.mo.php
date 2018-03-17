@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a28.2
+* @version 43a14.18
 *
 */
 
@@ -57,9 +57,9 @@ $a_lang_array = (array(
   'ali_dip_err_offer_accept_own' => 'You can not accept own offer!',
   'ali_dip_err_offer_empty' => 'Offer not defined',
   'ali_dip_relation_none' => 'No relations',
-  'ali_dip_relation_change' => 'We accept offer of Alliance',
-  'ali_dip_relation_change_to' => 'change relations to',
-  'ali_dip_relation_accept' => 'accepted your offer to change relations to',
+  'ali_dip_relation_change_auto_accept' => 'Alliance "%1$s" changes his relations to Alliance "%2$s" to "%3$s"',
+  'ali_dip_relation_change_own' => 'We accept offer of Alliance "%2$s" to change relations to "%3$s"',
+  'ali_dip_relation_change_other' => 'Alliance "%1$s" accepted our offer to change relations to "%3$s"',
   'ali_dip_relations' => array(
     ALLY_DIPLOMACY_NEUTRAL => 'Neutral',
     ALLY_DIPLOMACY_WAR => 'War',
