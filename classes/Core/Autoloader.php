@@ -23,10 +23,19 @@ class Autoloader {
 
   protected static $autoloaderRegistered = false;
 
+  protected static function _constructorStatic() {
+    if(!static::$autoloaderRegistered) {
+      spl_autoload_register(array(__CLASS__, 'autoloader'));
+      static::$autoloaderRegistered = true;
+    }
+  }
+
   /**
    * @param string $class - Fully-qualified path with namespaces
    */
   public static function autoloader($class) {
+    static::_constructorStatic();
+
     foreach(static::$folders as $data) {
       $theClassFile = $class;
 
@@ -49,10 +58,7 @@ class Autoloader {
    * @param string $classPrefix - PHP class prefix to ignore. Can be whole namespace or part of it
    */
   public static function register($absoluteClassRoot, $classPrefix = '') {
-    if(!static::$autoloaderRegistered) {
-      spl_autoload_register(array(__CLASS__, 'autoloader'));
-      static::$autoloaderRegistered = true;
-    }
+    static::_constructorStatic();
 
     $absoluteClassRoot = str_replace('\\', '/', SN_ROOT_PHYSICAL . $absoluteClassRoot);
 

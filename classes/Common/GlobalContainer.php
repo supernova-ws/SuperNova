@@ -5,6 +5,7 @@ namespace Common;
 use Bonus\BonusCatalog;
 use Bonus\ValueStorage;
 use Bonus\ValueBonused;
+use Core\SnPimp;
 use \SN;
 use \General;
 use \Core\Watchdog;
@@ -42,6 +43,7 @@ use Player\PlayerLevelHelper;
  * @property EconomicHelper    $economicHelper
  *
  * @property PlayerLevelHelper $playerLevelHelper
+ * @property SnPimp            $pimp
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
  * @property \TheUser          $theUser
@@ -152,6 +154,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->playerLevelHelper = function (GlobalContainer $gc) {
       return new PlayerLevelHelper($gc);
+    };
+
+    $gc->pimp = function (GlobalContainer $gc) {
+      return new SnPimp($gc);
     };
 
     // Dummy objects ---------------------------------------------------------------------------------------------------

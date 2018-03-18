@@ -15,7 +15,7 @@
 function invokeMethod($object, $methodName, array $parameters = array()) {
   //is_object($object) ? $object = get_class($object) : false;
 
-  $reflection = new \ReflectionClass($object);
+  $reflection = new ReflectionClass($object);
   $method = $reflection->getMethod($methodName);
   $method->setAccessible(true);
 
