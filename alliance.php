@@ -102,7 +102,7 @@ $user_can_negotiate = $ranks[$user['ally_rank_id']]['diplomacy'] || $isAllyOwner
 $user_can_edit_rights = $user_admin = $ranks[$user['ally_rank_id']]['admin'] || $isAllyOwner;
 
 $edit = sys_get_param_str('edit');
-ally_pre_call();
+SN::$gc->pimp->allyInternalMainModel();
 switch ($mode) {
   case 'admin':
     if (!array_key_exists($edit, $sn_ali_admin_internal)) {

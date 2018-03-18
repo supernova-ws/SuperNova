@@ -1,17 +1,19 @@
 <?php
 
+use Common\Hooker\Pimp;
+
 class sn_module {
   /**
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a13.31#';
+  public $versionCommitted = '#43a14.21#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a13.31# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a14.21# copyright © 2009-2017 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -68,6 +70,8 @@ class sn_module {
    */
   protected $functions = [];
 
+  protected $hooks = [];
+
   protected $config = array();
 
   protected $module_full_class_path = __FILE__;
@@ -107,7 +111,7 @@ class sn_module {
    *
    * @return array
    */
-  function __assign_vars() {
+  protected function __assign_vars() {
     return array(
 /*
       'sn_data' => array(
@@ -246,6 +250,8 @@ class sn_module {
       }
     }
 
+    $this->registerHooks();
+
     // Patching game menu - if any
     global $sn_menu_extra, $sn_menu_admin_extra;
     isset($this->manifest['menu']) and $this->__patch_menu($sn_menu_extra, $this->manifest['menu']);
@@ -313,6 +319,27 @@ class sn_module {
     !is_array($this->manifest['mvc']['pages']) ? $this->manifest['mvc']['pages'] = array() : false;
     if(is_array($pages) && !empty($pages)) {
       $this->manifest['mvc']['pages'] = array_merge($this->manifest['mvc']['pages'], $pages);
+    }
+  }
+
+  protected function registerHooks() {
+    foreach ($this->hooks as $hookName => $hookRecord) {
+      // Priority can be first element of hook array
+      $priority = Pimp::ORDER_AS_IS;
+      if (is_array($hookRecord) && count($hookRecord) > 1 && is_numeric(reset($hookRecord))) {
+        $priority = intval(reset($hookRecord));
+        array_shift($hookRecord);
+      }
+
+      // There is 2 elements in callable array
+      if (is_array($hookRecord) && 2 == count($hookRecord)) {
+        // Checking - if first should be replaced with $this
+        if (THIS_STRING === reset($hookRecord)) {
+          $hookRecord = [$this, end($hookRecord)];
+        }
+      }
+
+      SN::$gc->pimp->register($hookName, $hookRecord, $priority);
     }
   }
 

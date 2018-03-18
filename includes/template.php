@@ -404,7 +404,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
   }
 
   if ($isDisplayTopNav) {
-    tpl_render_topnav($user, $planetrow, $template);
+    SN::$gc->pimp->tpl_render_topnav($user, $planetrow, $template);
   }
 
   displayP($template);
@@ -609,27 +609,27 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   }
 }
 
-/**
- * @param array    $user
- * @param array    $planetrow
- * @param template $template
- *
- * @return string|template
- */
-function tpl_render_topnav(&$user, $planetrow, $template) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow, $template)); }
+SN::$afterInit[] = function () {
+  SN::$gc->pimp->add()->tpl_render_topnav($t = 'sn_tpl_render_topnav', [], null);
+};
 
 /**
  * @param array    $user
  * @param array    $planetrow
  * @param template $template
  *
- * @return string|template
+ * @return array
  */
-function sn_tpl_render_topnav(&$user, $planetrow, $template) {
+function sn_tpl_render_topnav($prevUser, $user, $planetrow, $template) {
   global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
 
+  // This call was not first one... Using results from previous call
+  if(!empty($prevUser['username'])) {
+    $user = $prevUser;
+  }
+
   if (!is_array($user)) {
-    return '';
+    return $user;
   }
 
   $GET_mode = sys_get_param_str('mode');
@@ -773,7 +773,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     ));
   }
 
-  return $template;
+  return $user;
 }
 
 /**

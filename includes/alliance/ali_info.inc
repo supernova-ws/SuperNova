@@ -117,7 +117,6 @@ foreach($relations as $relation)
   }
 }
 
-function ali_render(){$func_args = func_get_args();return sn_function_call(__FUNCTION__, $func_args);}
-ali_render();
+SN::$gc->pimp->allyInfoView();
 
 display($template, "{$lang['alliance']} [{$ally['ally_name']}]");

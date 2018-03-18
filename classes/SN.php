@@ -178,6 +178,11 @@ class SN {
     ),
   );
 
+  /**
+   * @var callable[] $afterInit
+   */
+  public static $afterInit = [];
+
 //  /**
 //   * @return SN
 //   */
@@ -697,6 +702,13 @@ class SN {
 
     // Initializing statics
     Vector::_staticInit(static::$config);
+
+    // After init callbacks
+    foreach (static::$afterInit as $callback) {
+      if (is_callable($callback)) {
+        $callback();
+      }
+    }
   }
 
   /**
