@@ -8,7 +8,7 @@ global $debug;
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if (!sn_module::sn_module_get_active_count('payment')) {
+if (!SN::$gc->modules->getModulesActiveCount('payment')) {
   sys_redirect('dark_matter.php');
   die();
 }
@@ -117,13 +117,17 @@ array_walk($payment_methods_available, function (&$value, $index) {
 });
 
 $payment_module_valid = false;
-$payment_module = sys_get_param_str('payment_module');
-foreach ($sn_module_list['payment'] as $module_name => $module) {
-  if (!is_object($module) || !$module->manifest['active']) {
+$payment_module_request = sys_get_param_str('payment_module');
+foreach (SN::$gc->modules->getModulesActive('payment') as $module_name => $module) {
+  /**
+   * @var sn_module $module
+   */
+
+  if (!is_object($module) || !$module->isActive()) {
     continue;
   }
 
-  lng_include($module_name, $module->manifest['root_relative']);
+  lng_include($module_name, $module->getRootRelative());
 
   foreach (sn_module_payment::$payment_methods as $payment_type_id => $available_methods) {
     foreach ($available_methods as $payment_method => $payment_currency) {
@@ -133,7 +137,7 @@ foreach ($sn_module_list['payment'] as $module_name => $module) {
     }
   }
 
-  $payment_module_valid = $payment_module_valid || $module_name == $payment_module;
+  $payment_module_valid = $payment_module_valid || $module_name == $payment_module_request;
 }
 
 global $template_result;
@@ -183,11 +187,11 @@ if ($payment_module_valid) {
   // $payment_module = $payment_module; // Really - do nothing
 } elseif ($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
   reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-  $payment_module = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-} elseif (count($sn_module_list['payment']) == 1) {
-  $payment_module = $module_name;
+  $payment_module_request = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
+} elseif (SN::$gc->modules->getModulesActiveCount('payment') == 1) {
+  $payment_module_request = $module_name;
 } else {
-  $payment_module = '';
+  $payment_module_request = '';
 }
 
 if ($payment_type_selected && $payment_method_selected) {
@@ -216,10 +220,18 @@ foreach (SN::$lang['pay_currency_list'] as $key => $value) {
   ));
 }
 
-if ($request['metamatter'] && $payment_module) {
+if ($request['metamatter'] && $payment_module_request) {
   try {
+    $paymentModuleReal = SN::$gc->modules->getModule($payment_module_request);
+    if(!is_object($paymentModuleReal)) {
+      throw new Exception('{ Менеджер модулей вернул null вместо платёжного модуля для }' . $payment_module_request, ERR_ERROR);
+    }
+    /**
+     * @var sn_module_payment $paymentModuleReal
+     */
+
     // Any possible errors about generating paylink should be raised in module!
-    $pay_link = $sn_module[$payment_module]->compile_request($request);
+    $pay_link = $paymentModuleReal->compile_request($request);
 
     // Поддержка дополнительной информации
     if (is_array($pay_link['RENDER'])) {
@@ -280,7 +292,7 @@ foreach ($unit_available_amount_list as $unit_amount => $discount) {
   ));
 }
 
-$currency = $payment_module ? sn_module_payment::$payment_methods[$payment_type_selected][$payment_method_selected]['currency'] : '';
+$currency = $payment_module_request ? sn_module_payment::$payment_methods[$payment_type_selected][$payment_method_selected]['currency'] : '';
 $bonus_percent = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
 $income_metamatter_text = prettyNumberStyledDefault(sn_module_payment::bonus_calculate($request['metamatter']));
 
@@ -293,9 +305,9 @@ $template->assign_vars(array(
   'PAYMENT_METHOD'      => $payment_method_selected,
   'PAYMENT_METHOD_NAME' => SN::$lang['pay_methods'][$payment_method_selected],
 
-  'PAYMENT_MODULE'             => $payment_module,
-  'PAYMENT_MODULE_NAME'        => SN::$lang["module_{$payment_module}_name"],
-  'PAYMENT_MODULE_DESCRIPTION' => SN::$lang["module_{$payment_module}_description"],
+  'PAYMENT_MODULE'             => $payment_module_request,
+  'PAYMENT_MODULE_NAME'        => SN::$lang["module_{$payment_module_request}_name"],
+  'PAYMENT_MODULE_DESCRIPTION' => SN::$lang["module_{$payment_module_request}_description"],
 
   'PLAYER_CURRENCY'              => $player_currency,
   'PLAYER_CURRENCY_PRICE_PER_MM' => sn_module_payment::currency_convert(1, $player_currency, 'MM_', 10),
@@ -322,7 +334,7 @@ $template->assign_vars(array(
 
   'DARK_MATTER_DESCRIPTION' => SN::$lang['info'][RES_DARK_MATTER]['description'],
 
-  'PAYMENT_AVAILABLE' => sn_module::sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+  'PAYMENT_AVAILABLE' => SN::$gc->modules->getModulesActiveCount('payment') && !defined('SN_GOOGLE'),
 
 ));
 

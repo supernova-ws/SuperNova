@@ -10,7 +10,7 @@ $sn_data += array(
     'name'     => 'computer_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 1),
+    P_REQUIRE  => array(STRUC_LABORATORY => 1),
     'cost'     => array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 400,
@@ -27,7 +27,7 @@ $sn_data += array(
     'name'     => 'spy_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 3),
+    P_REQUIRE  => array(STRUC_LABORATORY => 3),
     'cost'     => array(
       RES_METAL     => 200,
       RES_CRYSTAL   => 1000,
@@ -44,7 +44,7 @@ $sn_data += array(
     'name'     => 'military_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 4),
+    P_REQUIRE  => array(STRUC_LABORATORY => 4),
     'cost'     => array(
       RES_METAL     => 800,
       RES_CRYSTAL   => 200,
@@ -61,7 +61,7 @@ $sn_data += array(
     'name'     => 'shield_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 6, TECH_ENERGY => 3),
+    P_REQUIRE  => array(STRUC_LABORATORY => 6, TECH_ENERGY => 3),
     'cost'     => array(
       RES_METAL     => 200,
       RES_CRYSTAL   => 600,
@@ -78,7 +78,7 @@ $sn_data += array(
     'name'     => 'defence_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 2),
+    P_REQUIRE  => array(STRUC_LABORATORY => 2),
     'cost'     => array(
       RES_METAL     => 1000,
       RES_CRYSTAL   => 0,
@@ -95,7 +95,7 @@ $sn_data += array(
     'name'     => 'energy_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 1),
+    P_REQUIRE  => array(STRUC_LABORATORY => 1),
     'cost'     => array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 800,
@@ -109,7 +109,7 @@ $sn_data += array(
     'name'     => 'hyperspace_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 7, TECH_ENERGY => 10, TECH_SHIELD => 5),
+    P_REQUIRE  => array(STRUC_LABORATORY => 7, TECH_ENERGY => 10, TECH_SHIELD => 5),
     'cost'     => array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 4000,
@@ -123,7 +123,7 @@ $sn_data += array(
     'name'           => 'combustion_tech',
     'type'           => UNIT_TECHNOLOGIES,
     'location'       => LOC_USER,
-    'require'        => array(STRUC_LABORATORY => 1, TECH_ENERGY => 1),
+    P_REQUIRE        => array(STRUC_LABORATORY => 1, TECH_ENERGY => 1),
     'cost'           => array(
       RES_METAL     => 400,
       RES_CRYSTAL   => 0,
@@ -140,7 +140,7 @@ $sn_data += array(
     'name'           => 'impulse_motor_tech',
     'type'           => UNIT_TECHNOLOGIES,
     'location'       => LOC_USER,
-    'require'        => array(STRUC_LABORATORY => 4, TECH_ION => 1),
+    P_REQUIRE        => array(STRUC_LABORATORY => 4, TECH_ION => 1),
     'cost'           => array(
       RES_METAL     => 2000,
       RES_CRYSTAL   => 4000,
@@ -157,7 +157,7 @@ $sn_data += array(
     'name'           => 'hyperspace_motor_tech',
     'type'           => UNIT_TECHNOLOGIES,
     'location'       => LOC_USER,
-    'require'        => array(STRUC_LABORATORY => 8, TECH_HYPERSPACE => 3),
+    P_REQUIRE        => array(STRUC_LABORATORY => 8, TECH_HYPERSPACE => 3),
     'cost'           => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 20000,
@@ -174,7 +174,7 @@ $sn_data += array(
     'name'     => 'laser_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 1, TECH_ENERGY => 2),
+    P_REQUIRE  => array(STRUC_LABORATORY => 1, TECH_ENERGY => 2),
     'cost'     => array(
       RES_METAL     => 200,
       RES_CRYSTAL   => 100,
@@ -188,7 +188,7 @@ $sn_data += array(
     'name'     => 'ionic_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 4, TECH_LASER => 5),
+    P_REQUIRE  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 4, TECH_LASER => 5),
     'cost'     => array(
       RES_METAL     => 1000,
       RES_CRYSTAL   => 300,
@@ -202,7 +202,7 @@ $sn_data += array(
     'name'     => 'buster_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 5, TECH_ENERGY => 8, TECH_LASER => 10, TECH_ION => 5),
+    P_REQUIRE  => array(STRUC_LABORATORY => 5, TECH_ENERGY => 8, TECH_LASER => 10, TECH_ION => 5),
     'cost'     => array(
       RES_METAL     => 2000,
       RES_CRYSTAL   => 4000,
@@ -216,7 +216,7 @@ $sn_data += array(
     'name'     => 'intergalactic_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 10, TECH_COMPUTER => 8, TECH_HYPERSPACE => 8),
+    P_REQUIRE  => array(STRUC_LABORATORY => 10, TECH_COMPUTER => 8, TECH_HYPERSPACE => 8),
     'cost'     => array(
       RES_METAL     => 240000,
       RES_CRYSTAL   => 400000,
@@ -230,7 +230,7 @@ $sn_data += array(
     'name'     => 'expedition_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 3, TECH_COMPUTER => 4, TECH_ENGINE_ION => 3),
+    P_REQUIRE  => array(STRUC_LABORATORY => 3, TECH_COMPUTER => 4, TECH_ENGINE_ION => 3),
     'cost'     => array(
       RES_METAL     => 4000,
       RES_CRYSTAL   => 8000,
@@ -244,7 +244,7 @@ $sn_data += array(
     'name'     => 'colonisation_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
+    P_REQUIRE  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
     'cost'     => array(
       RES_METAL     => 1000,
       RES_CRYSTAL   => 4000,
@@ -258,7 +258,7 @@ $sn_data += array(
     'name'     => 'tech_astro',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
+    P_REQUIRE  => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
     'cost'     => array(
       RES_METAL     => 1000,
       RES_CRYSTAL   => 3000,
@@ -272,7 +272,7 @@ $sn_data += array(
     'name'     => 'graviton_tech',
     'type'     => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require'  => array(STRUC_LABORATORY => 12, TECH_ENERGY => 12, TECH_HYPERSPACE => 6),
+    P_REQUIRE  => array(STRUC_LABORATORY => 12, TECH_ENERGY => 12, TECH_HYPERSPACE => 6),
     'cost'     => array(
       RES_METAL     => 100000000,
       RES_CRYSTAL   => 100000000,
@@ -335,7 +335,7 @@ $sn_data += array(
     'name'        => 'rpg_espion',
     'type'        => UNIT_MERCENARIES,
     'location'    => LOC_USER,
-    'require'     => array(MRC_STOCKMAN => 5),
+    P_REQUIRE     => array(MRC_STOCKMAN => 5),
     'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
@@ -349,7 +349,7 @@ $sn_data += array(
     'name'        => 'mrc_academic',
     'type'        => UNIT_MERCENARIES,
     'location'    => LOC_USER,
-    'require'     => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
+    P_REQUIRE     => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
     'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
@@ -376,7 +376,7 @@ $sn_data += array(
     'name'        => 'rpg_commandant',
     'type'        => UNIT_MERCENARIES,
     'location'    => LOC_USER,
-    'require'     => array(MRC_ADMIRAL => 5),
+    P_REQUIRE     => array(MRC_ADMIRAL => 5),
     'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
@@ -390,7 +390,7 @@ $sn_data += array(
     'name'        => 'rpg_general',
     'type'        => UNIT_MERCENARIES,
     'location'    => LOC_USER,
-    'require'     => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
+    P_REQUIRE     => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
     'cost'        => array(
       RES_DARK_MATTER => 3000,
       'factor'        => 1,
@@ -597,7 +597,7 @@ $sn_data += array(
       'name' => 'rpg_empereur',
       'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
-      'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
+      P_REQUIRE => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
       'cost' => array(
         RES_DARK_MATTER => 3000,
         'factor' => 1,

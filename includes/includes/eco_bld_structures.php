@@ -315,7 +315,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       }
     }
 
-    $production['.']['require'] = unit_requirements_render($user, $planet, $unit_id);
+    $production['.'][TPL_BLOCK_REQUIRE] = unit_requirements_render($user, $planet, $unit_id);
     $production['.']['grants'] = unit_requirements_render($user, $planet, $unit_id, P_UNIT_GRANTS);
 
     $template_result['.']['production'][] = $production;

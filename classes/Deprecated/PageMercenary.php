@@ -284,11 +284,11 @@ class PageMercenary {
    * @param template  $template
    */
   protected function renderMercenaryReq(&$user, $mercenary, $template) {
-    if (empty($mercenary['require'])) {
+    if (empty($mercenary[P_REQUIRE]) || !is_array($mercenary[P_REQUIRE])) {
       return;
     }
 
-    foreach ($mercenary['require'] as $requireUnitId => $requireLevel) {
+    foreach ($mercenary[P_REQUIRE] as $requireUnitId => $requireLevel) {
       $template->assign_block_vars('officer.require', $q = [
         'ID'             => $requireUnitId,
         'LEVEL_GOT'      => mrc_get_level($user, [], $requireUnitId),

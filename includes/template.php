@@ -183,7 +183,7 @@ function tpl_render_menu($template) {
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
 //    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
-    'PAYMENT'             => sn_module::sn_module_get_active_count('payment'),
+    'PAYMENT'             => SN::$gc->modules->getModulesActiveCount('payment'),
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
   ));
 
@@ -621,7 +621,7 @@ SN::$afterInit[] = function () {
  * @return array
  */
 function sn_tpl_render_topnav($prevUser, $user, $planetrow, $template) {
-  global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
+  global $lang, $config, $sn_mvc;
 
   // This call was not first one... Using results from previous call
   if(!empty($prevUser['username'])) {
@@ -677,8 +677,6 @@ function sn_tpl_render_topnav($prevUser, $user, $planetrow, $template) {
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
   $template->assign_vars(array(
-    'HALLOWEEN' => !empty($sn_module_list['event']['event_halloween_2015']) && $sn_module_list['event']['event_halloween_2015']->manifest['active'],
-
     'QUE_ID'   => QUE_RESEARCH,
     'QUE_HTML' => 'topnav',
 
@@ -723,7 +721,7 @@ function sn_tpl_render_topnav($prevUser, $user, $planetrow, $template) {
     'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
-    'TOPNAV_PAYMENT'                => sn_module::sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+    'TOPNAV_PAYMENT'                => SN::$gc->modules->getModulesActiveCount('payment') && !defined('SN_GOOGLE'),
 
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],

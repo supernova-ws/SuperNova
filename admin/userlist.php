@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #43a14.1#
+ * @version #43a15.0#
  *
  * userlist.php v2
  **/
@@ -110,7 +110,7 @@ $template->assign_vars(array(
   'USER_COUNT'      => db_num_rows($query),
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
-  'METAMATTER'      => isset($sn_module['unit_res_metamatter']),
+  'METAMATTER'      => !empty(SN::$gc->modules->getModule('unit_res_metamatter')),
   'GEOIP_WHOIS_URL' => SN::$config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],

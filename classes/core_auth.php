@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a14.1#
+ * version #43a15.0#
  */
 
 class core_auth extends sn_module {
@@ -17,12 +17,9 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a14.1# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.0# copyright © 2009-2015 Gorlum',
 
-//    'require' => null,
-    'root_relative' => '',
-
-    'load_order' => 1,
+    self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
     'installed' => true,
     'active' => true,
@@ -174,8 +171,6 @@ class core_auth extends sn_module {
   public function __construct($filename = __FILE__) {
     parent::__construct($filename);
 
-    self::$main_provider = new auth_local();
-
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
     self::$db = SN::$db;
 
@@ -183,6 +178,9 @@ class core_auth extends sn_module {
     $this->is_player_register = sys_get_param('player_register') ? true : false;
     $this->partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id'));
     $this->server_name = sys_get_param_str_unsafe('server_name', SN_ROOT_VIRTUAL);
+
+    self::$main_provider = new auth_local();
+    SN::$gc->modules->registerModule(core_auth::$main_provider->manifest['name'], core_auth::$main_provider);
   }
 
   // TODO - OK v4.7
@@ -282,10 +280,11 @@ class core_auth extends sn_module {
    */
   // TODO - OK v4.5
   public function login() {
-    global $sn_module_list, $lang;
+    global $lang;
 
     // !self::$is_init ? self::init() : false;
-    if(empty($sn_module_list['auth'])) {
+
+    if(!SN::$gc->modules->getModulesActiveCount('auth')) {
       die('{Не обнаружено ни одного провайдера авторизации в core_auth::login()!}');
     }
 
@@ -296,7 +295,10 @@ class core_auth extends sn_module {
     $this->auth_reset(); // OK v4.5
 
     $this->providers = array();
-    foreach($sn_module_list['auth'] as $module_name => $module) {
+    foreach(SN::$gc->modules->getModulesActive('auth') as $module_name => $module) {
+      /**
+       * @var auth_abstract $module
+       */
       $this->providers[$module->provider_id] = $module;
     }
 

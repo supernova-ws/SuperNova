@@ -11,7 +11,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 2, TECH_ENGINE_CHEMICAL => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 2, TECH_ENGINE_CHEMICAL => 2),
     'cost'      => array(
       RES_METAL     => 2000,
       RES_CRYSTAL   => 2000,
@@ -45,7 +45,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6),
     'cost'      => array(
       RES_METAL     => 6000,
       RES_CRYSTAL   => 6000,
@@ -73,7 +73,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 8, TECH_ENGINE_ION => 5, UNIT_PLAN_SHIP_CARGO_SUPER => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 8, TECH_ENGINE_ION => 5, UNIT_PLAN_SHIP_CARGO_SUPER => 1),
     'cost'      => array(
       RES_METAL     => 25000,
       RES_CRYSTAL   => 15000,
@@ -101,7 +101,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     'location'  => LOC_PLANET,
     P_STACKABLE => true,
-    'require'   => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 1),
     'cost'      => array(
       RES_METAL     => 500000,
       RES_CRYSTAL   => 200000,
@@ -130,7 +130,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_ION => 3, TECH_ASTROTECH => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_ION => 3, TECH_ASTROTECH => 2),
     'cost'      => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 20000,
@@ -158,7 +158,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6, TECH_SHIELD => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6, TECH_SHIELD => 2),
     'cost'      => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 6000,
@@ -186,7 +186,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 3, TECH_ENGINE_CHEMICAL => 3, TECH_SPY => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 3, TECH_ENGINE_CHEMICAL => 3, TECH_SPY => 2),
     'cost'      => array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 1000,
@@ -214,7 +214,7 @@ $sn_data += array(
     'type'              => UNIT_SHIPS,
     P_STACKABLE         => true,
     'location'          => LOC_PLANET,
-    'require'           => array(STRUC_FACTORY_HANGAR => 1),
+    P_REQUIRE           => array(STRUC_FACTORY_HANGAR => 1),
     'cost'              => array(
       RES_METAL     => 1500,
       RES_CRYSTAL   => 2000,
@@ -250,7 +250,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 1, TECH_ENGINE_CHEMICAL => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 1, TECH_ENGINE_CHEMICAL => 1),
     'cost'      => array(
       RES_METAL     => 3000,
       RES_CRYSTAL   => 1000,
@@ -279,7 +279,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 3, TECH_ARMOR => 2, TECH_ENGINE_ION => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 3, TECH_ARMOR => 2, TECH_ENGINE_ION => 2),
     'cost'      => array(
       RES_METAL     => 6000,
       RES_CRYSTAL   => 4000,
@@ -308,7 +308,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 3, TECH_ARMOR => 2, TECH_ENGINE_ION => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 3, TECH_ARMOR => 2, TECH_ENGINE_ION => 2),
     'cost'      => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 5000,
@@ -338,7 +338,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 5, TECH_ENGINE_ION => 4, TECH_ION => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 5, TECH_ENGINE_ION => 4, TECH_ION => 2),
     'cost'      => array(
       RES_METAL     => 20000,
       RES_CRYSTAL   => 7000,
@@ -367,7 +367,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     'location'  => LOC_PLANET,
     P_STACKABLE => true,
-    'require'   => array(STRUC_FACTORY_HANGAR => 5, TECH_ENGINE_ION => 4, TECH_ION => 2),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 5, TECH_ENGINE_ION => 4, TECH_ION => 2),
     'cost'      => array(
       RES_METAL     => 32000,
       RES_CRYSTAL   => 11000,
@@ -397,7 +397,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 7, TECH_ENGINE_HYPER => 4),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 7, TECH_ENGINE_HYPER => 4),
     'cost'      => array(
       RES_METAL     => 45000,
       RES_CRYSTAL   => 15000,
@@ -425,7 +425,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(TECH_ENGINE_ION => 6, STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 5),
+    P_REQUIRE   => array(TECH_ENGINE_ION => 6, STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 5),
     'cost'      => array(
       RES_METAL     => 50000,
       RES_CRYSTAL   => 25000,
@@ -462,7 +462,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 8, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 5, TECH_LASER => 12),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 8, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 5, TECH_LASER => 12),
     'cost'      => array(
       RES_METAL     => 30000,
       RES_CRYSTAL   => 40000,
@@ -493,7 +493,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 9, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 6),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 9, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 6),
     'cost'      => array(
       RES_METAL     => 60000,
       RES_CRYSTAL   => 50000,
@@ -522,7 +522,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 12, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 12, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
     'cost'      => array(
       RES_METAL     => 5000000,
       RES_CRYSTAL   => 4000000,
@@ -558,7 +558,7 @@ $sn_data += array(
     'type'      => UNIT_SHIPS,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 15, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 15, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
     'cost'      => array(
       RES_METAL     => 20000000,
       RES_CRYSTAL   => 15000000,
@@ -598,7 +598,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 1),
     'cost'      => array(
       RES_METAL     => 2000,
       RES_CRYSTAL   => 0,
@@ -616,7 +616,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(TECH_ENERGY => 1, STRUC_FACTORY_HANGAR => 2, TECH_LASER => 3),
+    P_REQUIRE   => array(TECH_ENERGY => 1, STRUC_FACTORY_HANGAR => 2, TECH_LASER => 3),
     'cost'      => array(
       RES_METAL     => 1500,
       RES_CRYSTAL   => 500,
@@ -634,7 +634,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(TECH_ENERGY => 3, STRUC_FACTORY_HANGAR => 4, TECH_LASER => 6),
+    P_REQUIRE   => array(TECH_ENERGY => 3, STRUC_FACTORY_HANGAR => 4, TECH_LASER => 6),
     'cost'      => array(
       RES_METAL     => 6000,
       RES_CRYSTAL   => 2000,
@@ -652,7 +652,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 6, TECH_ENERGY => 6, TECH_WEAPON => 3, TECH_SHIELD => 1),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 6, TECH_ENERGY => 6, TECH_WEAPON => 3, TECH_SHIELD => 1),
     'cost'      => array(
       RES_METAL     => 20000,
       RES_CRYSTAL   => 15000,
@@ -670,7 +670,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 4, TECH_ION => 4),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 4, TECH_ION => 4),
     'cost'      => array(
       RES_METAL     => 2000,
       RES_CRYSTAL   => 6000,
@@ -688,7 +688,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 7),
+    P_REQUIRE   => array(STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 7),
     'cost'      => array(
       RES_METAL     => 50000,
       RES_CRYSTAL   => 50000,
@@ -708,7 +708,7 @@ $sn_data += array(
     P_STACKABLE => true,
     'max'       => 1,
     'location'  => LOC_PLANET,
-    'require'   => array(TECH_SHIELD => 2, STRUC_FACTORY_HANGAR => 1),
+    P_REQUIRE   => array(TECH_SHIELD => 2, STRUC_FACTORY_HANGAR => 1),
     'cost'      => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 10000,
@@ -727,7 +727,7 @@ $sn_data += array(
     P_STACKABLE => true,
     'max'       => 1,
     'location'  => LOC_PLANET,
-    'require'   => array(TECH_SHIELD => 6, STRUC_FACTORY_HANGAR => 6),
+    P_REQUIRE   => array(TECH_SHIELD => 6, STRUC_FACTORY_HANGAR => 6),
     'cost'      => array(
       RES_METAL     => 50000,
       RES_CRYSTAL   => 50000,
@@ -746,7 +746,7 @@ $sn_data += array(
     P_STACKABLE => true,
     'max'       => 1,
     'location'  => LOC_PLANET,
-    'require'   => array(UNIT_PLAN_DEF_SHIELD_PLANET => 1),
+    P_REQUIRE   => array(UNIT_PLAN_DEF_SHIELD_PLANET => 1),
     'cost'      => array(
       RES_METAL     => 10000000,
       RES_CRYSTAL   => 5000000,
@@ -772,7 +772,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_SILO => 2),
+    P_REQUIRE   => array(STRUC_SILO => 2),
     'size'      => 1,
     'cost'      => array(
       RES_METAL     => 8000,
@@ -791,7 +791,7 @@ $sn_data += array(
     'type'      => UNIT_DEFENCE,
     P_STACKABLE => true,
     'location'  => LOC_PLANET,
-    'require'   => array(STRUC_SILO => 4, TECH_ENGINE_ION => 2),
+    P_REQUIRE   => array(STRUC_SILO => 4, TECH_ENGINE_ION => 2),
     'size'      => 3,
     'cost'      => array(
       RES_METAL     => 12500,

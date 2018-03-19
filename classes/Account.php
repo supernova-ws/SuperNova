@@ -396,7 +396,7 @@ class Account {
    * @return array|bool|int|mysqli_result|null|string
    */
   public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
-    global $debug, $mm_change_legit, $config, $sn_module;
+    global $debug, $mm_change_legit, $config;
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
       $debug->error('Ошибка при попытке манипуляции с ММ');
@@ -425,7 +425,7 @@ class Account {
       }
       $result = SN::$db->db_affected_rows();
 
-      $this->awardImmortal($metamatter, $config, $sn_module);
+      $this->awardImmortal($metamatter, $config);
     }
 
     if(empty(core_auth::$user['id'])) {
@@ -533,12 +533,18 @@ class Account {
   }
 
   /**
-   * @param int|float      $metamatter
-   * @param classConfig    $config
-   * @param player_award[] $sn_module
+   * @param int|float   $metamatter
+   * @param classConfig $config
    */
-  protected function awardImmortal($metamatter, $config, $sn_module) {
-    if ($this->account_metamatter + $metamatter >= $config->player_metamatter_immortal && is_object($sn_module['player_award'])) {
+  protected function awardImmortal($metamatter, $config) {
+    $awardModule = SN::$gc->modules->getModule('player_award');
+    if(!is_object($awardModule)) {
+      return;
+    }
+    /**
+     * @var player_award $awardModule
+     */
+    if ($this->account_metamatter + $metamatter >= $config->player_metamatter_immortal ) {
       $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list(ACCOUNT_PROVIDER_LOCAL, $this->account_id);
       if (!empty($account_translation)) {
         reset($account_translation);
@@ -546,7 +552,7 @@ class Account {
         if ($thisUserId) {
           $thisUser = ['id' => $thisUserId];
           if (!mrc_get_level($thisUser, [], UNIT_AWARD_MEMORY_IMMORTAL, true)) {
-            $sn_module['player_award']->award($thisUserId, UNIT_AWARD_MEMORY, UNIT_AWARD_MEMORY_IMMORTAL);
+            $awardModule->award($thisUserId, UNIT_AWARD_MEMORY, UNIT_AWARD_MEMORY_IMMORTAL);
           }
         }
       }

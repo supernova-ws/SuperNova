@@ -12,7 +12,7 @@ function sn_fleet_page3() {
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
-  global $duration, $sn_module;
+  global $duration;
 
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
@@ -85,8 +85,12 @@ function sn_fleet_page3() {
   }
 
 
-  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
-    $captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id']);
+  $captainModule = SN::$gc->modules->getModule('unit_captain');
+  /**
+   * @var unit_captain $captainModule
+   */
+  if(is_object($captainModule) && $captainModule->isActive() && $captain_id = sys_get_param_id('captain_id')) {
+    $captain = $captainModule->unit_captain_get($planetrow['id']);
 //      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
     if(!$captain) {
       $errorlist .= $lang['module_unit_captain_error_no_captain'];

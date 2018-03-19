@@ -121,7 +121,7 @@ $template_result += array(
   'UNIT_DESCRIPTION' => $lang['info'][$unit_id]['description'],
 );
 
-$template_result['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
+$template_result['.'][TPL_BLOCK_REQUIRE] = unit_requirements_render($user, $planetrow, $unit_id);
 
 $template->assign_recursive($template_result);
 display($template);

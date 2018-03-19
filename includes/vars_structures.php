@@ -79,7 +79,7 @@ $sn_data += array(
     'name'              => 'fusion_plant',
     'type'              => UNIT_STRUCTURES,
     'location'          => LOC_PLANET,
-    'require'           => array(3 => 5, TECH_ENERGY => 3, UNIT_PLAN_STRUC_MINE_FUSION => 1),
+    P_REQUIRE           => array(3 => 5, TECH_ENERGY => 3, UNIT_PLAN_STRUC_MINE_FUSION => 1),
     'cost'              => array(
       RES_METAL     => 900,
       RES_CRYSTAL   => 360,
@@ -159,7 +159,7 @@ $sn_data += array(
     'name'     => 'nano_factory',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_FACTORY_ROBOT => 10, TECH_COMPUTER => 10),
+    P_REQUIRE  => array(STRUC_FACTORY_ROBOT => 10, TECH_COMPUTER => 10),
     'cost'     => array(
       RES_METAL     => 1000000,
       RES_CRYSTAL   => 500000,
@@ -173,7 +173,7 @@ $sn_data += array(
     'name'     => 'hangar',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_FACTORY_ROBOT => 2),
+    P_REQUIRE  => array(STRUC_FACTORY_ROBOT => 2),
     'cost'     => array(
       RES_METAL     => 400,
       RES_CRYSTAL   => 200,
@@ -200,7 +200,7 @@ $sn_data += array(
     'name'     => 'terraformer',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_FACTORY_NANO => 1, TECH_ENERGY => 12),
+    P_REQUIRE  => array(STRUC_FACTORY_NANO => 1, TECH_ENERGY => 12),
     'cost'     => array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 50000,
@@ -227,7 +227,7 @@ $sn_data += array(
     'name'     => 'nano',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_LABORATORY => 10, TECH_ENERGY => 10),
+    P_REQUIRE  => array(STRUC_LABORATORY => 10, TECH_ENERGY => 10),
     'cost'     => array(
       RES_METAL     => 1500000,
       RES_CRYSTAL   => 750000,
@@ -254,7 +254,7 @@ $sn_data += array(
     'name'     => 'phalanx',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_MOON_STATION => 1),
+    P_REQUIRE  => array(STRUC_MOON_STATION => 1),
     'cost'     => array(
       RES_METAL     => 20000,
       RES_CRYSTAL   => 40000,
@@ -268,7 +268,7 @@ $sn_data += array(
     'name'     => 'sprungtor',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(STRUC_MOON_STATION => 1, TECH_HYPERSPACE => 7),
+    P_REQUIRE  => array(STRUC_MOON_STATION => 1, TECH_HYPERSPACE => 7),
     'cost'     => array(
       RES_METAL     => 2000000,
       RES_CRYSTAL   => 4000000,
@@ -282,7 +282,7 @@ $sn_data += array(
     'name'     => 'silo',
     'type'     => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
-    'require'  => array(TECH_ENGINE_ION => 1),
+    P_REQUIRE  => array(TECH_ENGINE_ION => 1),
     'cost'     => array(
       RES_METAL     => 20000,
       RES_CRYSTAL   => 20000,

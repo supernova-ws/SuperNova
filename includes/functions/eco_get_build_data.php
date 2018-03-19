@@ -158,7 +158,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
         : BUILD_NO_UNITS;
     $mercenary = MRC_ENGINEER;
   } elseif(in_array($unit_id, sn_get_groups('tech'))) {
-    $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data['require'][STRUC_LABORATORY]));
+    $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data[P_REQUIRE][STRUC_LABORATORY]));
     $cost[RES_TIME][BUILD_CREATE] /= $lab_level;
     $mercenary = MRC_ACADEMIC;
   } elseif(in_array($unit_id, sn_get_groups('defense'))) {

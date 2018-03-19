@@ -5,8 +5,8 @@
 
 function sn_fleet_page2() {
   global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
-  global $galaxy, $system, $planet, $planet_type, $TargetPlanet, $consumption, $template_result;
-  global $sn_module, $user, $config, $is_transport_missions;
+  global $TargetPlanet, $consumption, $template_result;
+  global $user, $config, $is_transport_missions;
 
   $template = gettemplate('fleet2', true);
 
@@ -90,7 +90,11 @@ function sn_fleet_page2() {
     ));
   }
 
-  if($sn_module['unit_captain']->manifest['active'] && ($captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
+  $captainModule = SN::$gc->modules->getModule('unit_captain');
+  /**
+   * @var unit_captain $captainModule
+   */
+  if(is_object($captainModule) && $captainModule->isActive() && ($captain = $captainModule->unit_captain_get($planetrow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
     $template->assign_vars(array(
       'CAPTAIN_ID' => $captain['unit_id'],
       'CAPTAIN_LEVEL' => $captain['captain_level'],

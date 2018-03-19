@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a14.23');
+define('SN_VERSION', '43a15.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1837,3 +1837,17 @@ const GROUP_DESIGN_BLOCK_RESOURCEBAR = 4; //+
 const GROUP_DESIGN_BLOCK_PLANET_SORT = 6; //+
 const GROUP_DESIGN_BLOCK_COMMON_ONE = 7; //+
 const GROUP_DESIGN_BLOCK_COMMON_TWO = 8; //+
+
+const MODULE_LOAD_ORDER_CORE_AUTH             = 1;
+const MODULE_LOAD_ORDER_AUTH_LOCAL            = 2;
+const MODULE_LOAD_ORDER_AUTH_VKONTAKTE        = 3;
+const MODULE_LOAD_ORDER_PAYMENT_SECONDARY     = 90000;
+const MODULE_LOAD_ORDER_UNIT_RES_METAMATTER   = 99999;
+const MODULE_LOAD_ORDER_DEFAULT               = 100000;     // HARDCODE
+const MODULE_LOAD_ORDER_CORE_SHIP_CONSTRUCTOR = 999999;     // RESERVED
+const MODULE_LOAD_ORDER_MENU_CUSTOMIZE        = 200000000;
+const MODULE_LOAD_ORDER_LATEST                = 2000000000; // HARDCODE
+const MODULE_LOAD_ORDER_GAME_SKIRMISH         = 2000100000;
+
+// Template block names
+const TPL_BLOCK_REQUIRE = 'require';

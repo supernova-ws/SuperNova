@@ -32,7 +32,7 @@ function sn_techtree_view($template = null)
         'LEVEL_MAX' => $sn_data_unit['max'],
       );
 
-      $rendered_info['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
+      $rendered_info['.'][TPL_BLOCK_REQUIRE] = unit_requirements_render($user, $planetrow, $unit_id);
       $rendered_info['.']['grants'] = unit_requirements_render($user, $planetrow, $unit_id, P_UNIT_GRANTS);
 
       $tech_tree[] = $rendered_info;

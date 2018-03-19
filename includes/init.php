@@ -14,6 +14,7 @@ define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
+define('SN_ROOT_MODULES', SN_ROOT_PHYSICAL . 'modules/');
 
 version_compare(PHP_VERSION, '5.5') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.5') : false;
 
@@ -53,7 +54,7 @@ SN::init_global_objects();
 require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
 
 // Some time required to start from cold cache
-set_time_limit(60);
+set_time_limit(60); // TODO - Optimize
 
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
@@ -63,7 +64,7 @@ SnBootstrap::performUpdate(SN::$config);
 
 // init constants from db
 // Moved from SnBootstrap for phpStorm autocomplete
-// Shoud be removed someday - there should NOT be constants that depends on configuration!
+// TODO - Should be removed someday - there should NOT be constants that depends on configuration!
 define('SN_COOKIE', (SN::$config->COOKIE_NAME ? SN::$config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D', SN_COOKIE . '_D');
@@ -97,21 +98,22 @@ $template_result = array('.' => array('result' => array()));
 
 SN::$lang = $lang = new classLocale(SN::$config->server_locale_log_usage);
 
-
 global $sn_data, $sn_mvc;
-global $sn_module, $sn_module_list;
 
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
-$sn_module = array();
-$sn_module_list = array();
 
-SN::$auth = new core_auth();
+SN::$gc->modules->loadModules(SN_ROOT_MODULES);
+SN::$gc->modules->initModules();
 
-sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'modules/', PHP_EX, true);
+// TODO
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
+// И надо инициализировать после загрузки других модулей. Когда-то это казалось отличной идеей, бля...
+SN::$auth = new \core_auth();
+//SN::$gc->modules->registerModule(core_auth::$main_provider->manifest['name'], core_auth::$main_provider);
+
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
@@ -134,70 +136,6 @@ if((defined('IN_AJAX') && IN_AJAX === true) || (defined('IN_ADMIN') && IN_ADMIN 
   SN::$options['fleet_update_skip'] = true;
 }
 
-// load_order:
-//  100000 - default load order
-//  999999 - core_ship_constructor
-//  2000000000 - that requires that all possible modules loaded already
-//  2000100000 - game_skirmish
-
-// Генерируем список требуемых модулей
-$load_order = array();
-$sn_req = array();
-
-foreach($sn_module as $loaded_module_name => $module_data) {
-  $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 100000;
-  if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require'])) {
-    foreach($module_data->manifest['require'] as $require_name) {
-      $sn_req[$loaded_module_name][$require_name] = 0;
-    }
-  }
-}
-
-// Создаем последовательность инициализации модулей
-// По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
-do {
-  $prev_order = $load_order;
-
-  foreach($sn_req as $loaded_module_name => &$req_data) {
-    $level = 1;
-    foreach($req_data as $req_name => &$req_level) {
-      if($load_order[$req_name] == -1 || !isset($load_order[$req_name])) {
-        $level = $req_level = -1;
-        break;
-      } else {
-        $level += $load_order[$req_name];
-      }
-      $req_level = $load_order[$req_name];
-    }
-    if($level > $load_order[$loaded_module_name] || $level == -1) {
-      $load_order[$loaded_module_name] = $level;
-    }
-  }
-}
-while($prev_order != $load_order);
-
-asort($load_order);
-
-// Инициализируем модули
-// По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
-foreach($load_order as $loaded_module_name => $load_order_order) {
-  if($load_order_order >= 0) {
-    $sn_module[$loaded_module_name]->check_status();
-    if(!$sn_module[$loaded_module_name]->manifest['active']) {
-      unset($sn_module[$loaded_module_name]);
-      continue;
-    }
-
-    $sn_module[$loaded_module_name]->initialize();
-    $sn_module_list[$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &$sn_module[$loaded_module_name];
-  } else {
-    unset($sn_module[$loaded_module_name]);
-  }
-}
-
-// Скрипач не нужон
-unset($load_order);
-unset($sn_req);
 
 // А теперь проверяем - поддерживают ли у нас загруженный код такую страницу
 // TODO - костыль, что бы работали старые модули. Убрать!

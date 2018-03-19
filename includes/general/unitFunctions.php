@@ -229,9 +229,9 @@ function sn_sn_get_groups($groups, &$result) {
 }
 
 
-function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require') { return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result)); }
+function unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE) { return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result)); }
 
-function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'require', &$result) {
+function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE, &$result) {
   global $lang, $config;
 
   $sn_data_unit = get_unit_param($unit_id);

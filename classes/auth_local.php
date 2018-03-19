@@ -9,12 +9,9 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a14.1# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.0# copyright © 2009-2015 Gorlum',
 
-    // 'require' => array('auth_provider'),
-    'root_relative' => '',
-
-    'load_order' => 2,
+    self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 
     'installed' => true,
     'active' => true,
