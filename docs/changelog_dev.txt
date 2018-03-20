@@ -1372,6 +1372,8 @@ MissionExplore.php
         - Добавить больше инфы на страницу токен лотереи - см. попап
 
 
+[*] Избавиться от функции messageBox()
+[*] Сделать SN контейнером GlobalContainer
 
 #ctv
 
@@ -1383,9 +1385,32 @@ MissionExplore.php
 [*] Переименовать класс sn_module => Module
 
 
+[*] Вынести все классы модулей в неймспейсы:
+        - \Core\Autoloader::register($this->getRootRelative() . '/classes/', 'Modules\player_login_token');
+
+[*] SN::$gc->modules->getModule() - добавить параметр onlyActive = true
+
+[*] sn_module->addModuleTemplate - getTemplate
+
+[*] $module = SN::$gc->modules->getModule('player_award'); - вынести в отдельную функцию
+    - То же самое в для модуля Капитанов
+
+
 [*] !!!!!!! Проверять корректную работу Фестивалей при каждом новом Хайспоте и добавлять отметки тут
 
-[*] !!!!!!!!!!!!!!!!!!!!!!!!!! Доделать проверку в q.diff
+#ctv
+
+ЧЛ - закат лун! Не отвлекаться!
+
+2018-03-20 16:52:45 43a15.4
+[@] Код
+    Класс Modules\Modules переименован в Modules\ModulesManager
+    Небольшой рефакторинг предыдущего кода
+
+
+2018-03-20 01:39:16 43a15.2
+[%] Модули
+    Добавлен отсутствующий файл класса Modules\Manager
 
 
 2018-03-19 23:34:15 43a15.0 - Рефакторинг подсистемы модулей

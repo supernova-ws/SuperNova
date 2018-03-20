@@ -6,7 +6,7 @@ use Bonus\BonusCatalog;
 use Bonus\ValueStorage;
 use Bonus\ValueBonused;
 use Core\SnPimp;
-use Modules\Manager;
+use Modules\ModulesManager;
 use \SN;
 use \General;
 use \Core\Watchdog;
@@ -46,7 +46,7 @@ use Player\PlayerLevelHelper;
  * @property PlayerLevelHelper $playerLevelHelper
  * @property SnPimp            $pimp
  *
- * @property Manager            $modules
+ * @property ModulesManager    $modules
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
  * @property \TheUser          $theUser
@@ -164,7 +164,7 @@ class GlobalContainer extends ContainerPlus {
     };
 
     $gc->modules = function (GlobalContainer $gc) {
-      return new Manager($gc);
+      return new ModulesManager($gc);
     };
 
     // Dummy objects ---------------------------------------------------------------------------------------------------

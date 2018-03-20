@@ -85,11 +85,7 @@ function sn_fleet_page3() {
   }
 
 
-  $captainModule = SN::$gc->modules->getModule('unit_captain');
-  /**
-   * @var unit_captain $captainModule
-   */
-  if(is_object($captainModule) && $captainModule->isActive() && $captain_id = sys_get_param_id('captain_id')) {
+  if(is_object($captainModule = moduleCaptain()) && $captain_id = sys_get_param_id('captain_id')) {
     $captain = $captainModule->unit_captain_get($planetrow['id']);
 //      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
     if(!$captain) {

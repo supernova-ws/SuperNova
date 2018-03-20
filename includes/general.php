@@ -484,9 +484,6 @@ function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
 }
 
 
-//
-
-
 // VERSION FUNCTIONS ----------------------------------------------------------------------------------------------------------------
 function sn_version_compare_extra($version) {
   static $version_regexp = '#(\d+)([a-f])(\d+)(?:\.(\d+))*#';
@@ -499,4 +496,28 @@ function sn_version_compare_extra($version) {
 
 function sn_version_compare($ver1, $ver2) {
   return version_compare(sn_version_compare_extra($ver1), sn_version_compare_extra($ver2));
+}
+
+
+// MODULES FUNCTIONS ---------------------------------------------------------------------------------------------------
+/**
+ * Return Award module or NULL
+ *
+ * For typecasting
+ *
+ * @return null|player_award
+ */
+function moduleAward() {
+  return SN::$gc->modules->getModule('player_award');
+}
+
+/**
+ * Return Captain module or NULL
+ *
+ * For typecasting
+ *
+ * @return null|unit_captain
+ */
+function moduleCaptain() {
+  return SN::$gc->modules->getModule('unit_captain');
 }

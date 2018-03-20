@@ -8,7 +8,7 @@ global $debug;
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if (!SN::$gc->modules->getModulesActiveCount('payment')) {
+if (!SN::$gc->modules->countModulesInGroup('payment')) {
   sys_redirect('dark_matter.php');
   die();
 }
@@ -118,7 +118,7 @@ array_walk($payment_methods_available, function (&$value, $index) {
 
 $payment_module_valid = false;
 $payment_module_request = sys_get_param_str('payment_module');
-foreach (SN::$gc->modules->getModulesActive('payment') as $module_name => $module) {
+foreach (SN::$gc->modules->getModulesInGroup('payment', true) as $module_name => $module) {
   /**
    * @var sn_module $module
    */
@@ -188,7 +188,7 @@ if ($payment_module_valid) {
 } elseif ($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
   reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
   $payment_module_request = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-} elseif (SN::$gc->modules->getModulesActiveCount('payment') == 1) {
+} elseif (SN::$gc->modules->countModulesInGroup('payment') == 1) {
   $payment_module_request = $module_name;
 } else {
   $payment_module_request = '';
@@ -334,7 +334,7 @@ $template->assign_vars(array(
 
   'DARK_MATTER_DESCRIPTION' => SN::$lang['info'][RES_DARK_MATTER]['description'],
 
-  'PAYMENT_AVAILABLE' => SN::$gc->modules->getModulesActiveCount('payment') && !defined('SN_GOOGLE'),
+  'PAYMENT_AVAILABLE' => SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE'),
 
 ));
 

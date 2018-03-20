@@ -10,14 +10,14 @@ use Common\GlobalContainer;
 
 
 /**
- * Class Manager
+ * Class ModulesManager
  *
- * Modules Manager
+ * Modules ModulesManager
  * Replacement for removed $sn_module and $sn_module_list global variables
  *
  * @package Modules
  */
-class Manager {
+class ModulesManager {
   /**
    * @var GlobalContainer $gc
    */
@@ -46,7 +46,7 @@ class Manager {
 
 
   /**
-   * Manager constructor.
+   * ModulesManager constructor.
    *
    * @param GlobalContainer $gc
    */
@@ -170,21 +170,23 @@ class Manager {
 
   /**
    * @param string|array $groups - Module group name or '' for any group
+   * @param bool         $active - returns only active modules
    *
    * @return int
    */
-  public function getModulesActiveCount($groups = '') {
-    return count($this->getModulesActive($groups));
+  public function countModulesInGroup($groups = '', $active = true) {
+    return count($this->getModulesInGroup($groups, $active));
   }
 
   /**
    * Getting list of active modules
    *
-   * @param string|array $groups - Module group name or '' for any group
+   * @param string|array $groups - Module group name or ''|[] for any group
+   * @param bool         $active - returns only active modules
    *
    * @return sn_module[]
    */
-  public function getModulesActive($groups = '') {
+  public function getModulesInGroup($groups = [], $active = true) {
     // If no groups specified - iterating all groups
     if (empty($groups)) {
       $groups = array_keys($this->packages);
@@ -198,7 +200,7 @@ class Manager {
     foreach ($groups as $groupName) {
       if (is_array($this->packages[$groupName]) && !empty($this->packages[$groupName])) {
         foreach ($this->packages[$groupName] as $moduleName => $module) {
-          if ($module->isActive()) {
+          if (!$active || $module->isActive()) {
             $activeModules[$moduleName] = $module;
           }
         }
@@ -213,17 +215,18 @@ class Manager {
    * Get module by name
    *
    * @param string $moduleName
+   * @param bool   $active - return module only if it is active
    *
-   * @return null|sn_module
+   * @return sn_module|null
    */
-  public function getModule($moduleName) {
-    return !empty($this->modules[$moduleName]) ? $this->modules[$moduleName] : null;
+  public function getModule($moduleName, $active = true) {
+    return !empty($this->modules[$moduleName]) && (!$active || $this->modules[$moduleName]->isActive()) ? $this->modules[$moduleName] : null;
   }
 
   /**
    * Register module for further use
    *
-   * Basically modules does not exists anywhere except in Modules Manager
+   * Basically modules does not exists anywhere except in Modules ModulesManager
    *
    * @param string    $moduleName
    * @param sn_module $module

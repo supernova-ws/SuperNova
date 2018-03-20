@@ -537,13 +537,9 @@ class Account {
    * @param classConfig $config
    */
   protected function awardImmortal($metamatter, $config) {
-    $awardModule = SN::$gc->modules->getModule('player_award');
-    if(!is_object($awardModule)) {
+    if(!is_object($awardModule = moduleAward())) {
       return;
     }
-    /**
-     * @var player_award $awardModule
-     */
     if ($this->account_metamatter + $metamatter >= $config->player_metamatter_immortal ) {
       $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list(ACCOUNT_PROVIDER_LOCAL, $this->account_id);
       if (!empty($account_translation)) {

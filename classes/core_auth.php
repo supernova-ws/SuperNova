@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a15.0#
+ * version #43a15.4#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.4# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
@@ -284,7 +284,7 @@ class core_auth extends sn_module {
 
     // !self::$is_init ? self::init() : false;
 
-    if(!SN::$gc->modules->getModulesActiveCount('auth')) {
+    if(!SN::$gc->modules->countModulesInGroup('auth')) {
       die('{Не обнаружено ни одного провайдера авторизации в core_auth::login()!}');
     }
 
@@ -295,7 +295,7 @@ class core_auth extends sn_module {
     $this->auth_reset(); // OK v4.5
 
     $this->providers = array();
-    foreach(SN::$gc->modules->getModulesActive('auth') as $module_name => $module) {
+    foreach(SN::$gc->modules->getModulesInGroup('auth', true) as $module_name => $module) {
       /**
        * @var auth_abstract $module
        */

@@ -90,11 +90,7 @@ function sn_fleet_page2() {
     ));
   }
 
-  $captainModule = SN::$gc->modules->getModule('unit_captain');
-  /**
-   * @var unit_captain $captainModule
-   */
-  if(is_object($captainModule) && $captainModule->isActive() && ($captain = $captainModule->unit_captain_get($planetrow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
+  if(is_object($captainModule = moduleCaptain()) && ($captain = $captainModule->unit_captain_get($planetrow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
     $template->assign_vars(array(
       'CAPTAIN_ID' => $captain['unit_id'],
       'CAPTAIN_LEVEL' => $captain['captain_level'],

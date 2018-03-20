@@ -17,7 +17,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!SN::$gc->modules->getModulesActiveCount('payment')) {
+if(!SN::$gc->modules->countModulesInGroup('payment')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
 }
 
