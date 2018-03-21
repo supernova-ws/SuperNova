@@ -151,7 +151,7 @@ class classPersistent extends classCache {
   }
 
   public function __unset($name) {
-    doquery("DELETE FROM `{{config}}` WHERE `config_name` = " .SN::$db->db_escape($name));
+    doquery('DELETE FROM `{{config}}` WHERE `config_name` = "' . SN::$db->db_escape($name) . '"');
 
     parent::__unset($name);
   }

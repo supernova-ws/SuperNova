@@ -162,7 +162,7 @@ if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + 30
   SN::$config->db_saveItem('var_online_user_count', db_user_count(true));
   SN::$config->db_saveItem('var_online_user_time', SN_TIME_NOW);
   if(SN::$config->server_log_online) {
-    doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = " . SN::$config->var_online_user_count . ";");
+    doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
   }
 }
 
