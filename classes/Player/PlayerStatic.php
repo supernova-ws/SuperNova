@@ -95,4 +95,8 @@ class PlayerStatic {
     }
   }
 
+  public static function dbUpdateBotStatus($botType, $onlineTime = SN_TIME_NOW) {
+    SN::$db->doquery("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
+  }
+
 }

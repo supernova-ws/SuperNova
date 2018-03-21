@@ -164,7 +164,7 @@ function datePart($fullDate) {
  */
 function unserializeOrJsonDecode($var, $asArray = true) {
   // Variable is not a string - returning it back
-  if (!is_string($var)) {
+  if (!is_string($var) || empty($var)) {
     return $var;
   }
 
@@ -182,10 +182,6 @@ function unserializeOrJsonDecode($var, $asArray = true) {
       throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
   );
-
-  if(!$var) {
-    return $var;
-  }
 
   try {
     $result = unserialize($var);

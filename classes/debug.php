@@ -86,7 +86,7 @@ class debug {
         continue;
       }
       $function =
-        ($a_trace['type']
+        (!empty($a_trace['type'])
           ? ($a_trace['type'] == '->'
             ? "({$a_trace['class']})" . get_class($a_trace['object'])
             : $a_trace['class']
@@ -94,9 +94,10 @@ class debug {
           : ''
         ) . $a_trace['function'] . '()';
 
-      $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $a_trace['file']));
+      $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', !empty($a_trace['file']) ? $a_trace['file'] : ''));
 
-      $result[] = "{$function} - '{$file}' Line {$a_trace['line']}";
+      $line = !empty($a_trace['line']) ? $a_trace['line'] : '_UNDEFINED_';
+      $result[] = "{$function} - '{$file}' Line {$line}";
 
       if(!$long_comment) {
         break;

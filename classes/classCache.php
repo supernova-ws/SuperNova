@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43a3.17#
+ * @version #43a15.16#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -111,7 +111,7 @@ class classCache implements ArrayAccess {
   public function __get($name) {
     switch (self::$mode) {
       case self::CACHER_NO_CACHE:
-        return self::$data[$this->prefix . $name];
+        return array_key_exists($this->prefix . $name, self::$data) ? self::$data[$this->prefix . $name] : null;
       break;
 
       case self::CACHER_XCACHE:
