@@ -91,7 +91,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
 
   $core_info = uni_create_planet_get_density($position_data, $user_row, $planet_sectors);
 
-  $planet_name_unsafe = $user_row['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname']);
+  $planet_name_unsafe =
+    $user_row['username'] . ' ' . (
+      $HomeWorld
+        ? ' ' . $lang['sys_capital']
+        : ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname'] )
+    );
 
   $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
   $planet['id_owner'] = $PlanetOwnerID;

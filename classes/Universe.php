@@ -3,6 +3,8 @@
  * Created by Gorlum 13.02.2018 12:45
  */
 
+use \Fleet\RecordFleet;
+
 class Universe {
 
   const MOON_MIN_SIZE = 1100;
@@ -86,6 +88,42 @@ class Universe {
    */
   public static function moonSizeRandom() {
     return mt_rand(static::MOON_MIN_SIZE, static::MOON_MAX_SIZE);
+  }
+
+
+  /**
+   * Return fleets heading to specified location
+   *
+   * @param int|null $galaxy
+   * @param int|null $system
+   * @param int|null $planet
+   * @param bool     $fromHold - Should be fleets on active Hold mission returned too
+   */
+  public static function fleetsReturn($galaxy = null, $system = null, $planet = null, $type = null, $fromHold = true) {
+    $filter = [];
+    $galaxy ? $filter['fleet_end_galaxy'] = $galaxy : false;
+    $galaxy ? $filter['fleet_end_system'] = $system : false;
+    $galaxy ? $filter['fleet_end_planet'] = $planet : false;
+    $galaxy ? $filter['fleet_end_type'] = $type : false;
+    $fleetsResult = RecordFleet::findAll($filter);
+    foreach ($fleetsResult as $fleetRecord) {
+      if ($fleetRecord->fleet_mess == FLEET_STATUS_RETURNING) {
+        continue;
+      }
+
+      if($fleetRecord->fleet_mission == MT_HOLD) {
+        if (!$fromHold) {
+          continue;
+        }
+
+        // Changing end time
+        $fleetRecord->fleet_end_stay = SN_TIME_NOW;
+      }
+
+      $fleetRecord->fleet_mess = FLEET_STATUS_RETURNING;
+
+      $fleetRecord->update();
+    }
   }
 
 }

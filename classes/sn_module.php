@@ -12,13 +12,13 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a15.0#';
+  public $versionCommitted = '#43a15.6#';
 
   public $manifest = [
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.0# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.6# copyright © 2009-2017 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -60,6 +60,16 @@ class sn_module {
 
     // 'page' array - defines pages which will handle this module and appropriate handlers
     'page'      => [],
+
+    /**
+     * 'mvc' subarray
+     * [
+     *    FIELD_MODEL =>
+     *    FIELD_VIEW =>
+     *    MVC_OPTIONS =>
+     * ]
+     */
+    'mvc' => [],
   ];
 
   /**
@@ -262,7 +272,21 @@ class sn_module {
 
     global $sn_mvc;
     foreach ($sn_mvc as $handler_type => &$handler_data) {
+      if($handler_type == MVC_OPTIONS) {
+        continue;
+      }
       sn_sys_handler_add($handler_data, $this->manifest['mvc'][$handler_type], $this, $handler_type);
+    }
+
+    if(!empty($this->manifest['mvc'][MVC_OPTIONS])) {
+      foreach ($this->manifest['mvc'][MVC_OPTIONS] as $pageName => $pageOptions) {
+        if(empty($pageOptions)) {
+          continue;
+        }
+
+        !is_array($sn_mvc['pages'][$pageName][MVC_OPTIONS]) ? $sn_mvc['pages'][$pageName][MVC_OPTIONS] = [] : false;
+        $sn_mvc['pages'][$pageName][MVC_OPTIONS] = array_merge($sn_mvc['pages'][$pageName][MVC_OPTIONS], $pageOptions);
+      }
     }
 
     if (isset($this->manifest['i18n']) && is_array($this->manifest['i18n']) && !empty($this->manifest['i18n'])) {
@@ -326,9 +350,10 @@ class sn_module {
    * Register pages in $manifest['mvc']['pages'] for further use
    *
    * @param string[] $pages - array of records ['pageName' => 'pageFile']. 'pageFile' is currently unused
+   * @deprecated
    */
   protected function __mvcRegisterPagesOld($pages) {
-    !is_array($this->manifest['mvc']['pages']) ? $this->manifest['mvc']['pages'] = array() : false;
+    !is_array($this->manifest['mvc']['pages']) ? $this->manifest['mvc']['pages'] = [] : false;
     if (is_array($pages) && !empty($pages)) {
       $this->manifest['mvc']['pages'] = array_merge($this->manifest['mvc']['pages'], $pages);
     }

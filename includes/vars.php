@@ -18,7 +18,7 @@ $sn_menu_admin_extra = array();
 
 global $sn_mvc;
 $sn_mvc = [
-  'model'      => [
+  FIELD_MODEL      => [
     'ajax' => ['AjaxController::controller'],
 
     'options'  => ['sn_options_model'],
@@ -29,7 +29,7 @@ $sn_mvc = [
 
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
-  'view'       => [
+  FIELD_VIEW  => [
     'ajax' => ['AjaxController::view'],
 
     'options'       => ['sn_options_view'],
@@ -45,7 +45,12 @@ $sn_mvc = [
     'admin/admin_ally'   => ['sn_admin_ally_view'],
     'admin/admin_mining' => [\Deprecated\PageAdminMining::class . '::viewStatic'],
   ],
+
+  // For now - common for same VIEW and MODEL
+  MVC_OPTIONS => [],
+
   'controller' => [],
+
   'i18n'       => [
     'options'   => [
       'options'  => 'options',
@@ -60,14 +65,14 @@ $sn_mvc = [
     'admin/user_view' => [
       'filename' => 'admin/user_view',
       'options'  => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
 
     'admin/admin_ally' => [
       'filename' => 'admin/admin_ally',
       'options'  => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
 
@@ -76,19 +81,19 @@ $sn_mvc = [
     'chat'     => [
       'filename' => 'chat',
       'options'  => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
     'chat_add' => [
       'filename' => 'chat',
       'options'  => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
     'chat_msg' => [
       'filename' => 'chat',
       'options'  => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
 
@@ -112,7 +117,7 @@ $sn_mvc = [
     'ajax'          => [],
     'time_probe'    => [
       'options' => [
-        'fleet_update_skip' => true,
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
       ],
     ],
 

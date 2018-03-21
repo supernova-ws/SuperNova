@@ -90,8 +90,8 @@ $ques = array(
   'DELETE un FROM {{unit}} AS un
     LEFT JOIN {{planets}} AS pl ON pl.id = un.unit_location_id
   WHERE unit_location_type = ' . LOC_PLANET . ' AND pl.id IS NULL;',
-  // Удаляем пустые юниты с 0 уровнем (кроме Капитана)
-  'DELETE FROM {{unit}} WHERE unit_location_type = ' . LOC_PLANET . ' AND unit_level = 0 AND unit_type <> ' . UNIT_CAPTAIN,
+  // Удаляем пустые юниты с 0 уровнем (кроме Капитана) - TODO - перенести в модуль, если нужно!
+//  'DELETE FROM {{unit}} WHERE unit_location_type = ' . LOC_PLANET . ' AND unit_level = 0 AND unit_type <> ' . UNIT_CAPTAIN,
   // Удаляем очереди на ничьих планетах
   'DELETE q FROM {{que}} AS q
     LEFT JOIN {{planets}} AS p ON p.id = q.que_planet_id
@@ -106,8 +106,8 @@ $ques = array(
   // UBE reports
   "DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(NOW(), INTERVAL 60 DAY) {$best_reports};", // TODO Настройка
 
-  // Чистка сообщений
-  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
+  // Чистка сообщений - ВРЕМЕННО ОТКЛЮЧЕНО
+//  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
   // Удаляются сообщения, старше  4 недель, кроме личных и Альянсовских
   'DELETE FROM {{messages}} WHERE
     UNIX_TIMESTAMP() - message_time > 4*7 * 24 * 60 * 60 AND
@@ -125,9 +125,9 @@ $ques = array(
   // Recalculate Alliance members
   "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id
     SET a.`ally_members` = u.ally_memeber_count;",
-  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
-  // Deleting empty Alliances
-  'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
+  // Deleting empty Alliances - ВРЕМЕННО ОТКЛЮЧЕНО
+//  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
+//  'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
   "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
 
   // Пакуем данные по логу ТМ

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 43a15.6
 *
 */
 
@@ -171,9 +171,10 @@ $a_lang_array = (array(
   'fl_expe_max' => '<li>You cannot send another expedition. Develop Astrophysics technology</li>',
   'fl_no_deuterium' => 'Not enough deuterium! ',
   'fl_no_resources' => 'Not enough resources!',
-  'fl_nostoragespa' => 'Not enough storeage space! ',
+  'fl_nostoragespa' => 'Not enough storage space! ',
   'fl_fleet_send' => 'Fleet sent',
   'fl_expe_warning' => 'Attention, you may lose ships during the expedition!',
+  'fl_not_enough_fuel' => 'ERROR! You cargo bay is not enough for fuel! Add more ships with large cargo bays or reduce fleet speed to decrease consumption',
   'fl_expe_staytime' => 'holding time',
   'fl_expe_hours' => 'hours',
   'fl_adm_attak' => 'You cannot attack the Administrator',

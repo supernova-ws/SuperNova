@@ -45,7 +45,7 @@ class FleetDispatcher {
 
   public function dispatch() {
     if (
-      SN::$options['fleet_update_skip']
+      SN::$options[PAGE_OPTION_FLEET_UPDATE_SKIP]
       ||
       SN::gameIsDisabled()
       ||

@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #43a15.0#
+ * @version #43a15.6#
  *
  * userlist.php v2
  **/
@@ -46,7 +46,7 @@ if (($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid
   if ($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3) {
     switch ($action) {
       case ACTION_DELETE:
-        DeleteSelectedUser($user_id);
+        \Player\PlayerStatic::DeleteSelectedUser($user_id);
         sys_redirect("{$_SERVER['SCRIPT_NAME']}?sort={$sort}");
       break;
 

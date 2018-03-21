@@ -249,11 +249,16 @@ function fl_calc_stats(event, ui) {
 }
 
 function calculateTransportCapacity() {
-  transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
+  var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
 
   $("#remainingresources").html(sn_format_number(transportCapacity, 0, 'positive'));
 
   $("#fleet_page2_submit").prop('disabled', transportCapacity < 0);
+  if(transportCapacity < 0) {
+    $(".fleet_expedition_not_enough_fuel").show();
+  } else {
+    $(".fleet_expedition_not_enough_fuel").hide();
+  }
 
   // document.getElementById("fleet_page2_submit").disabled = transportCapacity < 0;
   //if(transportCapacity < 0) {

@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a15.4');
+define('SN_VERSION', '43a15.6');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -213,7 +213,8 @@ define('LOC_UNIVERSE', 0);
 define('LOC_PLANET',   1);
 define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `debris_*` fields
 define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
-define('LOC_USER',     4);
+define('LOC_PLAYER',   4);
+define('LOC_USER',     LOC_PLAYER); // Deprecated alias for LOC_PLAYER
 define('LOC_FLEET',    5);
 define('LOC_ALLY',     6);
 define('LOC_SERVER',   7); // Located on server
@@ -1782,6 +1783,8 @@ define('PAGE_OPTION_TITLE', 'page_title');
 define('FIELD_MVC', 'mvc');
 define('FIELD_MODEL', 'model');
 define('FIELD_VIEW', 'view');
+define('MVC_OPTIONS', 'options');
+
 define('THIS_STRING', '$this');
 
 define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
@@ -1792,7 +1795,7 @@ define('WATCHDOG_TIME_UNIX', 0);
 define('WATCHDOG_TIME_SQL', 1);
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
-define('PLAYER_INACTIVE_TIMEOUT', PERIOD_WEEK); // Player inactivity timeout to become 'i'-marked player
+const PLAYER_INACTIVE_TIMEOUT = PERIOD_WEEK; // Player inactivity timeout to become 'i'-marked player
 const PLAYER_INACTIVE_TIMEOUT_LONG = PERIOD_WEEK_4; // Player inactivity to becone 'I'-marked player
 
 
@@ -1851,3 +1854,8 @@ const MODULE_LOAD_ORDER_GAME_SKIRMISH         = 2000100000;
 
 // Template block names
 const TPL_BLOCK_REQUIRE = 'require';
+
+const PAGE_OPTION_FLEET_UPDATE_SKIP = 'fleet_update_skip';
+const PAGE_OPTION_ADMIN = 'admin_page';
+
+const FLEET_STATUS_RETURNING = 1;

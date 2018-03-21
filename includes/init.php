@@ -132,8 +132,8 @@ if($sn_page_name) {
   }
 }
 
-if((defined('IN_AJAX') && IN_AJAX === true) || (defined('IN_ADMIN') && IN_ADMIN === true)) {
-  SN::$options['fleet_update_skip'] = true;
+if((defined('IN_AJAX') && IN_AJAX === true) || (defined('IN_ADMIN') && IN_ADMIN === true) || (!empty(SN::$options[PAGE_OPTION_ADMIN]))) {
+  SN::$options[PAGE_OPTION_FLEET_UPDATE_SKIP] = true;
 }
 
 
@@ -233,6 +233,8 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
     ($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN))
     &&
     !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
+    &&
+    empty(SN::$options[PAGE_OPTION_ADMIN])
   ) {
     messageBox($template_result[F_GAME_DISABLE_REASON], SN::$config->game_name, '', 5, false);
     ob_end_flush();

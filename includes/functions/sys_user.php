@@ -46,45 +46,6 @@ function sys_is_multiaccount($user1, $user2) {
 }
 
 /**
- * @param $UserID
- */
-function DeleteSelectedUser($UserID) {
-  // TODO: Full rewrite
-  sn_db_transaction_start();
-  $TheUser = db_user_by_id($UserID);
-  if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
-    $TheAlly['ally_members'] -= 1;
-    if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
-    } else {
-      doquery ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
-      doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
-    }
-  }
-  doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
-
-  DBStaticPlanet::db_planet_list_delete_by_owner($UserID);
-
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
-  db_fleet_list_delete_by_owner($UserID);
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
-
-
-  SN::db_del_record_by_id(LOC_USER, $UserID);
-  doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
-  global $config;
-  $config->db_saveItem('users_amount', $config->db_loadItem('users_amount') - 1);
-  sn_db_transaction_commit();
-}
-
-/**
  * @param        $banner
  * @param        $banned
  * @param        $term
@@ -211,7 +172,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
       $options['planet'] += 3;
     }
   }
-  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $lang['sys_capital'], true, $options['planet_options']);
+  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], '', true, $options['planet_options']);
 
   db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',

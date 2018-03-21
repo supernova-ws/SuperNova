@@ -1233,6 +1233,13 @@ input[type=text].coordinate {
   margin: 0.5em;
 }
 
+.fleet_expedition_not_enough_fuel {
+  max-width: 30em;
+  font-size: 1.5em;
+  margin: 0.5em;
+  display: none;
+}
+
 #fleet_unit_miniatures_container {
   display: inline-block;
   font-size: 0.8em;
