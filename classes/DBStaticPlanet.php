@@ -202,4 +202,8 @@ class DBStaticPlanet {
     return doquery("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM {{planets}} WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
   }
 
+  public static function dbDeletePlanetsWithoutUsers() {
+    SN::$db->doquery("DELETE FROM `{{planets}}` WHERE id_owner NOT IN (SELECT id FROM `{{users}}`)");
+  }
+
 }

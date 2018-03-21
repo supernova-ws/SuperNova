@@ -20,6 +20,7 @@ class SnBootstrap {
 
       $now = microtime(true);
       $totalTime = round($now - SN_TIME_MICRO, 6);
+      !defined('SN_TIME_RENDER_START') ? define('SN_TIME_RENDER_START', microtime(true)) : false;
       $executionTime = round(SN_TIME_RENDER_START - SN_TIME_MICRO, 6);
       $displayTime = round($now - SN_TIME_RENDER_START, 6);
 

@@ -183,6 +183,10 @@ function unserializeOrJsonDecode($var, $asArray = true) {
     }
   );
 
+  if(!$var) {
+    return $var;
+  }
+
   try {
     $result = unserialize($var);
   } catch (ErrorException $e) {

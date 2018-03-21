@@ -150,4 +150,10 @@ class classPersistent extends classCache {
     parent::__set($name, $value);
   }
 
+  public function __unset($name) {
+    doquery("DELETE FROM `{{config}}` WHERE `config_name` = " .SN::$db->db_escape($name));
+
+    parent::__unset($name);
+  }
+
 }
