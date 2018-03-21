@@ -5,7 +5,7 @@ use Common\Vector;
 /**
  * Class VectorTest
  *
- * @coversDefaultClass Vector
+ * @coversDefaultClass Common\Vector
  */
 class VectorTest extends PHPUnit_Framework_TestCase {
 
