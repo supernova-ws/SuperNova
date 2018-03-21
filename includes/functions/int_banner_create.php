@@ -1,5 +1,7 @@
 <?php
 
+use Planet\DBStaticPlanet;
+
 /**
  * int_banner_create.php
  * @version 2.0

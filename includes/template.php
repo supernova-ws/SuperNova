@@ -1,6 +1,7 @@
 <?php
 
 use \Pages\PageTutorial;
+use Planet\DBStaticPlanet;
 
 // Wrappers for functions
 

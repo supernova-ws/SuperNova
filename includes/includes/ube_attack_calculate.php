@@ -1,5 +1,9 @@
 <?php
 
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+use Unit\DBStaticUnit;
+
 require_once('ube_report.php');
 
 /*

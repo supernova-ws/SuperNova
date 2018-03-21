@@ -4,6 +4,9 @@
 // Open Source
 // V1
 //
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+
 function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0')
 {
   // Here we select which part of defense should take damage: structure or shield

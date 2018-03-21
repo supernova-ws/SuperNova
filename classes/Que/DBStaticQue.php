@@ -1,5 +1,8 @@
 <?php
 
+namespace Que;
+use SN;
+
 class DBStaticQue {
 
   public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false) {

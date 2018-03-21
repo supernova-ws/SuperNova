@@ -1,5 +1,7 @@
 <?php
 
+use Unit\DBStaticUnit;
+
 function eco_lab_sort_effectivness($a, $b)
 {
   return $a['laboratory_effective_level'] > $b['laboratory_effective_level'] ? -1 : ($a['laboratory_effective_level'] < $b['laboratory_effective_level'] ? 1 : 0);

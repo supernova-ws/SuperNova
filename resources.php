@@ -25,6 +25,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 use \Meta\Economic\ResourceCalculations;
+use Planet\DBStaticPlanet;
 
 /**
  * @param $resource_id

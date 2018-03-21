@@ -5,7 +5,7 @@
 
 namespace Ube\Ube4_1;
 
-use DBStaticPlanet;
+use Planet\DBStaticPlanet;
 
 class Ube4_1Prepare {
   const CONVERT_TECHS = [

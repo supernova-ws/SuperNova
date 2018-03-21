@@ -1,5 +1,7 @@
 <?php
 
+use Universe\Universe;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {

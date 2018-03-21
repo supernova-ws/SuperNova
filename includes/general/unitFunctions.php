@@ -1,4 +1,7 @@
 <?php
+
+use Unit\DBStaticUnit;
+
 /**
  * Created by Gorlum 04.12.2017 4:32
  */

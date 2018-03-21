@@ -3,8 +3,16 @@
  * Created by Gorlum 15.06.2017 4:12
  */
 
+namespace Fleet;
+
+use classConfig;
+use debug;
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+use SN;
+
 /**
- * Class FleetDispatcher
+ * Class Fleet\FleetDispatcher
  *
  */
 class FleetDispatcher {
@@ -209,7 +217,7 @@ class FleetDispatcher {
       MT_EXPLORE   => 'flt_mission_explore',
     );
     foreach ($missions_used as $mission_id => $cork) {
-      if(empty($mission_files[$mission_id])) {
+      if (empty($mission_files[$mission_id])) {
         continue;
       }
 

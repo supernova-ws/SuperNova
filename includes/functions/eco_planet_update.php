@@ -9,6 +9,9 @@
  *     [+] Full rewrote and optimization
  *
  */
+
+use Planet\DBStaticPlanet;
+
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
   sn_db_transaction_check(true);
 

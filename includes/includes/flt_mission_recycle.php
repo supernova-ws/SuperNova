@@ -1,5 +1,7 @@
 <?php
 
+use Planet\DBStaticPlanet;
+
 /**
  * MissionCaseRecycling.php
  *

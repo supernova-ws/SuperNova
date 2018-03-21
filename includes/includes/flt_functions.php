@@ -1,5 +1,8 @@
 <?php
 
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+
 function flt_fleet_speed($user, $fleet)
 {
   if (!is_array($fleet))

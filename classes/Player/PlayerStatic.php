@@ -6,7 +6,7 @@
 namespace Player;
 
 use SN;
-use DBStaticPlanet;
+use Planet\DBStaticPlanet;
 
 /**
  * Class PlayerStatic

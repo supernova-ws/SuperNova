@@ -5,6 +5,7 @@
 
 namespace Ube\Ube4_1;
 
+use Universe\Universe;
 
 class Ube4_1Calc {
   const BONUS_LIST = [
@@ -261,20 +262,20 @@ class Ube4_1Calc {
     $outcome[UBE_DEBRIS_ORIGINAL] = $outcome[UBE_DEBRIS];
 
     if ($outcome[UBE_DEBRIS_TOTAL]) {
-      if ($outcome[UBE_MOON_CHANCE] = \Universe::moonCalcChanceFromDebris($outcome[UBE_DEBRIS_TOTAL])) {
+      if ($outcome[UBE_MOON_CHANCE] = Universe::moonCalcChanceFromDebris($outcome[UBE_DEBRIS_TOTAL])) {
         $outcome[UBE_MOON_SIZE] = $is_simulator
           // On simulator moon always will be average size
           ? round(max(1, $outcome[UBE_MOON_CHANCE] / 2) * 150 + 2000)
-          : \Universe::moonRollSize($outcome[UBE_DEBRIS_TOTAL]);
+          : Universe::moonRollSize($outcome[UBE_DEBRIS_TOTAL]);
         if ($outcome[UBE_MOON_SIZE]) {
           // Got moon
           $outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
 
-          if ($outcome[UBE_DEBRIS_TOTAL] <= \Universe::moonMaxDebris()) {
+          if ($outcome[UBE_DEBRIS_TOTAL] <= Universe::moonMaxDebris()) {
             $outcome[UBE_DEBRIS_TOTAL] = 0;
             $outcome[UBE_DEBRIS] = [];
           } else {
-            $moon_debris_spent = \Universe::moonMaxDebris();
+            $moon_debris_spent = Universe::moonMaxDebris();
             $moon_debris_left_percent = ($outcome[UBE_DEBRIS_TOTAL] - $moon_debris_spent) / $outcome[UBE_DEBRIS_TOTAL];
 
             $outcome[UBE_DEBRIS_TOTAL] = 0;

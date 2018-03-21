@@ -1,5 +1,6 @@
 <?php
 
+use Alliance\DBStaticAlly;
 use \DBAL\DbQuery;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)

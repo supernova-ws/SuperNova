@@ -8,6 +8,8 @@
  * @copyright 2008 by ??????? for XNova
  */
 
+use Unit\DBStaticUnit;
+
 define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);

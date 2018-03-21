@@ -5,7 +5,7 @@
 
 namespace Deprecated;
 
-use \DBStaticPlanet;
+use Planet\DBStaticPlanet;
 use \HelperString;
 
 class PageFleet5Gathering {

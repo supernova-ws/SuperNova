@@ -1,4 +1,8 @@
 <?php
+
+use Planet\DBStaticPlanet;
+use Unit\DBStaticUnit;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

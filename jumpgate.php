@@ -10,6 +10,9 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('fleet');

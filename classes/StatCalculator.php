@@ -3,6 +3,10 @@
  * Created by Gorlum 24.09.2017 18:09
  */
 
+use Planet\DBStaticPlanet;
+use Que\DBStaticQue;
+use Unit\DBStaticUnit;
+
 /**
  * Class StatCalculator
  *

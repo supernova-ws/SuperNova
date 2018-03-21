@@ -24,6 +24,8 @@
 
 global $user, $planetrow, $lang;
 
+use Planet\DBStaticPlanet;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $template_result = is_array($template_result) ? $template_result : array();
 

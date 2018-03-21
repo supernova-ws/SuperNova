@@ -1,4 +1,7 @@
 <?php
+
+use Planet\DBStaticPlanet;
+
 /**
  * Created by Gorlum 04.12.2017 5:04
  */

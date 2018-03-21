@@ -1,5 +1,10 @@
 <?php
 
+namespace Unit;
+use _SnCacheInternal;
+use mysqli_result;
+use SN;
+
 class DBStaticUnit {
 
   public static function db_unit_time_restrictions($date = SN_TIME_NOW) {

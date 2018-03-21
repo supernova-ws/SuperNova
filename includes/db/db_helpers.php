@@ -6,6 +6,8 @@
  * Time: 17:19
  */
 
+use Planet\DBStaticPlanet;
+
 /**
  * Normalize and make ID safe
  *

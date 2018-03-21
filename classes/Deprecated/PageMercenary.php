@@ -7,7 +7,7 @@ namespace Deprecated;
 
 use \Exception;
 use \SN;
-use \DBStaticUnit;
+use Unit\DBStaticUnit;
 use \template;
 
 class PageMercenary {

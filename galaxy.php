@@ -17,6 +17,8 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use Planet\DBStaticPlanet;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $template_result, $planetrow, $debug, $lang;

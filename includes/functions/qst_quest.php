@@ -1,6 +1,7 @@
 <?php
 
 use \DBAL\DbQuery;
+use DBAL\OldDbChangeSet;
 
 function roughQuestRenderWrapper() {
   global $lang, $user;

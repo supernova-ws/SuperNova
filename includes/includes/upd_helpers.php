@@ -1,5 +1,7 @@
 <?php
 
+use Unit\DBStaticUnit;
+
 if (!defined('IN_UPDATE')) {
   die('Trying to call update helpers externally!');
 }

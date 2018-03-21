@@ -1,6 +1,8 @@
 <?php
 
 
+use Planet\DBStaticPlanet;
+
 function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
 {
   global $config, $user, $fleet_number, $lang;

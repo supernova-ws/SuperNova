@@ -22,39 +22,39 @@ use Player\PlayerLevelHelper;
  * Used to describe internal structures of container
  *
  * Variables ------------------------------------------------------------------------------------------------------------
- * @property string            $cachePrefix
+ * @property string                 $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
- * @property \debug            $debug
- * @property \db_mysql         $db
- * @property \classCache       $cache
- * @property \classConfig      $config
- * @property \Core\Repository  $repository
- * @property \Storage          $storage
- * @property \Design           $design
- * @property \BBCodeParser     $bbCodeParser
- * @property \FleetDispatcher  $fleetDispatcher
- * @property Watchdog          $watchdog
- * @property EventBus          $eventBus
+ * @property \debug                 $debug
+ * @property \db_mysql              $db
+ * @property \classCache            $cache
+ * @property \classConfig           $config
+ * @property \Core\Repository       $repository
+ * @property \Storage               $storage
+ * @property \Design                $design
+ * @property \BBCodeParser          $bbCodeParser
+ * @property \Fleet\FleetDispatcher $fleetDispatcher
+ * @property Watchdog               $watchdog
+ * @property EventBus               $eventBus
  *
- * @property ValueStorage      $valueStorage
- * @property BonusCatalog      $bonusCatalog
+ * @property ValueStorage           $valueStorage
+ * @property BonusCatalog           $bonusCatalog
  *
- * @property General           $general
- * @property EconomicHelper    $economicHelper
+ * @property General                $general
+ * @property EconomicHelper         $economicHelper
  *
- * @property PlayerLevelHelper $playerLevelHelper
- * @property SnPimp            $pimp
+ * @property PlayerLevelHelper      $playerLevelHelper
+ * @property SnPimp                 $pimp
  *
- * @property ModulesManager    $modules
+ * @property ModulesManager         $modules
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
- * @property \TheUser          $theUser
+ * @property \TheUser               $theUser
  *
  * Models --------------------------------------------------------------------------------------------------------------
- * @property \TextModel        $textModel
- * @property string            $skinEntityClass
- * @property \SkinModel        $skinModel
+ * @property \TextModel             $textModel
+ * @property string                 $skinEntityClass
+ * @property \SkinModel             $skinModel
  *
  * @package Common
  *
@@ -128,7 +128,7 @@ class GlobalContainer extends ContainerPlus {
     };
 
     $gc->fleetDispatcher = function (GlobalContainer $gc) {
-      return new \FleetDispatcher($gc);
+      return new \Fleet\FleetDispatcher($gc);
     };
 
     $gc->watchdog = function (GlobalContainer $gc) {

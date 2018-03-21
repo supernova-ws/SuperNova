@@ -13,6 +13,9 @@
  *
  */
 
+
+use Unit\DBStaticUnit;
+
 global $lang, $user, $planetrow;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));

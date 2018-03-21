@@ -6,7 +6,7 @@
 namespace Fleet;
 
 use \SN;
-use \DBStaticPlanet;
+use Planet\DBStaticPlanet;
 
 class MissionEspionage extends MissionData {
 

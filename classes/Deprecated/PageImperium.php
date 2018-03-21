@@ -7,7 +7,7 @@ namespace Deprecated;
 
 use \template;
 use \classLocale;
-use \DBStaticPlanet;
+use Planet\DBStaticPlanet;
 use \HelperString;
 
 class PageImperium {

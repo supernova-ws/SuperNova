@@ -1,5 +1,9 @@
 <?php
 
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+use Que\DBStaticQue;
+
 function que_get_unit_que($unit_id) {
   $que_type = false;
   foreach(sn_get_groups('ques') as $que_id => $que_data) {

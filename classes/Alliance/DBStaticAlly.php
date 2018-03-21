@@ -1,5 +1,10 @@
 <?php
 
+namespace Alliance;
+
+use classLocale;
+use mysqli_result;
+
 class DBStaticAlly {
 
 // ALLY *************************************************************************************************************

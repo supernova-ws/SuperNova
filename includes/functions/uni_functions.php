@@ -1,5 +1,8 @@
 <?php
 
+use Planet\DBStaticPlanet;
+use Universe\Universe;
+
 function uni_create_planet_get_density($position_data, $user_row, $planet_sectors) {
   $density_list = sn_get_groups('planet_density');
   $density_min = reset($density_list);
@@ -178,7 +181,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $size 
     if ($moon_planet['id']) {
       $base_storage_size = BASE_STORAGE_SIZE;
 
-      empty($size) ? $size = \Universe::moonSizeRandom() : false;
+      empty($size) ? $size = Universe::moonSizeRandom() : false;
 
       $temp_min = $moon_planet['temp_min'] - rand(10, 45);
       $temp_max = $temp_min + 40;

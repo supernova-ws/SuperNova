@@ -1,4 +1,7 @@
 <?php
+
+use Planet\DBStaticPlanet;
+
 /**
  * Created by PhpStorm.
  * User: Gorlum

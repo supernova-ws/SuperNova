@@ -1,5 +1,7 @@
 <?php
 
+use Alliance\DBStaticAlly;
+
 /**
  * stat.php
  *

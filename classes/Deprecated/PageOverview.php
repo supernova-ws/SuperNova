@@ -5,7 +5,7 @@
 
 namespace Deprecated;
 
-use DBStaticPlanet;
+use Planet\DBStaticPlanet;
 use SN;
 use HelperString;
 use Exception;

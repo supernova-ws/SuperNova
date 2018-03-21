@@ -1,5 +1,10 @@
 <?php
 
+use DBAL\OldDbChangeSet;
+use Planet\DBStaticPlanet;
+use Que\DBStaticQue;
+use Universe\Universe;
+
 function art_use(&$user, &$planetrow, $unit_id)
 {
   global $lang;
@@ -29,13 +34,13 @@ function art_use(&$user, &$planetrow, $unit_id)
           $updateDebris = false;
           switch ($unit_id) {
             case ART_HOOK_SMALL:
-              $moonSize = \Universe::MOON_MIN_SIZE;
+              $moonSize = Universe::MOON_MIN_SIZE;
             break;
             case ART_HOOK_MEDIUM:
               $moonSize = Universe::moonSizeRandom();
             break;
             case ART_HOOK_LARGE:
-              $moonSize = \Universe::MOON_MAX_SIZE;
+              $moonSize = Universe::MOON_MAX_SIZE;
             break;
             case ART_LHC:
             default:

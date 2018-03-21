@@ -7,6 +7,9 @@
  * @copyright 2014 Gorlum for http://supernova.ws
  */
 
+use Planet\DBStaticPlanet;
+use Universe\Universe;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

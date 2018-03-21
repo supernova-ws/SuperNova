@@ -3,6 +3,8 @@
  * Created by Gorlum 13.02.2018 12:45
  */
 
+namespace Universe;
+
 use \Fleet\RecordFleet;
 
 class Universe {
@@ -111,7 +113,7 @@ class Universe {
         continue;
       }
 
-      if($fleetRecord->fleet_mission == MT_HOLD) {
+      if ($fleetRecord->fleet_mission == MT_HOLD) {
         if (!$fromHold) {
           continue;
         }

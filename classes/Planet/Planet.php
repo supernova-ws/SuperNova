@@ -9,7 +9,7 @@ namespace Planet;
 
 use Core\EntityDb;
 use Unit\Governor;
-use DBStaticPlanet;
+use Planet\DBStaticPlanet;
 use Exception;
 use HelperString;
 use SN;
