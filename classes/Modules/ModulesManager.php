@@ -5,8 +5,8 @@
 
 namespace Modules;
 
-use \sn_module;
-use Common\GlobalContainer;
+use Modules\sn_module;
+use Core\GlobalContainer;
 
 
 /**
@@ -19,7 +19,7 @@ use Common\GlobalContainer;
  */
 class ModulesManager {
   /**
-   * @var GlobalContainer $gc
+   * @var \Core\GlobalContainer $gc
    */
   protected $gc;
 

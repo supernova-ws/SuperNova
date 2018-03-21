@@ -5,7 +5,7 @@
 
 namespace Bonus;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use Fixtures\UnitInfo;
 
 /**

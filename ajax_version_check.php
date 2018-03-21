@@ -2,4 +2,4 @@
 
 require_once('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-\Tools\VersionCheckerDeprecated::handleCall();
+\Common\Tools\VersionCheckerDeprecated::handleCall();

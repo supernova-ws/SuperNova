@@ -1,6 +1,6 @@
 <?php
 
-use \Common\GlobalContainer;
+use Core\GlobalContainer;
 use Core\Repository;
 
 /**

@@ -8,7 +8,7 @@ namespace Core;
 
 use \DBAL\DbQuery;
 use \DBAL\ActiveRecord;
-use \Traits\TContainer;
+use Common\Traits\TContainer;
 
 /**
  * Class EntityDb
@@ -20,7 +20,7 @@ use \Traits\TContainer;
  * @method array asArray() Extracts values as array [$propertyName => $propertyValue] (from ActiveRecord)
  * @method bool update() Updates DB record(s) in DB (from ActiveRecord)
  */
-class EntityDb extends Entity implements \IContainer {
+class EntityDb extends Entity implements \Common\Interfaces\IContainer {
   use TContainer;
 
   /**

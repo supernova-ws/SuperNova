@@ -5,7 +5,8 @@
 
 namespace DBAL\Tests;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
+use DBAL\db_mysql;
 use DBAL\ActiveRecordAbstract;
 use DBAL\Tests\Fixtures\ActiveAbstractObjectDump;
 use DBAL\Tests\Fixtures\RecordActiveAbstractObject;
@@ -29,7 +30,7 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
   public function testDbData() {
     $this->assertEquals(\SN::services()->db, RecordActiveAbstractObject::db());
 
-    $db = new \db_mysql(new GlobalContainer());
+    $db = new db_mysql(new GlobalContainer());
     RecordActiveAbstractObject::setDb($db);
     $this->assertAttributeEquals($db, 'db', 'DBAL\Tests\Fixtures\RecordActiveAbstractObject');
     $this->assertEquals($db, RecordActiveAbstractObject::db());

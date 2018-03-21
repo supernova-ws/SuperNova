@@ -5,7 +5,7 @@
 
 namespace Fleet;
 
-use \Traits\TJsonSerializable;
+use Common\Traits\TJsonSerializable;
 
 
 /**

@@ -5,7 +5,7 @@
 
 namespace Alliance;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use \Exception;
 use \HelperString;
 

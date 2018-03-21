@@ -6,6 +6,8 @@ global $debug;
 // Может добавить спецстатус "Ответ системы платежа" и парсить дальше getMessage
 // см constants.php
 
+use Modules\sn_module;
+
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (!SN::$gc->modules->countModulesInGroup('payment')) {

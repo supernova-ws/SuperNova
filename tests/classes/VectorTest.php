@@ -1,11 +1,11 @@
 <?php
 
-use Vector\Vector;
+use Common\Vector;
 
 /**
  * Class VectorTest
  *
- * @coversDefaultClass Vector\Vector
+ * @coversDefaultClass Vector
  */
 class VectorTest extends PHPUnit_Framework_TestCase {
 

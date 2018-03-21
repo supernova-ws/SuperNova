@@ -38,7 +38,7 @@ class AccessAccessors implements \ArrayAccess {
    */
   protected $_dataClass = 'Common\AccessMagic';
   /**
-   * @var \IContainer $_data
+   * @var \Common\Interfaces\IContainer $_data
    */
   protected $_data;
 

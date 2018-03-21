@@ -1,5 +1,7 @@
 <?php
 
+use Player\playerTimeDiff;
+
 define('IN_AJAX', true);
 
 require_once('common.' . substr(strrchr(__FILE__, '.'), 1));

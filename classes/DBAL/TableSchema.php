@@ -9,7 +9,7 @@ namespace DBAL;
 class TableSchema {
 
   /**
-   * @var \db_mysql $db
+   * @var \DBAL\db_mysql $db
    */
   protected $db;
 
@@ -41,8 +41,8 @@ class TableSchema {
   /**
    * TableSchema constructor.
    *
-   * @param string         $tableName
-   * @param \db_mysql|null $db
+   * @param string              $tableName
+   * @param \DBAL\db_mysql|null $db
    */
   public function __construct($tableName, Schema $dbSchema) {
     $this->dbSchema = $dbSchema;

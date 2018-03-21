@@ -5,7 +5,7 @@
 
 namespace Pages;
 
-use \userOptions;
+use Player\userOptions;
 
 class PageAjax implements IPage {
   /**
@@ -16,7 +16,7 @@ class PageAjax implements IPage {
   protected $allowedActions = array();
 
   /**
-   * @var userOptions $userOptions
+   * @var \Player\userOptions $userOptions
    */
   protected $userOptions;
 

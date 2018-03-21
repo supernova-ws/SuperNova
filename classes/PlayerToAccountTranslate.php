@@ -6,6 +6,8 @@
  * Time: 11:36
  */
 
+use DBAL\db_mysql;
+
 /**
  * Class PlayerToAccountTranslate
  */

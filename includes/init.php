@@ -1,6 +1,7 @@
 <?php
 
 use \Core\SnBootstrap;
+use Player\playerTimeDiff;
 
 // Защита от двойного инита
 if(defined('INIT')) {
@@ -150,7 +151,7 @@ $lang->lng_switch(sys_get_param_str('lang'));
 
 
 if(SN::$config->server_updater_check_auto && SN::$config->server_updater_check_last + SN::$config->server_updater_check_period <= SN_TIME_NOW) {
-  \Tools\VersionCheckerDeprecated::performCheckVersion();
+  \Common\Tools\VersionCheckerDeprecated::performCheckVersion();
 }
 
 if(SN::$config->user_birthday_gift && SN_TIME_NOW - SN::$config->user_birthday_celebrate > PERIOD_DAY) {

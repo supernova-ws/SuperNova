@@ -1,15 +1,17 @@
 <?php
 
+use DBAL\db_mysql;
+
 /**
  * Class auth_local
  */
-// Расширяет sn_module, потому что его потомки так же являются модулями
+// Расширяет Modules\sn_module, потому что его потомки так же являются модулями
 class auth_local extends auth_abstract {
   public $manifest = array(
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.20# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 

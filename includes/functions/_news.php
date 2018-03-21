@@ -1,7 +1,7 @@
 <?php
 
 use DBAL\DbSqlPaging;
-use Helpers\PagingRenderer;
+use General\Helpers\PagingRenderer;
 
 /**
  * @param template $template

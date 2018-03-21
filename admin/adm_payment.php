@@ -3,7 +3,7 @@
 /**
  * adm_payment.php
  *
- * @version #43a13.42#
+ * @version #43a15.20#
  * @copyright 2013-2015 by Gorlum for http://supernova.ws
 */
 
@@ -52,9 +52,9 @@ $query = new \DBAL\DbSqlPaging(
 ($flt_status >= 0 ? "AND payment_status = {$flt_status} " : '') .
 ($flt_test >= 0 ? "AND payment_test = {$flt_test} " : '') .
 ($flt_module ? "AND payment_module_name = '{$flt_module}' " : '') .
-" ORDER BY payment_id desc", PAGING_PAGE_SIZE_DEFAULT_PAYMENTS, sys_get_param_int(\Helpers\PagingRenderer::KEYWORD));
+" ORDER BY payment_id desc", PAGING_PAGE_SIZE_DEFAULT_PAYMENTS, sys_get_param_int(\General\Helpers\PagingRenderer::KEYWORD));
 
-$pager = new \Helpers\PagingRenderer($query, 'admin/adm_payment.php?' . $_SERVER['QUERY_STRING']);
+$pager = new \General\Helpers\PagingRenderer($query, 'admin/adm_payment.php?' . $_SERVER['QUERY_STRING']);
 $pager->setDelta(10);
 //var_dump($pager);
 

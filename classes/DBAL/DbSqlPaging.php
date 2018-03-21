@@ -25,10 +25,10 @@ class DbSqlPaging extends DbAbstractResultIterator {
   /**
    * DbSqlPaging constructor.
    *
-   * @param string         $sqlQuery
-   * @param int            $pageSize
-   * @param int            $currentPage
-   * @param \db_mysql|null $db
+   * @param string              $sqlQuery
+   * @param int                 $pageSize
+   * @param int                 $currentPage
+   * @param \DBAL\db_mysql|null $db
    */
   public function __construct($sqlQuery, $pageSize = PAGING_PAGE_SIZE_DEFAULT, $currentPage = 1, $db = null) {
     $this->sqlQuery = $sqlQuery;

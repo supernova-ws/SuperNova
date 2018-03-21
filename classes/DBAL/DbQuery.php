@@ -6,7 +6,7 @@
 namespace DBAL;
 
 use \HelperArray;
-use \db_mysql;
+use DBAL\db_mysql;
 use \SN;
 
 /**
@@ -96,7 +96,7 @@ class DbQuery {
   /**
    * DbQuery constructor.
    *
-   * @param  null|\db_mysql $db
+   * @param  null|\DBAL\db_mysql $db
    */
   // TODO - $db should be supplied externally
   public function __construct($db = null) {

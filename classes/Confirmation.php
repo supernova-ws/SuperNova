@@ -1,5 +1,7 @@
 <?php
 
+use DBAL\db_mysql;
+
 /**
  * User: Gorlum
  * Date: 17.09.2015

@@ -1,5 +1,8 @@
 <?php
 
+use DBAL\db_mysql;
+use Modules\sn_module;
+
 /**
  * User: Gorlum
  * Date: 10.10.2015

@@ -4,7 +4,7 @@
  * Created by Gorlum 15.02.2017 10:08
  */
 
-use \Common\GlobalContainer;
+use Core\GlobalContainer;
 
 /**
  * Class Design

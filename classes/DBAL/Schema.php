@@ -9,7 +9,7 @@ namespace DBAL;
 class Schema {
 
   /**
-   * @var \db_mysql $db
+   * @var \DBAL\db_mysql $db
    */
   protected $db;
 
@@ -29,7 +29,7 @@ class Schema {
    */
   protected $tableSchemas = [];
 
-  public function __construct(\db_mysql $db) {
+  public function __construct(\DBAL\db_mysql $db) {
     $this->db = $db;
   }
 

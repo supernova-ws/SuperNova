@@ -4,7 +4,7 @@
  * Created by Gorlum 10.02.2017 0:28
  */
 
-use \Common\GlobalContainer;
+use Core\GlobalContainer;
 
 class Storage {
 

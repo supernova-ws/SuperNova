@@ -32,5 +32,5 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$pageOverview = new \Deprecated\PageOverview();
+$pageOverview = new \Pages\Deprecated\PageOverview();
 $pageOverview->route();

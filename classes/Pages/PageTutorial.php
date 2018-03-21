@@ -6,7 +6,7 @@
 namespace Pages;
 
 use \SN;
-use \userOptions;
+use Player\userOptions;
 
 class PageTutorial extends PageAjax {
 
@@ -20,7 +20,7 @@ class PageTutorial extends PageAjax {
   protected $id = 1;
 
   /**
-   * @var userOptions $userOptions
+   * @var \Player\userOptions $userOptions
    */
   protected $userOptions;
 
@@ -162,7 +162,7 @@ class PageTutorial extends PageAjax {
   }
 
   /**
-   * @param userOptions $userOptions
+   * @param \Player\userOptions $userOptions
    *
    * @return $this
    */

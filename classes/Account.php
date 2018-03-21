@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use \DBAL\DbQuery;
 
 /**

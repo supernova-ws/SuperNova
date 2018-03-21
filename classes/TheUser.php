@@ -13,14 +13,14 @@
 class TheUser {
 
   /**
-   * @var \Common\GlobalContainer $gc
+   * @var \Core\GlobalContainer $gc
    */
   protected $gc;
 
   /**
    * TheUser constructor.
    *
-   * @param \Common\GlobalContainer $gc
+   * @param \Core\GlobalContainer $gc
    */
   public function __construct($gc) {
     $this->gc = $gc;

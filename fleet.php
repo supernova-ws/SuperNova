@@ -233,7 +233,7 @@ switch($fleet_page) {
 
   case 5:
     $template = gettemplate('fleet5', true);
-    $pageFleet5Gathering = new \Deprecated\PageFleet5Gathering();
+    $pageFleet5Gathering = new \Pages\Deprecated\PageFleet5Gathering();
     $pageFleet5Gathering->modelFleet5Gathering($user, $planetrow, $template);
     // Building list of own planets & moons
     $pageFleet5Gathering->viewPage5Gathering($user, $planetrow, $template);

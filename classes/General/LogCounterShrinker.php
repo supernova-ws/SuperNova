@@ -5,7 +5,7 @@
 
 namespace General;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use \DBAL\DbMysqliResultIterator;
 
 /**

@@ -6,7 +6,7 @@
 namespace Bonus;
 
 use Common\ContainerPlus;
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use \SN;
 
 
@@ -23,7 +23,7 @@ class ValueStorage extends ContainerPlus {
   // TODO UNUSED!
 
   /**
-   * @var GlobalContainer
+   * @var \Core\GlobalContainer
    */
   protected $gc;
 
@@ -33,7 +33,7 @@ class ValueStorage extends ContainerPlus {
   protected $values = [];
 
   /**
-   * @return GlobalContainer
+   * @return \Core\GlobalContainer
    */
   public function getGlobalContainer() {
     return $this->gc;

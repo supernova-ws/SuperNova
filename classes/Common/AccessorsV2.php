@@ -14,7 +14,7 @@ namespace Common;
  *
  * @package Common
  */
-class AccessorsV2 implements \IContainer {
+class AccessorsV2 implements Interfaces\IContainer {
 
   /**
    * Array of accessors - getters/setters/etc

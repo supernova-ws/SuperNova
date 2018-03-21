@@ -7,7 +7,7 @@
 namespace Core;
 
 use \Common\ContainerPlus;
-use \Common\GlobalContainer;
+use Core\GlobalContainer;
 use TextEntity;
 use TextModel;
 

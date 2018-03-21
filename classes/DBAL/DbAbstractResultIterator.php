@@ -6,7 +6,7 @@
 namespace DBAL;
 
 use \mysqli_result;
-use Interfaces\ICountableIterator;
+use Common\Interfaces\ICountableIterator;
 
 /**
  * Class DbAbstractResultIterator

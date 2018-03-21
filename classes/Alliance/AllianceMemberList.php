@@ -6,7 +6,7 @@
 namespace Alliance;
 
 
-use \db_mysql;
+use DBAL\db_mysql;
 use Player\RecordPlayer;
 
 class AllianceMemberList {
@@ -15,7 +15,7 @@ class AllianceMemberList {
    */
   protected $alliance;
   /**
-   * @var db_mysql $db
+   * @var \DBAL\db_mysql $db
    */
   protected $db;
 

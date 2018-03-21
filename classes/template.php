@@ -236,22 +236,6 @@ class template
   */
   function display($handle, $include_once = true)
   {
-    /**
-     * @var phpbb_hook $phpbb_hook
-     */
-    global $phpbb_hook;
-
-    // This is used to access global vars
-    global $lang, $config, $user;
-
-    if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
-    {
-      if ($phpbb_hook->hook_return(array(__CLASS__, __FUNCTION__)))
-      {
-        return $phpbb_hook->hook_return_result(array(__CLASS__, __FUNCTION__));
-      }
-    }
-
     if (defined('IN_ERROR_HANDLER'))
     {
       $is_enotice = error_reporting();

@@ -42,5 +42,5 @@ global $sn_message_class_list, $user, $lang;
 
 lng_include('messages');
 
-$messagePage = new \Deprecated\PageMessage();
+$messagePage = new \Pages\Deprecated\PageMessage();
 $messagePage->route();

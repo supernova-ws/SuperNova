@@ -5,7 +5,7 @@
 
 namespace Meta\Economic;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 
 class EconomicHelper {
 

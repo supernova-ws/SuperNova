@@ -5,7 +5,7 @@
 
 namespace Common;
 
-use Interfaces\ICountableIterator;
+use Common\Interfaces\ICountableIterator;
 
 class EmptyCountableIterator extends \EmptyIterator implements ICountableIterator {
 

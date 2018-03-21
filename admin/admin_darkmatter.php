@@ -9,7 +9,7 @@
  *
  */
 
-use Exceptions\ExceptionSnLocalized;
+use Common\Exceptions\ExceptionSnLocalized;
 
 define('INSIDE', true);
 define('INSTALL', false);

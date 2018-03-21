@@ -5,7 +5,7 @@
 
 namespace Player;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use Bonus\ValueStorage;
 use SN;
 use classConfig;

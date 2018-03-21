@@ -14,5 +14,5 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $user;
-$thePage = new \Deprecated\PageMercenary();
+$thePage = new \Pages\Deprecated\PageMercenary();
 $thePage->mrc_mercenary_render($user);

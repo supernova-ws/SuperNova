@@ -3,7 +3,7 @@
  * Created by Gorlum 12.10.2017 15:19
  */
 
-use \Common\GlobalContainer;
+use Core\GlobalContainer;
 
 /**
  * Class General

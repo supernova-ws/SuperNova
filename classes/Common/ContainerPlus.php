@@ -2,7 +2,7 @@
 
 namespace Common;
 
-use Pimple\Container;
+use Common\Pimple\Container;
 
 /**
  * Class ContainerPlus
@@ -11,7 +11,7 @@ use Pimple\Container;
  *
  * @package Pimple
  */
-class ContainerPlus extends Container implements \IContainer {
+class ContainerPlus extends Container implements Interfaces\IContainer {
 
   public function __set($name, $value) {
     $this->offsetSet($name, $value);

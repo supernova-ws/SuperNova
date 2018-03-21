@@ -5,7 +5,7 @@
 
 namespace Tests\Common\Hooker;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 use Common\Hooker\Hooker;
 use Common\Hooker\Pimp;
 

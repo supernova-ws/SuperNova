@@ -6,8 +6,8 @@
 namespace General;
 
 use Common\EmptyCountableIterator;
-use \Common\GlobalContainer;
-use Interfaces\ICountableIterator;
+use Core\GlobalContainer;
+use Common\Interfaces\ICountableIterator;
 
 /**
  * Class VisitMerger
@@ -29,7 +29,7 @@ abstract class VisitMerger {
 
 
   /**
-   * @var GlobalContainer $gc
+   * @var \Core\GlobalContainer $gc
    */
   protected $gc;
 
@@ -63,7 +63,7 @@ abstract class VisitMerger {
   /**
    * General constructor.
    *
-   * @param GlobalContainer $gc
+   * @param \Core\GlobalContainer $gc
    */
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;

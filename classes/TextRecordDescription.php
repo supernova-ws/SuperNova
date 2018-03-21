@@ -4,6 +4,8 @@
  * Created by Gorlum 10.02.2017 0:39
  */
 
+use DBAL\db_mysql;
+
 /**
  * Class TextRecordDescription
  *

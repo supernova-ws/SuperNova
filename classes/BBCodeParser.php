@@ -10,7 +10,7 @@ class BBCodeParser {
    */
   protected $design;
 
-  public function __construct(\Common\GlobalContainer $gc) {
+  public function __construct(Core\GlobalContainer $gc) {
     $this->design = $gc->design;
   }
 

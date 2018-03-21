@@ -5,6 +5,7 @@
  */
 
 namespace Common;
+use Core\GlobalContainer;
 
 /**
  * Class AccessMagic
@@ -14,7 +15,7 @@ namespace Common;
  *
  * @package Common
  */
-class AccessMagic implements \IContainer {
+class AccessMagic implements Interfaces\IContainer {
 
   /**
    * @var GlobalContainer $services

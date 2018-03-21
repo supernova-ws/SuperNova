@@ -5,7 +5,7 @@
 
 namespace Common\Hooker;
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 
 /**
  * Class Pimp
@@ -21,7 +21,7 @@ class Pimp {
   const ORDER_LAST = PHP_INT_MAX;
 
   /**
-   * @var GlobalContainer $gc
+   * @var \Core\GlobalContainer $gc
    */
   protected $gc;
 
@@ -33,7 +33,7 @@ class Pimp {
   /**
    * Pimp constructor.
    *
-   * @param GlobalContainer $gc
+   * @param \Core\GlobalContainer $gc
    */
   public function __construct($gc) {
     $this->gc = $gc;

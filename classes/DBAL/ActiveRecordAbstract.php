@@ -6,8 +6,8 @@
 namespace DBAL;
 
 use Common\AccessLogged;
-use Common\GlobalContainer;
-use Exceptions\DbalFieldInvalidException;
+use Core\GlobalContainer;
+use Common\Exceptions\DbalFieldInvalidException;
 
 /**
  * Class ActiveRecordAbstract
@@ -22,7 +22,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   const IGNORE_PREFIX = 'Record';
 
   /**
-   * @var \db_mysql $db
+   * @var \DBAL\db_mysql $db
    */
   protected static $db;
   /**
@@ -68,16 +68,16 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   }
 
   /**
-   * @param \db_mysql $db
+   * @param \DBAL\db_mysql $db
    */
-  public static function setDb(\db_mysql $db) {
+  public static function setDb(\DBAL\db_mysql $db) {
     static::$db = $db;
   }
 
   /**
    * Get DB
    *
-   * @return \db_mysql
+   * @return \DBAL\db_mysql
    */
   public static function db() {
     empty(static::$db) ? static::$db = \SN::services()->db : false;
@@ -204,7 +204,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * ActiveRecord constructor.
    *
-   * @param GlobalContainer|null $services
+   * @param \Core\GlobalContainer|null $services
    */
   public function __construct(GlobalContainer $services = null) {
     parent::__construct($services);

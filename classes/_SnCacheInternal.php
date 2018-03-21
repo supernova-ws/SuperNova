@@ -7,6 +7,8 @@
  * Class _SnCacheInternal
  *
  * Внутренний кэшер отдельных записей из БД в память PHP
+ *
+ * @deprecated
  */
 class _SnCacheInternal {
   public static $data = array(); // Кэш данных - юзера, планеты, юниты, очередь, альянсы итд

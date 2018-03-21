@@ -17,7 +17,7 @@ use SN;
  */
 class FleetDispatcher {
   /**
-   * @var \Common\GlobalContainer $gc
+   * @var \Core\GlobalContainer $gc
    */
   protected $gc;
 
@@ -44,7 +44,7 @@ class FleetDispatcher {
   protected $timers;
 
 
-  public function __construct(\Common\GlobalContainer $gc) {
+  public function __construct(\Core\GlobalContainer $gc) {
     $this->gc = $gc;
 
     $this->gameConfig = $gc->config;

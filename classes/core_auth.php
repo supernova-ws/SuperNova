@@ -1,6 +1,8 @@
 <?php
 
 // define("DEBUG_AUTH", true);
+use DBAL\db_mysql;
+use Modules\sn_module;
 
 /**
  * Статический над-класс, который обеспечивает интерфейс авторизации для остального кода
@@ -9,7 +11,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a15.4#
+ * version #43a15.20#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +19,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.4# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.20# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 

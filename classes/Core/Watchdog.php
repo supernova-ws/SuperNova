@@ -6,7 +6,7 @@
 namespace Core;
 
 
-use Common\GlobalContainer;
+use Core\GlobalContainer;
 
 class Watchdog {
   /**

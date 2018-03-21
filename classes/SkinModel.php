@@ -1,5 +1,7 @@
 <?php
 
+use Core\GlobalContainer;
+
 /**
  * Created by Gorlum 23.02.2017 12:20
  */
@@ -8,7 +10,7 @@ class SkinModel {
   const NO_IMAGE_PATH = '/design/images/_no_image.png';
 
   /**
-   * @var \Common\GlobalContainer $gc
+   * @var GlobalContainer $gc
    */
   protected $gc;
 
@@ -32,9 +34,9 @@ class SkinModel {
   /**
    * SkinModel constructor.
    *
-   * @param \Common\GlobalContainer $gc
+   * @param GlobalContainer $gc
    */
-  public function __construct(\Common\GlobalContainer $gc) {
+  public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
     $this->skins = array();
 
