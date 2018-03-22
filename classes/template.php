@@ -666,7 +666,7 @@ class template
   function _tpl_include($filename, $include = true)
   {
     // This is used to access global vars
-    global $lang, $config, $user;
+    // global $lang, $config, $user; // Not needed!
 
     $handle = $filename;
     $this->filename[$handle] = $filename;
@@ -759,7 +759,7 @@ class template
 
   protected function evaluate($code) {
     // This is used to access global vars
-    global $lang, $config, $user;
+    // global $lang, $config, $user; // Not needed
 
     eval(' ?>' . $code . '<?php ');
   }

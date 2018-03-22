@@ -90,6 +90,8 @@
  * @property float      $fleet_speed                   => 1, // Fleet speed
  * @property float      $game_speed_expedition         => 1, // Game expedition speed
  *
+ * @property int        $tpl_minifier                  => 0, // Template minifier
+ * @property int        $tpl_allow_php                 => 0, // PTL allow INCLUDEPHP and PHP tags
  *
  * ----- Player settings
  * @property int|float  $player_metamatter_immortal    => 200000, // MM amount to reward account with Immortal status
@@ -365,6 +367,7 @@ class classConfig extends classPersistent {
     'stats_php_memory'       => '1024M',
 
     'tpl_minifier' => 0, // Template minifier
+    'tpl_allow_php' => 0, // PTL allow INCLUDEPHP and PHP tags
 
     'tutorial_first_item' => 1,
 

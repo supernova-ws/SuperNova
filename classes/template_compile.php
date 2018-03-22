@@ -84,18 +84,18 @@ class template_compile
     // Store in database if required...
     if ($store_in_db)
     {
-      global $db, $user;
-
-      $sql_ary = array(
-        'template_id'     => $this->template->files_template[$handle],
-        'template_filename'   => $this->template->filename[$handle],
-        'template_included'   => '',
-        'template_mtime'    => time(),
-        'template_data'     => trim(@file_get_contents($this->template->files[$handle])),
-      );
-
-      $sql = 'INSERT INTO ' . STYLES_TEMPLATE_DATA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-      $db->sql_query($sql);
+//      global $db, $user;
+//
+//      $sql_ary = array(
+//        'template_id'     => $this->template->files_template[$handle],
+//        'template_filename'   => $this->template->filename[$handle],
+//        'template_included'   => '',
+//        'template_mtime'    => time(),
+//        'template_data'     => trim(@file_get_contents($this->template->files[$handle])),
+//      );
+//
+//      $sql = 'INSERT INTO ' . STYLES_TEMPLATE_DATA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+//      $db->sql_query($sql);
     }
   }
 
@@ -122,8 +122,6 @@ class template_compile
   */
   function compile($code, $no_echo = false, $echo_var = '')
   {
-    global $config;
-
     if ($echo_var)
     {
       global $$echo_var;
@@ -249,11 +247,11 @@ class template_compile
         break;
 
         case 'INCLUDEPHP':
-          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
+          $compile_blocks[] = (SN::$config->tpl_allow_php) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
         break;
 
         case 'PHP':
-          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
+          $compile_blocks[] = (SN::$config->tpl_allow_php) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
         break;
 
         default:
@@ -296,7 +294,7 @@ class template_compile
   function compile_var_tags(&$text_blocks)
   {
     // including $lang variable
-    global $lang, $config;
+    // global $lang, $config; // NOT NEDEED - $lang now is global!
 
     // change template varrefs into PHP varrefs
     $varrefs = array();
@@ -345,16 +343,16 @@ class template_compile
     // transform vars prefixed by L_ into their language variable pendant if nothing is set within the tpldata array
     if (strpos($text_blocks, '{L_') !== false)
     {
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[D_([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'][\\2])) ? $this->_rootref[\'L_\\1\'][\\2] : ((isset($lang[\'\\1\'][\\2])) ? $lang[\'\\1\'][\\2] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'][\'\\2\'])) ? $this->_rootref[\'L_\\1\'][\'\\2\'] : ((isset($lang[\'\\1\'][\'\\2\'])) ? $lang[\'\\1\'][\'\\2\'] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'])) ? $this->_rootref[\'L_\\1\'] : ((isset($lang[\'\\1\'])) ? $lang[\'\\1\'] : \'{ L_\\1 }\')); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[D_([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'][\\2])) ? $this->_rootref[\'L_\\1\'][\\2] : ((isset(SN::$lang[\'\\1\'][\\2])) ? SN::$lang[\'\\1\'][\\2] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'][\'\\2\'])) ? $this->_rootref[\'L_\\1\'][\'\\2\'] : ((isset(SN::$lang[\'\\1\'][\'\\2\'])) ? SN::$lang[\'\\1\'][\'\\2\'] : \'{ \\1[\\2] }\')); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'L_\\1\'])) ? $this->_rootref[\'L_\\1\'] : ((isset(SN::$lang[\'\\1\'])) ? SN::$lang[\'\\1\'] : \'{ L_\\1 }\')); ?>', $text_blocks);
     }
 
     // Handle addslashed language variables prefixed with LA_
     // If a template variable already exist, it will be used in favor of it...
     if (strpos($text_blocks, '{LA_') !== false)
     {
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{LA_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'LA_\\1\'])) ? $this->_rootref[\'LA_\\1\'] : ((isset($this->_rootref[\'L_\\1\'])) ? addslashes($this->_rootref[\'L_\\1\']) : ((isset($lang[\'\\1\'])) ? addslashes($lang[\'\\1\']) : \'{ LA_\\1 }\'))); ?>', $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{LA_([a-zA-Z0-9\-_]+)\}#', /** @lang PHP */'<?php echo ((isset($this->_rootref[\'LA_\\1\'])) ? $this->_rootref[\'LA_\\1\'] : ((isset($this->_rootref[\'L_\\1\'])) ? addslashes($this->_rootref[\'L_\\1\']) : ((isset(SN::$lang[\'\\1\'])) ? addslashes(SN::$lang[\'\\1\']) : \'{ LA_\\1 }\'))); ?>', $text_blocks);
     }
 
     // Handle remaining varrefs
@@ -875,9 +873,7 @@ class template_compile
   */
   function minify($html)
   {
-    global $config;
-
-    if(!$config->tpl_minifier)
+    if(!SN::$config->tpl_minifier)
     {
       return $html;
     }
