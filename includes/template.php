@@ -88,13 +88,11 @@ function tpl_menu_adminize($menu) {
 }
 
 /**
- * @param      $menu
- * @param      $extra
+ * @param array $menu
+ * @param array $extra
  */
 function tpl_menu_merge_extra(&$menu, &$extra) {
-  !is_array($menu) ? $menu = [] : false;
-
-  if (!is_array($extra)) {
+  if (!is_array($extra) || !is_array($menu) || empty($menu)) {
     return;
   }
 
@@ -1033,7 +1031,7 @@ function tpl_get_fleets_flying(&$user) {
  * @param template $template
  * @param string   $blockName
  * @param mixed    $values
- * @param string   $keyName - Name for key name
+ * @param string   $keyName   - Name for key name
  * @param string   $valueName - Name for value name
  */
 function tpl_assign_select(&$template, $blockName, $values, $keyName = 'KEY', $valueName = 'VALUE') {
