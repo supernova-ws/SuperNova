@@ -9,9 +9,12 @@ use Modules\sn_module;
 use SN;
 
 class PageAdminModules extends PageDeprecated {
+  const SORT_BY_PACKAGE = 0;
+  const SORT_BY_ACTIVITY = 1;
+
   private static $sorting = [
-    0 => ['PACKAGE', 'NAME', '!ACTIVE', '!INSTALLED',],
-    1 => ['!ACTIVE', '!INSTALLED', 'PACKAGE', 'NAME',],
+    self::SORT_BY_PACKAGE  => ['PACKAGE', 'NAME', '!ACTIVE', '!INSTALLED',],
+    self::SORT_BY_ACTIVITY => ['!ACTIVE', '!INSTALLED', 'PACKAGE', 'NAME',],
   ];
 
   private static $sortFields = [];
@@ -55,8 +58,8 @@ class PageAdminModules extends PageDeprecated {
       ];
     }
 
-    $sortBy = sys_get_param_int('SORT_BY', 0);
-    array_key_exists($sortBy, static::$sorting) ?: ($sortBy = 0);
+    $sortBy = sys_get_param_int('SORT_BY', self::SORT_BY_ACTIVITY);
+    array_key_exists($sortBy, static::$sorting) ?: ($sortBy = self::SORT_BY_ACTIVITY);
     static::$sortFields = static::$sorting[$sortBy];
     usort($render, [static::class, 'sortBy']);
 
