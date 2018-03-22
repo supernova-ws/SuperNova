@@ -3920,8 +3920,6 @@ td.error_message {
   justify-content: center;
 
   padding: 0;
-
-  border: 1px solid red;
 }
 .uni_nav_wrapper2.header {
   display: flex;
