@@ -1,35 +1,34 @@
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form">
-  <table class="border_image_small {$SCAN_CLASS_NO_BORDER}" style="margin-bottom: 1em;">
-    <tbody>
-    <tr>
-      <td class="c" colspan="3"><label for="galaxy">{L_Galaxy}</label></td>
-      <td class="c" colspan="3"><label for="system">{L_Solar_system}</label></td>
-      <th class="c_c" rowspan="3" align="center">
-        <input value="{L_sys_goto}" type="submit">
-        <input type="hidden" id="auto" value="dr">
-        <input type="hidden" id="universe_scan_mode" name="scan" value="{UNIVERSE_SCAN_MODE}">
-      </th>
-    </tr>
-    <tr>
-      <th class="c"><span class="button_pseudo" id="galaxyLeft">&lt;-</span></th>
-      <th class="c"><input name="galaxy" id="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"/>
-      </th>
-      <th class="c"><span class="button_pseudo" id="galaxyRight">-&gt;</span></th>
+  <input type="hidden" id="auto" value="dr">
+  <input type="hidden" id="universe_scan_mode" name="scan" value="{UNIVERSE_SCAN_MODE}">
 
-      <th class="c"><span class="button_pseudo" id="systemLeft">&lt;-</span></th>
-      <th class="c"><input name="system" id="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"/>
-      </th>
-      <th class="c"><span class="button_pseudo" id="systemRight">-&gt;</span></th>
-    </tr>
-    <tr class="c_с">
-      <th colspan="6" style="padding: 0">
-        <!-- IF UNIVERSE_SCAN_MODE -->
-        <span class="button_pseudo uni_scan" id="universeScanStop">{L_uni_scan_stop}</span>
-        <!-- ELSE -->
-        <span class="button_pseudo uni_scan" id="universeScanStart">{L_uni_scan_start}</span>
-        <!-- ENDIF -->
-      </th>
-    </tr>
-    </tbody>
-  </table>
+  <div id="uni_nav_scan_wrapper">
+    <!-- IF UNIVERSE_SCAN_MODE -->
+    <span class="button_pseudo uni_scan" id="universeScanStop">{L_uni_scan_stop}</span>
+    <!-- ELSE -->
+    <span class="button_pseudo uni_scan" id="universeScanStart">{L_uni_scan_start}</span>
+    <!-- ENDIF -->
+  </div>
+
+  <div class="uni_nav_wrapper header">
+    <div class="uni_nav_wrapper2 header">
+      <div class="uni_nav_child">
+        <label for="galaxy">{L_Galaxy}</label>
+        <span class="button_pseudo" id="galaxyLeft">&lt;</span>
+        <input name="galaxy" id="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"/>
+        <span class="button_pseudo" id="galaxyRight">&gt;</span>
+      </div>
+
+      <div class="uni_nav_child">
+        <label for="system">{L_Solar_system}</label>
+        <span class="button_pseudo" id="systemLeft">&lt;</span>
+        <input name="system" id="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"/>
+        <span class="button_pseudo" id="systemRight">&gt;</span>
+      </div>
+    </div>
+
+    <div class="uni_nav_child">
+      <input value="{L_sys_goto}" type="submit"/>
+    </div>
+  </div>
 </form>

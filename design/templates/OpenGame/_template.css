@@ -3904,3 +3904,42 @@ td.error_message {
 .option_block_option {
   text-align: left;
 }
+
+#galaxy_form {
+  display: inline-block;
+}
+
+#uni_nav_scan_wrapper {
+  display: inline-block;
+  margin: 0.5em;
+}
+
+.uni_nav_wrapper.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid red;
+}
+.uni_nav_wrapper2.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  padding: 0;
+}
+.uni_nav_child {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0 1em;
+}
+
+.uni_show_user > span,
+.uni_show_ally > span
+{
+  text-wrap: none;
+  white-space: nowrap;
+}
