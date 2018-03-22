@@ -60,9 +60,9 @@ class PageAdminMining extends PageDeprecated {
     lng_include('admin');
 
     $specialField =
-      'sum(metal_perhour) * ' . get_unit_cost_in([RES_METAL => self::PAGE_SORT_BY_NAME]) . ' + ' .
-      'sum(crystal_perhour) * ' . get_unit_cost_in([RES_CRYSTAL => self::PAGE_SORT_BY_NAME]) . ' + ' .
-      'sum(deuterium_perhour) * ' . get_unit_cost_in([RES_DEUTERIUM => self::PAGE_SORT_BY_NAME]);
+      'sum(metal_perhour) * ' . get_unit_cost_in([RES_METAL => 1]) . ' + ' .
+      'sum(crystal_perhour) * ' . get_unit_cost_in([RES_CRYSTAL => 1]) . ' + ' .
+      'sum(deuterium_perhour) * ' . get_unit_cost_in([RES_DEUTERIUM => 1]);
     $sorting[static::PAGE_SORT_BY_PRODUCTION]['SQL_SORT'] = [$specialField . ' DESC'];
 
     $filterActive = sys_get_param_int('ACTIVE_STATUS', 0);
@@ -116,9 +116,9 @@ GROUP BY
           RES_DEUTERIUM => $row['deuterium_prod'],
         ]),
         'PERCENT'    =>
-          round($row['average_metal_percent'], self::PAGE_SORT_BY_NAME) . '/' .
-          round($row['average_crystal_percent'], self::PAGE_SORT_BY_NAME) . '/' .
-          round($row['average_deuterium_percent'], self::PAGE_SORT_BY_NAME),
+          round($row['average_metal_percent'], 2) . '/' .
+          round($row['average_crystal_percent'], 2) . '/' .
+          round($row['average_deuterium_percent'], 2),
       ];
     }
 
