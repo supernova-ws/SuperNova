@@ -9,7 +9,7 @@ use Modules\sn_module;
  * Time: 6:05
  */
 class auth_abstract extends sn_module {
-  public $manifest = array();
+  public $manifest = [];
 
   public $provider_id = ACCOUNT_PROVIDER_NONE;
 
@@ -37,9 +37,8 @@ class auth_abstract extends sn_module {
   /**
    * @param string $filename
    */
-  // OK 4.9
   public function __construct($filename = __FILE__) {
-    if($this->provider_id == ACCOUNT_PROVIDER_NONE) {
+    if ($this->provider_id == ACCOUNT_PROVIDER_NONE) {
       die('У всех провайдеров должен быть $provider_id!');
     }
 
@@ -49,26 +48,14 @@ class auth_abstract extends sn_module {
   /**
    * @return int
    */
-  // OK 4.9
   public function login() {
-//    // TODO Проверяем поддерживаемость метода
-//    // TODO Пытаемся залогиниться
-//    $this->password_reset_send_code();
-//    $this->password_reset_confirm();
-//    $this->register();
-//    $this->login_username();
-//    $this->login_cookie();
-//
-//    // $this->is_impersonating = $this->account_login_status == LOGIN_SUCCESS && !empty($_COOKIE[$this->cookie_name_impersonate]);
     return $this->account_login_status;
   }
 
   /**
    *
    */
-  // OK 4.9
   public function logout() {
-//    $this->cookie_clear();
   }
 
   /**
@@ -80,14 +67,7 @@ class auth_abstract extends sn_module {
    *
    * @return array|bool|resource
    */
-  // OK v4.9
   public function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
-//    $result = $this->account->password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe);
-//    if($result) {
-//      $this->cookie_set();
-//    }
-//
-//    return $result;
     return
       $this->is_feature_supported(AUTH_FEATURE_PASSWORD_CHANGE)
       && is_object($this->account)
@@ -97,9 +77,7 @@ class auth_abstract extends sn_module {
   /**
    * @param $account_to_impersonate
    */
-  // OK 4.9
   public function impersonate($account_to_impersonate) {
-//    $this->cookie_set($account_to_impersonate);
   }
 
   /**
@@ -109,7 +87,6 @@ class auth_abstract extends sn_module {
    *
    * @return bool
    */
-  // OK 4.9
   public function password_check($password_unsafe) {
     return
       $this->is_feature_supported(AUTH_FEATURE_HAS_PASSWORD)
@@ -124,7 +101,6 @@ class auth_abstract extends sn_module {
    *
    * @return bool
    */
-  // OK v4.9
   public function is_feature_supported($feature) {
     return !empty($this->features[$feature]);
   }
@@ -134,10 +110,9 @@ class auth_abstract extends sn_module {
    *
    * @return string
    */
-  // OK 4.6
   public function player_name_suggest() {
     $name = '';
-    if(is_object($this->account) && !empty($this->account->account_email)) {
+    if (is_object($this->account) && !empty($this->account->account_email)) {
       list($name) = explode('@', $this->account->account_email);
     }
 

@@ -77,7 +77,7 @@ class SkinModel {
   }
 
   /**
-   * Switches active skin
+   * Switches current skin
    *
    * @param $skinName
    */

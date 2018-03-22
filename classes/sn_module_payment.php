@@ -8,30 +8,32 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:49
  */
-
 abstract class sn_module_payment extends sn_module {
-  public static $bonus_table = array(
-    2000 => 0,
-    // 5000 => 0,
-    10000 => 0,
-    20000 => 0,
+  public $versionCommitted = '#43a15.27#';
 
-    50000 => 0.02,
-    100000 => 0.05,
-    200000 => 0.07,
-    300000 => 0.10,
-    400000 => 0.15,
-    500000 => 0.20,
-    800000 => 0.25,
+  public $active = false;
+
+  public static $bonus_table = [
+    2000    => 0,
+    // 5000 => 0,
+    10000   => 0,
+    20000   => 0,
+    50000   => 0.02,
+    100000  => 0.05,
+    200000  => 0.07,
+    300000  => 0.10,
+    400000  => 0.15,
+    500000  => 0.20,
+    800000  => 0.25,
     1000000 => 0.30,
     1500000 => 0.40,
     2000000 => 0.50,
     3000000 => 0.60,
     5000000 => 0.70,
-  );
+  ];
 
-  public static $payment_methods = array(
-    PAYMENT_METHOD_BANK_CARD => array(
+  public static $payment_methods = [
+    PAYMENT_METHOD_BANK_CARD => [
       /*
       PAYMENT_METHOD_id => array(
         'currency' => 'WMR', // Currency code 3 letter
@@ -40,317 +42,316 @@ abstract class sn_module_payment extends sn_module {
         'button' => true, // Optional. Forces method buttoning with 'image' set
       ),
       */
-      PAYMENT_METHOD_BANK_CARD_STANDARD => array(
+      PAYMENT_METHOD_BANK_CARD_STANDARD         => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/card/generic.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_CARD_LIQPAY => array(
+        'image'    => 'design/images/payments/card/generic.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_CARD_LIQPAY           => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/card/liqpay.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_CARD_EASYPAY => array(
+        'image'    => 'design/images/payments/card/liqpay.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_CARD_EASYPAY          => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/card/easypay.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => array(
+        'image'    => 'design/images/payments/card/easypay.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => [
         'currency' => 'USD',
-        'image' => 'design/images/payments/card/american_express.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_CARD_JCB => array(
+        'image'    => 'design/images/payments/card/american_express.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_CARD_JCB              => [
         'currency' => 'USD',
-        'image' => 'design/images/payments/card/jcb.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_CARD_UNIONPAY => array(
+        'image'    => 'design/images/payments/card/jcb.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_CARD_UNIONPAY         => [
         'currency' => 'USD',
-        'image' => 'design/images/payments/card/unionpay.png',
-        'button' => true,
-      ),
-    ),
+        'image'    => 'design/images/payments/card/unionpay.png',
+        'button'   => true,
+      ],
+    ],
 
-    PAYMENT_METHOD_EMONEY => array(
-      PAYMENT_METHOD_EMONEY_YANDEX => array(
+    PAYMENT_METHOD_EMONEY => [
+      PAYMENT_METHOD_EMONEY_YANDEX       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/yandexmoney.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_QIWI => array(
+        'image'    => 'design/images/payments/emoney/yandexmoney.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_QIWI         => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/qiwi.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_PAYPAL => array(
+        'image'    => 'design/images/payments/emoney/qiwi.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_PAYPAL       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/paypal.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => array(
+        'image'    => 'design/images/payments/emoney/paypal.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => [
         'currency' => 'WMR',
-        'image' => 'design/images/payments/emoney/webmoney_wmr.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => array(
+        'image'    => 'design/images/payments/emoney/webmoney_wmr.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => [
         'currency' => 'WMZ',
-        'image' => 'design/images/payments/emoney/webmoney_wmz.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => array(
+        'image'    => 'design/images/payments/emoney/webmoney_wmz.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => [
         'currency' => 'WMU',
-        'image' => 'design/images/payments/emoney/webmoney_wmu.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_WEBMONEY_WME => array(
+        'image'    => 'design/images/payments/emoney/webmoney_wmu.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WME => [
         'currency' => 'WME',
-        'image' => 'design/images/payments/emoney/webmoney_wme.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => array(
+        'image'    => 'design/images/payments/emoney/webmoney_wme.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => [
         'currency' => 'WMB',
-        'image' => 'design/images/payments/emoney/webmoney_wmb.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_TELEMONEY => array(
+        'image'    => 'design/images/payments/emoney/webmoney_wmb.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_TELEMONEY    => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/telemoney.gif',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_ELECSNET => array(
+        'image'    => 'design/images/payments/emoney/telemoney.gif',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_ELECSNET     => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/elecsnet.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_EASYPAY => array(
+        'image'    => 'design/images/payments/emoney/elecsnet.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_EASYPAY      => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/easypay.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_RUR_W1R => array(
+        'image'    => 'design/images/payments/emoney/easypay.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_RUR_W1R      => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/walletone.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_EMONEY_MAILRU => array(
+        'image'    => 'design/images/payments/emoney/walletone.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_EMONEY_MAILRU       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/emoney/mailru.gif',
-      ),
-    ),
+        'image'    => 'design/images/payments/emoney/mailru.gif',
+      ],
+    ],
 
-    PAYMENT_METHOD_MOBILE => array(
-      PAYMENT_METHOD_MOBILE_SMS => array(
+    PAYMENT_METHOD_MOBILE => [
+      PAYMENT_METHOD_MOBILE_SMS         => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/sms.png',
-        'name' => true,
-        'button' => true,
-      ),
-      PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => array(
+        'image'    => 'design/images/payments/mobile/sms.png',
+        'name'     => true,
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => [
         'currency' => 'USD',
-        'image' => 'design/images/payments/mobile/paypal_zong.png',
-        'name' => true,
-        'button' => true,
-      ),
-      PAYMENT_METHOD_MOBILE_XSOLLA => array(
+        'image'    => 'design/images/payments/mobile/paypal_zong.png',
+        'name'     => true,
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_MOBILE_XSOLLA      => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/xsolla.png',
-        'name' => true,
-        'button' => true,
-      ),
+        'image'    => 'design/images/payments/mobile/xsolla.png',
+        'name'     => true,
+        'button'   => true,
+      ],
 
 
-      PAYMENT_METHOD_MOBILE_MEGAPHONE => array(
+      PAYMENT_METHOD_MOBILE_MEGAPHONE => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/megafon.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_MOBILE_MTS => array(
+        'image'    => 'design/images/payments/mobile/megafon.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_MOBILE_MTS       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/mts.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_MOBILE_KYIVSTAR => array(
+        'image'    => 'design/images/payments/mobile/mts.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_MOBILE_KYIVSTAR  => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/mobile/kyivstar.png',
-        'button' => true,
-      ),
-    ),
+        'image'    => 'design/images/payments/mobile/kyivstar.png',
+        'button'   => true,
+      ],
+    ],
 
-    PAYMENT_METHOD_BANK_INTERNET => array(
-      PAYMENT_METHOD_BANK_INTERNET_PRIVAT24 => array(
+    PAYMENT_METHOD_BANK_INTERNET => [
+      PAYMENT_METHOD_BANK_INTERNET_PRIVAT24         => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/bank_internet/privat24.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_BANK24 => array(
+        'image'    => 'design/images/payments/bank_internet/privat24.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_BANK24           => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/bank_internet/bank24.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK => array(
+        'image'    => 'design/images/payments/bank_internet/bank24.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK        => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/alfa_bank.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_SBERBANK => array(
+        'image'    => 'design/images/payments/bank_internet/alfa_bank.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_SBERBANK         => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/sberbank.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_PROSMVYAZBANK => array(
+        'image'    => 'design/images/payments/bank_internet/sberbank.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_PROSMVYAZBANK    => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/prosmvyazbank.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_HANDY_BANK => array(
+        'image'    => 'design/images/payments/bank_internet/prosmvyazbank.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_HANDY_BANK       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/handy_bank.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_RUSSKIY_STANDART => array(
+        'image'    => 'design/images/payments/bank_internet/handy_bank.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_RUSSKIY_STANDART => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/russkiy_standart.gif',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_VTB24 => array(
+        'image'    => 'design/images/payments/bank_internet/russkiy_standart.gif',
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_VTB24            => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/vtb24.gif',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_OCEAN_BANK => array(
+        'image'    => 'design/images/payments/bank_internet/vtb24.gif',
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_OCEAN_BANK       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/bank_internet/ocean_bank.gif',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_007 => array(
+        'image'    => 'design/images/payments/bank_internet/ocean_bank.gif',
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_007              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_008 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_008              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_009 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_009              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_010 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_010              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_011 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_011              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_012 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_012              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_013 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_013              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_014 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_014              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_015 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_015              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_016 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_016              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_017 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_017              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_018 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_018              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_019 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_019              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_020 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_020              => [
         'currency' => 'RUB',
-      ),
-      PAYMENT_METHOD_BANK_INTERNET_021 => array(
+      ],
+      PAYMENT_METHOD_BANK_INTERNET_021              => [
         'currency' => 'RUB',
-      ),
-    ),
+      ],
+    ],
 
-    PAYMENT_METHOD_BANK_TRANSFER => array(
-    ),
+    PAYMENT_METHOD_BANK_TRANSFER => [],
 
-    PAYMENT_METHOD_TERMINAL => array(
-      PAYMENT_METHOD_TERMINAL_UKRAINE => array(
+    PAYMENT_METHOD_TERMINAL => [
+      PAYMENT_METHOD_TERMINAL_UKRAINE    => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/terminal/ukraine.png',
-        'button' => true,
-        'name' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_IBOX => array(
+        'image'    => 'design/images/payments/terminal/ukraine.png',
+        'button'   => true,
+        'name'     => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_IBOX       => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/terminal/ibox.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_EASYPAY => array(
+        'image'    => 'design/images/payments/terminal/ibox.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_EASYPAY    => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/terminal/easypay.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_RUSSIA => array(
+        'image'    => 'design/images/payments/terminal/easypay.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_RUSSIA     => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/russia.png',
-        'button' => true,
-        'name' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_QIWI => array(
+        'image'    => 'design/images/payments/terminal/russia.png',
+        'button'   => true,
+        'name'     => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_QIWI       => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/qiwi.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_ELECSNET => array(
+        'image'    => 'design/images/payments/terminal/qiwi.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_ELECSNET   => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/elecsnet.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_TELEPAY => array(
+        'image'    => 'design/images/payments/terminal/elecsnet.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_TELEPAY    => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/telepay.png',
-        'button' => true,
-      ),
-      PAYMENT_METHOD_TERMINAL_ELEMENT => array(
+        'image'    => 'design/images/payments/terminal/telepay.png',
+        'button'   => true,
+      ],
+      PAYMENT_METHOD_TERMINAL_ELEMENT    => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/element.gif',
-      ),
-      PAYMENT_METHOD_TERMINAL_KASSIRANET => array(
+        'image'    => 'design/images/payments/terminal/element.gif',
+      ],
+      PAYMENT_METHOD_TERMINAL_KASSIRANET => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/terminal/kassira_net.gif',
-        'button' => true,
-      ),
-    ),
+        'image'    => 'design/images/payments/terminal/kassira_net.gif',
+        'button'   => true,
+      ],
+    ],
 
-    PAYMENT_METHOD_OTHER => array(
-      PAYMENT_METHOD_OTHER_EVROSET => array(
+    PAYMENT_METHOD_OTHER => [
+      PAYMENT_METHOD_OTHER_EVROSET          => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/other/evroset.gif',
-      ),
-      PAYMENT_METHOD_OTHER_SVYAZNOY => array(
+        'image'    => 'design/images/payments/other/evroset.gif',
+      ],
+      PAYMENT_METHOD_OTHER_SVYAZNOY         => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/other/svyaznoy.gif',
-      ),
-      PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => array(
+        'image'    => 'design/images/payments/other/svyaznoy.gif',
+      ],
+      PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/other/robokassa_mobile.gif',
-        'name' => true,
-      ),
-    ),
+        'image'    => 'design/images/payments/other/robokassa_mobile.gif',
+        'name'     => true,
+      ],
+    ],
 
-    PAYMENT_METHOD_GENERIC => array(
-      PAYMENT_METHOD_GENERIC_XSOLLA => array(
+    PAYMENT_METHOD_GENERIC => [
+      PAYMENT_METHOD_GENERIC_XSOLLA => [
         'currency' => 'UAH',
-        'image' => 'design/images/payments/generic/xsolla.png',
-        'name' => true,
-        'button' => true,
-      ),
+        'image'    => 'design/images/payments/generic/xsolla.png',
+        'name'     => true,
+        'button'   => true,
+      ],
 
-      PAYMENT_METHOD_GENERIC_ROBOKASSA => array(
+      PAYMENT_METHOD_GENERIC_ROBOKASSA => [
         'currency' => 'RUB',
-        'image' => 'design/images/payments/generic/robokassa.jpg',
+        'image'    => 'design/images/payments/generic/robokassa.jpg',
         // 'name' => true,
-        'button' => true,
-      ),
-    ),
-  );
+        'button'   => true,
+      ],
+    ],
+  ];
 
   /**
    * @var Account $account
@@ -437,7 +438,7 @@ abstract class sn_module_payment extends sn_module {
     // Универсальный ответ на неизвестную ошибку
     SN_PAYMENT_REQUEST_UNDEFINED_ERROR => SN_PAYMENT_REQUEST_UNDEFINED_ERROR,
     // Утвердительный ответ
-    SN_PAYMENT_REQUEST_OK => SN_PAYMENT_REQUEST_OK,
+    SN_PAYMENT_REQUEST_OK              => SN_PAYMENT_REQUEST_OK,
   );
 
 //  public function __construct($filename = __FILE__) {
@@ -454,7 +455,7 @@ abstract class sn_module_payment extends sn_module {
   public function compile_request($request) {
     global $config, $lang, $user;
 
-    if(!(SN::$auth->account instanceof Account)) {
+    if (!(SN::$auth->account instanceof Account)) {
       // TODO - throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
     }
     $this->account = SN::$auth->account;
@@ -474,15 +475,15 @@ abstract class sn_module_payment extends sn_module {
     $this->payment_currency = $config->payment_currency_default;
     $this->payment_amount = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_currency);
 
-    if(empty($this->payment_external_currency) && !empty($this->config['currency'])) {
+    if (empty($this->payment_external_currency) && !empty($this->config['currency'])) {
       $this->payment_external_currency = $this->config['currency'];
     }
-    if(empty($this->payment_external_currency)) {
+    if (empty($this->payment_external_currency)) {
       throw new Exception($lang['pay_error_internal_no_external_currency_set'], SN_PAYMENT_ERROR_INTERNAL_NO_EXTERNAL_CURRENCY_SET);
     }
 
     $this->payment_external_amount = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_external_currency);
-    if($this->payment_external_amount < 0.01) {
+    if ($this->payment_external_amount < 0.01) {
       throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
     }
 
@@ -491,7 +492,7 @@ abstract class sn_module_payment extends sn_module {
     $this->generate_description();
 
     $this->db_insert();
-    if(!$this->is_exists) {
+    if (!$this->is_exists) {
       throw new Exception($lang['pay_msg_request_error_db_payment_create'], SN_PAYMENT_REQUEST_DB_ERROR_PAYMENT_CREATE);
     }
   }
@@ -506,24 +507,24 @@ abstract class sn_module_payment extends sn_module {
   protected function payment_request_process($options = array()) {
     global $lang, $config;
 
-    if(!$this->manifest['active']) {
+    if (!$this->active) {
       throw new Exception($lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
     }
 
     // Если есть payment_id - загружаем под него данные
-    if(!empty($this->payment_params['payment_id'])) {
+    if (!empty($this->payment_params['payment_id'])) {
       $this->request_payment_id = sys_get_param_id($this->payment_params['payment_id']);
-      if(!$this->request_payment_id) {
+      if (!$this->request_payment_id) {
         throw new Exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
       }
 
-      if(!$this->db_get_by_id($this->request_payment_id)) {
+      if (!$this->db_get_by_id($this->request_payment_id)) {
         throw new Exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
       }
 
       // Проверяем - был ли этот платеж обработан?
       // TODO - Статусы бывают разные. Нужен спецфлаг payment_processed
-      if($this->payment_status != PAYMENT_STATUS_NONE) {
+      if ($this->payment_status != PAYMENT_STATUS_NONE) {
         sn_db_transaction_rollback();
         sys_redirect(SN_ROOT_VIRTUAL . 'metamatter.php?payment_id=' . $this->payment_id);
         die();
@@ -533,89 +534,89 @@ abstract class sn_module_payment extends sn_module {
     // Пытаемся получить из запроса ИД аккаунта
     $request_account_id = !empty($this->payment_params['account_id']) ? sys_get_param_id($this->payment_params['account_id']) : 0;
     // Если в запросе нет ИД аккаунта - пытаемся использовать payment_account_id
-    if(empty($request_account_id) && !empty($this->payment_account_id)) {
+    if (empty($request_account_id) && !empty($this->payment_account_id)) {
       $request_account_id = $this->payment_account_id;
     }
     // Если теперь у нас нету ИД аккаунта ни в запросе, ни в записи таблицы - можно паниковать
-    if(empty($request_account_id)) {
+    if (empty($request_account_id)) {
       // TODO - аккаунт
       throw new Exception($lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
     // Если нет записи в таблице - тогда берем payment_account_id из запроса
-    if(empty($this->payment_account_id)) {
+    if (empty($this->payment_account_id)) {
       $this->payment_account_id = $request_account_id;
     }
     // Если у нас отличаются ИД аккаунта в запросе и ИД аккаунта в записи - тоже можно паниковать
-    if($this->payment_account_id != $request_account_id) {
+    if ($this->payment_account_id != $request_account_id) {
       // TODO - Поменять сообщение об ошибке
       throw new Exception($lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
     // Проверяем существование аккаунта с данным ИД
-    if(!$this->account->db_get_by_id($this->payment_account_id)) {
+    if (!$this->account->db_get_by_id($this->payment_account_id)) {
       throw new Exception($lang['pay_msg_request_user_invalid'] . ' ID ' . $this->payment_account_id, $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
 
     // TODO Проверка на сервер_ид - как бы и не нужна, наверное?
-    if(!empty($this->payment_params['server_id'])) {
+    if (!empty($this->payment_params['server_id'])) {
       $this->request_server_id = sys_get_param_str($this->payment_params['server_id']);
-      if(SN_ROOT_VIRTUAL != $this->request_server_id) {
+      if (SN_ROOT_VIRTUAL != $this->request_server_id) {
         throw new Exception($lang['pay_msg_request_server_wrong'] . " {$this->request_server_id} вместо " . SN_ROOT_VIRTUAL, SN_PAYMENT_REQUEST_SERVER_WRONG);
       }
     }
 
     // Сверка количества оплаченной ММ с учётом бонусов
-    if(!empty($this->payment_params['payment_dark_matter_gained'])) {
+    if (!empty($this->payment_params['payment_dark_matter_gained'])) {
       $request_mm_amount = sys_get_param_id($this->payment_params['payment_dark_matter_gained']);
-      if($request_mm_amount != $this->payment_dark_matter_gained && $this->is_loaded) {
+      if ($request_mm_amount != $this->payment_dark_matter_gained && $this->is_loaded) {
         throw new Exception($lang['pay_msg_mm_request_amount_invalid'] . " пришло {$request_mm_amount} ММ вместо {$this->payment_dark_matter_gained} ММ", SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID);
       }
       empty($this->payment_dark_matter_gained) ? $this->payment_dark_matter_gained = $request_mm_amount : false;
     }
-    if(empty($this->payment_dark_matter_paid)) {
+    if (empty($this->payment_dark_matter_paid)) {
       // TODO - обратный расчёт из gained
     }
 
     // Проверка наличия внешнего ИД платежа
-    if(!empty($this->payment_params['payment_external_id'])) {
+    if (!empty($this->payment_params['payment_external_id'])) {
       $request_payment_external_id = sys_get_param_id($this->payment_params['payment_external_id']);
-      if(empty($request_payment_external_id)) {
+      if (empty($request_payment_external_id)) {
         throw new exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
-      } elseif(!empty($this->payment_external_id) && $this->payment_external_id != $request_payment_external_id) {
+      } elseif (!empty($this->payment_external_id) && $this->payment_external_id != $request_payment_external_id) {
         // TODO - Может быть поменять сообщение
         throw new exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
       }
       $this->payment_external_id = $request_payment_external_id;
     }
     // Сверка суммы, запрошенной СН к оплате
-    if(!empty($this->payment_params['payment_external_money'])) {
+    if (!empty($this->payment_params['payment_external_money'])) {
       $request_money_out = sys_get_param_float($this->payment_params['payment_external_money']);
-      if($request_money_out != $this->payment_external_amount && $this->is_loaded) {
+      if ($request_money_out != $this->payment_external_amount && $this->is_loaded) {
         throw new Exception($lang['pay_msg_request_payment_amount_invalid'] . " пришло {$request_money_out} денег вместо {$this->payment_external_amount} денег", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
       }
       empty($this->payment_external_amount) ? $this->payment_external_amount = $request_money_out : false;
     }
     // Заполняем поле валюты платёжной системы
-    if(!empty($this->payment_params['payment_external_currency'])) {
+    if (!empty($this->payment_params['payment_external_currency'])) {
       $this->payment_external_currency = sys_get_param_str($this->payment_params['payment_external_currency']);
-      if(empty($this->payment_external_currency)) {
+      if (empty($this->payment_external_currency)) {
         // TODO - поменять сообщение
         throw new Exception($lang['pay_msg_request_payment_amount_invalid'] . " {$this->payment_external_currency}", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
       }
     }
-    if(empty($this->payment_external_currency)) {
+    if (empty($this->payment_external_currency)) {
       $this->payment_external_currency = $this->config['currency'];
     }
 
     // Заполнение внутренней суммы и валюты из внешних данных
-    if(empty($this->payment_currency)) {
+    if (empty($this->payment_currency)) {
       $this->payment_currency = $config->payment_currency_default;
     }
-    if(empty($this->payment_amount) && !empty($this->payment_external_currency)) {
+    if (empty($this->payment_amount) && !empty($this->payment_external_currency)) {
       $this->payment_amount = self::currency_convert($this->payment_external_amount, $this->payment_external_currency, $this->payment_currency);
     }
 
     // TODO - Тестовый режим
-    if(!empty($this->payment_params['test'])) {
+    if (!empty($this->payment_params['test'])) {
       $this->payment_test = $this->config['test'] || sys_get_param_int($this->payment_params['test']);
     }
 
@@ -644,12 +645,12 @@ abstract class sn_module_payment extends sn_module {
     sn_db_transaction_start();
     try {
       $response = $this->payment_request_process();
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       $response['result'] = $e->getCode();
       $response['message'] = $e->getMessage();
     }
 
-    if($response['result'] == SN_PAYMENT_REQUEST_OK) {
+    if ($response['result'] == SN_PAYMENT_REQUEST_OK) {
       sn_db_transaction_commit();
       $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Успешный платёж', LOG_INFO_PAYMENT);
     } else {
@@ -658,7 +659,7 @@ abstract class sn_module_payment extends sn_module {
     }
 
     // Переводим код результата из СН в код платежной системы
-    if(is_array($this->result_translations) && !empty($this->result_translations)) {
+    if (is_array($this->result_translations) && !empty($this->result_translations)) {
       $response['result'] = isset($this->result_translations[$response['result']]) ? $this->result_translations[$response['result']] : $this->result_translations[SN_PAYMENT_REQUEST_UNDEFINED_ERROR];
     }
 
@@ -667,6 +668,7 @@ abstract class sn_module_payment extends sn_module {
 
 
   // Function converts money values between currencies
+
   /**
    * Внутриигровая конвертация валют
    *
@@ -683,7 +685,7 @@ abstract class sn_module_payment extends sn_module {
     $currency_from = strtolower($currency_from);
     $currency_to = strtolower($currency_to);
 
-    if($currency_from != $currency_to) {
+    if ($currency_from != $currency_to) {
 //      $config_currency_from_name = 'payment_currency_exchange_' . $currency_from;
 //      $config_currency_to_name = 'payment_currency_exchange_' . $currency_to;
 
@@ -701,6 +703,7 @@ abstract class sn_module_payment extends sn_module {
   }
 
   // Function calculates bonused DM amount for bulk purchase and ($direct = false) vice versa
+
   /**
    * Рассчёт бонуса ММ
    *
@@ -713,10 +716,10 @@ abstract class sn_module_payment extends sn_module {
   public static function bonus_calculate($dark_matter, $direct = true, $return_bonus = false) {
     $bonus = 0;
     $dark_matter_new = $dark_matter;
-    if(!empty(self::$bonus_table) && $dark_matter >= self::$bonus_table[0]) {
-      if($direct) {
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplier) {
-          if($dm_for_bonus <= $dark_matter) {
+    if (!empty(self::$bonus_table) && $dark_matter >= self::$bonus_table[0]) {
+      if ($direct) {
+        foreach (self::$bonus_table as $dm_for_bonus => $multiplier) {
+          if ($dm_for_bonus <= $dark_matter) {
             $dark_matter_new = $dark_matter * (1 + $multiplier);
             $bonus = $multiplier;
           } else {
@@ -724,9 +727,9 @@ abstract class sn_module_payment extends sn_module {
           }
         }
       } else {
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplier) {
+        foreach (self::$bonus_table as $dm_for_bonus => $multiplier) {
           $temp = $dm_for_bonus * (1 + $multiplier);
-          if($dark_matter >= $temp) {
+          if ($dark_matter >= $temp) {
             $dark_matter_new = round($dark_matter / (1 + $multiplier));
             $bonus = $multiplier;
           } else {
@@ -757,22 +760,22 @@ abstract class sn_module_payment extends sn_module {
       'payment_status' => $this->payment_status,
       // 'payment_date' => $this->payment_date, // Не нужно
 
-      'payment_provider_id' => $this->payment_provider_id,
-      'payment_account_id' => $this->payment_account_id,
+      'payment_provider_id'  => $this->payment_provider_id,
+      'payment_account_id'   => $this->payment_account_id,
       'payment_account_name' => $this->payment_account_name,
-      'payment_user_id' => $this->payment_user_id,
-      'payment_user_name' => $this->payment_user_name,
+      'payment_user_id'      => $this->payment_user_id,
+      'payment_user_name'    => $this->payment_user_name,
 
-      'payment_dark_matter_paid' => $this->payment_dark_matter_paid,
+      'payment_dark_matter_paid'   => $this->payment_dark_matter_paid,
       'payment_dark_matter_gained' => $this->payment_dark_matter_gained,
 
-      'payment_amount' => $this->payment_amount,
+      'payment_amount'   => $this->payment_amount,
       'payment_currency' => $this->payment_currency,
 
-      'payment_external_id' => $this->payment_external_id, // TODO
-      'payment_external_amount' => $this->payment_external_amount,
+      'payment_external_id'       => $this->payment_external_id, // TODO
+      'payment_external_amount'   => $this->payment_external_amount,
       'payment_external_currency' => $this->payment_external_currency,
-      'payment_external_date' => $this->payment_external_date, // TODO
+      'payment_external_date'     => $this->payment_external_date, // TODO
 
       'payment_test' => $this->payment_test ? 1 : 0, // Boolean -> int
 
@@ -782,13 +785,13 @@ abstract class sn_module_payment extends sn_module {
     );
 
     $replace = false;
-    if($this->payment_id) {
+    if ($this->payment_id) {
       $payment['payment_id'] = $this->payment_id;
       $replace = true;
     }
 
     $query = array();
-    foreach($payment as $key => $value) {
+    foreach ($payment as $key => $value) {
       $value = is_string($value) ? '"' . db_escape($value) . '"' : $value;
       $query[] = "`{$key}` = {$value}";
     }
@@ -800,12 +803,12 @@ abstract class sn_module_payment extends sn_module {
 
 
   function payment_adjust_mm_new() {
-    if(!$this->payment_test) {
+    if (!$this->payment_test) {
       // Not a test payment. Adding DM to account
       $this->account = new Account($this->db);
       $this->account->db_get_by_id($this->payment_account_id);
       $result = $this->account->metamatter_change(RPG_PURCHASE, $this->payment_dark_matter_gained, $this->payment_comment);
-      if(!$result) {
+      if (!$result) {
         throw new Exception('Ошибка начисления ММ', SN_METAMATTER_ERROR_ADJUST);
       }
     }
@@ -815,25 +818,25 @@ abstract class sn_module_payment extends sn_module {
     die('{НЕ РАБОТАЕТ! СООБЩИТЕ АДМИНИСТРАЦИИ!}');
     global $lang;
 
-    if(!isset($payment['payment_status'])) {
+    if (!isset($payment['payment_status'])) {
       throw new exception($lang['pay_msg_request_payment_not_found'], SN_PAYMENT_REQUEST_ORDER_NOT_FOUND);
     }
 
-    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $safe_comment = db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
+    if ($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
+      $safe_comment = db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] . ' ' . $payment['payment_comment']);
 
-      if(!$payment['payment_test']) {
+      if (!$payment['payment_test']) {
         $result = $this->account->metamatter_change(RPG_PURCHASE_CANCEL, -$payment['payment_dark_matter_gained'], $payment['payment_comment']);
-        if(!$result) {
+        if (!$result) {
           throw new exception('Ошибка начисления ММ', SN_METAMATTER_ERROR_ADJUST);
         }
       }
       $payment['payment_status'] = PAYMENT_STATUS_CANCELED;
       doquery("UPDATE {{payment}} SET payment_status = {$payment['payment_status']}, payment_comment = '{$safe_comment}' WHERE payment_id = {$payment['payment_id']};");
       throw new exception($lang['pay_msg_request_payment_cancel_complete'], SN_PAYMENT_REQUEST_OK);
-    } elseif($payment['payment_status'] == PAYMENT_STATUS_CANCELED) {
+    } elseif ($payment['payment_status'] == PAYMENT_STATUS_CANCELED) {
       throw new exception($lang['pay_msg_request_payment_cancelled_already'], SN_PAYMENT_REQUEST_OK);
-    } elseif($payment['payment_status'] == PAYMENT_STATUS_NONE) {
+    } elseif ($payment['payment_status'] == PAYMENT_STATUS_NONE) {
       throw new exception($lang['pay_msg_request_payment_cancel_not_complete'], SN_PAYMENT_REQUEST_PAYMENT_NOT_COMPLETE);
     }
   }
@@ -842,13 +845,14 @@ abstract class sn_module_payment extends sn_module {
   protected function db_get_by_id($payment_id_unsafe) {
     $payment_id_internal_safe = $this->db->db_escape($payment_id_unsafe);
     $payment = $this->db->doquery("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_id` = '{$payment_id_internal_safe}' LIMIT 1 FOR UPDATE;", true);
+
     return $this->db_assign_payment($payment);
   }
 
   protected function db_complete_payment() {
     // TODO - поле payment_processed
-    if($this->payment_status == PAYMENT_STATUS_NONE) {
-      if(!defined('PAYMENT_EXPIRE_TIME') || PAYMENT_EXPIRE_TIME == 0 || empty($this->payment_date) || strtotime($this->payment_date) + PAYMENT_EXPIRE_TIME <= SN_TIME_NOW) {
+    if ($this->payment_status == PAYMENT_STATUS_NONE) {
+      if (!defined('PAYMENT_EXPIRE_TIME') || PAYMENT_EXPIRE_TIME == 0 || empty($this->payment_date) || strtotime($this->payment_date) + PAYMENT_EXPIRE_TIME <= SN_TIME_NOW) {
         $this->payment_adjust_mm_new();
         $this->payment_status = PAYMENT_STATUS_COMPLETE;
       } else {
@@ -895,7 +899,7 @@ abstract class sn_module_payment extends sn_module {
   protected function db_assign_payment($payment = null) {
     $this->payment_reset();
 
-    if(is_array($payment) && isset($payment['payment_id'])) {
+    if (is_array($payment) && isset($payment['payment_id'])) {
       $this->payment_id = $payment['payment_id'];
       $this->payment_status = $payment['payment_status'];
       $this->payment_date = $payment['payment_date'];

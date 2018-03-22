@@ -7,22 +7,18 @@ use DBAL\db_mysql;
  */
 // Расширяет Modules\sn_module, потому что его потомки так же являются модулями
 class auth_local extends auth_abstract {
-  public $manifest = array(
-    'package' => 'auth',
-    'name' => 'local',
-    'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.20# copyright © 2009-2015 Gorlum',
+  public $versionCommitted = '#43a15.27#';
+
+  public $manifest = [
+    'package'   => 'auth',
+    'name'      => 'local',
+    'version'   => '0a0',
+    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 
-    'installed' => true,
-    'active' => true,
-
-//    'provider_id' => ACCOUNT_PROVIDER_LOCAL,
-
-    // 'class_path' => __FILE__,
     'config_path' => SN_ROOT_PHYSICAL,
-  );
+  ];
 
   public $provider_id = ACCOUNT_PROVIDER_LOCAL;
 
@@ -64,10 +60,10 @@ class auth_local extends auth_abstract {
 
 
   protected $features = array(
-    AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
-    AUTH_FEATURE_PASSWORD_RESET => AUTH_FEATURE_PASSWORD_RESET,
+    AUTH_FEATURE_EMAIL_CHANGE    => AUTH_FEATURE_EMAIL_CHANGE,
+    AUTH_FEATURE_PASSWORD_RESET  => AUTH_FEATURE_PASSWORD_RESET,
     AUTH_FEATURE_PASSWORD_CHANGE => AUTH_FEATURE_PASSWORD_CHANGE,
-    AUTH_FEATURE_HAS_PASSWORD => AUTH_FEATURE_HAS_PASSWORD,
+    AUTH_FEATURE_HAS_PASSWORD    => AUTH_FEATURE_HAS_PASSWORD,
   );
 
   /**
@@ -94,13 +90,13 @@ class auth_local extends auth_abstract {
 
     $this->prepare();
 
-    $this->manifest['active'] = false;
-    if(!empty($this->config) && is_array($this->config['db'])) {
+    $this->active = false;
+    if (!empty($this->config) && is_array($this->config['db'])) {
       // БД, отличная от стандартной
       $this->db = new db_mysql();
 
       $this->db->sn_db_connect($this->config['db']);
-      if($this->manifest['active'] = $this->db->connected) {
+      if ($this->active = $this->db->connected) {
         $this->provider_id = ACCOUNT_PROVIDER_CENTRAL;
 
         $this->domain = $this->config['domain'];
@@ -114,7 +110,7 @@ class auth_local extends auth_abstract {
     }
 
     // Fallback to local DB
-    if(!$this->manifest['active']) {
+    if (!$this->active) {
       $this->db = SN::$db;
 
       $this->provider_id = ACCOUNT_PROVIDER_LOCAL;
@@ -124,7 +120,7 @@ class auth_local extends auth_abstract {
       $this->cookie_name = SN_COOKIE;
       $this->secret_word = SN::$sn_secret_word;
 
-      $this->manifest['active'] = true;
+      $this->active = true;
     }
 
     $this->cookie_name_impersonate = $this->cookie_name . AUTH_COOKIE_IMPERSONATE_SUFFIX;
@@ -165,10 +161,11 @@ class auth_local extends auth_abstract {
    * @param null $salt_unsafe
    *
    * @return array|bool|resource
+   * @throws Exception
    */
   public function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
     $result = parent::password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe);
-    if($result) {
+    if ($result) {
       $this->cookie_set();
     }
 
@@ -185,6 +182,7 @@ class auth_local extends auth_abstract {
   public function login_with_account($account) {
     $this->account = $account;
     $this->cookie_set();
+
     return $this->login_cookie();
   }
 
@@ -197,12 +195,12 @@ class auth_local extends auth_abstract {
   protected function password_reset_send_code() {
     global $lang, $config;
 
-    if(!$this->is_password_reset) {
+    if (!$this->is_password_reset) {
       return $this->account_login_status;
     }
 
     // Проверяем поддержку сброса пароля
-    if(!$this->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
+    if (!$this->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
       return $this->account_login_status;
     }
 
@@ -212,7 +210,7 @@ class auth_local extends auth_abstract {
       unset($this->account);
       $this->account = new Account($this->db);
 
-      if(!$this->account->db_get_by_email($email_unsafe)) {
+      if (!$this->account->db_get_by_email($email_unsafe)) {
         throw new Exception(PASSWORD_RESTORE_ERROR_EMAIL_NOT_EXISTS, ERR_ERROR);
         // return $this->account_login_status;
       }
@@ -222,14 +220,14 @@ class auth_local extends auth_abstract {
 
       // TODO - Проверять уровень доступа аккаунта!
       // Аккаунты с АУТЛЕВЕЛ больше 0 - НЕ СБРАСЫВАЮТ ПАРОЛИ!
-      foreach($user_list as $user_id => $user_data) {
-        if($user_data['authlevel'] > AUTH_LEVEL_REGISTERED) {
+      foreach ($user_list as $user_id => $user_data) {
+        if ($user_data['authlevel'] > AUTH_LEVEL_REGISTERED) {
           throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT, ERR_ERROR);
         }
       }
 
       $confirmation = $this->confirmation->db_confirmation_get_latest_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
-      if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
+      if (isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
         throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN, ERR_ERROR);
       }
 
@@ -240,7 +238,7 @@ class auth_local extends auth_abstract {
       $confirm_code_unsafe = $this->confirmation->db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
       sn_db_transaction_commit();
 
-      if(!is_email($email_unsafe)) {
+      if (!is_email($email_unsafe)) {
         SN::$debug->error("Email is invalid: '{$email_unsafe}'", 'Invalid email for password restoration');
       }
 
@@ -250,13 +248,14 @@ class auth_local extends auth_abstract {
       );
 
       $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       sn_db_transaction_rollback();
       $result = $e->getMessage();
     }
 
     return $this->account_login_status = $result;
   }
+
   /**
    * Сброс пароля по введенному коду подтверждения
    *
@@ -265,46 +264,46 @@ class auth_local extends auth_abstract {
   protected function password_reset_confirm() {
     global $lang, $config;
 
-    if(!$this->is_password_reset_confirm) {
+    if (!$this->is_password_reset_confirm) {
       return $this->account_login_status;
     }
 
-    if($this->account_login_status != LOGIN_UNDEFINED) {
+    if ($this->account_login_status != LOGIN_UNDEFINED) {
       return $this->account_login_status;
     }
 
     // Проверяем поддержку сброса пароля
-    if(!$this->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
+    if (!$this->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
       return $this->account_login_status;
     }
 
     try {
       $code_unsafe = sys_get_param_str_unsafe('password_reset_code');
-      if(empty($code_unsafe)) {
+      if (empty($code_unsafe)) {
         throw new Exception(PASSWORD_RESTORE_ERROR_CODE_EMPTY, ERR_ERROR);
       }
 
       sn_db_transaction_start();
       $confirmation = $this->confirmation->db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_unsafe); // OK 4.5
 
-      if(empty($confirmation)) {
+      if (empty($confirmation)) {
         throw new Exception(PASSWORD_RESTORE_ERROR_CODE_WRONG, ERR_ERROR);
       }
 
-      if(SN_TIME_NOW - strtotime($confirmation['create_time']) > AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE) {
+      if (SN_TIME_NOW - strtotime($confirmation['create_time']) > AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE) {
         throw new Exception(PASSWORD_RESTORE_ERROR_CODE_TOO_OLD, ERR_ERROR);
       }
 
       unset($this->account);
       $this->account = new Account($this->db);
 
-      if(!$this->account->db_get_by_email($confirmation['email'])) {
+      if (!$this->account->db_get_by_email($confirmation['email'])) {
         throw new Exception(PASSWORD_RESTORE_ERROR_CODE_OK_BUT_NO_ACCOUNT_FOR_EMAIL, ERR_ERROR);
       }
 
       $new_password_unsafe = $this->make_random_password();
       $salt_unsafe = $this->password_salt_generate();
-      if(!$this->account->db_set_password($new_password_unsafe, $salt_unsafe)) {
+      if (!$this->account->db_set_password($new_password_unsafe, $salt_unsafe)) {
         // Ошибка смены пароля
         throw new Exception(AUTH_ERROR_INTERNAL_PASSWORD_CHANGE_ON_RESTORE, ERR_ERROR);
       }
@@ -314,14 +313,14 @@ class auth_local extends auth_abstract {
       $this->cookie_set();
       $this->login_cookie();
 
-      if($this->account_login_status == LOGIN_SUCCESS) {
+      if ($this->account_login_status == LOGIN_SUCCESS) {
         // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
         $message_header = sprintf($lang['log_lost_email_title'], $config->game_name);
         $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
         $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
-        if(!empty($users_translated)) {
+        if (!empty($users_translated)) {
           // Отправляем в лички письмо о сбросе пароля
 
           // ПО ОПРЕДЕЛЕНИЮ в $users_translated только
@@ -333,7 +332,7 @@ class auth_local extends auth_abstract {
           $message = HelperString::nl2br($message) . '<br><br>';
           // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
-          foreach($users_translated as $user_id => $providers_list) {
+          foreach ($users_translated as $user_id => $providers_list) {
             msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
           }
         } else {
@@ -386,7 +385,7 @@ class auth_local extends auth_abstract {
     $this->flog('Регистрация: начинаем. Провайдер ' . $this->provider_id);
 
     try {
-      if(!$this->is_register) {
+      if (!$this->is_register) {
         $this->flog('Регистрация: не выставлен флаг регистрации - пропускаем');
         throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
@@ -394,26 +393,14 @@ class auth_local extends auth_abstract {
       $this->register_validate_input();
 
       sn_db_transaction_start();
-      // $this->provider_account = new Account($this->db);
-      // $this->account_check_duplicate_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
-
       $this->account->db_get_by_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
-      if($this->account->is_exists) {
-        if($this->account->account_email == $this->input_email_unsafe) {
+      if ($this->account->is_exists) {
+        if ($this->account->account_email == $this->input_email_unsafe) {
           throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
         } else {
           throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
         }
       }
-
-//      if($this->provider_account->db_get_by_name($this->input_login_unsafe)) {
-//        throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-//      }
-//
-//      if($this->provider_account->db_get_by_email($this->input_email_unsafe)) {
-//        throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
-//      }
-
 
       // Проблемы с созданием аккаунта - вызовут эксершн и обработается catch()
       $this->account->db_create(
@@ -422,14 +409,6 @@ class auth_local extends auth_abstract {
         $this->input_email_unsafe,
         $this->input_language_unsafe
       );
-//      $this->db_account_create(
-//        $this->input_login_unsafe,
-//        $this->input_login_password_raw,
-//        $this->input_email_unsafe,
-//        $this->input_language_unsafe
-//      );
-
-      // $this->data[F_ACCOUNT] = $this->db_account_get_by_id($account_id);
 
       // Устанавливать не надо - мы дальше пойдем по workflow
       $this->account_login_status = LOGIN_SUCCESS;
@@ -438,7 +417,7 @@ class auth_local extends auth_abstract {
       // А вот это пока не нужно. Трансляцией аккаунтов в юзеров и созданием новых юзеров для новозашедших аккаунтов занимается Auth
       // $this->register_account();
       sn_db_transaction_commit();
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       sn_db_transaction_rollback();
       $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
@@ -453,35 +432,13 @@ class auth_local extends auth_abstract {
    * @return int Результат попытки
    */
   protected function login_cookie() {
-    if($this->account_login_status != LOGIN_UNDEFINED) {
+    if ($this->account_login_status != LOGIN_UNDEFINED) {
       return $this->account_login_status;
     }
 
-//    // Пытаемся войти по куке
-//    if(!empty($_COOKIE[$this->cookie_name])) {
-//      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
-//        list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
-//      } else {
-//        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
-//      }
-//
-//      if(
-//        $this->account->db_get_by_id($account_id_unsafe)
-//        && ($this->password_encode_for_cookie($this->account->account_password) == $cookie_password_hash_salted)
-//      ) {
-//        $this->account_login_status = LOGIN_SUCCESS;
-//        $this->remember_me = intval($user_remember_me);
-//      }
-//    }
-//
-//    if($this->account_login_status != LOGIN_SUCCESS) {
-//      // Невалидная кука - чистим
-//      $this->cookie_clear();
-//    }
-
-    if($this->account->cookieLogin($rememberMe)) {
-        $this->account_login_status = LOGIN_SUCCESS;
-        $this->remember_me = intval($rememberMe);
+    if ($this->account->cookieLogin($rememberMe)) {
+      $this->account_login_status = LOGIN_SUCCESS;
+      $this->remember_me = intval($rememberMe);
     }
 
     return $this->account_login_status;
@@ -496,35 +453,29 @@ class auth_local extends auth_abstract {
   protected function login_username() {
     // TODO - Логин по старым именам
     try {
-      if(!$this->is_login) {
+      if (!$this->is_login) {
         $this->flog('Логин: не выставлен флаг входа в игру - это не логин');
         throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       // TODO Пустое имя аккаунта
-      if(!$this->input_login_unsafe) {
+      if (!$this->input_login_unsafe) {
         throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       $this->login_validate_input();
 
-//      $account = $this->db_account_get_by_name($this->input_login_unsafe);
-//      if(empty($account)) {
-//        throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
-//      }
-      if(!$this->account->db_get_by_name($this->input_login_unsafe) && !$this->account->db_get_by_email($this->input_login_unsafe)) {
+      if (!$this->account->db_get_by_name($this->input_login_unsafe) && !$this->account->db_get_by_email($this->input_login_unsafe)) {
         throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
       }
 
-      if(!$this->account->password_check($this->input_login_password_raw)) {
+      if (!$this->account->password_check($this->input_login_password_raw)) {
         throw new Exception(LOGIN_ERROR_PASSWORD, ERR_ERROR);
       }
 
-      // $this->data[F_ACCOUNT] = $account;
-
       $this->cookie_set();
       $this->account_login_status = LOGIN_SUCCESS;
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
 
@@ -545,18 +496,14 @@ class auth_local extends auth_abstract {
   protected function cookie_set($account_to_impersonate = null) {
     $this_account = is_object($account_to_impersonate) ? $account_to_impersonate : $this->account;
 
-    if(!is_object($this_account) || !$this_account->is_exists) {
+    if (!is_object($this_account) || !$this_account->is_exists) {
       throw new Exception(LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET, ERR_ERROR);
     }
 
-    if(is_object($account_to_impersonate) && $account_to_impersonate->is_exists) {
+    if (is_object($account_to_impersonate) && $account_to_impersonate->is_exists) {
       sn_setcookie($this->cookie_name_impersonate, $_COOKIE[$this->cookie_name], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
     }
 
-//    $expire_time = $this->remember_me ? SN_TIME_NOW + PERIOD_YEAR : 0;
-
-//    $password_encoded = $this->password_encode_for_cookie($this_account->account_password);
-//    $cookie = $this_account->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
     $this->flog("cookie_set() - Устанавливаем куку");
 
     return $this_account->cookieSet($this->remember_me, $this->domain);
@@ -567,17 +514,11 @@ class auth_local extends auth_abstract {
    */
   protected function cookie_clear() {
     $this->account->cookieClear($this->domain);
-//    // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
-//    if(!empty($_COOKIE[$this->cookie_name_impersonate])) {
-//      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name_impersonate], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
-//      sn_setcookie($this->cookie_name_impersonate, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-//    } else {
-//      sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-//    }
   }
 
 
   // ХЕЛПЕРЫ ===========================================================================================================
+
   /**
    * Проверяет введенные данные логина на корректность
    *
@@ -586,10 +527,10 @@ class auth_local extends auth_abstract {
   protected function login_validate_input() {
     // Проверяем, что бы в начале и конце не было пустых символов
     // TODO - при копировании Эксель -> Опера - в конце образуются пустые места. Это не должно быть проблемой! Вынести проверку пароля в регистрацию!
-    if($this->input_login_password_raw != trim($this->input_login_password_raw)) {
+    if ($this->input_login_password_raw != trim($this->input_login_password_raw)) {
       throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
-    if(!$this->input_login_password_raw) {
+    if (!$this->input_login_password_raw) {
       throw new Exception(LOGIN_ERROR_PASSWORD_EMPTY, ERR_ERROR);
     }
   }
@@ -604,58 +545,50 @@ class auth_local extends auth_abstract {
     $this->login_validate_input();
 
     // Если нет имени пользователя - NO GO!
-    if(!$this->input_login_unsafe) {
+    if (!$this->input_login_unsafe) {
       throw new Exception(LOGIN_ERROR_USERNAME_EMPTY, ERR_ERROR);
     }
     // Если логин имеет запрещенные символы - NO GO!
-    if(strpbrk($this->input_login_unsafe, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
+    if (strpbrk($this->input_login_unsafe, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       throw new Exception(LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS, ERR_ERROR);
     }
     // Если логин меньше минимальной длины - NO GO!
-    if(strlen($this->input_login_unsafe) < LOGIN_LENGTH_MIN) {
+    if (strlen($this->input_login_unsafe) < LOGIN_LENGTH_MIN) {
       throw new Exception(REGISTER_ERROR_USERNAME_SHORT, ERR_ERROR);
     }
     // Если пароль меньше минимальной длины - NO GO!
-    if(strlen($this->input_login_password_raw) < PASSWORD_LENGTH_MIN) {
+    if (strlen($this->input_login_password_raw) < PASSWORD_LENGTH_MIN) {
       throw new Exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
     }
     // Если пароль имеет пробельные символы в начале или конце - NO GO!
-    if($this->input_login_password_raw != trim($this->input_login_password_raw)) {
+    if ($this->input_login_password_raw != trim($this->input_login_password_raw)) {
       throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
     // Если пароль не совпадает с подтверждением - NO GO! То, что у пароля нет пробельных символов в начале/конце - мы уже проверили выше
     //Если они есть у повтора - значит пароль и повтор не совпадут
-    if($this->input_login_password_raw <> $this->input_login_password_raw_repeat) {
+    if ($this->input_login_password_raw <> $this->input_login_password_raw_repeat) {
       throw new Exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
     }
     // Если нет емейла - NO GO!
     // TODO - регистрация без емейла
-    if(!$this->input_email_unsafe) {
+    if (!$this->input_email_unsafe) {
       throw new Exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
     // Если емейл не является емейлом - NO GO!
-    if(!is_email($this->input_email_unsafe)) {
+    if (!is_email($this->input_email_unsafe)) {
       throw new Exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
     }
   }
 
 
-
-//  protected function password_encode_for_cookie($password) {
-//    return md5("{$password}--" . $this->secret_word);
-//  }
-
   protected function password_encode($password, $salt) {
-//    $class_name = $this->auth;
-//    return $class_name::password_encode($password, $salt);
     return core_auth::password_encode($password, $salt);
   }
 
   protected function password_salt_generate() {
-//    $class_name = $this->core_auth;
-//    return $class_name::password_salt_generate();
     return core_auth::password_salt_generate();
   }
+
   /**
    * Генерирует случайный пароль
    *
@@ -664,8 +597,9 @@ class auth_local extends auth_abstract {
   protected function make_random_password() {
     return core_auth::make_random_password();
   }
+
   protected function flog($message, $die = false) {
-    if(!defined('DEBUG_AUTH') || !DEBUG_AUTH) {
+    if (!defined('DEBUG_AUTH') || !DEBUG_AUTH) {
       return;
     }
     list($called, $caller) = debug_backtrace(false);
@@ -679,7 +613,7 @@ class auth_local extends auth_abstract {
     $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
 
     SN::log_file("$message - $caller_name");
-    if($die) {
+    if ($die) {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }

@@ -11,39 +11,38 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a15.20#
+ * version #43a15.27#
  */
 
 class core_auth extends sn_module {
-  public $manifest = array(
+  public $versionCommitted = '#43a15.27#';
+
+  public $manifest = [
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.20# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
-    'installed' => true,
-    'active' => true,
-
-    'mvc' => array(
-      'pages' => array(
+    'mvc' => [
+      'pages' => [
         'player_register' => 'classes/core_auth'
-      ),
+      ],
 
-      'model' => array(
-        'player_register' => array(
+      'model' => [
+        'player_register' => [
           'callable' => 'player_register_model',
-        ),
-      ),
+        ],
+      ],
 
-      'view' => array(
-        'player_register' => array(
+      'view' => [
+        'player_register' => [
           'callable' => 'player_register_view',
-        ),
-      ),
-    ),
-  );
+        ],
+      ],
+    ],
+  ];
 
   /**
    * БД из которой читать данные

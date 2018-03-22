@@ -17,23 +17,34 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a15.20#';
+  public $versionCommitted = '#43a15.27#';
+  /**
+   * Is module currently active?
+   *
+   * @var bool $active
+   */
+  protected $active = true;
+  /**
+   * Is all module DB artifacts presents?
+   *
+   * Check for module's tables, settings etc
+   *
+   * @var bool $installed
+   */
+  protected $installed = true;
 
   public $manifest = [
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.20# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
     self::M_REQUIRE       => [],
     self::M_ROOT_RELATIVE => '',
 
-    'installed' => true,
-    'active'    => true,
-
-    // 'constants' array - contents of this array would be instaled into engine
+    // 'constants' array - contents of this array would be defined in SN
     'constants' => [
 //      'UNIT_STRUCTURE_NEW' => 999999,
     ],
@@ -154,7 +165,7 @@ class sn_module {
 
     // Validating source settings. Some fields are mandatory in each manifest
     // Should be removed when manifest would be parsed to separate fields
-    foreach (['name', 'package', 'installed', 'active', 'version'] as $mandatoryManifest) {
+    foreach (['name', 'package', 'version'] as $mandatoryManifest) {
       if (!array_key_exists($mandatoryManifest, $this->manifest)) {
         throw new Exception('{ There is no mandatory field "' . $mandatoryManifest . '" in manifest of module } "' . $class_module_name . '"');
       }
@@ -207,7 +218,7 @@ class sn_module {
   public function initialize() {
     // Checking module status - is it installed and active
     $this->check_status();
-    if (!$this->manifest['active']) {
+    if (!$this->isActive()) {
       return;
     }
 
@@ -348,7 +359,7 @@ class sn_module {
    * @return bool
    */
   public function isActive() {
-    return !empty($this->manifest['active']) && !empty($this->manifest['installed']);
+    return !empty($this->active) && !empty($this->installed);
   }
 
   /**
