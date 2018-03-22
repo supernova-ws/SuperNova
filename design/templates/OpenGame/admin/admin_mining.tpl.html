@@ -9,7 +9,7 @@
 <!-- ENDIF -->
 
 <script type="text/javascript">
-  $(document).on('click', "[name='ACTIVE_STATUS']", function () {
+  $(document).on('click', "[name='ACTIVE_STATUS'],[name='SORT_BY']", function () {
     $("#filterForm").submit();
   })
 </script>
@@ -17,18 +17,38 @@
 <form action="" method="get" id="filterForm">
   <input type="hidden" name="page" value="admin/admin_mining"/>
 
-  <input type="radio" name="ACTIVE_STATUS" id="activeAll" value="0" {$ACTIVE_SELECTED_0}/>
-  <label for="activeAll"> { activeAll } </label>
-  <input type="radio" name="ACTIVE_STATUS" id="activeLong" value="1" {$ACTIVE_SELECTED_1}/>
-  <label for="activeLong"> { activeLong } </label>
-  <input type="radio" name="ACTIVE_STATUS" id="activeShort" value="2" {$ACTIVE_SELECTED_2}/>
-  <label for="activeShort"> { activeShort } </label>
+  <div>
+    { Players activity }
+    <input type="radio" name="ACTIVE_STATUS" id="activeAll" value="0" {$ACTIVE_SELECTED_0}/>
+    <label for="activeAll"> { activeAll } </label>
+    <input type="radio" name="ACTIVE_STATUS" id="activeLong" value="1" {$ACTIVE_SELECTED_1}/>
+    <label for="activeLong"> { activeLong } </label>
+    <input type="radio" name="ACTIVE_STATUS" id="activeShort" value="2" {$ACTIVE_SELECTED_2}/>
+    <label for="activeShort"> { activeShort } </label>
+  </div>
+
+  <div>
+    { Sort by }
+    <!-- BEGIN sorting -->
+
+    <!-- IF sorting.CHECKED -->
+    <!-- DEFINE $CHECKED = 'checked' -->
+    <!-- ELSE -->
+    <!-- DEFINE $CHECKED = '' -->
+    <!-- ENDIF -->
+    <input type="radio" name="SORT_BY" id="{sorting.HTML_ID}" value="{sorting.ID}" {$CHECKED}/>
+    <label for="{sorting.HTML_ID}"> { {sorting.HTML_NAME} } </label>
+
+    <!-- END sorting -->
+  </div>
+
 </form>
 
+<!-- DEFINE $PAGER_COL_SPAN = '9' -->
 <table>
   <!-- IF .production && PAGER_MESSAGES -->
   <tr class="c_c">
-    <td class="subheader" colspan="8">
+    <td class="subheader" colspan="{$PAGER_COL_SPAN}">
       {PAGER_MESSAGES}
     </td>
   </tr>
@@ -37,8 +57,10 @@
   <tr class="c_l">
     <th>'ID'</th>
     <th>'NAME'</th>
+    <th>'POINTS'</th>
     <th>'RANK'</th>
-    <th>'TOTAL'</th>
+    <th>'TOTAL(metal)'</th>
+    <!--<th>'TOTAL_CALC'</th>-->
     <th>'METAL'</th>
     <th>'CRYSTAL'</th>
     <th>'DEUTERIUM'</th>
@@ -49,8 +71,10 @@
   <tr class="c_r">
     <td class="c_l">{production.ID}</td>
     <td class="c_l">{production.NAME}</td>
+    <td>{production.POINTS|num|format}</td>
     <td>{production.RANK|num|format}</td>
     <td>{production.TOTAL|num|format}</td>
+    <!--<td>{production.TOTAL_CALC|num|format}</td>-->
     <td>{production.METAL|num|format}</td>
     <td>{production.CRYSTAL|num|format}</td>
     <td>{production.DEUTERIUM|num|format}</td>
@@ -60,7 +84,7 @@
 
   <!-- IF .production && PAGER_MESSAGES -->
   <tr class="c_c">
-    <td class="subheader" colspan="8">
+    <td class="subheader" colspan="{$PAGER_COL_SPAN}">
       {PAGER_MESSAGES}
     </td>
   </tr>

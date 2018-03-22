@@ -260,16 +260,23 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQ
   return $result;
 }
 
-function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
+/**
+ * @param array $cost - [(int)resourceId => (float)unitAmount] => [RES_CRYSTAL => 100]
+ * @param int   $in_resource - RES_METAL...
+ *
+ * @return float|int
+ */
+function get_unit_cost_in($cost, $in_resource = RES_METAL) {
   static $rates;
 
   if (!$rates) {
     $rates = SN::$gc->economicHelper->getResourcesExchange();
   }
 
+  $mainResourceExchange = !empty($rates[$in_resource]) ? $rates[$in_resource] : 1;
   $metal_cost = 0;
   foreach ($cost as $resource_id => $resource_value) {
-    $metal_cost += $rates[$resource_id] / $rates[$in_resource] * $resource_value;
+    $metal_cost += $rates[$resource_id] / $mainResourceExchange * $resource_value;
   }
 
   return $metal_cost;

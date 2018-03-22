@@ -8,43 +8,43 @@ lng_include('menu');
 
 $active_payment_modules = SN::$gc->modules->countModulesInGroup('payment') > 0;
 
-global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
+global $sn_version_check_class, $template_result, $user, $config, $lang;
 global $sn_menu, $sn_menu_admin;
 
+
+/*
+  'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
+    'LEVEL'    => 'submenu',                   // Which Tx HTML tag to use. 'header' - would be used TH; 'submenu' - TD
+    'TYPE'     => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with $lang[ITEM] values. Default is 'text'
+    'CLASS'    => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
+    'TITLE'    => 'Triolan.COM',               // TITLE tag for Tx HTML-element
+    'ICON'     => 'menu_icon.png',             // Icon filename - would be searched in skinPath/icons/. If 'true' - icon name would be generated from menu item ID plus ".png"
+    'ITEM'     => 'images/triolan.gif',        // Item: text, relative image URL or lang reference. Lang reference supports constants and multilevel arrays i.e. 'info[STRUC_MINE_METAL][description]'
+    'LINK'     => 'http://www.triolan.com/',   // URL
+    'BLANK'    => true,                        // Should link open in new window/tab?
+    'SPAN'     => 'lm_overview',               // Class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH STYLE!
+    'STYLE'    => 'color: white',              // CSS-class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH SPAN!
+    'ALT'      => 'Triolan.COM',               // ALT-tag for image
+
+    'HIDE'     => {0|1},                       // Should be this item hide?
+
+    'WRAP_START' => 'html',                    // HTML-code to put after Tx element - before menu render
+    'ITEM_FINISH => 'html',                    // HTML-code to put as last element before potential </a> tag close
+    'WRAP_END' => 'html',                      // HTML-code to put before /Tx element - after menu render
+
+    'AUTH_LEVEL' => (int),                     // Меню будет видно только пользователям с уровнем доступа выше указанного
+    'DISABLED'  => {0|1},                      // DISABLED == 1 - пункт не будет показан
+
+    'LOCATION' => '+menu_supernova_logo',      // Special atrtribute for modules' $extra_menu. SHOULD BE USE EXCLUSIVE IN MODULES!
+                                               // Format
+                                               // [-|+][<menu_item_id>]
+                                               // <menu_item_id> identifies menu item aginst new menu item would be placed. When ommited new item placed against whole menu
+                                               // -/+ indicates that new item should be placed before/after identified menu item (or whole menu). If ommited and menu item exists - new item will replace previous one
+                                               // Empty or non-existent LOCATION equivalent to '+' - place item at end of menu
+                                               // Non-existent menu_item_id treated as empty
+  ),
+*/
 $sn_menu = [
-  /*
-    'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
-      'LEVEL'    => 'submenu',                   // Which Tx HTML tag to use. 'header' - would be used TH; 'submenu' - TD
-      'TYPE'     => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with $lang[ITEM] values. Default is 'text'
-      'CLASS'    => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
-      'TITLE'    => 'Triolan.COM',               // TITLE tag for Tx HTML-element
-      'ICON'     => 'menu_icon.png',             // Icon filename - would be searched in skinPath/icons/. If 'true' - icon name would be generated from menu item ID plus ".png"
-      'ITEM'     => 'images/triolan.gif',        // Item: text, relative image URL or lang reference. Lang reference supports constants and multilevel arrays i.e. 'info[STRUC_MINE_METAL][description]'
-      'LINK'     => 'http://www.triolan.com/',   // URL
-      'BLANK'    => true,                        // Should link open in new window/tab?
-      'SPAN'     => 'lm_overview',               // Class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH STYLE!
-      'STYLE'    => 'color: white',              // CSS-class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH SPAN!
-      'ALT'      => 'Triolan.COM',               // ALT-tag for image
-
-      'HIDE'     => {0|1},                       // Should be this item hide?
-
-      'WRAP_START' => 'html',                    // HTML-code to put after Tx element - before menu render
-      'ITEM_FINISH => 'html',                    // HTML-code to put as last element before potential </a> tag close
-      'WRAP_END' => 'html',                      // HTML-code to put before /Tx element - after menu render
-
-      'AUTH_LEVEL' => (int),                     // Меню будет видно только пользователям с уровнем доступа выше указанного
-      'DISABLED'  => {0|1},                      // DISABLED == 1 - пункт не будет показан
-
-      'LOCATION' => '+menu_supernova_logo',      // Special atrtribute for modules' $extra_menu. SHOULD BE USE EXCLUSIVE IN MODULES!
-                                                 // Format
-                                                 // [-|+][<menu_item_id>]
-                                                 // <menu_item_id> identifies menu item aginst new menu item would be placed. When ommited new item placed against whole menu
-                                                 // -/+ indicates that new item should be placed before/after identified menu item (or whole menu). If ommited and menu item exists - new item will replace previous one
-                                                 // Empty or non-existent LOCATION equivalent to '+' - place item at end of menu
-                                                 // Non-existent menu_item_id treated as empty
-    ),
-  */
-
   'menu_server_name'   => [
     'LEVEL'    => 'text',
     'CLASS'    => 'menu_text_t',
@@ -420,7 +420,7 @@ $sn_menu = [
       || empty($user)
       || SN_TIME_NOW - $user['register_time'] < PERIOD_WEEK
       || mrc_get_level($user, [], UNIT_PREMIUM)
-  ,
+    ,
   ],
 
   'menu_supernova_logo' => [
@@ -455,98 +455,117 @@ $sn_menu_admin = [
     'LEVEL' => 'header',
     'TYPE'  => 'text',
     'ITEM'  => $config->game_name,
+    MENU_FIELD_AUTH_LEVEL => AUTH_LEVEL_MODERATOR,
   ],
   'menu_admin_server_time' => [
     'TYPE' => 'text',
     'ITEM' => '',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 
   'menu_admin_version_check' => [
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'adm_opt_ver_check',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
   'menu_admin_version_info'  => [
     'TYPE' => 'text',
     'ITEM' => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
       $sn_version_check_class[$config->server_updater_check_result] . '">' . $lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 
   'USER_AUTHLEVEL_NAME'       => [
     'LEVEL' => 'header',
     'ITEM'  => $lang['user_level'][$user['authlevel']],
     'LINK'  => 'index.php',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
+
   'menu_admin_overview'       => [
+    'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_over',
     'LINK'       => 'admin/overview.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
+  ],
+
+  'menu_admin_configuration'  => [
+    'LEVEL'      => 'header',
+    'TYPE'       => 'lang',
+    'ITEM'       => 'adm_conf',
+    'LINK'       => 'admin/settings.php',
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
+  ],
+  'menu_admin_modules'          => [
+    'TYPE'       => 'lang',
+    'ITEM'       => 'menu_admin_modules',
+    'LINK'       => 'index.php?page=admin/admin_modules',
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
   'menu_admin_quests'         => [
     'TYPE'       => 'lang',
     'ITEM'       => 'qst_quests',
     'LINK'       => 'admin/adm_quest.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
-  'menu_admin_configuration'  => [
-    'TYPE'       => 'lang',
-    'ITEM'       => 'adm_conf',
-    'LINK'       => 'admin/settings.php',
-    'AUTH_LEVEL' => 3,
-  ],
+
   'menu_admin_dark_matter'    => [
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'dark_matter',
     'LINK'       => 'admin/admin_darkmatter.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
   'menu_admin_matter_analyze' => [
     'TYPE'       => 'lang',
     'ITEM'       => 'matter_analyze',
     'LINK'       => 'admin/admin_analyze_matter.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
 
-  'menu_admin_metamatter_header'  => [
-    'LEVEL'      => 'header',
-    'TYPE'       => 'lang',
-    'ITEM'       => 'adm_metametter_payment',
-    'AUTH_LEVEL' => 3,
-    'DISABLED'   => !$active_payment_modules,
-  ],
+//  'menu_admin_metamatter_header'  => [
+//    'LEVEL'      => 'header',
+//    'TYPE'       => 'lang',
+//    'ITEM'       => 'adm_metametter_payment',
+//    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
+//    'DISABLED'   => !$active_payment_modules,
+//  ],
   'menu_admin_metamatter'         => [
+    'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'sys_metamatter',
     'LINK'       => 'admin/adm_metamatter.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
     'DISABLED'   => !$active_payment_modules,
   ],
   'menu_admin_metametter_payment' => [
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_pay',
     'LINK'       => 'admin/adm_payment.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
     'DISABLED'   => !$active_payment_modules,
   ],
 
-  'menu_admin_player'      => [
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'player',
+  'menu_admin_player'     => [
+    'LEVEL'      => 'header',
+    'TYPE'       => 'lang',
+    'ITEM'       => 'player',
     'LINK'       => 'admin/userlist.php',
-    'AUTH_LEVEL' => 3,
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
-  'menu_admin_player_ban'  => [
-    'TYPE' => 'lang',
-    'ITEM' => 'adm_ban_unban',
-    'LINK' => 'admin/banned.php',
+  'menu_admin_player_ban' => [
+    'TYPE'       => 'lang',
+    'ITEM'       => 'adm_ban_unban',
+    'LINK'       => 'admin/banned.php',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
-  'menu_admin_minig' => [
-    'TYPE'  => 'lang',
-    'ITEM'  => 'menu_admin_minig',
-    'LINK'  => 'index.php?page=admin/admin_mining',
+  'menu_admin_minig'      => [
+    'TYPE'       => 'lang',
+    'ITEM'       => 'menu_admin_minig',
+    'LINK'       => 'index.php?page=admin/admin_mining',
+    'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
 //  'menu_admin_player_list' => array(
 //    'TYPE'       => 'lang',
@@ -555,7 +574,7 @@ $sn_menu_admin = [
 //    'AUTH_LEVEL' => 3,
 //  ),
 
-  'menu_admin_ally' => [
+  'menu_admin_ally'                => [
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'menu_admin_ally',
@@ -660,10 +679,11 @@ $sn_menu_admin = [
   ],
 
   'menu_admin_exit' => [
-    'LEVEL' => 'header',
-    'CLASS' => 'link',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'adm_back',
-    'LINK'  => 'index.php',
+    'LEVEL'      => 'header',
+    'CLASS'      => 'link',
+    'TYPE'       => 'lang',
+    'ITEM'       => 'adm_back',
+    'LINK'       => 'index.php',
+    'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 ];

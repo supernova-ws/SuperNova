@@ -18,7 +18,7 @@ $sn_menu_admin_extra = array();
 
 global $sn_mvc;
 $sn_mvc = [
-  FIELD_MODEL      => [
+  FIELD_MODEL => [
     'ajax' => ['AjaxController::controller'],
 
     'options'  => ['sn_options_model'],
@@ -41,9 +41,10 @@ $sn_mvc = [
     'imperium'      => [\Pages\Deprecated\PageImperium::class . '::viewStatic'],
     'techtree'      => ['sn_techtree_view'],
 
-    'admin/user_view'    => ['sn_admin_user_view_view'],
-    'admin/admin_ally'   => ['sn_admin_ally_view'],
-    'admin/admin_mining' => [\Pages\Deprecated\PageAdminMining::class . '::viewStatic'],
+    'admin/user_view'     => ['sn_admin_user_view_view'],
+    'admin/admin_ally'    => ['sn_admin_ally_view'],
+    'admin/admin_mining'  => [\Pages\Deprecated\PageAdminMining::class . '::viewStatic'],
+    'admin/admin_modules' => [\Pages\Deprecated\PageAdminModules::class . '::viewStatic'],
   ],
 
   // For now - common for same VIEW and MODEL
@@ -51,7 +52,7 @@ $sn_mvc = [
 
   'controller' => [],
 
-  'i18n'       => [
+  'i18n' => [
     'options'   => [
       'options'  => 'options',
       'messages' => 'messages',
@@ -76,7 +77,16 @@ $sn_mvc = [
       ],
     ],
 
-    'admin/admin_mining' => [],
+    'admin/admin_mining'  => [
+      'options' => [
+        PAGE_OPTION_ADMIN => true,
+      ],
+    ],
+    'admin/admin_modules' => [
+      'options' => [
+        PAGE_OPTION_ADMIN => true,
+      ],
+    ],
 
     'chat'     => [
       'filename' => 'chat',
@@ -362,13 +372,13 @@ require_once('vars_powerups.php');
 
 $sn_data += array(
   UNIT_PLAYER_EMPIRE_SPY => [
-    'type'       => UNIT_INTERNAL,
-    'location'   => LOC_USER,
+    'type'     => UNIT_INTERNAL,
+    'location' => LOC_USER,
 //    P_BONUS_TYPE => BONUS_ADD,
   ],
   UNIT_FLEET_PLANET_SPY  => [
-    'type'       => UNIT_INTERNAL,
-    'location'   => LOC_USER,
+    'type'     => UNIT_INTERNAL,
+    'location' => LOC_USER,
 //    P_BONUS_TYPE => BONUS_ADD,
   ],
 
@@ -573,8 +583,8 @@ $sn_data += array(
         ),
         P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
           [P_CHANCE => 90, P_MULTIPLIER => 0.01, P_MESSAGE_ID => 2,],
-          [P_CHANCE =>  9, P_MULTIPLIER => 0.02, P_MESSAGE_ID => 1,],
-          [P_CHANCE =>  1, P_MULTIPLIER => 0.10, P_MESSAGE_ID => 0,],
+          [P_CHANCE => 9, P_MULTIPLIER => 0.02, P_MESSAGE_ID => 1,],
+          [P_CHANCE => 1, P_MULTIPLIER => 0.10, P_MESSAGE_ID => 0,],
         ],
       ),
       FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
@@ -587,8 +597,8 @@ $sn_data += array(
         ),
         P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
           [P_CHANCE => 90, P_MULTIPLIER => 0.025, P_MESSAGE_ID => 2,],
-          [P_CHANCE =>  9, P_MULTIPLIER => 0.050, P_MESSAGE_ID => 1,],
-          [P_CHANCE =>  1, P_MULTIPLIER => 0.100, P_MESSAGE_ID => 0,],
+          [P_CHANCE => 9, P_MULTIPLIER => 0.050, P_MESSAGE_ID => 1,],
+          [P_CHANCE => 1, P_MULTIPLIER => 0.100, P_MESSAGE_ID => 0,],
         ],
       ),
       FLT_EXPEDITION_OUTCOME_FOUND_DM        => array(
@@ -601,8 +611,8 @@ $sn_data += array(
         ),
         P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
           [P_CHANCE => 90, P_MULTIPLIER => 0.0010, /*P_MESSAGE_ID => 2,*/],
-          [P_CHANCE =>  9, P_MULTIPLIER => 0.0040, /*P_MESSAGE_ID => 1,*/],
-          [P_CHANCE =>  1, P_MULTIPLIER => 0.0100, /*P_MESSAGE_ID => 0,*/],
+          [P_CHANCE => 9, P_MULTIPLIER => 0.0040, /*P_MESSAGE_ID => 1,*/],
+          [P_CHANCE => 1, P_MULTIPLIER => 0.0100, /*P_MESSAGE_ID => 0,*/],
         ],
       ),
       /*
@@ -1255,7 +1265,7 @@ $sn_data += array(
       UNIT_PLANS        => 'plans',
     ],
 
-    GROUP_CAPITAL_BUILDING_BONUS_GROUPS => ['structures', 'defense','fleet',],
+    GROUP_CAPITAL_BUILDING_BONUS_GROUPS => ['structures', 'defense', 'fleet',],
 
   ),
 );

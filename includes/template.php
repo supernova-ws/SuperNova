@@ -71,11 +71,30 @@ function messageBoxAdminAccessDenied($level = AUTH_LEVEL_ADMINISTRATOR) {
 }
 
 /**
- * @param $menu
- * @param $extra
+ * @param array $menu
+ *
+ * @return array
+ */
+function tpl_menu_adminize($menu) {
+  !is_array($menu) ? $menu = [] : false;
+
+  foreach ($menu as &$menuItem) {
+    if (!isset($menuItem[MENU_FIELD_AUTH_LEVEL])) {
+      $menuItem[MENU_FIELD_AUTH_LEVEL] = AUTH_LEVEL_ADMINISTRATOR;
+    }
+  }
+
+  return $menu;
+}
+
+/**
+ * @param      $menu
+ * @param      $extra
  */
 function tpl_menu_merge_extra(&$menu, &$extra) {
-  if (empty($menu) || empty($extra)) {
+  !is_array($menu) ? $menu = [] : false;
+
+  if (!is_array($extra)) {
     return;
   }
 
@@ -205,6 +224,7 @@ function tpl_render_menu($template) {
 
   if (defined('IN_ADMIN') && IN_ADMIN === true && !empty($user['authlevel']) && $user['authlevel'] > 0) {
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
+    $sn_menu_admin = tpl_menu_adminize($sn_menu_admin);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
     tpl_menu_merge_extra($sn_menu, $sn_menu_extra);
@@ -285,8 +305,8 @@ function sn_display($page, $title = '') {
     displayP($page_item);
   }
 
-  if(is_array($template_result[TEMPLATE_EXTRA_ARRAY]) && !empty($template_result[TEMPLATE_EXTRA_ARRAY])) {
-    foreach($template_result[TEMPLATE_EXTRA_ARRAY] as $extraName => $extraTemplate) {
+  if (is_array($template_result[TEMPLATE_EXTRA_ARRAY]) && !empty($template_result[TEMPLATE_EXTRA_ARRAY])) {
+    foreach ($template_result[TEMPLATE_EXTRA_ARRAY] as $extraName => $extraTemplate) {
       /**
        * @var template $extraTemplate
        */
@@ -626,7 +646,7 @@ function sn_tpl_render_topnav($prevUser, $user, $planetrow, $template) {
   global $lang, $config, $sn_mvc;
 
   // This call was not first one... Using results from previous call
-  if(!empty($prevUser['username'])) {
+  if (!empty($prevUser['username'])) {
     $user = $prevUser;
   }
 
@@ -1013,7 +1033,7 @@ function tpl_get_fleets_flying(&$user) {
  * @param template $template
  * @param string   $blockName
  * @param mixed    $values
- * @param string   $keyName   - Name for key name
+ * @param string   $keyName - Name for key name
  * @param string   $valueName - Name for value name
  */
 function tpl_assign_select(&$template, $blockName, $values, $keyName = 'KEY', $valueName = 'VALUE') {

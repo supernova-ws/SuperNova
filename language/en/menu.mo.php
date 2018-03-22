@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 43a15.29
 *
 */
 
@@ -124,4 +124,6 @@ $a_lang_array = (array(
 
   'menu_pin' => 'Pin menu',
   'menu_unpin' => 'Unpin menu',
+
+  'menu_admin_modules' => 'Modules',
 ));

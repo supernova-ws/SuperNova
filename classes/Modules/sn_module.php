@@ -17,7 +17,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a15.27#';
+  public $versionCommitted = '#43a15.29#';
   /**
    * Is module currently active?
    *
@@ -37,7 +37,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a15.29# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -203,7 +203,7 @@ class sn_module {
 //    SN::$gc->modules->registerModule($class_module_name, $this);
   }
 
-  protected function __patch_menu(&$sn_menu_extra, &$menu_patch) {
+  protected function __patch_menu(&$sn_menu_extra, &$menu_patch, $admin = false) {
     if (isset($menu_patch) && is_array($menu_patch) && !empty($menu_patch)) {
       foreach ($menu_patch as $menu_item_name => $menu_item_data) {
         $sn_menu_extra[$menu_item_name] = $menu_item_data;
@@ -284,7 +284,7 @@ class sn_module {
     // Patching game menu - if any
     global $sn_menu_extra, $sn_menu_admin_extra;
     isset($this->manifest['menu']) and $this->__patch_menu($sn_menu_extra, $this->manifest['menu']);
-    isset($this->manifest['menu_admin']) and $this->__patch_menu($sn_menu_admin_extra, $this->manifest['menu_admin']);
+    isset($this->manifest['menu_admin']) and $this->__patch_menu($sn_menu_admin_extra, $this->manifest['menu_admin'], true);
 
     global $sn_mvc;
     foreach ($sn_mvc as $handler_type => &$handler_data) {
@@ -359,7 +359,16 @@ class sn_module {
    * @return bool
    */
   public function isActive() {
-    return !empty($this->active) && !empty($this->installed);
+    return !empty($this->active) && $this->isInstalled();
+  }
+
+  /**
+   * Checks if module is installed
+   *
+   * @return bool
+   */
+  public function isInstalled() {
+    return !empty($this->installed);
   }
 
   /**

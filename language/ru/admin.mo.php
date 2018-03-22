@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a14.17
+* @version 43a15.29
 *
 */
 
@@ -603,6 +603,8 @@ $a_lang_array = array(
   'admin_ptl_test_la_' => "Single'Double\"Zero\0End",
 
   'admin_title_access_denied' => 'Доступ запрещен',
+
+  'menu_admin_modules' => 'Модули',
 
   // ------------------ NOT LOCALIZED -------------------------------
   'adm_mm_title'                        => 'Изменение количества Метаматерии',

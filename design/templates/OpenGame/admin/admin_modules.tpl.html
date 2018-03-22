@@ -1,0 +1,68 @@
+<h1>{PAGE_NAME}</h1>
+
+<!-- IF SORT_BY == 1 -->
+<!-- DEFINE $SORT_BY_SELECTED_1 = 'checked' -->
+<!-- ELSEIF SORT_BY == 2 -->
+<!-- DEFINE $SORT_BY_SELECTED_2 = 'checked' -->
+<!-- ELSE -->
+<!-- DEFINE $SORT_BY_SELECTED_0 = 'checked' -->
+<!-- ENDIF -->
+
+<script type="text/javascript">
+  $(document).on('click', "[name='SORT_BY']", function () {
+    $("#filterForm").submit();
+  })
+</script>
+
+<form action="" method="get" id="filterForm">
+  <input type="hidden" name="page" value="admin/admin_modules"/>
+
+  <div>
+    <input type="radio" name="SORT_BY" id="sortByActive" value="1" {$SORT_BY_SELECTED_1}/>
+    <label for="sortByActive"> { active } </label>
+    <input type="radio" name="SORT_BY" id="sortByName" value="0" {$SORT_BY_SELECTED_0}/>
+    <label for="sortByName"> { sortByName } </label>
+  </div>
+</form>
+
+
+<table>
+  <tr class="c_l">
+    <th>'PACKAGE'</th>
+    <th>'NAME'</th>
+    <th>'VERSION'</th>
+    <th>'ACTIVE'</th>
+    <th>'INSTALLED'</th>
+  </tr>
+
+  <!-- BEGIN modules -->
+  <!-- IF modules.ACTIVE && modules.INSTALLED -->
+  <!-- DEFINE $CLASS = 'ok' -->
+  <!-- ELSEIF modules.INSTALLED -->
+  <!-- DEFINE $CLASS = 'notice' -->
+  <!-- ELSE -->
+  <!-- DEFINE $CLASS = 'warning' -->
+  <!-- ENDIF -->
+
+  <tr class="c_l {$CLASS}">
+    <td>{modules.PACKAGE}</td>
+    <td>{modules.NAME}</td>
+    <td>{modules.VERSION}</td>
+    <td>
+      <!-- IF modules.ACTIVE -->
+      +
+      <!-- ELSE -->
+      &nbsp;
+      <!-- ENDIF -->
+    </td>
+    <td>
+      <!-- IF modules.INSTALLED -->
+      +
+      <!-- ELSE -->
+      &nbsp;
+      <!-- ENDIF -->
+    </td>
+  </tr>
+  <!-- END modules -->
+
+</table>
