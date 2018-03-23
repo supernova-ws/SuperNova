@@ -1443,6 +1443,15 @@ MissionExplore.php
 
 [*] убрать _checkStatus
 
+[*] http://php.net/manual/en/function.password-hash.php
+        - http://php.net/manual/en/function.password-verify.php
+
+[*] Главный Инженер - увеличивает ёмкость слота построек. Наёмник (?) +100, +200 итд
+
+[*] Пересчитать скорости транспортов - уж очень резво они летают
+
+[*] На столице - удваивать и скорость производства юнитов, защиты, зданий
+
 
 #ctv
 
