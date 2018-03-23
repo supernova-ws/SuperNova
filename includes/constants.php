@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.7');
+define('SN_VERSION', '43a16.8');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -889,24 +889,26 @@ define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
 
 // === Techs
-define('UNIT_TECHNOLOGIES', 100);
-define('TECH_SPY', 106);
+define('UNIT_TECHNOLOGIES', 100); // 101-105
+define('TECH_SPY', 106); // 107
 define('TECH_COMPUTER', 108);
 define('TECH_WEAPON', 109);
 define('TECH_SHIELD', 110);
-define('TECH_ARMOR', 111);
+define('TECH_ARMOR', 111); // 112
 define('TECH_ENERGY', 113);
 define('TECH_HYPERSPACE', 114);
-define('TECH_ENGINE_CHEMICAL', 115);
+define('TECH_ENGINE_CHEMICAL', 115); // 116
 define('TECH_ENGINE_ION', 117);
 define('TECH_ENGINE_HYPER', 118);
+define('TECH_ENGINE_NUCLEAR', 119);
 define('TECH_LASER', 120);
 define('TECH_ION', 121);
 define('TECH_PLASMA', 122);
 define('TECH_RESEARCH', 123);
 define('TECH_EXPEDITION', 124);
+define('TECH_NUCLEAR', 125); // 126-149
 define('TECH_COLONIZATION', 150);
-define('TECH_ASTROTECH', 151);
+define('TECH_ASTROTECH', 151); // 152-198
 define('TECH_GRAVITON', 199);
 
 // === Hangar units
@@ -931,7 +933,7 @@ define('SHIP_SMALL_FIGHTER_WRATH', 219);
 define('SHIP_SMALL_FIGHTER_HEAVY', 205);
 define('SHIP_SMALL_FIGHTER_ASSAULT', 217);
 define('SHIP_MEDIUM_FRIGATE', 206);
-define('SHIP_MEDIUM_DESTROYER', 226);
+define('SHIP_MEDIUM_DESTROYER', 226); // Not used
 define('SHIP_MEDIUM_BOMBER_ENVY', 224);
 define('SHIP_LARGE_CRUISER', 207);
 define('SHIP_LARGE_BOMBER', 211);
@@ -942,8 +944,13 @@ define('SHIP_LARGE_DESTRUCTOR', 213);
 define('SHIP_HUGE_DEATH_STAR', 214);
 define('SHIP_HUGE_SUPERNOVA', 216);
 
+const SHIP_SATELLITE_SPUTNIK = 228; // Anti-spy satellite THAT CAN FLY!!!
+const SHIP_CARGO_FIREFLY = 229; // Fastest medium transport
+const SHIP_RECYCLER_BURAN = 230; // Fastest recycler
+const SHIP_SMALL_FIGHTER_SOYUZ = 231; // SHIP_SMALL_FIGHTER_SOYUZ ? с гауссовкой (!)
+const SHIP_MEDIUM_TORPEDO_SPIRAL = 232; // Торпедоносец против больших и сверхбольших кораблей
 
-define('SHIP_NEXT', 227);
+const SHIP_NEXT = 233;
 
 // --- Defense
 define('UNIT_DEFENCE', 400);
@@ -1705,6 +1712,7 @@ define('GAME_DISABLE_STAT', 3);
 define('GAME_DISABLE_INSTALL', 4);
 define('GAME_DISABLE_EVENT_BLACK_MOON', 5);
 define('GAME_DISABLE_MAINTENANCE', 6);
+define('GAME_DISABLE_EVENT_OIS', 7);
 
 define('USER_BOT_PLAYER', 0);
 define('USER_BOT_BLACK_MOON', 1);
@@ -1861,3 +1869,5 @@ const PAGE_OPTION_ADMIN = 'admin_page';
 const FLEET_STATUS_RETURNING = 1;
 
 const MENU_FIELD_AUTH_LEVEL = 'AUTH_LEVEL';
+
+const REQUIRE_FESTIVAL = 'festival_highspot';

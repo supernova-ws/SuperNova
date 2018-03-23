@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a13.16#
+* @version #43a16.8#
 *
 */
 
@@ -1050,6 +1050,7 @@ $a_lang_array = [
     GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
     GAME_DISABLE_MAINTENANCE => 'Техобслуживание базы данных сервера',
     GAME_DISABLE_EVENT_BLACK_MOON => 'Чёрная Луна!',
+    GAME_DISABLE_EVENT_OIS => 'Объекты в космосе',
   ],
 
   'sys_sector_purchase_log' => 'Пользователь {%2$d} {%1$s} купил 1 сектор на планете {%5$d} {%3$s} тип "%4$s" за %6$d ТМ',
