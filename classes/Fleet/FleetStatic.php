@@ -6,6 +6,8 @@
 namespace Fleet;
 
 use SN;
+use Common\EmptyCountableIterator;
+use \DBAL\DbMysqliResultIterator;
 
 class FleetStatic {
 
@@ -13,11 +15,14 @@ class FleetStatic {
    * @param array $planetIds
    * @param int   $time
    *
-   * @return \mysqli_result|false
+   * @return DbMysqliResultIterator|EmptyCountableIterator
    */
   public static function dbFleetsOnHoldOnPlanetsByIds($planetIds, $time = SN_TIME_NOW) {
-    return SN::$db->doquery(
-      "SELECT `{{fleets}}`.*
+    if(empty($planetIds) || !is_array($planetIds)) {
+      return new EmptyCountableIterator();
+    }
+
+    return SN::$db->selectIterator("SELECT `{{fleets}}`.*
       FROM `{{fleets}}`
         LEFT JOIN `{{users}}` ON id = fleet_owner
       WHERE
@@ -25,8 +30,6 @@ class FleetStatic {
         AND fleet_mess = 0
         AND fleet_start_time <= " . $time . "
         AND fleet_end_stay >= " . $time . "
-      FOR UPDATE"
-    );
-
+      FOR UPDATE");
   }
 }
