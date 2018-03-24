@@ -4,9 +4,9 @@
 #  Filename: language.mo
 #  Create date: Sunday, March 30, 2008   19:56:23
 #  Project: SuperNova.WS
-#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Strategy Game
 #
-#  Copyright © 2011 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2011-2018 Gorlum for Project "SuperNova.WS"
 #############################################################################
 */
 

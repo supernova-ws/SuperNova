@@ -4,10 +4,9 @@
 #  Filename: language.mo
 #  Create date: Sunday, March 30, 2008   19:56:23
 #  Project: SuperNova.WS
-#  Description: Massive Multiplayer Online Browser Spave Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Strategy Game
 #
-#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009-2018 Gorlum for Project "SuperNova.WS"
 #  Copyright © 2009 MSW
 #  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
 #  Copyright © 2005 - 2008 KGsystem

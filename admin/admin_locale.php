@@ -156,7 +156,7 @@ if($domain) {
 #  Filename: {$domain}.mo.php
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
-#  Description: Massive Multiplayer Online Browser Space Startegy Game\r\n#\r\n");
+#  Description: Massive Multiplayer Online Browser Space Strategy Game\r\n#\r\n");
 
       foreach($land_data['LANG_COPYRIGHT'] as $lang_copyright) {
         $lang_copyright = str_replace(array('&copy;', '&quot;', '&lt;', '&gt;'), array('©', '"', '<', '>'), $lang_copyright);

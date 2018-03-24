@@ -5,10 +5,9 @@
 #  Filename: quest.mo
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
-#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Strategy Game
 #
-#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009-2018 Gorlum for Project "SuperNova.WS"
 #  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
 #  Copyright © 2005 - 2008 KGsystem
 #############################################################################
@@ -18,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a26.2
+* @version 43a16.13
 *
 */
 

@@ -5,9 +5,9 @@
 #  Filename: mercenary.mo
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
-#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Strategy Game
 #
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009-2018 Gorlum for Project "SuperNova.WS"
 #############################################################################
 */
 
@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 43a16.13
 *
 * @clean - all constants is used
 *
