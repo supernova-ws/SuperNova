@@ -7,6 +7,8 @@ namespace Core;
 
 
 use Common\Hooker\Pimp;
+use Meta\Economic\BuildDataStatic;
+use Que\QueUnitStatic;
 use template;
 
 /**
@@ -16,9 +18,12 @@ use template;
  *
  * @package Core
  *
+ * @method void tpl_render_topnav(array &$user = null, array $planetrow, template $template) - Add some elements to ResourceBar
+ * @method array que_unit_make_sql(int $unit_id, array $user, array $planet = [], array $build_data = [], float $unit_level = 0, float $unit_amount = 1, int $build_mode = BUILD_CREATE)
+ * @method float getStructuresTimeDivisor(array $user, array $planet, int $unit_id, array $unit_data)
+ *
  * @method void|string allyInfoView(callable $c = null) - renders extra elements on Alliance internal main page
  * @method void|string allyInternalMainModel(callable $c = null) - extra model on main Alliance page
- * @method void|string tpl_render_topnav(array|string|callable &$user = null, array $planetrow, template $template) - Add some elements to ResourceBar
  */
 class SnPimp extends Pimp {
   const MODE_NORMAL = 0; // Normal mode - call hooker
@@ -26,6 +31,18 @@ class SnPimp extends Pimp {
   const MODE_NAME = 2; // Name mode - syntax sugar - return function name
 
   protected $mode = self::MODE_NORMAL;
+  protected $registerOrder = Pimp::ORDER_AS_IS;
+
+  public function __construct(GlobalContainer $gc) {
+    parent::__construct($gc);
+
+    /** @noinspection PhpParamsInspection */
+    $this->add()->tpl_render_topnav($t = 'sn_tpl_render_topnav', [], null);
+    /** @noinspection PhpParamsInspection */
+    $this->add()->que_unit_make_sql([QueUnitStatic::class, 'que_unit_make_sql'], []);
+    /** @noinspection PhpParamsInspection */
+    $this->add()->getStructuresTimeDivisor([BuildDataStatic::class, 'getStructuresTimeDivisor'], [], 0, []);
+  }
 
   /**
    * Changes pimp mode to "ADD"
@@ -37,12 +54,13 @@ class SnPimp extends Pimp {
    * @return $this
    * @throws \Exception
    */
-  public function add() {
+  public function add($order = Pimp::ORDER_AS_IS) {
     if ($this->mode != static::MODE_NORMAL) {
       throw new \Exception('Pimp::add() - mode already set');
     }
 
     $this->mode = static::MODE_ADD;
+    $this->registerOrder = $order;
 
     return $this;
   }
@@ -78,14 +96,13 @@ class SnPimp extends Pimp {
    */
   public function __call($name, $arguments) {
     if ($this->mode == static::MODE_NORMAL) {
-//      var_dump($name, $arguments);
-
       return parent::__call($name, $arguments);
     }
 
     if ($this->mode == static::MODE_ADD) {
-      $this->register($name, reset($arguments));
+      $this->register($name, reset($arguments), $this->registerOrder);
       $this->mode = static::MODE_NORMAL;
+      $this->registerOrder = Pimp::ORDER_AS_IS;
 
       return $this;
     }

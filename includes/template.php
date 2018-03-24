@@ -629,9 +629,9 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   }
 }
 
-SN::$afterInit[] = function () {
-  SN::$gc->pimp->add()->tpl_render_topnav($t = 'sn_tpl_render_topnav', [], null);
-};
+//SN::$afterInit[] = function () {
+//  SN::$gc->pimp->add()->tpl_render_topnav($t = 'sn_tpl_render_topnav', [], null);
+//};
 
 /**
  * @param array    $user

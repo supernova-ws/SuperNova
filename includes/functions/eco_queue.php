@@ -3,6 +3,7 @@
 use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
 use Que\DBStaticQue;
+use Que\QueUnitStatic;
 
 function que_get_unit_que($unit_id) {
   $que_type = false;
@@ -310,7 +311,34 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     $unit_amount_qued = 0;
     while($unit_amount > 0 && count($que['ques'][$que_id][$user['id']][$planet_id]) < $que_max_length) {
       $place = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
-      que_add_unit($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
+//      $sqlBlock = QueUnitStatic::que_unit_make_sql($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
+      $sqlBlock = SN::$gc->pimp->que_unit_make_sql($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
+
+      array_walk($sqlBlock, function (&$value, $field) {
+        if($value === null) {
+          $value = 'NULL';
+        } elseif (is_string($value)) {
+          $value = "'{$value}'";
+        }
+
+        $value = "`{$field}` = {$value}";
+      });
+
+      DBStaticQue::db_que_set_insert(implode(',', $sqlBlock)
+//        "`que_player_id` = {$user['id']},
+//      `que_planet_id` = {$planet_id},
+//      `que_planet_id_origin` = {$planet_id_origin},
+//      `que_type` = {$que_type},
+//      `que_time_left` = {$build_data[RES_TIME][$build_mode]},
+//      `que_unit_id` = {$unit_id},
+//      `que_unit_amount` = {$unit_amount},
+//      `que_unit_mode` = {$build_mode},
+//      `que_unit_level` = {$unit_level},
+//      `que_unit_time` = {$build_data[RES_TIME][$build_mode]},
+//      `que_unit_price` = '{$resource_list}'"
+      );
+
+
       $unit_amount -= $place;
       $que = que_get($user['id'], $planet['id'], $que_id, true);
       $unit_amount_qued += $place;
@@ -379,48 +407,6 @@ function que_recalculate($old_que) {
 
 function que_get($user_id, $planet_id = null, $que_type = false, $for_update = false) {
   return SN::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
-}
-
-function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data, $unit_level = 0, $unit_amount = 1, $build_mode = BUILD_CREATE) {
-  // TODO Унифицировать проверки
-
-  // TODO que_process() тут
-
-  sn_db_transaction_check(true);
-
-  $build_mode = $build_mode == BUILD_CREATE ? BUILD_CREATE : BUILD_DESTROY;
-
-  // TODO: Some checks
-  db_change_units($user, $planet, array(
-    RES_METAL     => -$build_data[$build_mode][RES_METAL] * $unit_amount,
-    RES_CRYSTAL   => -$build_data[$build_mode][RES_CRYSTAL] * $unit_amount,
-    RES_DEUTERIUM => -$build_data[$build_mode][RES_DEUTERIUM] * $unit_amount,
-  ));
-
-  $que_type = que_get_unit_que($unit_id);
-  $planet_id_origin = $planet['id'] ? $planet['id'] : 'NULL';
-  $planet_id = $que_type == QUE_RESEARCH ? 'NULL' : $planet_id_origin;
-  if(is_numeric($planet_id)) {
-    DBStaticPlanet::db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
-  } elseif(is_numeric($user['id'])) {
-    db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
-  }
-
-  $resource_list = sys_unit_arr2str($build_data[$build_mode]);
-
-  DBStaticQue::db_que_set_insert(
-      "`que_player_id` = {$user['id']},
-      `que_planet_id` = {$planet_id},
-      `que_planet_id_origin` = {$planet_id_origin},
-      `que_type` = {$que_type},
-      `que_time_left` = {$build_data[RES_TIME][$build_mode]},
-      `que_unit_id` = {$unit_id},
-      `que_unit_amount` = {$unit_amount},
-      `que_unit_mode` = {$build_mode},
-      `que_unit_level` = {$unit_level},
-      `que_unit_time` = {$build_data[RES_TIME][$build_mode]},
-      `que_unit_price` = '{$resource_list}'"
-  );
 }
 
 function que_delete($que_type, $user = array(), $planet = array(), $clear = false) {

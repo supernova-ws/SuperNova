@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.13');
+define('SN_VERSION', '43a16.16');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1262,6 +1262,7 @@ define('UNIT_FLEET_PLANET_SPY', 'UNIT_FLEET_PLANET_SPY');
 
 define('GROUP_FESTIVAL', 790000);
 const UNIT_OBJECTS_IN_SPACE = 790001;
+const GROUP_UNIT_OBJECTS_IN_SPACE = 790002;
 
 
 define('GROUP_PART',         800000);

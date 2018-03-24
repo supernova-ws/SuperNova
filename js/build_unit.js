@@ -253,13 +253,17 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   $('#unit_destroy').css('visibility', 'hidden');
 
   var req;
+  var requirement_string = '';
   if (require[unit_id]) {
-    requirement_string = '';
     for (i in require[unit_id]) {
+      if(!require[unit_id].hasOwnProperty(i)) {
+        continue;
+      }
+
       req = require[unit_id][i];
       requirement_string = requirement_string
         + '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
-        + req['name']
+        + '<a href="infos.php?gid=' + req.id + '" class="link">' + req['name'] + '</a>'
         + (!isNaN(req['level_basic']) ? ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require'] : '')
         + '</li>';
     }

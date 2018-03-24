@@ -1,5 +1,6 @@
 <?php
 
+use Meta\Economic\BuildDataStatic;
 use Unit\DBStaticUnit;
 
 function eco_lab_sort_effectivness($a, $b)
@@ -144,53 +145,30 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $cost[RES_TIME][BUILD_CREATE] = $cost[P_OPTIONS][P_TIME_RAW];
 
   $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
-  $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
+  $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED
+    ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES)
+    : $cost['RESULT'][BUILD_CREATE];
+
+  $cost[RES_TIME][BUILD_CREATE] /= BuildDataStatic::getMercenaryTimeDivisor($user, $planet, $unit_id);
+  $cost[RES_TIME][BUILD_CREATE] /= SN::$gc->pimp->getStructuresTimeDivisor($user, $planet, $unit_id, $unit_data);
+  $cost[RES_TIME][BUILD_CREATE] /= BuildDataStatic::getCapitalTimeDivisor($user, $planet, $unit_id);
 
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
-
-  $mercenary = 0;
-  if(in_array($unit_id, sn_get_groups('structures'))) {
-    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
+  if (in_array($unit_id, sn_get_groups('structures'))) {
     $cost['RESULT'][BUILD_DESTROY] =
       mrc_get_level($user, $planet, $unit_id, false, true)
         ? ($cost['CAN'][BUILD_DESTROY]
-            ? ($cost['RESULT'][BUILD_CREATE] == BUILD_UNIT_BUSY ? BUILD_UNIT_BUSY : BUILD_ALLOWED)
-            : BUILD_NO_RESOURCES
-          )
+        ? ($cost['RESULT'][BUILD_CREATE] == BUILD_UNIT_BUSY ? BUILD_UNIT_BUSY : BUILD_ALLOWED)
+        : BUILD_NO_RESOURCES
+      )
         : BUILD_NO_UNITS;
-    $mercenary = MRC_ENGINEER;
-  } elseif(in_array($unit_id, sn_get_groups('tech'))) {
-    $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data[P_REQUIRE][STRUC_LABORATORY]));
-    $cost[RES_TIME][BUILD_CREATE] /= $lab_level;
-    $mercenary = MRC_ACADEMIC;
-  } elseif(in_array($unit_id, sn_get_groups('defense'))) {
-    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
-    $mercenary = MRC_FORTIFIER;
-  } elseif(in_array($unit_id, sn_get_groups('fleet'))) {
-    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
-    $mercenary = MRC_ENGINEER;
-  }
-
-  if(
-    // If planet is capital
-    $user['id_planet'] == $planet['id']
-    &&
-    SN::$gc->config->planet_capital_building_rate > 0
-    &&
-    in_array($unit_id, sn_get_groups(sn_get_groups(GROUP_CAPITAL_BUILDING_BONUS_GROUPS)))
-  ) {
-    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / SN::$gc->config->planet_capital_building_rate;
-  }
-
-  if($mercenary) {
-    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
   if(in_array($unit_id, sn_get_groups('governors')) || $only_dark_matter) {
     $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_DESTROY] = 0;
   } else {
-    $cost[RES_TIME][BUILD_CREATE]  = $cost[RES_TIME][BUILD_CREATE] > 1 ? round($cost[RES_TIME][BUILD_CREATE]) : 1;
-    $cost[RES_TIME][BUILD_DESTROY] = $cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? round($cost[RES_TIME][BUILD_CREATE] / 2) : 1;
+    $cost[RES_TIME][BUILD_CREATE]  = $cost[RES_TIME][BUILD_CREATE] > 1 ? ceil($cost[RES_TIME][BUILD_CREATE]) : 1;
+    $cost[RES_TIME][BUILD_DESTROY] = $cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? ceil($cost[RES_TIME][BUILD_CREATE] / 2) : 1;
   }
 
   return $cost;

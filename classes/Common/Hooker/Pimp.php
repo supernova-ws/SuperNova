@@ -40,9 +40,9 @@ class Pimp {
   }
 
   /**
-   * @param string $hookName
-   * @param        $callable
-   * @param int    $order
+   * @param string   $hookName
+   * @param callable $callable
+   * @param int      $order
    */
   public function register($hookName, $callable, $order = Pimp::ORDER_AS_IS) {
     if (empty($this->hookers[$hookName])) {

@@ -398,8 +398,27 @@ switch ($new_version) {
       );
     });
 
+    // 2018-03-24 21:31:51 43a16.16 - OiS
+    updPatchApply(4, function() use ($update_tables) {
+      if (empty($update_tables['festival_ois_player'])) {
+        upd_create_table(
+          'festival_ois_player',
+          [
+            "`highspot_id` int(10) unsigned COMMENT 'Highspot ID'",
+            "`player_id` bigint(20) unsigned COMMENT 'Player ID'",
+            "`ois_count` int(10) unsigned COMMENT 'OiS player controlled last tick'",
+            "PRIMARY KEY (`highspot_id`, `player_id`)",
+            "KEY `I_player_highspot` (`player_id`, `highspot_id`)",
+            "CONSTRAINT `FK_ois_highspot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+            "CONSTRAINT `FK_ois_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+      }
+    });
+
 //    // #ctv
-//    updPatchApply(4, function() use ($update_tables) {
+//    updPatchApply(5, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
     upd_do_query('COMMIT;', true);
