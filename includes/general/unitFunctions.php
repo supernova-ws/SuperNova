@@ -57,11 +57,11 @@ function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $
   $unit_db_name = pname_resource_name($unit_id);
 
   if (in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts')))) {
-    $unit = DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
-    $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
+    $unit = !empty($user['id']) ? DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id) : 0;
+    $mercenary_level = !empty($unit['unit_level']) ? $unit['unit_level'] : 0;
   } elseif (in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
     $unit = DBStaticUnit::db_unit_by_location(is_array($user) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
-    $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
+    $mercenary_level = !empty($unit['unit_level']) ? $unit['unit_level'] : 0;
   } elseif (in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   } elseif ($unit_id == RES_DARK_MATTER) {
@@ -69,7 +69,7 @@ function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $
   } elseif ($unit_id == RES_METAMATTER) {
     $mercenary_level = SN::$auth->account->account_metamatter; //$user[$unit_db_name];
   } elseif (in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
-    $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
+    $mercenary_level = !empty($planet[$unit_db_name]) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
 
   return $result = $mercenary_level;
@@ -154,10 +154,10 @@ function sn_sys_get_unit_location($user, $planet, $unit_id) {
 }
 
 
-function get_engine_data($user, $engine_info) {
+function get_engine_data($user, $engine_info, $user_tech_level = null) {
   $sn_data_tech_bonus = get_unit_param($engine_info['tech'], P_BONUS_VALUE);
 
-  $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+  $user_tech_level = $user_tech_level === null ? intval(mrc_get_level($user, false, $engine_info['tech'])) : $user_tech_level;
 
   $engine_info['speed_base'] = $engine_info['speed'];
   $tech_bonus = ($user_tech_level - $engine_info['min_level']) * $sn_data_tech_bonus / 100;

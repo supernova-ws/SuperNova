@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a16.21#
+* @version #43a16.25#
 *
 */
 
@@ -52,7 +52,8 @@ $a_lang_array = [
   'sys_impersonate_done' => 'Развоплотиться',
   'sys_impersonated_as' => 'ВНИМАНИЕ! Вы сейчас Воплотились в игрока %1$s. Не забывайте, что на самом деле - вы %2$s! Развоплотиться можно выбрав соответствующий пункт меню.',
 
-  'menu_admin_minig'          => 'Добыча игроков',
+  'menu_admin_mining'          => 'Добыча игроков',
+  'menu_admin_units'          => 'Юниты',
 
   'sys_day' => "дней",
   'sys_hrs' => "часов",

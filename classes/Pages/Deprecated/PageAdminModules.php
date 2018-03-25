@@ -20,8 +20,10 @@ class PageAdminModules extends PageDeprecated {
   private static $sortFields = [];
 
   /**
-   * @param sn_module $a
-   * @param sn_module $b
+   * @param array $a
+   * @param array $b
+   *
+   * @return int
    */
   private static function sortBy($a, $b) {
     $result = 0;

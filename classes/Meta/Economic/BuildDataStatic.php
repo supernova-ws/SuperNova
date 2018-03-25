@@ -168,7 +168,9 @@ class BuildDataStatic {
         $cost[P_OPTIONS][P_TIME_RAW] += get_unit_cost_in([$resourceId => $levelPrice], RES_DEUTERIUM);
       }
 
-      $resource_got = BuildDataStatic::eco_get_resource_on_location($user, $planet, $resourceId, $groupResourcesLoot);
+      $resource_got = !empty($user)
+        ? BuildDataStatic::eco_get_resource_on_location($user, $planet, $resourceId, $groupResourcesLoot)
+        : 0;
 
       $canBuildAmount = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resourceId]));
       $canDestroyAmount = min($canDestroyAmount, floor($resource_got / $cost[BUILD_DESTROY][$resourceId]));

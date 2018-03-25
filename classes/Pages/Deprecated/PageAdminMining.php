@@ -5,7 +5,6 @@
 
 namespace Pages\Deprecated;
 
-
 use SN;
 use DBAL\DbSqlPaging;
 use General\Helpers\PagingRenderer;
@@ -134,7 +133,7 @@ GROUP BY
     );
 
     $template->assign_recursive([
-      'PAGE_NAME' => SN::$lang['menu_admin_minig'],
+      'PAGE_NAME' => SN::$lang['menu_admin_mining'],
 
       'PAGER_MESSAGES' => $pager ? $pager->render() : '',
 
@@ -143,7 +142,7 @@ GROUP BY
 
       '.' => ['production' => $render],
     ]);
-    display($template, SN::$lang['menu_admin_minig']);
+    display($template, SN::$lang['menu_admin_mining']);
   }
 
 }

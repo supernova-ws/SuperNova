@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.23');
+define('SN_VERSION', '43a16.25');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1332,6 +1332,7 @@ define('P_DEFENSE', 'defense');
 define('P_STRUCTURE', 'structure');
 define('P_LOCATION', 'location');
 define('P_CONSUMPTION', 'consumption');
+define('P_UNIT_ENGINE', 'engine');
 
 define('P_ID', 'id');
 define('P_SNID', 'snid');

@@ -561,9 +561,9 @@ $sn_menu_admin = [
     'LINK'       => 'admin/banned.php',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
-  'menu_admin_minig'      => [
+  'menu_admin_mining'      => [
     'TYPE'       => 'lang',
-    'ITEM'       => 'menu_admin_minig',
+    'ITEM'       => 'menu_admin_mining',
     'LINK'       => 'index.php?page=admin/admin_mining',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],

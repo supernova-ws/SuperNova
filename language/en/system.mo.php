@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.21
+* @version 43a16.25
 *
 */
 
@@ -51,7 +51,8 @@ $a_lang_array = (array(
   'sys_impersonate_done' => 'Unimpersonate',
   'sys_impersonated_as' => 'WARNING! Currently you impersonating player %1$s. Don\'t forget that you are really %2$s! To unimpersonate select appropriate menu item.',
 
-  'menu_admin_minig'          => 'Mining stats',
+  'menu_admin_mining'          => 'Mining stats',
+  'menu_admin_units'          => 'Units',
 
   'sys_day' => "Days",
   'sys_hrs' => "Hours",
