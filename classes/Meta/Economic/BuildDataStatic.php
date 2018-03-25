@@ -110,10 +110,11 @@ class BuildDataStatic {
   /**
    * @param array $user
    * @param array $planet
+   * @param array $cost
    *
    * @return float
    */
-  public static function getAutoconvertCount($user, $planet) {
+  public static function getAutoconvertCount($user, $planet, $cost) {
     static $groupResourcesLoot;
     empty($groupResourcesLoot) ? $groupResourcesLoot = sn_get_groups('resources_loot') : false;
 
@@ -153,24 +154,24 @@ class BuildDataStatic {
     $only_dark_matter = 0;
     $canDestroyAmount = 1000000000000;
     $canBuildAmount = !empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 1000000000000;
-    foreach ($unit_data[P_COST] as $resource_id => $resource_amount) {
-      if ($resource_id === P_FACTOR || !($resource_cost = ceil($resource_amount * $levelPriceFactor))) {
+    foreach ($unit_data[P_COST] as $resourceId => $costResource) {
+      if ($resourceId === P_FACTOR || !($levelPrice = ceil($costResource * $levelPriceFactor))) {
         continue;
       }
 
-      $only_dark_matter = $only_dark_matter ? $only_dark_matter : $resource_id;
+      $only_dark_matter = $only_dark_matter ? $only_dark_matter : $resourceId;
 
-      $cost[BUILD_CREATE][$resource_id] = $resource_cost;
-      $cost[BUILD_DESTROY][$resource_id] = ceil($resource_cost / 2);
+      $cost[BUILD_CREATE][$resourceId] = $levelPrice;
+      $cost[BUILD_DESTROY][$resourceId] = ceil($levelPrice / 2);
 
-      if (in_array($resource_id, $groupResourcesLoot)) {
-        $cost[P_OPTIONS][P_TIME_RAW] += get_unit_cost_in([$resource_id => $resource_cost], RES_DEUTERIUM);
+      if (in_array($resourceId, $groupResourcesLoot)) {
+        $cost[P_OPTIONS][P_TIME_RAW] += get_unit_cost_in([$resourceId => $levelPrice], RES_DEUTERIUM);
       }
 
-      $resource_got = BuildDataStatic::eco_get_resource_on_location($user, $planet, $resource_id, $groupResourcesLoot);
+      $resource_got = BuildDataStatic::eco_get_resource_on_location($user, $planet, $resourceId, $groupResourcesLoot);
 
-      $canBuildAmount = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resource_id]));
-      $canDestroyAmount = min($canDestroyAmount, floor($resource_got / $cost[BUILD_DESTROY][$resource_id]));
+      $canBuildAmount = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resourceId]));
+      $canDestroyAmount = min($canDestroyAmount, floor($resource_got / $cost[BUILD_DESTROY][$resourceId]));
     }
     $cost['CAN'][BUILD_CREATE] = $canBuildAmount > 0 ? floor($canBuildAmount) : 0;
     $cost['CAN'][BUILD_DESTROY] = $canDestroyAmount > 0 ? floor($canDestroyAmount) : 0;

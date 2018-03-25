@@ -71,7 +71,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $cost = BuildDataStatic::getBasicData($user, $planet, $unit_data, $unit_level);
 
   // Getting autoconvert unit amount
-  $cost[BUILD_AUTOCONVERT] = $cost[P_OPTIONS][P_ONLY_DARK_MATTER] ? BuildDataStatic::getAutoconvertCount($user, $planet) : 0;
+  $cost[BUILD_AUTOCONVERT] = !$cost[P_OPTIONS][P_ONLY_DARK_MATTER] ? BuildDataStatic::getAutoconvertCount($user, $planet, $cost) : 0;
   // Limiting autoconvert amount to unit max stack - if is set
   !empty($unit_data[P_MAX_STACK]) ? $cost[BUILD_AUTOCONVERT] = min($unit_data[P_MAX_STACK], $cost[BUILD_AUTOCONVERT]) : false;
 
