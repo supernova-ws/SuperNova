@@ -111,6 +111,17 @@
  *
  *
  * ----- Planet settings
+ * @property int        $LastSettedGalaxyPos           => 1,
+ * @property int        $LastSettedPlanetPos           => 1,
+ * @property int        $LastSettedSystemPos           => 1,
+ *
+ * @property int        $eco_planet_starting_crystal   => 500,
+ * @property int        $eco_planet_starting_deuterium => 0,
+ * @property int        $eco_planet_starting_metal     => 500,
+ * @property int        $eco_planet_storage_crystal    => 500000,
+ * @property int        $eco_planet_storage_deuterium  => 500000,
+ * @property int        $eco_planet_storage_metal      => 500000,
+ *
  * @property int        $planet_capital_cost           => 25000, // Cost in DM to move Capital to current planet
  * @property float      $planet_capital_mining_rate    => 2.0,   // Capital Mining rates
  * @property float      $planet_capital_building_rate  => 2.0,   // Capital Building rates
@@ -184,9 +195,17 @@ class classConfig extends classPersistent {
     'chat_refresh_rate'        => 5, // in seconds. Chat AJAX refresh rate
     'chat_timeout'             => 900, // in seconds. Default = 15 min
 
-    'COOKIE_NAME'                  => 'SuperNova',
-    'debug'                        => 0,
-    'Defs_Cdr'                     => 30,
+    'COOKIE_NAME' => 'SuperNova',
+    'debug'       => 0,
+    'Defs_Cdr'    => 30,
+
+    'eco_planet_starting_crystal'   => 500,
+    'eco_planet_starting_deuterium' => 0,
+    'eco_planet_starting_metal'     => 500,
+    'eco_planet_storage_crystal'    => 500000,
+    'eco_planet_storage_deuterium'  => 500000,
+    'eco_planet_storage_metal'      => 500000,
+
     'eco_scale_storage'            => 1,
     'eco_stockman_fleet'           => '', // Black Market - Starting amount of s/h ship merchant to sell
     'eco_stockman_fleet_populate'  => 1,  // Populate empty Stockman fleet with ships or not
@@ -366,7 +385,7 @@ class classConfig extends classPersistent {
     'stats_schedule'         => '04:00:00',
     'stats_php_memory'       => '1024M',
 
-    'tpl_minifier' => 0, // Template minifier
+    'tpl_minifier'  => 0, // Template minifier
     'tpl_allow_php' => 0, // PTL allow INCLUDEPHP and PHP tags
 
     'tutorial_first_item' => 1,

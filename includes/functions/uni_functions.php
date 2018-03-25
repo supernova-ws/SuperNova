@@ -53,13 +53,15 @@ function uni_create_planet_get_density($position_data, $user_row, $planet_sector
  * @param int        $PlanetOwnerID
  * @param string     $planet_name_unsafe
  * @param bool|false $HomeWorld
- * @param array      $options
+ * @param array      $options = [
+ *   'skip_check' => true,
+ *   'user_row' => [],
+ *   'force_name' => (string), // Force full planet name
+ * ]
  *
  * @return bool
  */
-function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
-  global $lang, $config;
-
+function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = []) {
   $Position = intval($Position);
 
   if (!isset($options['skip_check']) && DBStaticPlanet::db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
@@ -94,11 +96,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
 
   $core_info = uni_create_planet_get_density($position_data, $user_row, $planet_sectors);
 
-  $planet_name_unsafe =
-    $user_row['username'] . ' ' . (
+  $planet_name_unsafe = !empty($options['force_name']) ? $options['force_name'] :
+    ($user_row['username'] . ' ' . (
       $HomeWorld
-        ? ' ' . $lang['sys_capital']
-        : ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname'] )
+        ? SN::$lang['sys_capital']
+        : ($planet_name_unsafe ? $planet_name_unsafe : SN::$lang['sys_colo_defaultname'])
+      )
     );
 
   $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
@@ -118,17 +121,17 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
   $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
-  $planet['metal'] = $config->eco_planet_starting_metal;
-  $planet['crystal'] = $config->eco_planet_starting_crystal;
-  $planet['deuterium'] = $config->eco_planet_starting_deuterium;
-  $planet['metal_max'] = $config->eco_planet_storage_metal;
-  $planet['crystal_max'] = $config->eco_planet_storage_crystal;
-  $planet['deuterium_max'] = $config->eco_planet_storage_deuterium;
+  $planet['metal'] = SN::$config->eco_planet_starting_metal;
+  $planet['crystal'] = SN::$config->eco_planet_starting_crystal;
+  $planet['deuterium'] = SN::$config->eco_planet_starting_deuterium;
+  $planet['metal_max'] = SN::$config->eco_planet_storage_metal;
+  $planet['crystal_max'] = SN::$config->eco_planet_storage_crystal;
+  $planet['deuterium_max'] = SN::$config->eco_planet_storage_deuterium;
 
   $density_info_resources = &$density_list[$core_info[UNIT_PLANET_DENSITY_INDEX]][UNIT_RESOURCES];
-  $planet['metal_perhour'] = $config->metal_basic_income * $density_info_resources[RES_METAL];
-  $planet['crystal_perhour'] = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
-  $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
+  $planet['metal_perhour'] = SN::$config->metal_basic_income * $density_info_resources[RES_METAL];
+  $planet['crystal_perhour'] = SN::$config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
+  $planet['deuterium_perhour'] = SN::$config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
   $RetValue = SN::db_ins_record(LOC_PLANET,
     "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',

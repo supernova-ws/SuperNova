@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.21');
+define('SN_VERSION', '43a16.23');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1312,6 +1312,7 @@ define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
 define('P_UNIT_PRODUCTION', 'production');
+define('P_UNIT_HIDE_FROM_BUILD', 'P_UNIT_HIDE_FROM_BUILD');
 
 define('P_CHANCE', 'chance');
 
@@ -1721,6 +1722,7 @@ define('GAME_DISABLE_EVENT_OIS', 7);
 
 define('USER_BOT_PLAYER', 0);
 define('USER_BOT_BLACK_MOON', 1);
+define('USER_BOT_OIS', 2);
 
 define('LOG_ONLIINE_AGGREGATE_NONE', 0);
 define('LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10', 1);

@@ -108,20 +108,39 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   ");
 }
 
+/**
+ * @param string $username_unsafe
+ * @param string $email_unsafe
+ * @param array  $options
+ * [
+ *   'user_bot'                 => (int),
+ *   'total_points'             => (float),
+ *   'language_iso'             => (string),
+ *   'options'                  => (string),
+ *   'options_extra'            => (string),
+ *   'salt'                     => (string),
+ *   'password_encoded_unsafe'  => md5(string),
+ *   'partner_id'               => (id),
+ *   'galaxy'                   => (int),
+ *   'system'                   => (int),
+ *   'planet'                   => (int),
+ *   'planet_options'           => (array),
+ * ]
+ *
+ * @return array|false
+ */
 function player_create($username_unsafe, $email_unsafe, $options) {
   sn_db_transaction_check(true);
 
-  global $config, $lang;
-
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
 
-  empty($options['planet_options']) ? $options['planet_options'] = array() : false;
+  empty($options['planet_options']) ? $options['planet_options'] = [] : false;
 
   $field_set = array(
     'server_name' => SN_ROOT_VIRTUAL,
     'register_time' => SN_TIME_NOW,
     'news_lastread' => SN_TIME_NOW,
-    'user_bot' => $options['user_bot'] = empty($options['user_bot']) ? USER_BOT_PLAYER : $options['total_points'],
+    'user_bot' => $options['user_bot'] = empty($options['user_bot']) ? USER_BOT_PLAYER : $options['user_bot'],
 
     'username' => $username_unsafe,
     'email' => $email_unsafe,
@@ -145,27 +164,27 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   $user_new = db_user_by_id(db_insert_id());
 
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
-    $options['galaxy'] = $config->LastSettedGalaxyPos;
-    $options['system'] = $config->LastSettedSystemPos;
-    $segment_size = floor($config->game_maxPlanet / 3);
-    $segment = floor($config->LastSettedPlanetPos / $segment_size);
+    $options['galaxy'] = SN::$config->LastSettedGalaxyPos;
+    $options['system'] = SN::$config->LastSettedSystemPos;
+    $segment_size = floor(SN::$config->game_maxPlanet / 3);
+    $segment = floor(SN::$config->LastSettedPlanetPos / $segment_size);
     $segment++;
     $options['planet'] = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
 
     while(true) {
-      if($options['planet'] > $config->game_maxPlanet) {
+      if($options['planet'] > SN::$config->game_maxPlanet) {
         $options['planet'] = mt_rand(0, $segment_size - 1) + 1;
         $options['system']++;
       }
-      if($options['system'] > $config->game_maxSystem) {
+      if($options['system'] > SN::$config->game_maxSystem) {
         $options['system'] = 1;
         $options['galaxy']++;
       }
-      $options['galaxy'] > $config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
+      $options['galaxy'] > SN::$config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
 
       $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
       if(!$galaxy_row['id']) {
-        $config->db_saveItem(array(
+        SN::$config->db_saveItem(array(
           'LastSettedGalaxyPos' => $options['galaxy'],
           'LastSettedSystemPos' => $options['system'],
           'LastSettedPlanetPos' => $options['planet'],
@@ -182,7 +201,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
-  $config->db_saveItem('users_amount', $config->users_amount + 1);
+  SN::$config->pass()->users_amount = SN::$config->users_amount + 1;
 
   $username_safe = db_escape($username_unsafe);
   doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
