@@ -60,6 +60,7 @@ class QueUnitStatic {
       'que_unit_level'       => $unit_level,
       'que_unit_time'        => $build_data[RES_TIME][$build_mode],
       'que_unit_price'       => $resource_list,
+      'que_unit_one_time_raw' => $build_data[P_OPTIONS][P_TIME_RAW],
     ];
 
     return $result;

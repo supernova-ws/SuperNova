@@ -417,8 +417,17 @@ switch ($new_version) {
       }
     });
 
+    // 2018-03-25 08:11:39 43a16.21
+    updPatchApply(5, function() use ($update_tables) {
+      upd_alter_table(
+        'que',
+        "ADD COLUMN `que_unit_one_time_raw` DECIMAL(20,5) NOT NULL DEFAULT 0",
+        empty($update_tables['que']['que_unit_one_time_raw'])
+      );
+    }, PATCH_PRE_CHECK);
+
 //    // #ctv
-//    updPatchApply(5, function() use ($update_tables) {
+//    updPatchApply(6, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
     upd_do_query('COMMIT;', true);

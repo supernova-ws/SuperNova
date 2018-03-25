@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.19');
+define('SN_VERSION', '43a16.21');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -805,6 +805,7 @@ define('BUILD_SILO_FULL'       ,10);
 define('BUILD_MAX_REACHED'     ,11);
 define('BUILD_SECTORS_NONE'    ,12);
 define('BUILD_AUTOCONVERT_AVAILABLE', 13);
+define('BUILD_HIGHSPOT_NOT_ACTIVE', 14);
 
 
 // *** Que types

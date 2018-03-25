@@ -87,6 +87,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   // Setting destroy status
   $cost['RESULT'][BUILD_DESTROY] = BuildDataStatic::getDestroyStatus($user, $planet, $unit_id, $cost);
 
+
   // Time calculations
   if (in_array($unit_id, sn_get_groups('governors')) || $cost[P_OPTIONS][P_ONLY_DARK_MATTER]) {
     // Zero build time for Governors and other units with DM in price

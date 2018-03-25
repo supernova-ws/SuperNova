@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 43a16.21
 *
 */
 
@@ -683,6 +683,7 @@ $a_lang_array = (array(
     BUILD_MAX_REACHED => 'You already build and/or enqued maximum numbers of this type units',
     BUILD_SECTORS_NONE => 'No free sectors',
     BUILD_AUTOCONVERT_AVAILABLE => 'Autoconvert available',
+    BUILD_HIGHSPOT_NOT_ACTIVE => 'Festival highspot is not active',
   ),
 
   'sys_game_mode' => array(

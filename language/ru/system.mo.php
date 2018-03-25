@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a16.8#
+* @version #43a16.21#
 *
 */
 
@@ -698,6 +698,7 @@ $a_lang_array = [
     BUILD_MAX_REACHED => 'Вы уже построили и/или поставили в очередь максимальное количество юнитов данного типа',
     BUILD_SECTORS_NONE => 'Нет свободных секторов',
     BUILD_AUTOCONVERT_AVAILABLE => 'Доступна автоконвертация',
+    BUILD_HIGHSPOT_NOT_ACTIVE => 'Ивент не активен',
   ],
 
   'sys_game_mode' => [
