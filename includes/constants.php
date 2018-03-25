@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.16');
+define('SN_VERSION', '43a16.18');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1796,6 +1796,7 @@ define('FIELD_MVC', 'mvc');
 define('FIELD_MODEL', 'model');
 define('FIELD_VIEW', 'view');
 define('MVC_OPTIONS', 'options');
+define('MVC_HOOK_LOCKS', 'MVC_HOOK_LOCKS');
 
 define('THIS_STRING', '$this');
 

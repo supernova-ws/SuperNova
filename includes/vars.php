@@ -1366,6 +1366,13 @@ $sn_powerup_buy_discounts = array(
   PERIOD_MONTH   => 1,
   PERIOD_MONTH_2 => 0.9,
   PERIOD_MONTH_3 => 0.8,
+//  PERIOD_DAY     => 3,
+//  PERIOD_DAY_3   => 2.5,
+//  PERIOD_WEEK    => 2.0, // 1.5,
+//  PERIOD_WEEK_2  => 1.5, // 1.2,
+//  PERIOD_MONTH   => 1,
+//  PERIOD_MONTH_2 => 0.9,
+//  PERIOD_MONTH_3 => 0.8,
 );
 
 global $sn_data_bbCodes;

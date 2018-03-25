@@ -11,7 +11,7 @@ use SN;
 class BuildDataStatic {
 
   /**
-   * @param float $prevDivisor - because this is Hooker prev result variable should be declared
+   * @param float $prevDivisor - because this is Hooker's client so prev result variable should be declared
    * @param array $user
    * @param array $planet
    * @param int   $unit_id
@@ -64,16 +64,16 @@ class BuildDataStatic {
    */
   public static function getCapitalTimeDivisor($user, $planet, $unit_id) {
     static $capitalUnitGroups;
-    if(empty($capitalUnitGroups)) {
-      $capitalUnitGroups = sn_get_groups(sn_get_groups(GROUP_CAPITAL_BUILDING_BONUS_GROUPS));
-    }
+    empty($capitalUnitGroups) ? $capitalUnitGroups = sn_get_groups(sn_get_groups(GROUP_CAPITAL_BUILDING_BONUS_GROUPS)) : false;
 
     if (
       // If planet is capital
       $user['id_planet'] == $planet['id']
       &&
+      // There is capital building rate set
       SN::$gc->config->planet_capital_building_rate > 0
       &&
+      // Unit is subject to Capital bonus
       in_array($unit_id, $capitalUnitGroups)
     ) {
       $capitalTimeDivisor = SN::$gc->config->planet_capital_building_rate;
@@ -83,5 +83,140 @@ class BuildDataStatic {
 
     return $capitalTimeDivisor;
   }
+
+  /**
+   * @param array $user
+   * @param array $planet
+   * @param int   $unit_id
+   * @param array $cost
+   *
+   * @return float - Time need to destroy current level of unit in seconds
+   */
+  public static function getDestroyStatus($user, $planet, $unit_id, $cost) {
+    static $groupStructures;
+    empty($groupStructures) ? $groupStructures = sn_get_groups('structures') : false;
+
+    $result = !in_array($unit_id, $groupStructures) ? BUILD_INDESTRUCTABLE :
+      (!mrc_get_level($user, $planet, $unit_id, false, true) ? BUILD_NO_UNITS :
+        (
+        !($cost['CAN'][BUILD_DESTROY]) ? BUILD_NO_RESOURCES :
+          ($cost['RESULT'][BUILD_CREATE] == BUILD_UNIT_BUSY ? BUILD_UNIT_BUSY : BUILD_ALLOWED)
+        )
+      );
+
+    return $result;
+  }
+
+  /**
+   * @param array $user
+   * @param array $planet
+   *
+   * @return float
+   */
+  public static function getAutoconvertCount($user, $planet) {
+    static $groupResourcesLoot;
+    empty($groupResourcesLoot) ? $groupResourcesLoot = sn_get_groups('resources_loot') : false;
+
+    $cost_in_metal = 0;
+    $planetResourcesInMetal = 0;
+    foreach ($groupResourcesLoot as $resource_id) {
+      $planetResourcesInMetal += floor(get_unit_cost_in([$resource_id => mrc_get_level($user, $planet, $resource_id)]));
+      !empty($cost[BUILD_CREATE][$resource_id])
+        ? $cost_in_metal += get_unit_cost_in([$resource_id => $cost[BUILD_CREATE][$resource_id]])
+        : false;
+    }
+
+    return floor($planetResourcesInMetal / $cost_in_metal);
+  }
+
+  /**
+   * @param $user
+   * @param $planet
+   * @param $unit_data
+   * @param $unit_level
+   *
+   * @return array
+   */
+  public static function getBasicData(&$user, $planet, $unit_data, $unit_level) {
+    static $groupResourcesLoot;
+    empty($groupResourcesLoot) ? $groupResourcesLoot = sn_get_groups('resources_loot') : false;
+
+    $cost = [
+      P_OPTIONS => [
+        P_TIME_RAW => 0,
+      ],
+    ];
+
+    $unit_factor = !empty($unit_data[P_COST][P_FACTOR]) ? $unit_data[P_COST][P_FACTOR] : 1;
+    $levelPriceFactor = pow($unit_factor, $unit_level);
+
+    $only_dark_matter = 0;
+    $canDestroyAmount = 1000000000000;
+    $canBuildAmount = !empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 1000000000000;
+    foreach ($unit_data[P_COST] as $resource_id => $resource_amount) {
+      if ($resource_id === P_FACTOR || !($resource_cost = ceil($resource_amount * $levelPriceFactor))) {
+        continue;
+      }
+
+      $only_dark_matter = $only_dark_matter ? $only_dark_matter : $resource_id;
+
+      $cost[BUILD_CREATE][$resource_id] = $resource_cost;
+      $cost[BUILD_DESTROY][$resource_id] = ceil($resource_cost / 2);
+
+      if (in_array($resource_id, $groupResourcesLoot)) {
+        $cost[P_OPTIONS][P_TIME_RAW] += get_unit_cost_in([$resource_id => $resource_cost], RES_DEUTERIUM);
+      }
+
+      $resource_got = BuildDataStatic::eco_get_resource_on_location($user, $planet, $resource_id, $groupResourcesLoot);
+
+      $canBuildAmount = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resource_id]));
+      $canDestroyAmount = min($canDestroyAmount, floor($resource_got / $cost[BUILD_DESTROY][$resource_id]));
+    }
+    $cost['CAN'][BUILD_CREATE] = $canBuildAmount > 0 ? floor($canBuildAmount) : 0;
+    $cost['CAN'][BUILD_DESTROY] = $canDestroyAmount > 0 ? floor($canDestroyAmount) : 0;
+    $cost[P_OPTIONS][P_ONLY_DARK_MATTER] = $only_dark_matter == RES_DARK_MATTER;
+
+    return $cost;
+  }
+
+  /**
+   * Special function to get resource on location
+   *
+   * @param array $user
+   * @param array $planet
+   * @param int   $resource_id
+   * @param array $groupResourcesLoot
+   *
+   * @return float
+   */
+  public static function eco_get_resource_on_location($user, $planet, $resource_id, $groupResourcesLoot) {
+    if (in_array($resource_id, $groupResourcesLoot)) {
+      $resource_got = mrc_get_level($user, $planet, $resource_id);
+    } elseif ($resource_id == RES_DARK_MATTER) {
+      $resource_got = mrc_get_level($user, [], $resource_id);
+    } elseif ($resource_id == RES_ENERGY) {
+      $resource_got = max(0, $planet['energy_max'] - $planet['energy_used']);
+    } else {
+      $resource_got = 0;
+    }
+
+    return $resource_got;
+  }
+
+  /**
+   * @param array $user
+   * @param array $planet
+   * @param int   $unit_id
+   * @param float $costCanBuildCreate
+   *
+   * @return int|mixed
+   */
+  public static function getBuildStatus(&$user, $planet, $unit_id, $costCanBuildCreate) {
+    $result = eco_can_build_unit($user, $planet, $unit_id);
+
+    // Additional check for resources. If no units can be built - it means that there are not enough resources
+    return $result == BUILD_ALLOWED && $costCanBuildCreate < 1 ? BUILD_NO_RESOURCES : $result;
+  }
+
 
 }

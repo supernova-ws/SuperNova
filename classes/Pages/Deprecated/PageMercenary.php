@@ -205,15 +205,6 @@ class PageMercenary {
       return true;
     }
 
-//    if (isset($mercenary_info[P_REQUIRE])) {
-//      foreach ($mercenary_info[P_REQUIRE] as $unit_id => $unit_level) {
-//        if (mrc_get_level($user, [], $unit_id) < $unit_level) {
-//          return false;
-//        }
-//      }
-//    }
-//
-//    return true;
     return eco_can_build_unit($user, [], $mercenary_id) == BUILD_ALLOWED;
   }
 
