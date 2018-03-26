@@ -82,6 +82,18 @@ function pretty_time($seconds, $daysNumeric = false) {
   );
 }
 
+function pretty_time_short($seconds, $daysNumeric = true) {
+  $day = floor($seconds / (24 * 3600));
+
+  return sprintf(
+    '%s%s%s%02d',
+    $day ? $day . SN::$lang['sys_day_short'] . ' ' : '',
+    $seconds > PERIOD_HOUR ? sprintf('%02d:', floor($seconds / 3600 % 24)) : '',
+    $seconds > PERIOD_MINUTE ? sprintf('%02d:', floor($seconds / 60 % 60)) : '',
+    floor($seconds / 1 % 60)
+  );
+}
+
 function sys_time_human($time, $full = false) {
   global $lang;
 

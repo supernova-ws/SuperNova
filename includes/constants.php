@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.27');
+define('SN_VERSION', '43a16.30');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1880,3 +1880,5 @@ const FLEET_STATUS_RETURNING = 1;
 const MENU_FIELD_AUTH_LEVEL = 'AUTH_LEVEL';
 
 const REQUIRE_FESTIVAL = 'festival_highspot';
+
+const UNIVERSE_GALAXY_DISTANCE = 20000;

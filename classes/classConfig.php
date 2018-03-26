@@ -93,6 +93,8 @@
  * @property int        $tpl_minifier                  => 0, // Template minifier
  * @property int        $tpl_allow_php                 => 0, // PTL allow INCLUDEPHP and PHP tags
  *
+ * @property int        $uni_galaxy_distance           => 20000, // Distance between galaxies
+ *
  * ----- Player settings
  * @property int|float  $player_metamatter_immortal    => 200000, // MM amount to reward account with Immortal status
  *
@@ -390,8 +392,9 @@ class classConfig extends classPersistent {
 
     'tutorial_first_item' => 1,
 
-    'uni_price_galaxy' => 10000,
-    'uni_price_system' => 1000,
+    'uni_galaxy_distance' => UNIVERSE_GALAXY_DISTANCE, // 20000 by default
+    'uni_price_galaxy'    => 10000,
+    'uni_price_system'    => 1000,
 
     'upd_lock_time' => 60, // How long update will lock table. Also update increment time when it requires
 

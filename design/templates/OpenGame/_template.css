@@ -2867,18 +2867,23 @@ body:not(.no_border_image) [table_title]:before {
 .white, .zero_number {
   color: white;
 }
+tr.info_bg > td, tr.info_bg > th,
 .info_bg {
   background-color: #005472;
 }
+tr.ok_bg > td, tr.ok_bg > th,
 .ok_bg, .success_bg, .positive_bg {
   background-color: #004400;
 }
+tr.notice_bg > td, tr.notice_bg > th,
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: #888800 !important;
+  background-color: #636300 !important;
 }
+tr.warning_bg > td, tr.warning_bg > th,
 .warning_bg {
   background-color: #924200;
 }
+tr.error_bg > td, tr.error_bg > th,
 .error_bg, .negative_bg {
   background-color: darkred;
 }

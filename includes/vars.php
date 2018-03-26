@@ -1212,6 +1212,13 @@ $sn_data += [
     'flt_spies'          => [
       SHIP_SPY => SHIP_SPY,
     ],
+    // Anti-Spies
+    'flt_spies_anti'     => [
+    ],
+    // Bombers
+    'flt_bombers'         => [
+      SHIP_LARGE_BOMBER => SHIP_LARGE_BOMBER,
+    ],
     // Colonizers
     'flt_colonizers'     => [
       SHIP_COLONIZER => SHIP_COLONIZER,
