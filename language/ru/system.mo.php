@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a16.25#
+* @version #43a16.33#
 *
 */
 
@@ -54,6 +54,7 @@ $a_lang_array = [
 
   'menu_admin_mining'          => 'Добыча игроков',
   'menu_admin_units'          => 'Юниты',
+  'menu_admin_ube_balance'          => 'Баланс UBE',
 
   'sys_day' => "дней",
   'sys_hrs' => "часов",

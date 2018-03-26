@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.25
+* @version 43a16.33
 *
 */
 
@@ -53,6 +53,7 @@ $a_lang_array = (array(
 
   'menu_admin_mining'          => 'Mining stats',
   'menu_admin_units'          => 'Units',
+  'menu_admin_ube_balance'          => 'UBE Balance',
 
   'sys_day' => "Days",
   'sys_hrs' => "Hours",

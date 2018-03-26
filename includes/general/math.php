@@ -56,50 +56,51 @@ function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 
   return $result;
 }
 
-function median()
-{
+/**
+ * Return median of array or list of arguments
+ *
+ * @return bool|float
+ */
+function median() {
   $args = func_get_args();
 
-  switch(func_num_args())
-  {
+  switch (func_num_args()) {
     case 0:
       // trigger_error('median() requires at least one parameter',E_USER_WARNING);
       return false;
-      break;
+    break;
 
+    /** @noinspection PhpMissingBreakStatementInspection */
     case 1:
       $args = array_pop($args);
     // fallthrough
 
     default:
-      if(!is_array($args))
-      {
+      if (!is_array($args)) {
         // trigger_error('median() requires a list of numbers to operate on or an array of numbers', E_USER_NOTICE);
         return false;
       }
 
       sort($args);
 
-      $n = count($args);
-      $h = intval($n / 2);
+      $h = intval(count($args) / 2);
 
-      if($n % 2 == 0)
-      {
-        $median = ($args[$h] + $args[$h-1]) / 2;
-      }
-      else
-      {
-        $median = $args[$h];
-      }
+      $median = count($args) % 2 == 0 ? ($args[$h] + $args[$h - 1]) / 2 : $args[$h];
 
-      break;
+    break;
   }
 
   return $median;
 }
-function average($arr)
+
+/**
+ * @param array $array
+ *
+ * @return float
+ */
+function avg($array)
 {
-  return is_array($arr) && count($arr) ? array_sum($arr) / count($arr) : 0;
+  return is_array($array) && count($array) ? array_sum($array) / count($array) : 0;
 }
 function linear_calc(&$linear, $from = 0, $debug = false)
 {

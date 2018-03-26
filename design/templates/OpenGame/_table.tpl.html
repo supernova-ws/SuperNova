@@ -1,0 +1,67 @@
+{NAME}
+
+<!-- IF .rows -->
+<table>
+  <!-- BEGIN rows -->
+
+  <!-- IF rows.CLASS -->
+  <!-- DEFINE $ROW_CLASS = '{rows.CLASS}' -->
+  <!-- ELSE -->
+  <!--DEFINE $ROW_CLASS = 'c_c' -->
+  <!-- ENDIF -->
+
+  <tr class="{$ROW_CLASS}">
+    <!-- IF rows.NAME -->
+
+    <!-- IF rows.NAME_CLASS -->
+    <!-- DEFINE $ROW_NAME_CLASS = '{rows.NAME_CLASS}' -->
+    <!-- ELSE -->
+    <!-- DEFINE $ROW_NAME_CLASS = 'c_c' -->
+    <!-- ENDIF -->
+
+    <th class="{$ROW_NAME_CLASS}">
+      {rows.NAME}
+    </th>
+    <!-- ENDIF -->
+
+
+    <!-- BEGIN cells -->
+
+
+
+    <!-- IF cells.CLASS -->
+    <!-- DEFINE $CELL_CLASS = '{cells.CLASS}' -->
+    <!-- ELSE -->
+    <!-- DEFINE $CELL_CLASS = '' -->
+    <!-- ENDIF -->
+
+    <!-- IF cells.NOWRAP -->
+    <!-- DEFINE $CELL_NOWRAP = 'nowrap' -->
+    <!-- ELSE -->
+    <!-- DEFINE $CELL_NOWRAP = '' -->
+    <!-- ENDIF -->
+
+    <!-- IF rows.HEADER || cells.HEADER -->
+    <th class="{$CELL_CLASS}" {$CELL_NOWRAP}>
+    <!-- ELSE -->
+    <td class="{$CELL_CLASS}" {$CELL_NOWRAP}>
+    <!-- ENDIF -->
+
+
+      {cells.CONTENT}
+
+
+
+    <!-- IF ! rows.HEADER && ! cells.HEADER -->
+    </td>
+    <!-- ELSE -->
+    </th>
+    <!-- ENDIF -->
+
+
+
+    <!-- END cells -->
+  </tr>
+  <!-- END rows -->
+</table>
+<!-- ENDIF -->

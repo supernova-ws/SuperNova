@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.30');
+define('SN_VERSION', '43a16.33');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -933,8 +933,8 @@ define('SHIP_SMALL_FIGHTER_LIGHT', 204);
 define('SHIP_SMALL_FIGHTER_WRATH', 219);
 define('SHIP_SMALL_FIGHTER_HEAVY', 205);
 define('SHIP_SMALL_FIGHTER_ASSAULT', 217);
-define('SHIP_MEDIUM_FRIGATE', 206);
-define('SHIP_MEDIUM_DESTROYER', 226); // Not used
+define('SHIP_MEDIUM_DESTROYER', 206);
+define('SHIP_MEDIUM_FRIGATE', 226); // Not used
 define('SHIP_MEDIUM_BOMBER_ENVY', 224);
 define('SHIP_LARGE_CRUISER', 207);
 define('SHIP_LARGE_BOMBER', 211);

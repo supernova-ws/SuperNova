@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 43a16.33
 *
 */
 
@@ -268,7 +268,7 @@ $a_lang_array = array(
       'description_short' => 'Further development of the lightweight fighter, it is better to secure and has a stronger attack.',
     ),
 
-    SHIP_MEDIUM_FRIGATE => array(
+    SHIP_MEDIUM_DESTROYER => array(
       'description' => 'With the development of heavy lasers and ion guns, more and more marginalized by heavy fighters. Despite the many improvements in firepower and armor cannot be so modified to efficiently counter these defensive guns. It was therefore decided to build a new class of ships, which would have more firepower and armor. So were the destroyers. Destroyers protected almost three times stronger than heavy fighters and more than twice the firepower. They are very quick. There is no better weapons against high defense. Nearly a century cruisers unlimited dominated in the universe. With the advent of Gauss guns and plasma guns their rule came to an end. However, today they are used against groups of fighters.',
       'description_short' => 'Destroyers protected almost three times stronger than heavy fighters and firepower they surpass heavy fighters almost doubled. They are very fast.',
     ),

@@ -2871,15 +2871,20 @@ tr.info_bg > td, tr.info_bg > th,
 .info_bg {
   background-color: #005472;
 }
-tr.ok_bg > td, tr.ok_bg > th,
-.ok_bg, .success_bg, .positive_bg {
+.ok_bg, tr.ok_bg > td, tr.ok_bg > th,
+.success_bg, tr.success_bg > td, tr.success_bg > th,
+.positive_bg, tr.positive_bg > td, tr.positive_bg > th, td.positive_bg, th.positive_bg
+, tr.positive_bg > td, tr.positive_bg > th
+, tr.c_r.positive_bg > td, tr.c_r.positive_bg > th /* admin_table_balance */
+ {
   background-color: #004400;
 }
 tr.notice_bg > td, tr.notice_bg > th,
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: #636300 !important;
+  /*background-color: #636300 !important;*/
+  background-color: #575700 !important;
 }
-tr.warning_bg > td, tr.warning_bg > th,
+tr.warning_bg > td, tr.warning_bg > th, td.warning_bg, th.warning_bg,
 .warning_bg {
   background-color: #924200;
 }
