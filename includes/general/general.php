@@ -1,18 +1,18 @@
 <?php
 
 
-require_once('general/math.php');
-require_once('general/compatibility.php');
-require_once('general/params.php');
-require_once('general/nickRender.php');
-require_once('general/formatters.php');
-require_once('general/validators.php');
-require_once('general/unitFunctions.php');
-require_once('general/playerFunctions.php');
-require_once('general/planetFunctions.php');
-require_once('general/urlAndHttp.php');
-require_once('general_pname.php');
+require_once('general_math.php');
+require_once('general_compatibility.php');
+require_once('general_params.php');
+require_once('general_nickRender.php');
+require_once('general_formatters.php');
+require_once('general_validators.php');
+require_once('general_unitFunctions.php');
+require_once('general_playerFunctions.php');
+require_once('general_planetFunctions.php');
+require_once('general_urlAndHttp.php');
 
+require_once('general_pname.php');
 
 // HOOKS AND HANDLERS ----------------------------------------------------------------------------------------------------------------
 /**

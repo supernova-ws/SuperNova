@@ -38,13 +38,13 @@ require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
 \Core\Autoloader::register('classes/UBE/');
 
 
-require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
+require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';
 
 // Бенчмарк
 SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
-require_once(SN_ROOT_PHYSICAL . 'includes/general.php');
+require_once(SN_ROOT_PHYSICAL . 'includes/general/general.php');
 require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
