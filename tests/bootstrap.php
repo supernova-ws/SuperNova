@@ -13,8 +13,8 @@ define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL)); // mb_strlen ???
 require_once __DIR__ . '/includes/test_constants.php';
 require_once __DIR__ . '/includes/test_functions.php';
 
-require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
-require_once SN_ROOT_PHYSICAL . 'includes/general.php';
+require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';
+require_once SN_ROOT_PHYSICAL . 'includes/general/general.php';
 
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
 
