@@ -1,0 +1,144 @@
+<h2>{PAGE_HEADER}</h2>
+
+<!--<a href="index.php?page=admin/admin_payment_stats" class="link">Статистика</a>-->
+
+<form method="GET" name="filter">
+  <input type="hidden" name="page" value="admin/admin_payment" />
+
+  <!-- IF .flt_stat -->
+  {L_adm_pay_filter_stat_name}
+  <select name="flt_stat" onchange="filter.submit();">
+    <!-- BEGIN flt_stat -->
+    <option value="{flt_stat.KEY}"<!-- IF flt_stat.KEY == FLT_STAT --> selected<!-- ENDIF -->>{flt_stat.VALUE}</option>
+    <!-- END flt_stat -->
+  </select>
+  <!-- ENDIF -->
+
+<!--
+  &lt;!&ndash; IF .flt_currency &ndash;&gt;
+  {L_adm_pay_th_payment_currency}
+  <select name="flt_currency" onchange="filter.submit();">
+    &lt;!&ndash; BEGIN flt_currency &ndash;&gt;
+    <option value="{flt_currency.KEY}"&lt;!&ndash; IF flt_currency.KEY == FLT_CURRENCY &ndash;&gt; selected&lt;!&ndash; ENDIF &ndash;&gt;>{flt_currency.VALUE}</option>
+    &lt;!&ndash; END flt_currency &ndash;&gt;
+  </select>
+  &lt;!&ndash; ENDIF &ndash;&gt;
+-->
+
+
+  <table>
+    <tr>
+      <th class="c_c" colspan="3">
+        {L_adm_pay_th_payer}
+        <!-- IF .payer -->
+        <br />
+        <select name="flt_payer" onchange="filter.submit();">
+          <!-- BEGIN payer -->
+          <option value="{payer.KEY}"<!-- IF payer.KEY == FLT_PAYER --> selected<!-- ENDIF -->>{payer.VALUE}</option>
+          <!-- END payer -->
+        </select>
+        <!-- ENDIF -->
+      </th>
+      <th class="c_c" colspan="5">
+        {L_adm_pay_th_payment}<br />
+        <!-- IF .status -->
+        {L_adm_pay_th_payment_status}
+        <select name="flt_status" onchange="filter.submit();">
+          <!-- BEGIN status -->
+          <option value="{status.KEY}"<!-- IF status.KEY == FLT_STATUS --> selected<!-- ENDIF -->>{status.VALUE}</option>
+          <!-- END status -->
+        </select>
+        <!-- ENDIF -->
+
+        <!-- IF .test -->
+        {L_adm_pay_filter_test[1]}
+        <select name="flt_test" onchange="filter.submit();">
+          <!-- BEGIN test -->
+          <option value="{test.KEY}"<!-- IF test.KEY == FLT_TEST --> selected<!-- ENDIF -->>{test.VALUE}</option>
+          <!-- END test -->
+        </select>
+        <!-- ENDIF -->
+      </th>
+      <th class="c_c" colspan="2">{L_sys_metamatter}</th>
+      <th class="c_c" colspan="3">
+        {L_adm_pay_th_module}
+        <!-- IF .module -->
+        <br />
+        <select name="flt_module" onchange="filter.submit();">
+          <!-- BEGIN module -->
+          <option value="{module.KEY}"<!-- IF module.KEY == FLT_MODULE --> selected<!-- ENDIF -->>{module.VALUE}</option>
+          <!-- END module -->
+        </select>
+        <!-- ENDIF -->
+      </th>
+    </tr>
+
+    <!-- IF .payment && PAGER_PAYMENTS -->
+    <tr class="c_c">
+      <td colspan="13" class="subheader">
+        {PAGER_PAYMENTS}
+      </td>
+    </tr>
+    <!-- ENDIF -->
+
+    <tr>
+      <th class="c_c">{L_adm_pay_th_payer_id}</th>
+      <th class="c_c">{L_adm_pay_th_payer_name}</th>
+      <th class="c_c"><img src="design/images/icon_mail.gif" border="0" /></th>
+      <th class="c_c">{L_adm_pay_th_payment_id}</th>
+      <th class="c_c">{L_adm_pay_th_payment_date}</th>
+      <th class="c_c">{L_adm_pay_th_payment_status}</th>
+      <th class="c_c">{L_adm_pay_th_payment_amount}</th>
+      <th class="c_c">{L_adm_pay_th_payment_currency}</th>
+      <th class="c_c">{L_adm_pay_th_mm_paid}</th>
+      <th class="c_c">{L_adm_pay_th_mm_gained}</th>
+      <th class="c_c">{L_adm_pay_th_module_name}</th>
+      <th class="c_c">{L_adm_pay_th_payment_amount}</th>
+      <th class="c_c">{L_adm_pay_th_payment_currency}</th>
+    </tr>
+
+    <!-- BEGIN payment -->
+    <tr>
+      <td>{payment.PAYMENT_USER_ID}</TD>
+      <td>{payment.PAYMENT_USER_NAME}</TD>
+      <td>
+        <!-- IF payment.PAYMENT_USER_ID -->
+        <a href="messages.php?mode=write&id={payment.PAYMENT_USER_ID}">
+          <img src="design/images/icon_mail.gif" border="0" />
+        </a>
+        <!-- ELSE -->
+        &nbsp;
+        <!-- ENDIF -->
+      </td>
+      <td>{payment.PAYMENT_ID}</td>
+      <td>{payment.PAYMENT_DATE}</TD>
+      <td>
+        <!-- IF payment.PAYMENT_STATUS -->
+        <span class="ok">{L_adm_pay_filter_status[1]}</span>
+        <!-- ELSE -->
+        <span class="error">{L_adm_pay_filter_status[0]}</span>
+        <!-- ENDIF -->
+        <!-- IF payment.PAYMENT_TEST -->
+        <br /><span class="warning">{L_adm_pay_filter_test[1]}</span>
+        <!-- ENDIF -->
+      </td>
+      <td class="c_r">{payment.PAYMENT_AMOUNT}</TD>
+      <td>{payment.PAYMENT_CURRENCY}</TD>
+      <td class="c_r">{payment.PAYMENT_DARK_MATTER_PAID}</TD>
+      <td class="c_r">{payment.PAYMENT_DARK_MATTER_GAINED}</TD>
+      <td>{payment.PAYMENT_MODULE_NAME}</TD>
+      <td class="c_r">{payment.PAYMENT_EXTERNAL_AMOUNT}</TD>
+      <td>{payment.PAYMENT_EXTERNAL_CURRENCY}</TD>
+    </tr>
+    <!-- END payment -->
+
+    <!-- IF .payment && PAGER_PAYMENTS -->
+    <tr class="c_c">
+      <td colspan="13" class="subheader">
+        {PAGER_PAYMENTS}
+      </td>
+    </tr>
+    <!-- ENDIF -->
+
+  </table>
+</form>

@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a16.13
+* @version 43a16.45
 *
 */
 
@@ -545,6 +545,7 @@ $a_lang_array = array(
   'adm_opt_stats_hide_pm_link' => 'Скрывать ссылки на ЛС',
 
   'adm_pay' => 'Платежи',
+  'adm_pay_stats' => 'Статистика платежей',
   'adm_pay_th_payer' => 'Плательщик',
   'adm_pay_th_payer_id' => 'ID',
   'adm_pay_th_payer_name' => 'Имя',
@@ -561,15 +562,22 @@ $a_lang_array = array(
 
   'adm_pay_filter_all' => '-- Все --',
   'adm_pay_filter_status' => array(
-    -1 => '-- Все --',
+    PAYMENT_STATUS_ALL => '-- Все --',
     PAYMENT_STATUS_NONE => 'Не завершен',
     PAYMENT_STATUS_COMPLETE => 'Завершен',
   ),
   'adm_pay_filter_test' => array(
-    -1 => '-- Все --',
-    0 => 'Реальный',
-    1 => 'Тестовый',
+    PAYMENT_TEST_ALL => '-- Все --',
+    PAYMENT_TEST_REAL => 'Реальный',
+    PAYMENT_TEST_PROBE => 'Тестовый',
   ),
+  'adm_pay_filter_stat' => array(
+    PAYMENT_FILTER_STAT_NORMAL => '-- Нет --',
+    PAYMENT_FILTER_STAT_MONTH => 'По месяцам',
+    PAYMENT_FILTER_STAT_YEAR => 'По годам',
+    PAYMENT_FILTER_STAT_ALL => 'За всё время',
+  ),
+  'adm_pay_filter_stat_name' => 'Статистика',
 
   'adm_user_stat' => 'Статистика пользователей',
   'adm_user_online' => 'Онлайн с %s по %s',

@@ -543,7 +543,8 @@ $sn_menu_admin = [
   'menu_admin_metametter_payment' => [
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_pay',
-    'LINK'       => 'admin/adm_payment.php',
+//    'LINK'       => 'admin/adm_payment.php',
+    'LINK'       => 'index.php?page=admin/admin_payment',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
     'DISABLED'   => !$active_payment_modules,
   ],

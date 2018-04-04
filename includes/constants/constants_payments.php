@@ -3,11 +3,20 @@
  * Created by Gorlum 27.03.2018 10:47
  */
 
-// define('PAYMENT_STATUS_TEST' , -1); // Test payment
+define('PAYMENT_STATUS_ALL', -1); // All statuses
 define('PAYMENT_STATUS_NONE', 0); // No status
 define('PAYMENT_STATUS_COMPLETE', 1); // Money received, DM sent to user
 define('PAYMENT_STATUS_CANCELED', 2); // Payment cancelled, MM deduced from user
 define('PAYMENT_STATUS_EXPIRED', 3); // Payment cancelled, MM deduced from user
+
+const PAYMENT_TEST_ALL = -1;
+const PAYMENT_TEST_REAL = 0;
+const PAYMENT_TEST_PROBE = 1;
+
+const PAYMENT_FILTER_STAT_NORMAL = 0;
+const PAYMENT_FILTER_STAT_MONTH = 1;
+const PAYMENT_FILTER_STAT_YEAR = 2;
+const PAYMENT_FILTER_STAT_ALL = 3;
 
 define('PAYMENT_EXPIRE_TIME', 0);
 

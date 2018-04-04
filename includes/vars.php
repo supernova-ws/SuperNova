@@ -3,7 +3,7 @@
 /**
  * vars.php
  *
- * @version 1.0
+ * @version   1.0
  * @copyright 2008 by Chlorel for XNova
  */
 
@@ -45,6 +45,7 @@ $sn_mvc = [
     'admin/admin_ally'    => ['sn_admin_ally_view'],
     'admin/admin_mining'  => [\Pages\Deprecated\PageAdminMining::class . '::viewStatic'],
     'admin/admin_modules' => [\Pages\Deprecated\PageAdminModules::class . '::viewStatic'],
+    'admin/admin_payment' => [\Pages\Deprecated\PageAdminPayment::class . '::viewStatic'],
   ],
 
   // For now - common for same VIEW and MODEL
@@ -53,12 +54,15 @@ $sn_mvc = [
   'controller' => [],
 
   'i18n' => [
-    'options'   => [
+    'options'             => [
       'options'  => 'options',
       'messages' => 'messages',
     ],
-    'imperator' => [
+    'imperator'           => [
       'overview' => 'overview',
+    ],
+    'admin/admin_payment' => [
+      'admin' => 'admin',
     ],
   ],
 
@@ -77,12 +81,17 @@ $sn_mvc = [
       ],
     ],
 
-    'admin/admin_mining'  => [
+    'admin/admin_mining'        => [
       'options' => [
         PAGE_OPTION_ADMIN => true,
       ],
     ],
-    'admin/admin_modules' => [
+    'admin/admin_modules'       => [
+      'options' => [
+        PAGE_OPTION_ADMIN => true,
+      ],
+    ],
+    'admin/admin_payment' => [
       'options' => [
         PAGE_OPTION_ADMIN => true,
       ],
@@ -1216,7 +1225,7 @@ $sn_data += [
     'flt_spies_anti'     => [
     ],
     // Bombers
-    'flt_bombers'         => [
+    'flt_bombers'        => [
       SHIP_LARGE_BOMBER => SHIP_LARGE_BOMBER,
     ],
     // Colonizers

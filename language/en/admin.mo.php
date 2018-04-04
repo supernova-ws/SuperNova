@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 43a16.45
 *
 */
 
@@ -535,6 +535,7 @@ $a_lang_array = (array(
   'adm_opt_stats_hide_pm_link' => 'Hide PM links',
 
   'adm_pay' => 'Payments',
+  'adm_pay_stats' => 'Payments Stats',
   'adm_pay_th_payer' => 'Payer',
   'adm_pay_th_payer_id' => 'ID',
   'adm_pay_th_payer_name' => 'Name',
@@ -551,14 +552,20 @@ $a_lang_array = (array(
 
   'adm_pay_filter_all' => '-- All --',
   'adm_pay_filter_status' => array(
-    -1 => '-- All --',
+    PAYMENT_STATUS_ALL => '-- All --',
     PAYMENT_STATUS_NONE => 'Not finished',
     PAYMENT_STATUS_COMPLETE => 'Finished',
   ),
   'adm_pay_filter_test' => array(
-    -1 => '-- All --',
-    0 => 'Real',
-    1 => 'Test',
+    PAYMENT_TEST_ALL => '-- All --',
+    PAYMENT_TEST_REAL => 'Real',
+    PAYMENT_TEST_PROBE => 'Test',
+  ),
+  'adm_pay_filter_stat' => array(
+    PAYMENT_FILTER_STAT_NORMAL => '-- None --',
+    PAYMENT_FILTER_STAT_MONTH => 'By months',
+    PAYMENT_FILTER_STAT_YEAR => 'By years',
+    PAYMENT_FILTER_STAT_ALL => 'All time',
   ),
 
   'adm_user_stat' => 'Статистика пользователей',
