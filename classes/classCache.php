@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43a15.16#
+ * @version #43a16.49#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -166,6 +166,8 @@ class classCache implements ArrayAccess {
         if (!function_exists('xcache_unset_by_prefix')) {
           return false;
         }
+
+        set_time_limit(30); // TODO - Optimize
 
         return xcache_unset_by_prefix($this->prefix . $prefix_unset);
       break;

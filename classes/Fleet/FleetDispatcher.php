@@ -388,6 +388,8 @@ class FleetDispatcher {
       sn_db_transaction_commit();
     }
 
+    set_time_limit(30); // TODO - Optimize
+
 //  log_file('Закончили обсчёт флотов');
   }
 
