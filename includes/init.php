@@ -17,7 +17,7 @@ define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . 
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 define('SN_ROOT_MODULES', SN_ROOT_PHYSICAL . 'modules/');
 
-version_compare(PHP_VERSION, '5.5') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.5') : false;
+version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
 
 //define('DEBUG_UBE', true);
 //define('DEBUG_FLYING_FLEETS', true);
@@ -106,14 +106,16 @@ global $sn_data, $sn_mvc;
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
 
-SN::$gc->modules->loadModules(SN_ROOT_MODULES);
-SN::$gc->modules->initModules();
-
 // TODO
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 // И надо инициализировать после загрузки других модулей. Когда-то это казалось отличной идеей, бля...
 SN::$auth = new \core_auth();
+SN::$gc->modules->registerModule(SN::$auth->manifest['name'], SN::$auth);
 //SN::$gc->modules->registerModule(core_auth::$main_provider->manifest['name'], core_auth::$main_provider);
+
+SN::$gc->modules->loadModules(SN_ROOT_MODULES);
+SN::$gc->modules->initModules();
+
 
 
 // Подключаем дефолтную страницу
