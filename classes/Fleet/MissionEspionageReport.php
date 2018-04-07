@@ -132,8 +132,14 @@ class MissionEspionageReport {
     return !empty($this->fleetUnits[SHIP_SPY]) && $this->fleetUnits[SHIP_SPY] >= 1 ? floor($this->fleetUnits[SHIP_SPY]) : 0;
   }
 
+  public function getAntiSpyDiff() {
+    return !empty($this->fleetUnits[SHIP_SATELLITE_SPUTNIK]) && $this->fleetUnits[SHIP_SATELLITE_SPUTNIK] >= 1
+      ? floor(pow($this->fleetUnits[SHIP_SATELLITE_SPUTNIK], 0.75))
+      : 0;
+  }
+
   public function getPlanetSpyDiff() {
-    return $this->getEmpireSpyDiff() + sqrt($this->getProbesNumber()) - 1;
+    return $this->getEmpireSpyDiff() + sqrt($this->getProbesNumber()) - 1 - $this->getAntiSpyDiff();
   }
 
   /**
