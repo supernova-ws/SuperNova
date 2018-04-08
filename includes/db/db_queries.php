@@ -49,7 +49,7 @@ function db_user_list_search($searchtext)
       JOIN {{users}} AS u ON u.id = pn.player_id
       LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id=u.id_planet
     WHERE
-      player_name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
+      player_name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL AND user_bot = " . USER_BOT_PLAYER . "
     ORDER BY
       ally_tag, username, planet_name
     LIMIT 30;"
