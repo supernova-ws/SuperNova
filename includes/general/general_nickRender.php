@@ -170,10 +170,7 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if (isset($nick_array[NICK_RANK])) {
-    $rankName = "[{$nick_array[NICK_RANK]}] " . SN::$lang['ranks'][$nick_array[NICK_RANK]];
-    $result[NICK_RANK] = "<div class='rank nick rank-{$nick_array[NICK_RANK]}'" .
-      (empty($nick_array[NICK_RANK_NO_TEXT]) ? " title='{$rankName}'" : '') .
-      "></div>";
+    $result[NICK_RANK] = SN::$gc->playerLevelHelper->renderRank($nick_array[NICK_RANK], $nick_array[NICK_RANK_NO_TEXT]);
   }
 
   if (isset($nick_array[NICK_GENDER])) {

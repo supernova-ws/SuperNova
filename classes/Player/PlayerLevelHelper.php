@@ -7,6 +7,7 @@ namespace Player;
 
 use Core\GlobalContainer;
 use Bonus\ValueStorage;
+use HelperString;
 use SN;
 use classConfig;
 
@@ -93,6 +94,32 @@ class PlayerLevelHelper {
   }
 
   /**
+   * @param int  $playerRank
+   * @param bool $noTitle - do not add title to image
+   *
+   * @return string
+   */
+  public function renderRank($playerRank, $noTitle = false) {
+    $title = (empty($noTitle)
+      ? " title='" . HelperString::htmlEncode("[{$playerRank}] " . SN::$lang['ranks'][$playerRank]) . "'"
+      : ''
+    );
+
+    return "<div class='rank nick rank-{$playerRank}'{$title}></div>";
+  }
+
+  /**
+   * @param float $playerPoints
+   * @param int   $authLevel
+   * @param bool  $noTitle - do not add title to image
+   *
+   * @return string
+   */
+  public function renderRankFromPoints($playerPoints, $authLevel = AUTH_LEVEL_REGISTERED, $noTitle = false) {
+    return $this->renderRank($this->getPointLevel($playerPoints, $authLevel), $noTitle);
+  }
+
+  /**
    * Should level be recalculated?
    *
    * @return bool
@@ -139,7 +166,7 @@ class PlayerLevelHelper {
     $levelPoints = $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_POINTS);
     !$levelPoints ? $levelPoints = 5000 * $this->valueStorage->getValue(UNIT_SERVER_SPEED_MINING) : false;
 
-    for($level = 0; $level <= PLAYER_RANK_MAX; $level++) {
+    for ($level = 0; $level <= PLAYER_RANK_MAX; $level++) {
       $this->playerLevels[$level] = $levelPoints;
       $levelPoints *= $multiplier;
     }
