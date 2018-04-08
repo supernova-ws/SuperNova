@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a16.53');
+define('SN_VERSION', '43a16.54');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -985,6 +985,7 @@ define("P_ACCESSOR_ISSET", '__isset'); // DO NOT CHANGE!!!
 define("P_ACCESSOR_IMPORT", 'import');
 define("P_ACCESSOR_EXPORT", 'export');
 
+define('HTML_ENCODE_NONE', 0); // Do nothing - just bypass
 define('HTML_ENCODE_PREFORM', 1); // perform HTML encoding
 define('HTML_ENCODE_NL2BR', 2); // should line breaks be converted to <br />
 define('HTML_ENCODE_STRIP_HTML', 4); // should HTML be cut from text

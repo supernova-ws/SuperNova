@@ -1487,8 +1487,24 @@ MissionExplore.php
 
 [*] !!!!!!! Проверять корректную работу Фестивалей при каждом новом Хайспоте и добавлять отметки тут
 
+
+Включить bbCode в сообщениях всем игрокам
+
+//    // Replacing news://xxx link with BBCode
+//    $message = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $message);
+//    // Replacing news URL with BBCode
+//    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $message);
+//    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
+
+    $message = SN::$gc->bbCodeParser->compactBbCode($message, $user['authlevel']);
+
+
 #ctv
 
+
+2018-04-08 09:08:11 43a16.54
+[+] ЛС
+    Админитраторам включены BBCode и поддержка ссылок в отправляемых ими сообщениях
 
 
 2018-04-08 07:50:13 43a16.53

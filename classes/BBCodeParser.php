@@ -46,4 +46,13 @@ class BBCodeParser {
     return $text;
   }
 
+  public function compactBbCode($text, $authorAccessLevel = AUTH_LEVEL_REGISTERED, $encodeOptions = HTML_ENCODE_MULTILINE) {
+    // Replacing news://xxx link with BBCode
+    $text = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $text);
+    // Replacing news URL with BBCode
+    $text = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $text);
+    $text = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $text);
+
+    return $text;
+  }
 }

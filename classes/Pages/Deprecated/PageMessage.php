@@ -259,7 +259,7 @@ class PageMessage extends PageDeprecated {
 
     switch ($this->deleteRange) {
 //      case static::MESSAGES_DELETE_RANGE_UNCHECKED:
-        /** @noinspection PhpMissingBreakStatementInspection */
+      /** @noinspection PhpMissingBreakStatementInspection */
       case static::MESSAGES_DELETE_RANGE_CHECKED:
         $query_add = implode(',', $this->markedMessageIdList);
         if ($query_add) {
@@ -322,13 +322,14 @@ class PageMessage extends PageDeprecated {
 
       db_user_set_by_id($this->playerId, $SubUpdateQry);
       $message_query =
-        "SELECT * 
-        FROM `{{messages}}` 
-        WHERE `message_owner` = '{$this->playerId}' {$SubSelectQry} 
-        ORDER BY `message_time` DESC;";
+        "SELECT m.*, sender.authlevel as sender_auth 
+        FROM `{{messages}}` as m 
+          LEFT JOIN `{{users}}` as sender on sender.id = m.message_sender
+        WHERE m.`message_owner` = '{$this->playerId}' {$SubSelectQry} 
+        ORDER BY m.`message_time` DESC;";
     }
 
-    if($this->showAll) {
+    if ($this->showAll) {
       $message_query = $this->db->selectIterator($message_query);
     } else {
       $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
@@ -349,8 +350,12 @@ class PageMessage extends PageDeprecated {
 
         }
       } else {
-        if (in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender']) {
-          $text = htmlspecialchars($message_row['message_text']);
+        if (in_array($message_row['message_type'], [MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE]) && $message_row['message_sender']) {
+          if ($message_row['sender_auth'] >= AUTH_LEVEL_ADMINISTRATOR) {
+            $text = SN::$gc->bbCodeParser->expandBbCode($message_row['message_text'], intval($message_row['sender_auth']), HTML_ENCODE_NONE);
+          } else {
+            $text = htmlspecialchars($message_row['message_text']);
+          }
         }
         $text = nl2br($text);
       }
@@ -483,7 +488,7 @@ class PageMessage extends PageDeprecated {
       $this->mode = sys_get_param_str('msg_delete') ? static::MESSAGES_MODE_DELETE : sys_get_param_str('mode');
     }
 
-    if($this->showAll = sys_get_param_str('msg_show_all') ? true : false) {
+    if ($this->showAll = sys_get_param_str('msg_show_all') ? true : false) {
       $this->mode = static::MESSAGES_MODE_MESSAGES;
     }
 

@@ -67,13 +67,15 @@ function sn_chat_add_model()
     $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
     $nick = db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id))));
 
-    // Replacing news://xxx link with BBCode
-    $message = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $message);
-    // Replacing news URL with BBCode
-    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $message);
-    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
+//    // Replacing news://xxx link with BBCode
+//    $message = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $message);
+//    // Replacing news URL with BBCode
+//    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $message);
+//    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
-    doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', " . SN_TIME_NOW . ");");
+    $message = SN::$gc->bbCodeParser->compactBbCode($message, $user['authlevel']);
+
+    doquery("INSERT INTO `{{chat}}` (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', " . SN_TIME_NOW . ");");
 
     $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   }
