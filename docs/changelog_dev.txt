@@ -1499,7 +1499,14 @@ MissionExplore.php
     $message = SN::$gc->bbCodeParser->compactBbCode($message, $user['authlevel']);
 
 
+Длина поля в темплейте обрезает hide_stat_players
+
 #ctv
+
+
+2018-04-09 09:29:59 43a17.1
+[%] Админка/Настройки
+    Слишком маленькое поле для списка спрятанных игроков обрезало этот список
 
 
 2018-04-08 09:21:12 43a17.0

@@ -255,14 +255,13 @@ function sys_stat_get_user_skip_list() {
   $user_skip_list = array();
 
   if (SN::$config->stats_hide_admins) {
-    $user_skip_list[] = '`authlevel` > 0';
+    $user_skip_list[] = '`authlevel` > ' . AUTH_LEVEL_REGISTERED;
   }
 
   if (SN::$config->stats_hide_player_list) {
     $temp = explode(',', SN::$config->stats_hide_player_list);
     foreach ($temp as $user_id) {
-      $user_id = floatval($user_id);
-      if ($user_id) {
+      if ($user_id = floatval($user_id)) {
         $user_skip_list[] = '`id` = ' . $user_id;
       }
     }

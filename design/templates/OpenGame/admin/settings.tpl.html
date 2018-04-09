@@ -493,13 +493,17 @@
       <div class="cell contFJ">
         <label for="stats_hide_player_list">{L_adm_opt_stats_hide_player_list}</label>
         <div class="c_c" style="flex-grow: 1">
-          <input id="stats_hide_player_list" name="stats_hide_player_list" maxlength="254" value="{C_stats_hide_player_list}" type="text">
+          <!--rows="" cols=""-->
+          <textarea id="stats_hide_player_list" name="stats_hide_player_list" rows = 5>{C_stats_hide_player_list}</textarea>
+          <!--<input id="stats_hide_player_list" name="stats_hide_player_list" maxlength="254" value="{C_stats_hide_player_list}" type="text">-->
           <div>{L_adm_opt_stats_hide_player_list_detail}</div>
         </div>
       </div>
 
-      <div class="cell contFJ">
+      <div class="header">
         <label for="stats_schedule">{L_adm_opt_stats_schedule}</label>
+      </div>
+      <div class="cell contFJ">
         <div style="flex-grow: 1">
           <input id="stats_schedule" name="stats_schedule" maxlength="254" value="{C_stats_schedule}" type="text"><br />
           {L_adm_opt_stats_schedule_detail}

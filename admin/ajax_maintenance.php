@@ -189,14 +189,14 @@ $ques = array(
 function sn_maintenance_pack_user_list($user_list) {
   $user_list = explode(',', $user_list);
   foreach($user_list as $key => $user_id) {
-    if(!ceil(floatval($user_id))) {
+    if(!is_numeric($user_id)) {
       unset($user_list[$key]);
     }
   }
 
   $result = array();
   if(!empty($user_list)) {
-    $query = doquery("SELECT `id` FROM {{users}} WHERE `id` in (" . implode(',', $user_list) . ")");
+    $query = doquery("SELECT `id` FROM `{{users}}` WHERE `id` in (" . implode(',', $user_list) . ")");
     while($row = db_fetch($query)) {
       $result[] = $row['id'];
     }
@@ -237,7 +237,7 @@ foreach($ques as $que_transaction) {
 }
 
 sn_db_transaction_start();
-SN::$config->db_saveItem('stats_hide_player_list', sn_maintenance_pack_user_list(SN::$config->db_loadItem('stats_hide_player_list')));
+SN::$config->pass()->stats_hide_player_list = sn_maintenance_pack_user_list(SN::$config->pass()->stats_hide_player_list);
 $debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
