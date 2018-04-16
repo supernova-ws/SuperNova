@@ -1,18 +1,34 @@
 <h2>{PAGE_HEADER}</h2>
 
-<table class="c_l">
-  <!-- BEGIN block -->
-  <tr>
-    <th class="c_l" colspan="2">
-      {block.TITLE}
-    </th>
-  </tr>
-  <!-- BEGIN field -->
-  <tr>
-    <td>{field.NAME}</td>
-    <td>{field.VALUE}</td>
-    <td>{id}</td>
-  </tr>
-  <!-- END field -->
-  <!-- END block -->
-</table>
+<form action="" method="get">
+  <input type="hidden" name="page" value="admin/user_view"/>
+  <input type="hidden" name="uid" value="{USER_ID}"/>
+
+  <table class="c_l">
+    <!-- BEGIN block -->
+      <tr>
+        <th class="c_l" colspan="2">
+          {block.TITLE}
+        </th>
+      </tr>
+
+      <!-- BEGIN field -->
+        <tr>
+          <td>{field.NAME}</td>
+          <td>
+            {field.VALUE}
+
+            <!-- IF field.TYPE == 'password' -->
+            <input type="text" name="{field.NAME}"/>
+            <input type="submit" name="{field.NAME}_change" value="{ Изменить }"/>
+            <!-- ELSE -->
+            {field.TYPE}
+            <!-- ENDIF -->
+          </td>
+        </tr>
+      <!-- END field -->
+
+    <!-- END block -->
+  </table>
+
+</form>

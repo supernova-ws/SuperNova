@@ -25,8 +25,9 @@ $sn_mvc = [
     'chat'     => ['sn_chat_model'],
     'chat_add' => ['sn_chat_add_model'],
 
-    'imperium' => [\Pages\Deprecated\PageImperium::class . '::modelStatic'],
+    'imperium' => [\Pages\Deprecated\PageImperium::class . '::' . 'modelStatic'],
 
+    'admin/user_view'  => [\Pages\Deprecated\PageAdminUserView::class . '::' . 'modelStatic'],
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
@@ -38,14 +39,14 @@ $sn_mvc = [
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
-    'imperium'      => [\Pages\Deprecated\PageImperium::class . '::viewStatic'],
+    'imperium'      => [\Pages\Deprecated\PageImperium::class . '::' . 'viewStatic'],
     'techtree'      => ['sn_techtree_view'],
 
-    'admin/user_view'     => ['sn_admin_user_view_view'],
+    'admin/user_view'     => [\Pages\Deprecated\PageAdminUserView::class . '::viewStatic'],
     'admin/admin_ally'    => ['sn_admin_ally_view'],
-    'admin/admin_mining'  => [\Pages\Deprecated\PageAdminMining::class . '::viewStatic'],
-    'admin/admin_modules' => [\Pages\Deprecated\PageAdminModules::class . '::viewStatic'],
-    'admin/admin_payment' => [\Pages\Deprecated\PageAdminPayment::class . '::viewStatic'],
+    'admin/admin_mining'  => [\Pages\Deprecated\PageAdminMining::class . '::' . 'viewStatic'],
+    'admin/admin_modules' => [\Pages\Deprecated\PageAdminModules::class . '::' . 'viewStatic'],
+    'admin/admin_payment' => [\Pages\Deprecated\PageAdminPayment::class . '::' . 'viewStatic'],
   ],
 
   // For now - common for same VIEW and MODEL
@@ -64,6 +65,9 @@ $sn_mvc = [
     'admin/admin_payment' => [
       'admin' => 'admin',
     ],
+    'admin/user_view'     => [
+      'admin' => 'admin',
+    ],
   ],
 
   'pages' => [
@@ -71,6 +75,7 @@ $sn_mvc = [
       'filename' => 'admin/user_view',
       'options'  => [
         PAGE_OPTION_FLEET_UPDATE_SKIP => true,
+        PAGE_OPTION_ADMIN             => true,
       ],
     ],
 
@@ -78,15 +83,16 @@ $sn_mvc = [
       'filename' => 'admin/admin_ally',
       'options'  => [
         PAGE_OPTION_FLEET_UPDATE_SKIP => true,
+        PAGE_OPTION_ADMIN             => true,
       ],
     ],
 
-    'admin/admin_mining'        => [
+    'admin/admin_mining'  => [
       'options' => [
         PAGE_OPTION_ADMIN => true,
       ],
     ],
-    'admin/admin_modules'       => [
+    'admin/admin_modules' => [
       'options' => [
         PAGE_OPTION_ADMIN => true,
       ],
