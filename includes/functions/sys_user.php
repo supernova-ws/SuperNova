@@ -201,7 +201,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
-  SN::$config->pass()->users_amount = SN::$config->users_amount + 1;
+  SN::$config->pass()->users_amount = SN::$config->pass()->users_amount + 1;
 
   $username_safe = db_escape($username_unsafe);
   doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
