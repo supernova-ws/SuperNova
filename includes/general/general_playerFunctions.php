@@ -60,7 +60,7 @@ function sys_user_options_unpack(&$user) {
 
 
 // ----------------------------------------------------------------------------------------------------------------
-function get_player_max_expeditons(&$user, $astrotech = -1) { return sn_function_call('get_player_max_expeditons', array(&$user, $astrotech, &$result)); }
+function get_player_max_expeditons(&$user, $astrotech = -1) { $result = null; return sn_function_call('get_player_max_expeditons', array(&$user, $astrotech, &$result)); }
 
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0) {
   if ($astrotech == -1) {
@@ -113,7 +113,7 @@ function GetMaxFleets(&$user) {
 
 
 // ----------------------------------------------------------------------------------------------------------------
-function sys_player_new_adjust($user_id, $planet_id) { return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result)); }
+function sys_player_new_adjust($user_id, $planet_id) { $result = null; return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result)); }
 
 function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
   return $result;

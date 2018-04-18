@@ -133,7 +133,12 @@ class MissionEspionageReport {
   }
 
   public function getAntiSpyDiff() {
-    $onPlanet = mrc_get_level($missionData->dst_user, $missionData->dst_planet, SHIP_SATELLITE_SPUTNIK, false, true);
+    $u = ['id' => $this->targetPlayerId];
+    $p = [
+      'id'       => $this->targetPlanetId,
+      'id_owner' => $this->targetPlayerId,
+    ];
+    $onPlanet = mrc_get_level($u, $p, SHIP_SATELLITE_SPUTNIK, false, true);
 
     return !empty($onPlanet) && $onPlanet >= 1
       ? floor(pow($onPlanet, 0.75))
