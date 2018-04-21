@@ -15,6 +15,8 @@ use TextModel;
  * Class Core\Repository
  *
  * Holds current entity objects
+ *
+ * @deprecated
  */
 class Repository {
 

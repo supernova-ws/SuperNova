@@ -165,6 +165,24 @@ class AccessLogged extends AccessMagic {
     $this->_deltas = [];
   }
 
+  /**
+   * Rolls changes back
+   */
+  public function rollback() {
+    $this->values = $this->_startValues;
+    $this->_changes = [];
+    $this->_deltas = [];
+  }
+
+  /**
+   * Is container was changed?
+   *
+   * @return bool
+   */
+  public function isChanged() {
+    return empty($this->_changes) && empty($this->_deltas);
+  }
+
   public function clear() {
     parent::clear();
     $this->acceptChanges();

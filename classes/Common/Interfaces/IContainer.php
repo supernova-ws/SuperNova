@@ -6,12 +6,33 @@ namespace Common\Interfaces;
  */
 interface IContainer {
 
+  /**
+   * @param mixed $name
+   * @param mixed $value
+   *
+   * @return void
+   */
   public function __set($name, $value);
 
+  /**
+   * @param mixed $name
+   *
+   * @return bool
+   */
   public function __isset($name);
 
+  /**
+   * @param mixed $name
+   *
+   * @return mixed
+   */
   public function __get($name);
 
+  /**
+   * @param mixed $name
+   *
+   * @return void
+   */
   public function __unset($name);
 
   /**

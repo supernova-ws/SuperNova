@@ -30,6 +30,8 @@ use Player\PlayerLevelHelper;
  * @property \classConfig           $config
  * @property \Core\Repository       $repository
  * @property \Storage               $storage
+ * @property \Core\RepoV2           $repoV2
+ * @property \Core\StorageV2        $storageV2
  * @property \Design                $design
  * @property \BBCodeParser          $bbCodeParser
  * @property \Fleet\FleetDispatcher $fleetDispatcher
@@ -115,6 +117,14 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->storage = function (GlobalContainer $gc) {
       return new \Storage($gc);
+    };
+
+    $gc->repoV2 = function (GlobalContainer $gc) {
+      return new RepoV2($gc);
+    };
+
+    $gc->storageV2 = function (GlobalContainer $gc) {
+      return new StorageV2($gc);
     };
 
     $gc->design = function (GlobalContainer $gc) {

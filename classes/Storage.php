@@ -6,6 +6,10 @@
 
 use Core\GlobalContainer;
 
+/**
+ * Class Storage
+ * @deprecated
+ */
 class Storage {
 
   /**

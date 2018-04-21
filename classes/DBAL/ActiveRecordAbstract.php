@@ -412,7 +412,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    *
    * @param array $names
    * @param bool  $fieldToProperties - translation direction:
-   *    - self::FIELDS_TO_PROPERTIES - field to props.
+   *    - self::FIELDS_TO_PROPERTIES - field to props
    *    - self::PROPERTIES_TO_FIELDS - prop to fields
    *
    * @return array
