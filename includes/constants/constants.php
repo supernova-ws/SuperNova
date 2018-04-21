@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a17.12');
+define('SN_VERSION', '43a18.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -788,6 +788,9 @@ define('FLT_EXPEDITION_OUTCOME_FOUND_DM', 4);
 define('FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT', 5);
 define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);
 
+const FLT_EXPEDITION_OUTCOME_TYPE_BAD = -1;
+const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
+const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
 
 // Обязательно оставить, что бы arrive < accomplish < return
 define('EVENT_FLT_ARRIVE', 1); // Fleet arrive to destination

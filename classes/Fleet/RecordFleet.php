@@ -13,7 +13,7 @@ use DBAL\ActiveRecord;
  * Class RecordFleet
  * @package Fleet
  *
- * @property int|string $fleet_id                 - bigint     -
+ * property int|string $fleet_id                 - bigint     -
  * @property int|string $fleet_owner              - bigint     -
  * @property int        $fleet_mission            - int        -
  * @property int|string $fleet_amount             - bigint     -
@@ -45,12 +45,12 @@ class RecordFleet extends ActiveRecord {
 
   protected static $_tableName = 'fleets';
 
-  /**
-   * Information about ships
-   *
-   * @var array[] $shipInfo
-   */
-  protected static $shipInfo = [];
+//  /**
+//   * Information about ships
+//   *
+//   * @var array[] $shipInfo
+//   */
+//  protected static $shipInfo = [];
 
   /**
    * List of fleet ships
@@ -76,12 +76,12 @@ class RecordFleet extends ActiveRecord {
   public function __construct(GlobalContainer $services = null) {
     parent::__construct($services);
 
-    if(empty(static::$shipInfo)) {
-      foreach(sn_get_groups('fleet') as $unit_id) {
-        static::$shipInfo[$unit_id] = get_unit_param($unit_id);
-        static::$shipInfo[$unit_id][P_COST_METAL] = get_unit_cost_in(static::$shipInfo[$unit_id][P_COST]);
-      }
-    }
+//    if(empty(static::$shipInfo)) {
+//      foreach(sn_get_groups('fleet') as $unit_id) {
+//        static::$shipInfo[$unit_id] = get_unit_param($unit_id);
+//        static::$shipInfo[$unit_id][P_COST_METAL] = get_unit_cost_in(static::$shipInfo[$unit_id][P_COST]);
+//      }
+//    }
   }
 
   /**
@@ -110,52 +110,51 @@ class RecordFleet extends ActiveRecord {
     }
   }
 
-
-  /**
-   * @param int $shipId
-   *
-   * @return int|float
-   */
-  public function getShipCostInMetal($shipId) {
-    return !empty(static::$shipInfo[$shipId][P_COST_METAL]) ? static::$shipInfo[$shipId][P_COST_METAL] : 0;
-  }
-
-  /**
-   * Get fleet cost in metal
-   *
-   * @return float|int
-   */
-  public function getCostInMetal() {
-    $result = 0;
-    foreach($this->shipList as $shipId => $amount) {
-      $result += $amount * $this->getShipCostInMetal($shipId);
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param int $shipId
-   *
-   * @return int|mixed
-   */
-  public function getShipCapacity($shipId) {
-    return !empty(static::$shipInfo[$shipId][P_CAPACITY]) ? static::$shipInfo[$shipId][P_CAPACITY] : 0;
-  }
-
-  /**
-   * @return float|int
-   */
-  public function getCapacity() {
-    $result = 0;
-    foreach($this->shipList as $shipId => $amount) {
-      $result += $amount * $this->getShipCapacity($shipId);
-    }
-
-    $result = max(0, $result - array_sum($this->resources));
-
-    return $result;
-  }
+//  /**
+//   * @param int $shipId
+//   *
+//   * @return int|float
+//   */
+//  public function getShipCostInMetal($shipId) {
+//    return !empty(static::$shipInfo[$shipId][P_COST_METAL]) ? static::$shipInfo[$shipId][P_COST_METAL] : 0;
+//  }
+//
+//  /**
+//   * Get fleet cost in metal
+//   *
+//   * @return float|int
+//   */
+//  public function getCostInMetal() {
+//    $result = 0;
+//    foreach($this->shipList as $shipId => $amount) {
+//      $result += $amount * $this->getShipCostInMetal($shipId);
+//    }
+//
+//    return $result;
+//  }
+//
+//  /**
+//   * @param int $shipId
+//   *
+//   * @return int|mixed
+//   */
+//  public function getShipCapacity($shipId) {
+//    return !empty(static::$shipInfo[$shipId][P_CAPACITY]) ? static::$shipInfo[$shipId][P_CAPACITY] : 0;
+//  }
+//
+//  /**
+//   * @return float|int
+//   */
+//  public function getCapacity() {
+//    $result = 0;
+//    foreach($this->shipList as $shipId => $amount) {
+//      $result += $amount * $this->getShipCapacity($shipId);
+//    }
+//
+//    $result = max(0, $result - array_sum($this->resources));
+//
+//    return $result;
+//  }
 
   /**
    * @param int   $shipSnId
@@ -165,12 +164,15 @@ class RecordFleet extends ActiveRecord {
    */
   public function changeShipCount($shipSnId, $shipCount) {
     !isset($this->shipList[$shipSnId]) ? $this->shipList[$shipSnId] = 0 : false;
+
+    $shipCount = floor($shipCount);
+
     if($this->shipList[$shipSnId] + $shipCount < 0) {
-      throw new \Exception("Trying to deduct more ships [{$shipSnId}] '{$shipCount}' then fleet has {$this->shipList[$shipSnId]}");
+      throw new \Exception("Trying to deduct more ships [{$shipSnId}] '{$shipCount}' when fleet has only {$this->shipList[$shipSnId]}");
     }
 
     $this->shipList[$shipSnId] += $shipCount;
-    if($this->shipList[$shipSnId] <= 0) {
+    if($this->shipList[$shipSnId] < 1) {
       unset($this->shipList[$shipSnId]);
     }
 
@@ -189,8 +191,10 @@ class RecordFleet extends ActiveRecord {
       return;
     }
 
+    $resourceCount = ceil($resourceCount);
+
     if($this->resources[$resourceId] + $resourceCount < 0) {
-      throw new \Exception("Trying to deduct more resources [{$resourceId}] '{$resourceCount}' then fleet has {$this->resources[$resourceId]}");
+      throw new \Exception("Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when fleet has only {$this->resources[$resourceId]}");
     }
 
     $this->resources[$resourceId] += $resourceCount;
@@ -200,6 +204,18 @@ class RecordFleet extends ActiveRecord {
     $this->fleet_resource_deuterium = $this->resources[RES_DEUTERIUM];
   }
 
+  public function getShipCount() {
+    return array_sum($this->getShipList());
+  }
+
+
+
+
+  public function isEmpty() {
+    return array_sum($this->getShipList()) >= 1 && array_sum($this->getResourceList()) >= 1;
+  }
+
+  // Getters/Setters ---------------------------------------------------------------------------------------------------
   /**
    * @return float[] - [shipSnId => $shipAmount]
    */
@@ -207,17 +223,11 @@ class RecordFleet extends ActiveRecord {
     return $this->shipList;
   }
 
-  public function getShipCount() {
-    return array_sum($this->getShipList());
-  }
-
   /**
-   * @param int|string $recordId
-   *
-   * @return string[]
+   * @return float[] - [$resourceSnId => $resourceAmount]
    */
-  public static function findRecordById($recordId) {
-    return static::findRecordFirst([self::ID_PROPERTY_NAME => $recordId]);
+  public function getResourceList() {
+    return $this->resources;
   }
 
 }

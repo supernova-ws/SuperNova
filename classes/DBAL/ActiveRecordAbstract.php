@@ -55,6 +55,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   protected $_isNew = true;
 
+  protected $_isDeleted = false;
+
 
   /**
    * Get table name
@@ -138,6 +140,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
 
     if(static::$_forUpdate == DbQuery::DB_FOR_UPDATE) {
       $dbq->setForUpdate();
+      // Restoring default forUpdate state
       static::$_forUpdate = DbQuery::DB_SHARED;
     }
 

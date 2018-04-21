@@ -113,7 +113,7 @@ class MissionExplore extends MissionData {
    * @param float $multiplier
    */
   protected function applyShipLoss($multiplier) {
-    foreach ($this->fleetRecord->getShipList() as $unit_id => $unit_amount) {
+    foreach ($this->fleetEntity->getShipList() as $unit_id => $unit_amount) {
       $shipsLost = ceil($unit_amount * $multiplier);
       $this->shipsLost[$unit_id] += $shipsLost;
     }
@@ -137,7 +137,7 @@ class MissionExplore extends MissionData {
   protected function outcomeShipsFound() {
     // Рассчитываем эквивалент найденного флота в метале
     $found_in_metal = min(
-      $this->secondaryInfo[P_MULTIPLIER] * $this->fleetRecord->getCostInMetal(),
+      $this->secondaryInfo[P_MULTIPLIER] * $this->fleetEntity->getCostInMetal(),
       $this->getGameMiningSpeed() * $this->hardShipCostResourceLimit
     );
     //  13 243 754 000 g x1
@@ -183,9 +183,9 @@ class MissionExplore extends MissionData {
     $found_in_metal = ceil(
       min(
       // Resources found
-        $this->secondaryInfo[P_MULTIPLIER] * $this->fleetRecord->getCostInMetal(),
+        $this->secondaryInfo[P_MULTIPLIER] * $this->fleetEntity->getCostInMetal(),
         // Not more then maximum fleet capacity
-        $this->fleetRecord->getCapacity(),
+        $this->fleetEntity->getCapacityActual(),
         // Hard limit
         $this->getGameMiningSpeed() * $this->hardResourcesLimit
       )
@@ -222,7 +222,7 @@ class MissionExplore extends MissionData {
     // Рассчитываем количество найденной ТМ
     $this->darkMatterFound = floor(
       min(
-        $this->secondaryInfo[P_MULTIPLIER] * $this->fleetRecord->getCostInMetal() / static::$rates[RES_DARK_MATTER],
+        $this->secondaryInfo[P_MULTIPLIER] * $this->fleetEntity->getCostInMetal() / static::$rates[RES_DARK_MATTER],
         // Hard limit - not counting game speed
         $this->hardDmLimit
       )
@@ -308,13 +308,13 @@ class MissionExplore extends MissionData {
       $this->dbPlayerChangeDarkMatterAmount();
     }
     foreach ($this->shipsFound as $shipsFoundId => $shipsFoundAmount) {
-      $this->fleetRecord->changeShipCount($shipsFoundId, $shipsFoundAmount);
+      $this->fleetEntity->changeShipCount($shipsFoundId, $shipsFoundAmount);
     }
     foreach ($this->shipsLost as $shipsLostId => $shipsLostAmount) {
-      $this->fleetRecord->changeShipCount($shipsLostId, -$shipsLostAmount);
+      $this->fleetEntity->changeShipCount($shipsLostId, -$shipsLostAmount);
     }
     foreach ($this->resourcesFound as $resourceId => $foundAmount) {
-      $this->fleetRecord->changeResource($resourceId, $foundAmount);
+      $this->fleetEntity->changeResource($resourceId, $foundAmount);
     }
     $this->dbFleetRecordUpdate();
 
@@ -333,38 +333,54 @@ class MissionExplore extends MissionData {
     $possibleOutcomes = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
 
     // Calculating chance that nothing happens
-    $flt_stay_hours = ($this->fleetRecord->fleet_end_stay - $this->fleetRecord->fleet_start_time) / 3600 * $this->getGameExpeditionSpeed();
-    $nothingHappenChance = ceil($possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] / pow($flt_stay_hours, 1 / 1.7));
-    $possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = $nothingHappenChance;
+    $flt_stay_hours = ($this->fleetEntity->fleet_end_stay - $this->fleetEntity->fleet_start_time) / 3600 * $this->getGameExpeditionSpeed();
+    $nothingHappenChance = ceil($possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE][P_CHANCE] / pow($flt_stay_hours, 1 / 1.7));
+    $possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE][P_CHANCE] = $nothingHappenChance;
 
     return OutcomeManager::rollArray($possibleOutcomes);
   }
 
   /**
-   * @return int[] - [(int)$shipId => (int)costInMetal]
+   * Get ship list and their cost in metal which can be returned from Expedition
+   *
+   * Race and event-related ships can't be found in expeditions
+   *
+   * @return float[] - [(int)$shipId => (float)costInMetal]
    */
   protected function possibleShipsCosts() {
-    // Рассчитываем стоимость самого дорого корабля в металле
-    $max_metal_cost = 0;
-    foreach ($this->fleetRecord->getShipList() as $ship_id => $ship_amount) {
-      $max_metal_cost = max($max_metal_cost, $this->fleetRecord->getShipCostInMetal($ship_id));
-    }
+    // Рассчитываем стоимость самого дорого корабля в Экспедиции в пересчёте на металл
+    $maxMetalCost = max($this->fleetEntity->getShipsBasicCosts(RES_METAL));
+//    $max_metal_cost = 0;
+//    foreach (sn_get_groups('fleet') as $ship_id) {
+//      $max_metal_cost = max($max_metal_cost, $this->fleetEntity->getShipCostInMetal($ship_id));
+//    }
 
-    // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
-    $can_be_found = [];
-    foreach ($this->fleetRecord->getShipList() as $shipId => $shipAmount) {
-      $metalCost = $this->fleetRecord->getShipCostInMetal($shipId);
-      if (!empty($metalCost) && $metalCost < $max_metal_cost && empty(get_unit_param($shipId, 'player_race'))) {
-        $can_be_found[$ship_id] = $metalCost;
+    $canBeFound = [];
+    foreach (sn_get_groups('fleet') as $shipId) {
+      $metalCost = getStackableUnitsCost([$shipId => 1], RES_METAL);
+      if (
+        // Ships that have cost in metal
+        !empty($metalCost)
+        // ...and costs more then max metal cost
+        && $metalCost < $maxMetalCost
+        // and not in remove list - aka not colonizer or spy
+        && array_search($shipId, $this->shipsToRemove) === false
+        // and is ship
+        && get_unit_param($shipId, P_UNIT_TYPE) == UNIT_SHIPS
+        // and not race ship
+        && empty(get_unit_param($shipId, 'player_race'))
+        // and not event-related ship
+        && empty(get_unit_param($shipId, REQUIRE_HIGHSPOT))
+      ) {
+        $canBeFound[$shipId] = $metalCost;
       }
     }
 
-    // Убираем колонизаторы и шпионов - миллиарды шпионов и колонизаторов нам не нужны
-    foreach ($this->shipsToRemove as $unitId) {
-      unset($can_be_found[$unitId]);
-    }
+//    foreach ($this->shipsToRemove as $unitId) {
+//      unset($basicCostsInMetal[$unitId]);
+//    }
 
-    return $can_be_found;
+    return $canBeFound;
   }
 
   /**
@@ -387,7 +403,7 @@ class MissionExplore extends MissionData {
   }
 
   protected function messageOutcome() {
-    $msg_text = sprintf(implode("\r\n", $this->message), $this->fleetRecord->id, uni_render_coordinates($this->fleet, 'fleet_end_'));
+    $msg_text = sprintf(implode("\r\n", $this->message), $this->fleetEntity->id, uni_render_coordinates($this->fleet, 'fleet_end_'));
     $msg_sender = SN::$lang['flt_mission_expedition']['msg_sender'];
     $msg_title = SN::$lang['flt_mission_expedition']['msg_title'];
     $this->msgSendMessage($msg_sender, $msg_title, $msg_text);
@@ -398,11 +414,11 @@ class MissionExplore extends MissionData {
 
   // DB wrappers -------------------------------------------------------------------------------------------------------
   protected function dbFleetRecordUpdate() {
-    $this->fleetRecord->update();
+    $this->fleetEntity->update();
   }
 
   protected function dbPlayerUpdateExpeditionExpirience() {
-    db_user_set_by_id($this->fleetRecord->fleet_owner, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+    db_user_set_by_id($this->fleetEntity->fleet_owner, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
   }
 
   protected function dbPlayerChangeDarkMatterAmount() {
@@ -433,7 +449,7 @@ class MissionExplore extends MissionData {
    * @param $msg_text
    */
   protected function msgSendMessage($msg_sender, $msg_title, $msg_text) {
-    msg_send_simple_message($this->fleetRecord->fleet_owner, '', $this->fleetRecord->fleet_end_stay, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+    msg_send_simple_message($this->fleetEntity->fleet_owner, '', $this->fleetEntity->fleet_end_stay, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
   }
 
 

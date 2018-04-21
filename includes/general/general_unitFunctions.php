@@ -43,14 +43,18 @@ function sn_unit_relocate($unit_id, $from, $to) { }
 
 /**
  * @param array $user
- * @param array $planet ([])
+ * @param array $planet     ([])
  * @param int   $unit_id
  * @param bool  $for_update (false)
- * @param bool  $plain (false)
+ * @param bool  $plain      (false)
  *
  * @return int|float|bool
  */
-function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, [&$user, $planet, $unit_id, $for_update, $plain, &$result]); }
+function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false) {
+  $result = null;
+
+  return sn_function_call(__FUNCTION__, [&$user, $planet, $unit_id, $for_update, $plain, &$result]);
+}
 
 function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false, &$result) {
   $mercenary_level = 0;
@@ -200,7 +204,11 @@ function getUnitInfo($unitSnId) {
   return get_unit_param($unitSnId);
 }
 
-function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) { return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result)); }
+function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) {
+  $result = null;
+
+  return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result));
+}
 
 function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result) {
   global $sn_data;
@@ -220,7 +228,11 @@ function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet =
  *
  * @return array|array[]
  */
-function sn_get_groups($groups) { return sn_function_call('sn_get_groups', array($groups, &$result)); }
+function sn_get_groups($groups) {
+  $result = null;
+
+  return sn_function_call('sn_get_groups', array($groups, &$result));
+}
 
 function sn_sn_get_groups($groups, &$result) {
   $result = is_array($result) ? $result : array();
@@ -232,7 +244,11 @@ function sn_sn_get_groups($groups, &$result) {
 }
 
 
-function unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE) { return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result)); }
+function unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE) {
+  $result = null;
+
+  return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result));
+}
 
 function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE, &$result) {
   global $lang, $config;
@@ -261,7 +277,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQ
 }
 
 /**
- * @param array $cost - [(int)resourceId => (float)unitAmount] => [RES_CRYSTAL => 100]
+ * @param array $cost        - [(int)resourceId => (float)unitAmount] => [RES_CRYSTAL => 100]
  * @param int   $in_resource - RES_METAL...
  *
  * @return float|int
@@ -273,11 +289,47 @@ function get_unit_cost_in($cost, $in_resource = RES_METAL) {
     $rates = SN::$gc->economicHelper->getResourcesExchange();
   }
 
+  unset($cost[P_FACTOR]);
+
   $mainResourceExchange = !empty($rates[$in_resource]) ? $rates[$in_resource] : 1;
   $metal_cost = 0;
   foreach ($cost as $resource_id => $resource_value) {
+    if (empty($rates[$resource_id])) {
+      continue;
+    }
+
     $metal_cost += $rates[$resource_id] / $mainResourceExchange * $resource_value;
   }
 
   return $metal_cost;
+}
+
+/**
+ * Calculates cost of STACKABLE unit in specified resource
+ *
+ * @param int|float[] $units - unit ID or array [unitId => unitAmount]
+ * @param int         $costResourceId
+ *
+ * @return float|int
+ */
+function getStackableUnitsCost($units, $costResourceId = RES_METAL) {
+  static $costCache;
+
+  $result = 0;
+
+  if (!is_array($units)) {
+    $units = [$units => 1];
+  }
+
+  foreach ($units as $unitId => $unitAmount) {
+    if (!isset($costCache[$unitId][$costResourceId])) {
+      $unitInfo = get_unit_param($unitId);
+
+      $costCache[$unitId][$costResourceId] = !empty($unitInfo[P_COST]) ? get_unit_cost_in($unitInfo[P_COST], $costResourceId) : 0;
+    }
+
+    $result += $costCache[$unitId][$costResourceId] * $unitAmount;
+  }
+
+  return $result;
 }

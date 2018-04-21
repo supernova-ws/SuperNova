@@ -11,11 +11,9 @@ use Core\GlobalContainer;
 class MissionData {
 
   /**
-   * Fleet record from DB
-   *
-   * @var RecordFleet $fleetRecord
+   * @var Fleet $fleetEntity
    */
-  protected $fleetRecord;
+  protected $fleetEntity;
 
   /**
    * Fleet row from DB
@@ -23,21 +21,6 @@ class MissionData {
    * @var array|null $fleet
    */
   public $fleet;
-
-//  /**
-//   * List of fleet ships
-//   *
-//   * @var float[] $fleetShips
-//   */
-//  protected $fleetShips;
-//  /**
-//   * @var float[] $fleetResources
-//   */
-//  protected $fleetResources = [
-//    RES_METAL     => 0,
-//    RES_CRYSTAL   => 0,
-//    RES_DEUTERIUM => 0,
-//  ];
 
   /**
    * @var array|null
@@ -113,14 +96,7 @@ class MissionData {
     $this->src_planet = is_array($missionArray['src_planet']) && !empty($missionArray['src_planet']) ? $missionArray['src_planet'] : null;
     $this->fleet_event = !empty($missionArray['fleet_event']) ? $missionArray['fleet_event'] : null;
 
-    $this->fleetRecord = $this->dbFleetFindRecordById($this->fleet['fleet_id']);
-
-//    $this->fleetShips = !empty($this->fleet['fleet_array']) ? sys_unit_str2arr($this->fleet['fleet_array']) : [];
-//    $this->fleetResources = [
-//      RES_METAL     => !empty($this->fleet['fleet_resource_metal']) ? floatval($this->fleet['fleet_resource_metal']) : 0,
-//      RES_CRYSTAL   => !empty($this->fleet['fleet_resource_crystal']) ? floatval($this->fleet['fleet_resource_crystal']) : 0,
-//      RES_DEUTERIUM => !empty($this->fleet['fleet_resource_deuterium']) ? floatval($this->fleet['fleet_resource_deuterium']) : 0,
-//    ];
+    $this->fleetEntity = new Fleet($this->fleet['fleet_id']);
   }
 
   protected function dbFleetFindRecordById($fleetId) {

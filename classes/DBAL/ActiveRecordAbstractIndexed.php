@@ -71,7 +71,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
 
     if ($result) {
       $this->id = 0;
-      $this->_isNew = true;
+      $this->_isDeleted = true;
     }
 
     return $result;

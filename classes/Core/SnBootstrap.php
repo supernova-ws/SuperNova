@@ -6,6 +6,7 @@
 namespace Core;
 
 
+use core_auth;
 use \SN;
 
 class SnBootstrap {
@@ -46,6 +47,19 @@ class SnBootstrap {
         print('<!--');
         pdump($locale_cache_statistic);
         print('-->');
+      }
+
+      $error = error_get_last();
+      if ($error['type'] === E_ERROR) {
+        $fName = SN_ROOT_PHYSICAL . '_error.txt';
+        $output = [
+          "\n\n",
+          SN_TIME_SQL . " - ERROR",
+          var_export($error, true),
+//          var_export(debug_backtrace(), true),
+          var_export(core_auth::$device, true),
+        ];
+        file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);
       }
     });
   }

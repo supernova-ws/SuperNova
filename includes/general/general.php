@@ -1,6 +1,8 @@
 <?php
 
 
+use Fleet\MissionExplore;
+
 require_once('general_math.php');
 require_once('general_compatibility.php');
 require_once('general_params.php');
@@ -124,16 +126,16 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
 
 // FLEET FUNCTIONS -----------------------------------------------------------------------------------------------------
 /**
- * @param \Fleet\MissionExplore $result
+ * @param MissionExplore $result
  *
- * @return \Fleet\MissionExplore
+ * @return MissionExplore
  */
 function flt_mission_explore_addon_object($result) { return sn_function_call('flt_mission_explore_addon_object', [$result]); }
 
 /**
- * @param \Fleet\MissionExplore $result
+ * @param MissionExplore $result
  *
- * @return \Fleet\MissionExplore
+ * @return MissionExplore
  */
 function sn_flt_mission_explore_addon_object($result) {
   return $result;
