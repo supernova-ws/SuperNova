@@ -96,7 +96,10 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   public static function buildEvenEmpty(array $properties = []) {
     $record = new static();
-    $record->fromProperties($properties);
+    if (!empty($properties)) {
+      $record->clear();
+      $record->fromProperties($properties);
+    }
 
     return $record;
   }
@@ -138,7 +141,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
       $dbq->setWhereArray(static::translateNames($propertyFilter, static::PROPERTIES_TO_FIELDS));
     }
 
-    if(static::$_forUpdate == DbQuery::DB_FOR_UPDATE) {
+    if (static::$_forUpdate == DbQuery::DB_FOR_UPDATE) {
       $dbq->setForUpdate();
       // Restoring default forUpdate state
       static::$_forUpdate = DbQuery::DB_SHARED;
@@ -211,6 +214,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   public function __construct(GlobalContainer $services = null) {
     parent::__construct($services);
+    $this->defaultValues();
   }
 
   /**
@@ -412,8 +416,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    *
    * @param array $names
    * @param bool  $fieldToProperties - translation direction:
-   *    - self::FIELDS_TO_PROPERTIES - field to props
-   *    - self::PROPERTIES_TO_FIELDS - prop to fields
+   *                                 - self::FIELDS_TO_PROPERTIES - field to props
+   *                                 - self::PROPERTIES_TO_FIELDS - prop to fields
    *
    * @return array
    */
@@ -442,7 +446,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * Empty records and non-records (non-subarrays) are ignored
    * Function maintains record indexes
    *
-   * @param array[] $records - array of DB records [(int) => [$name => $value]]
+   * @param array[] $records           - array of DB records [(int) => [$name => $value]]
    * @param bool    $fieldToProperties - should names be translated (true - for field records, false - for property records)
    *
    * @return array|static[]

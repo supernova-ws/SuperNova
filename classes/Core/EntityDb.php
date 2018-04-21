@@ -33,6 +33,9 @@ class EntityDb extends Entity implements \Common\Interfaces\IContainer {
    */
   protected $_container;
 
+  protected $_isNew = true;
+  protected $_isDeleted = false;
+
   /**
    * @return ActiveRecord
    */
@@ -42,11 +45,10 @@ class EntityDb extends Entity implements \Common\Interfaces\IContainer {
 
   /**
    * EntityDb constructor.
-   *
-   * @param int $id
    */
-  public function __construct($id = 0) {
-    $this->dbLoadRecord($id);
+  public function __construct() {
+    $this->reset();
+//    $this->dbLoadRecord($id);
   }
 
   /**
@@ -56,6 +58,9 @@ class EntityDb extends Entity implements \Common\Interfaces\IContainer {
    */
   public function setForUpdate($forUpdate = DbQuery::DB_FOR_UPDATE) {
     $className = $this->_activeClass;
+    /**
+     * @var ActiveRecord $className
+     */
     $className::setForUpdate($forUpdate);
 
     return $this;
@@ -64,13 +69,22 @@ class EntityDb extends Entity implements \Common\Interfaces\IContainer {
   /**
    * @param int|float $id
    *
-   * @return ActiveRecord
+   * @return static
    */
   public function dbLoadRecord($id) {
-    $className = $this->_activeClass;
-    $this->_container = $className::findById($id);
+    $this->reset();
 
-    return $this->_container;
+    /**
+     * @var ActiveRecord $className
+     */
+    $className = $this->_activeClass;
+    $container = $className::findById($id);
+    if(!empty($container)) {
+      $this->_isNew = false;
+      $this->_container = $container;
+    }
+
+    return $this;
   }
 
   /**
@@ -78,6 +92,25 @@ class EntityDb extends Entity implements \Common\Interfaces\IContainer {
    */
   public function dbUpdate() {
     $this->_getContainer()->update();
+  }
+
+
+  public function isNew() {
+    return $this->_isNew;
+  }
+
+  public function isDeleted() {
+    return $this->_isDeleted;
+  }
+
+  public function reset() {
+//    unset($this->_container);
+    $this->_container = new $this->_activeClass();
+
+    $this->_isNew = true;
+    $this->_isDeleted = false;
+
+    return $this;
   }
 
 }

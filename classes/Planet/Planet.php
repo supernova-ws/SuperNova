@@ -9,7 +9,6 @@ namespace Planet;
 
 use Core\EntityDb;
 use Unit\Governor;
-use Planet\DBStaticPlanet;
 use Exception;
 use HelperString;
 use SN;
@@ -90,11 +89,9 @@ class Planet extends EntityDb {
 
   /**
    * Planet constructor.
-   *
-   * @param int $id
    */
-  public function __construct($id = 0) {
-    parent::__construct($id);
+  public function __construct() {
+    parent::__construct();
   }
 
   public function getGovernor() {
@@ -319,4 +316,9 @@ class Planet extends EntityDb {
     ];
   }
 
+  public function reset() {
+    $this->governor = null;
+
+    return parent::reset();
+  }
 }

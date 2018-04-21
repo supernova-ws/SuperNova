@@ -37,10 +37,13 @@ class SnPimp extends Pimp {
     parent::__construct($gc);
 
     /** @noinspection PhpParamsInspection */
+    /** @noinspection PhpUnhandledExceptionInspection */
     $this->add()->tpl_render_topnav($t = 'sn_tpl_render_topnav', [], null);
     /** @noinspection PhpParamsInspection */
+    /** @noinspection PhpUnhandledExceptionInspection */
     $this->add()->que_unit_make_sql([QueUnitStatic::class, 'que_unit_make_sql'], []);
     /** @noinspection PhpParamsInspection */
+    /** @noinspection PhpUnhandledExceptionInspection */
     $this->add()->getStructuresTimeDivisor([BuildDataStatic::class, 'getStructuresTimeDivisor'], [], 0, []);
   }
 

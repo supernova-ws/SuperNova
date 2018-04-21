@@ -96,7 +96,8 @@ class MissionData {
     $this->src_planet = is_array($missionArray['src_planet']) && !empty($missionArray['src_planet']) ? $missionArray['src_planet'] : null;
     $this->fleet_event = !empty($missionArray['fleet_event']) ? $missionArray['fleet_event'] : null;
 
-    $this->fleetEntity = new Fleet($this->fleet['fleet_id']);
+    $this->fleetEntity = new Fleet();
+    $this->fleetEntity->dbLoadRecord($this->fleet['fleet_id']);
   }
 
   protected function dbFleetFindRecordById($fleetId) {

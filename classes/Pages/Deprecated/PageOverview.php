@@ -27,6 +27,11 @@ class PageOverview extends PageDeprecated {
   protected $lang;
 
   /**
+   * @var \Core\RepoV2 $repo
+   */
+  protected $repo;
+
+  /**
    * @var Planet $planet
    */
   protected $planet;
@@ -37,13 +42,16 @@ class PageOverview extends PageDeprecated {
     $this->lang = SN::$lang;
     $this->config = SN::$config;
     $this->auth = SN::$auth;
+    $this->repo = SN::$gc->repoV2;
 
     lng_include('overview');
     lng_include('mrc_mercenary');
   }
 
+
   public function setPlanetById($planetId) {
-    $this->planet = new Planet($planetId);
+    /** @noinspection PhpUnhandledExceptionInspection */
+    return $this->planet = $this->repo->getPlanet($planetId);
   }
 
   public function getPlanet() {
@@ -77,7 +85,7 @@ class PageOverview extends PageDeprecated {
    * @param $user_option_list
    */
   public function overview($user, $planetrow, $que, $user_option_list) {
-    $this->setPlanetById($planetrow['id']);
+//    $this->setPlanetById($planetrow['id']);
 
     $this->planet->sn_sys_sector_buy();
 
@@ -193,8 +201,8 @@ class PageOverview extends PageDeprecated {
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
       'PLANET_GOVERNOR_NAME'       => $this->lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
-      'IS_CAPITAL'  => $planetrow['planet_type'] == PT_PLANET && $planetrow['id'] == $user['id_planet'],
-      'IS_MOON'     => $planetrow['planet_type'] == PT_MOON,
+      'IS_CAPITAL' => $planetrow['planet_type'] == PT_PLANET && $planetrow['id'] == $user['id_planet'],
+      'IS_MOON'    => $planetrow['planet_type'] == PT_MOON,
 
       'DARK_MATTER' => $user_dark_matter,
 
@@ -212,7 +220,7 @@ class PageOverview extends PageDeprecated {
    * @param $planetrow
    */
   public function manage($user, $planetrow) {
-    $this->setPlanetById($planetrow['id']);
+//    $this->setPlanetById($planetrow['id']);
 
     $this->planet->sn_sys_sector_buy('overview.php?mode=manage');
 
@@ -321,7 +329,8 @@ class PageOverview extends PageDeprecated {
     }
 
     // TODO - refresh planet by itself
-    $this->setPlanetById($planetrow['id']);
+//    $this->setPlanetById($planetrow['id']);
+    $this->planet->dbLoadRecord($planetrow['id']);
     $template->assign_recursive($this->planet->int_planet_pretemplate($user));
 
     foreach (sn_get_groups('governors') as $governor_id) {

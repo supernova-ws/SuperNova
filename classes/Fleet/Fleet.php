@@ -60,15 +60,9 @@ class Fleet extends EntityDb {
 
   /**
    * Fleet constructor.
-   *
-   * @param int $id
    */
-  public function __construct($id = 0) {
-    parent::__construct($id);
-
-    if (empty($this->_container)) {
-      $this->_container = new $this->_activeClass();
-    }
+  public function __construct() {
+    parent::__construct();
   }
 
   /**

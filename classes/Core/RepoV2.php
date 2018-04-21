@@ -7,6 +7,7 @@ namespace Core;
 
 use Common\Interfaces\IContainer;
 use Exception;
+use Planet\Planet;
 use SN;
 
 /**
@@ -78,6 +79,47 @@ class RepoV2 implements IContainer {
   }
 
   /**
+   * @param mixed $name
+   *
+   * @return EntityDb|null
+   *
+   * @throws Exception
+   */
+  public function getOrLoad($name) {
+    if ($this->__isset($name)) {
+      return $this->__get($name);
+    }
+
+    $className = $this->getClassName($name);
+    $dbId = $this->getDbId($name);
+    /**
+     * @var EntityDb $entity
+     */
+    $entity = new $className();
+    $entity->dbLoadRecord($dbId);
+
+    if ($entity->isNew()) {
+      unset($entity);
+      $entity = null;
+    } else {
+      $this->__set($name, $entity);
+    }
+
+    return $entity;
+  }
+
+  /**
+   * @param int|string $planetId
+   *
+   * @return Planet|EntityDb|null
+   *
+   * @throws Exception
+   */
+  public function getPlanet($planetId) {
+    return $this->getOrLoad([Planet::class, $planetId]);
+  }
+
+  /**
    * Writes entity to repository
    *
    * Entity should not be already set - otherwise exception raised
@@ -97,7 +139,7 @@ class RepoV2 implements IContainer {
       throw new Exception("Trying to overwrite entity [" . implode(',', $name) . "] which already set. Unset it first!");
     }
 
-    $dbId = end($name);
+    $dbId = $this->getDbId($name);
     $this->repo[$className][$dbId] = $value;
     $this->version[$className][$dbId] = SN::$transaction_id;
   }
@@ -118,6 +160,17 @@ class RepoV2 implements IContainer {
     }
 
     return $className;
+  }
+
+  /**
+   * @param array $name
+   *
+   * @return mixed
+   */
+  protected function getDbId($name) {
+    $dbId = end($name);
+
+    return $dbId;
   }
 
   /**
@@ -143,13 +196,13 @@ class RepoV2 implements IContainer {
     if (!($className = $this->getClassName($name))) {
       return false;
     }
-    $dbId = end($name);
+    $dbId = $this->getDbId($name);
 
     return is_array($this->repo[$className]) && isset($this->repo[$className][$dbId]);
   }
 
   /**
-   * @param mixed $name
+   * @param array $name
    *
    * @return void
    */
@@ -158,7 +211,7 @@ class RepoV2 implements IContainer {
       return;
     }
 
-    $dbId = end($name);
+    $dbId = $this->getDbId($name);
     unset($this->repo[$className][$dbId]);
     unset($this->version[$className][$dbId]);
   }
