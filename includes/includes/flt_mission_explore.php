@@ -173,7 +173,13 @@ function flt_mission_explore(&$mission_data) {
       // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
       $can_be_found = array();
       foreach($ship_data as $ship_id => $ship_info) {
-        if($ship_info['metal_cost'] < $max_metal_cost) {
+        if(
+          $ship_info['metal_cost'] < $max_metal_cost
+          // and not race ship
+          && empty(get_unit_param($ship_id, 'player_race'))
+          // and not event-related ship
+          && empty(get_unit_param($ship_id, REQUIRE_HIGHSPOT))
+        ) {
           $can_be_found[$ship_id] = $ship_info['metal_cost'];
         }
       }
