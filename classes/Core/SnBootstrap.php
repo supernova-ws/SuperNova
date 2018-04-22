@@ -60,6 +60,10 @@ class SnBootstrap {
           var_export(core_auth::$device, true),
         ];
         file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);
+
+        if(!empty($error['file']) && strpos($error['file'], 'classCache.php') !== false) {
+          print('<span style="color: red">Looks like cache clearing takes too long... Try to restart your web-server and/or cache engine</span>');
+        }
       }
     });
   }
