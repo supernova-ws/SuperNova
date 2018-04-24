@@ -32,7 +32,7 @@ function db_fleet_insert_set_safe_string($set_safe_string) {
  */
 function db_fleet_get($fleet_id) {
   $fleet_id_safe = idval($fleet_id);
-  $result = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+  $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
 
   return is_array($result) ? $result : false;
 }
@@ -66,7 +66,7 @@ function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
 function db_fleet_delete($fleet_id) {
   $fleet_id_safe = idval($fleet_id);
   if (!empty($fleet_id_safe)) {
-    $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+    $result = doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
   } else {
     $result = false;
   }
@@ -106,8 +106,9 @@ function db_fleet_lock_flying($fleet_id, &$mission_data) {
 
   $fleet_id_safe = idval($fleet_id);
 
+  /** @noinspection SqlResolve */
   return doquery(
-    "SELECT 1 FROM {{fleets}} AS f " .
+    "SELECT 1 FROM `{{fleets}}` AS f " .
     ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
     ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
 
@@ -117,7 +118,7 @@ function db_fleet_lock_flying($fleet_id, &$mission_data) {
     ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
     ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
 
-    "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
+    " WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
   );
 }
 
@@ -178,7 +179,7 @@ function db_fleet_list_delete_by_owner($owner_id) {
  */
 // TODO - deprecated
 function db_fleet_list_query_all_stat() {
-  return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
+  return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
 }
 
 
@@ -501,5 +502,5 @@ function fleet_and_missiles_list_incoming($owner_id) {
  * Purges AKS list
  */
 function db_fleet_aks_purge() {
-  doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
+  doquery('DELETE FROM `{{aks}}` WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM `{{fleets}}`);');
 }
