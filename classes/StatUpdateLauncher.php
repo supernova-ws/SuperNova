@@ -68,6 +68,8 @@ class StatUpdateLauncher {
 
         StatCalculator::sys_stat_calculate();
 
+        db_fleet_aks_purge();
+
         $total_time = microtime(true) - $total_time;
         $msg = "Stat update complete in {$total_time} seconds.";
         $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
