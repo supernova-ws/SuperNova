@@ -7,28 +7,22 @@ namespace Core;
 
 use Common\Interfaces\IContainer;
 use Exception;
+use Fleet\Fleet;
 use Planet\Planet;
 use SN;
 
 /**
  * Entity repository
  *
+ * Caches Entities for further use
  *
- *
+ * Support synonyms to hold class parents along with a children
+ * Support transactions
+ * DOES NOT support locking
  *
  * @package Core
  */
 class RepoV2 implements IContainer {
-
-//  /**
-//   * @var GlobalContainer $gc
-//   */
-//  protected $gc;
-//
-//  /**
-//   * @var StorageV2 $storage
-//   */
-//  protected $storage;
 
   /**
    * List of synonyms
@@ -43,19 +37,16 @@ class RepoV2 implements IContainer {
   protected $repo = [];
 
   /**
-   * @var int[][] $version
+   * @var int[][] $versionId
    */
-  protected $version = [];
+  protected $versionId = [];
 
   /**
    * Core\Repository constructor.
    *
    * @param GlobalContainer $gc
    */
-  public function __construct(GlobalContainer $gc) {
-//    $this->gc = $gc;
-//    $this->storage = $gc->storageV2;
-  }
+  public function __construct(GlobalContainer $gc) { }
 
   /**
    * @param string $className
@@ -70,7 +61,7 @@ class RepoV2 implements IContainer {
   }
 
   /**
-   * @param mixed $name
+   * @param array $name - [entityClassName, dbId]
    *
    * @return EntityDb|null
    */
@@ -79,30 +70,59 @@ class RepoV2 implements IContainer {
   }
 
   /**
-   * @param mixed $name
+   * Get entity verion
+   *
+   * @param array $name - [entityClassName, dbId]
+   *
+   * @return int
+   */
+  protected function version($name) {
+    return !empty($version = $this->versionId[$this->getClassName($name)][$this->getDbId($name)]) ? $version : -1;
+  }
+
+  /**
+   * Retrieve entity from repository or load it from DB (by entity's own load method)
+   *
+   * Supports transactions and version tracking (between transactions)
+   *
+   * @param array $name - [entityClassName, dbId]
    *
    * @return EntityDb|null
    *
    * @throws Exception
    */
   public function getOrLoad($name) {
-    if ($this->__isset($name)) {
-      return $this->__get($name);
-    }
-
     $className = $this->getClassName($name);
     $dbId = $this->getDbId($name);
-    /**
-     * @var EntityDb $entity
-     */
-    $entity = new $className();
-    $entity->dbLoadRecord($dbId);
+
+    if ($this->__isset($name)) {
+      // If entity exists in repo - getting it
+      $entity = $this->__get($name);
+
+      // If in transaction and version missmatch - record should be refreshed just for a case
+      if (sn_db_transaction_check(false) && $this->version($name) < SN::$transaction_id) {
+        // Entity will care by itself - should it be really reloaded or not
+        $entity->reload();
+      }
+
+      if ($entity->isNew()) {
+        $this->__unset($name);
+      }
+    } else {
+      /**
+       * @var EntityDb $entity
+       */
+      $entity = new $className();
+      $entity->dbLoadRecord($dbId);
+
+      if (!$entity->isNew()) {
+        $this->__set($name, $entity);
+      }
+    }
 
     if ($entity->isNew()) {
       unset($entity);
       $entity = null;
-    } else {
-      $this->__set($name, $entity);
     }
 
     return $entity;
@@ -120,11 +140,22 @@ class RepoV2 implements IContainer {
   }
 
   /**
+   * @param int|string $fleetId
+   *
+   * @return Fleet|EntityDb|null
+   *
+   * @throws Exception
+   */
+  public function getFleet($fleetId) {
+    return $this->getOrLoad([Fleet::class, $fleetId]);
+  }
+
+  /**
    * Writes entity to repository
    *
    * Entity should not be already set - otherwise exception raised
    *
-   * @param mixed    $name
+   * @param array    $name - [entityClassName, dbId]
    * @param EntityDb $value
    *
    * @return void
@@ -141,11 +172,11 @@ class RepoV2 implements IContainer {
 
     $dbId = $this->getDbId($name);
     $this->repo[$className][$dbId] = $value;
-    $this->version[$className][$dbId] = SN::$transaction_id;
+    $this->versionId[$className][$dbId] = SN::$transaction_id;
   }
 
   /**
-   * @param array $name
+   * @param array $name - [entityClassName, dbId]
    *
    * @return string
    */
@@ -163,7 +194,7 @@ class RepoV2 implements IContainer {
   }
 
   /**
-   * @param array $name
+   * @param array $name - [entityClassName, dbId]
    *
    * @return mixed
    */
@@ -202,7 +233,7 @@ class RepoV2 implements IContainer {
   }
 
   /**
-   * @param array $name
+   * @param array $name - [entityClassName, dbId]
    *
    * @return void
    */
@@ -213,7 +244,7 @@ class RepoV2 implements IContainer {
 
     $dbId = $this->getDbId($name);
     unset($this->repo[$className][$dbId]);
-    unset($this->version[$className][$dbId]);
+    unset($this->versionId[$className][$dbId]);
   }
 
   /**
@@ -222,7 +253,7 @@ class RepoV2 implements IContainer {
    * @return bool
    */
   public function isEmpty() {
-    return empty($this->repo) && empty($this->version);
+    return empty($this->repo) && empty($this->versionId);
   }
 
   /**
@@ -230,7 +261,7 @@ class RepoV2 implements IContainer {
    */
   public function clear() {
     $this->repo = [];
-    $this->version = [];
+    $this->versionId = [];
   }
 
 }

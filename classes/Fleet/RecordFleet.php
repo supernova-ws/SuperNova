@@ -45,13 +45,6 @@ class RecordFleet extends ActiveRecord {
 
   protected static $_tableName = 'fleets';
 
-//  /**
-//   * Information about ships
-//   *
-//   * @var array[] $shipInfo
-//   */
-//  protected static $shipInfo = [];
-
   /**
    * List of fleet ships
    *
@@ -75,13 +68,6 @@ class RecordFleet extends ActiveRecord {
    */
   public function __construct(GlobalContainer $services = null) {
     parent::__construct($services);
-
-//    if(empty(static::$shipInfo)) {
-//      foreach(sn_get_groups('fleet') as $unit_id) {
-//        static::$shipInfo[$unit_id] = get_unit_param($unit_id);
-//        static::$shipInfo[$unit_id][P_COST_METAL] = get_unit_cost_in(static::$shipInfo[$unit_id][P_COST]);
-//      }
-//    }
   }
 
   /**
@@ -168,7 +154,7 @@ class RecordFleet extends ActiveRecord {
     $shipCount = floor($shipCount);
 
     if($this->shipList[$shipSnId] + $shipCount < 0) {
-      throw new \Exception("Trying to deduct more ships [{$shipSnId}] '{$shipCount}' when fleet has only {$this->shipList[$shipSnId]}");
+      throw new \Exception("Trying to deduct more ships [{$shipSnId}] '{$shipCount}' when fleet [{$this->id}] has only {$this->shipList[$shipSnId]}");
     }
 
     $this->shipList[$shipSnId] += $shipCount;
@@ -194,7 +180,7 @@ class RecordFleet extends ActiveRecord {
     $resourceCount = ceil($resourceCount);
 
     if($this->resources[$resourceId] + $resourceCount < 0) {
-      throw new \Exception("Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when fleet has only {$this->resources[$resourceId]}");
+      throw new \Exception("Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when fleet [{$this->id}] has only {$this->resources[$resourceId]}");
     }
 
     $this->resources[$resourceId] += $resourceCount;
@@ -204,15 +190,14 @@ class RecordFleet extends ActiveRecord {
     $this->fleet_resource_deuterium = $this->resources[RES_DEUTERIUM];
   }
 
-  public function getShipCount() {
-    return array_sum($this->getShipList());
-  }
-
-
 
 
   public function isEmpty() {
-    return array_sum($this->getShipList()) >= 1 && array_sum($this->getResourceList()) >= 1;
+    return $this->getShipCount() < 1 && $this->getResourceCount() < 1;
+  }
+
+  public function getShipCount() {
+    return array_sum($this->getShipList());
   }
 
   // Getters/Setters ---------------------------------------------------------------------------------------------------
@@ -221,6 +206,13 @@ class RecordFleet extends ActiveRecord {
    */
   public function getShipList() {
     return $this->shipList;
+  }
+
+  /**
+   * @return float|int
+   */
+  public function getResourceCount() {
+    return array_sum($this->getResourceList());
   }
 
   /**

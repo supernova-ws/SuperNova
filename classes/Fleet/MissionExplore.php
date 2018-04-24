@@ -26,14 +26,14 @@ class MissionExplore extends MissionData {
   protected $hardDmLimit = 10000;
 
   /**
-   * @var int $hardResourcesLimit
+   * @var float $hardResourcesLimit
    */
-  protected $hardResourcesLimit = 10000000;
+  protected $hardResourcesLimit = 10000000; // 10m
 
   /**
-   * @var int $hardShipCostResourceLimit
+   * @var float $hardShipCostResourceLimit
    */
-  protected $hardShipCostResourceLimit = 10000000;
+  protected $hardShipCostResourceLimit = 10000000; // 10m
 
   /**
    * List of ships which should be excluded from found list
@@ -113,9 +113,12 @@ class MissionExplore extends MissionData {
    * @param float $multiplier
    */
   protected function applyShipLoss($multiplier) {
-    foreach ($this->fleetEntity->getShipList() as $unit_id => $unit_amount) {
-      $shipsLost = ceil($unit_amount * $multiplier);
-      $this->shipsLost[$unit_id] += $shipsLost;
+//    foreach ($this->fleetEntity->getShipList() as $unit_id => $unit_amount) {
+//      $shipsLost = ceil($unit_amount * $multiplier);
+//      $this->shipsLost[$unit_id] += $shipsLost;
+//    }
+    foreach ($this->fleetEntity->calcShipLossByMultiplier($multiplier) as $shipId => $lost) {
+      $this->shipsLost[$shipId] += $lost;
     }
   }
 
@@ -140,9 +143,6 @@ class MissionExplore extends MissionData {
       $this->secondaryInfo[P_MULTIPLIER] * $this->fleetEntity->getCostInMetal(),
       $this->getGameMiningSpeed() * $this->hardShipCostResourceLimit
     );
-    //  13 243 754 000 g x1
-    //  60 762 247 000 a x10
-    // 308 389 499 488 000 b x500
 
     // TODO - убрать рассовые корабли
     $manager = new OutcomeManager();
@@ -333,7 +333,7 @@ class MissionExplore extends MissionData {
     $possibleOutcomes = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
 
     // Calculating chance that nothing happens
-    $flt_stay_hours = ($this->fleetEntity->fleet_end_stay - $this->fleetEntity->fleet_start_time) / 3600 * $this->getGameExpeditionSpeed();
+    $flt_stay_hours = ($this->fleetEntity->timeEndStay - $this->fleetEntity->timeArrive) / 3600 * $this->getGameExpeditionSpeed();
     $nothingHappenChance = ceil($possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE][P_CHANCE] / pow($flt_stay_hours, 1 / 1.7));
     $possibleOutcomes[FLT_EXPEDITION_OUTCOME_NONE][P_CHANCE] = $nothingHappenChance;
 
@@ -350,18 +350,15 @@ class MissionExplore extends MissionData {
   protected function possibleShipsCosts() {
     // Рассчитываем стоимость самого дорого корабля в Экспедиции в пересчёте на металл
     $maxMetalCost = max($this->fleetEntity->getShipsBasicCosts(RES_METAL));
-//    $max_metal_cost = 0;
-//    foreach (sn_get_groups('fleet') as $ship_id) {
-//      $max_metal_cost = max($max_metal_cost, $this->fleetEntity->getShipCostInMetal($ship_id));
-//    }
 
     $canBeFound = [];
+    // Potentially - every ship in game can be found...
     foreach (sn_get_groups('fleet') as $shipId) {
       $metalCost = getStackableUnitsCost([$shipId => 1], RES_METAL);
       if (
         // Ships that have cost in metal
         !empty($metalCost)
-        // ...and costs more then max metal cost
+        // ...and costs less then most expensive ship in fleet - to prevent ship cloning
         && $metalCost < $maxMetalCost
         // and not in remove list - aka not colonizer or spy
         && array_search($shipId, $this->shipsToRemove) === false
@@ -418,7 +415,7 @@ class MissionExplore extends MissionData {
   }
 
   protected function dbPlayerUpdateExpeditionExpirience() {
-    db_user_set_by_id($this->fleetEntity->fleet_owner, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+    db_user_set_by_id($this->fleetEntity->ownerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
   }
 
   protected function dbPlayerChangeDarkMatterAmount() {
@@ -449,7 +446,7 @@ class MissionExplore extends MissionData {
    * @param $msg_text
    */
   protected function msgSendMessage($msg_sender, $msg_title, $msg_text) {
-    msg_send_simple_message($this->fleetEntity->fleet_owner, '', $this->fleetEntity->fleet_end_stay, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+    msg_send_simple_message($this->fleetEntity->ownerId, '', $this->fleetEntity->timeEndStay, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
   }
 
 
