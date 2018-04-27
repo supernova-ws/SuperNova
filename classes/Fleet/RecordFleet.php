@@ -173,21 +173,28 @@ class RecordFleet extends ActiveRecord {
    * @throws \Exception
    */
   public function changeResource($resourceId, $resourceCount) {
-    if(!array_key_exists($resourceId, $this->resources) || empty($resourceCount)) {
+    if (empty($resourceCount)) {
       return;
+    }
+
+    if (!array_key_exists($resourceId, $this->resources)) {
+      throw new \Exception("FLEET ERROR! Trying to change unknown resource type [{$resourceId}] '{$resourceCount}' on fleet [{$this->id}]");
     }
 
     $resourceCount = ceil($resourceCount);
 
     if($this->resources[$resourceId] + $resourceCount < 0) {
-      throw new \Exception("Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when fleet [{$this->id}] has only {$this->resources[$resourceId]}");
+      throw new \Exception("FLEET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when fleet [{$this->id}] has only {$this->resources[$resourceId]}");
     }
 
     $this->resources[$resourceId] += $resourceCount;
 
-    $this->fleet_resource_metal = $this->resources[RES_METAL];
-    $this->fleet_resource_crystal = $this->resources[RES_CRYSTAL];
-    $this->fleet_resource_deuterium = $this->resources[RES_DEUTERIUM];
+    $fieldName = 'fleet_resource_' . pname_resource_name($resourceId);
+    $this->inc()->$fieldName = $resourceCount;
+
+//    $this->fleet_resource_metal = $this->resources[RES_METAL];
+//    $this->fleet_resource_crystal = $this->resources[RES_CRYSTAL];
+//    $this->fleet_resource_deuterium = $this->resources[RES_DEUTERIUM];
   }
 
 

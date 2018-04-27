@@ -11,6 +11,7 @@ use \DBAL\DbQuery;
 use \DBAL\ActiveRecord;
 use Common\Traits\TContainer;
 use Exception;
+use SN;
 
 /**
  * Basic persistent entity class (lives in DB)
@@ -21,6 +22,8 @@ use Exception;
  * Represents in-game entity which have representation in DB (aka one or more connected ActiveRecords)
  *
  * @package Core
+ *
+ * @property int|string $id - bigint -
  *
  * @method array asArray() Extracts values as array [$propertyName => $propertyValue] (from ActiveRecord)
  * @method bool update() Updates DB record(s) in DB (from ActiveRecord)
@@ -181,6 +184,33 @@ class EntityDb extends Entity implements IContainer {
    */
   protected function _containerTranslatePropertyName($name) {
     return !empty($this->_containerTranslateNames[$name]) ? $this->_containerTranslateNames[$name] : $name;
+  }
+
+  /**
+   * Saves entity to DB. Also handles updates (and in future - deletes. DELETE CURRENTLY NOT SUPPORTED!)
+   *
+   * @return bool
+   * @throws \Exception
+   */
+  public function save() {
+    $result = false;
+
+    if ($this->isNew()) {
+      // New record - INSERT
+
+      // TODO - some checks that fleet recrod is valid itself
+      // May be something like method isValid()?
+
+      $result = !$this->isEmpty() && $this->_getContainer()->insert() && SN::$gc->repoV2->set($this);
+    } elseif (!$this->isEmpty()) {
+      // Record not new and not empty - UPDATE
+      $result = $this->_getContainer()->update();
+    } else {
+      // Record not new and empty - DELETE
+
+    }
+
+    return $result;
   }
 
 }

@@ -7,6 +7,7 @@ namespace Fleet;
 
 
 use Core\EntityDb;
+use SN;
 
 /**
  * Class Fleet
@@ -68,6 +69,17 @@ class Fleet extends EntityDb {
    */
   protected static $shipInfo = [];
 
+  protected $speedPercentTenth = 10;
+
+  /**
+   * @var null|array $ownerRecord
+   */
+  protected $ownerRecord = null;
+  /**
+   * @var null|array $sourcePlanet
+   */
+  protected $sourcePlanet = null;
+
 
   /**
    * Fleet constructor.
@@ -111,6 +123,7 @@ class Fleet extends EntityDb {
   }
 
   // Service functions  -----------------------------------------------------------------------------------------------
+
   /**
    * @return RecordFleet
    */
@@ -138,7 +151,7 @@ class Fleet extends EntityDb {
    */
   public function getShipsBasicCosts($resourceId = RES_METAL) {
     $result = [];
-    foreach ($this->getShipList() as $shipId => $shipAmount) {
+    foreach ($this->getShipListArray() as $shipId => $shipAmount) {
       $result[$shipId] = getStackableUnitsCost([$shipId => 1], $resourceId);
     }
 
@@ -168,7 +181,7 @@ class Fleet extends EntityDb {
    * @return float|int
    */
   public function getCostInMetal() {
-    return getStackableUnitsCost($this->getShipList(), RES_METAL);
+    return getStackableUnitsCost($this->getShipListArray(), RES_METAL);
 //
 //    $result = 0;
 //    foreach($this->getShipList() as $shipId => $amount) {
@@ -200,7 +213,7 @@ class Fleet extends EntityDb {
    */
   public function getCapacityActual() {
     $result = 0;
-    foreach ($this->getShipList() as $shipId => $amount) {
+    foreach ($this->getShipListArray() as $shipId => $amount) {
       $result += $amount * $this->getShipCapacity($shipId);
     }
 
@@ -210,7 +223,7 @@ class Fleet extends EntityDb {
   }
 
   public function isEmpty() {
-    return parent::isEmpty();
+    return $this->getShipCount() < 1;
   }
 
   // Using RecordFleet functions ---------------------------------------------------------------------------------------
@@ -238,7 +251,7 @@ class Fleet extends EntityDb {
   /**
    * @return float[] - [shipSnId => $shipAmount]
    */
-  public function getShipList() {
+  public function getShipListArray() {
     return $this->_getContainer()->getShipList();
   }
 
@@ -253,7 +266,7 @@ class Fleet extends EntityDb {
    * @return float|int
    */
   public function getShipCount() {
-    return $this->_getContainer()->getShipCount();
+    return array_sum($this->getShipListArray());
   }
 
   /**
@@ -264,12 +277,151 @@ class Fleet extends EntityDb {
   public function calcShipLossByMultiplier($multiplier) {
     $result = [];
 
-    foreach ($this->getShipList() as $unit_id => $unit_amount) {
+    foreach ($this->getShipListArray() as $unit_id => $unit_amount) {
       $shipsLost = ceil($unit_amount * $multiplier);
       $result[$unit_id] += $shipsLost;
     }
 
     return $result;
+  }
+
+  /**
+   * @param int $missionId
+   *
+   * @return Fleet
+   */
+  public function setMission($missionId) {
+    $this->fleet_mission = $missionId;
+    $this->status = FLEET_STATUS_FLYING;
+
+    return $this;
+  }
+
+  /**
+   * @param array $playerRecord
+   *
+   * @return Fleet
+   */
+  public function setFleetOwnerRecord($playerRecord) {
+    $this->ownerRecord = $playerRecord;
+    !empty($this->ownerRecord['id']) ? $this->ownerId = $this->ownerRecord['id'] : false;
+
+    return $this;
+  }
+
+  /**
+   * @return array|false|null
+   */
+  public function getFleetOwnerRecord() {
+    if (!isset($this->ownerRecord['id']) && !empty($this->ownerId)) {
+      // Trying to get owner record by id
+      empty($this->ownerRecord = db_user_by_id($this->ownerId)) ? $this->ownerRecord = null : false;
+    }
+
+    return $this->ownerRecord;
+  }
+
+  /**
+   * @param array $from
+   *
+   * @return Fleet
+   */
+  public function setSourceFromPlanetRecord($from) {
+    empty($this->ownerId) && !empty($from['id_owner']) ? $this->ownerId = $from['id_owner'] : false;
+
+    $this->fleet_start_planet_id = !empty($from['id']) && intval($from['id']) ? $from['id'] : null;
+
+    $this->fleet_start_galaxy = $from['galaxy'];
+    $this->fleet_start_system = $from['system'];
+    $this->fleet_start_planet = $from['planet'];
+    $this->fleet_start_type = $from['planet_type'];
+
+    $this->sourcePlanet = $from;
+
+    return $this;
+  }
+
+
+  /**
+   * @param $to
+   *
+   * @return Fleet
+   */
+  public function setDestinationFromPlanetRecord($to) {
+    empty($this->fleet_target_owner) ? $this->fleet_target_owner = !empty($to['id_owner']) && intval($to['id_owner']) ? $to['id_owner'] : 0 : false;
+
+    $this->fleet_end_planet_id = !empty($to['id']) && intval($to['id']) ? $to['id'] : null;
+
+    $this->fleet_end_galaxy = $to['galaxy'];
+    $this->fleet_end_system = $to['system'];
+    $this->fleet_end_planet = $to['planet'];
+    $this->fleet_end_type = $to['planet_type'];
+
+    return $this;
+  }
+
+  /**
+   * @param array $fleet - list of units [(int)unitId => (float)unitAmount]
+   *
+   * @return Fleet
+   * @throws \Exception
+   */
+  public function setUnits($fleet) {
+    foreach ($fleet as $unit_id => $amount) {
+      if (!$amount || !$unit_id) {
+        continue;
+      }
+
+      if (in_array($unit_id, sn_get_groups('fleet'))) {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->changeShipCount($unit_id, $amount);
+      } elseif (in_array($unit_id, sn_get_groups('resources_loot'))) {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->changeResource($unit_id, $amount);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @param int $speedPercentTenth - fleet speed percent in 10% from 1..10 - i.e. 1 = 10%, 10 = 100%
+   *
+   * @return Fleet
+   */
+  public function setSpeedPercentInTenth($speedPercentTenth) {
+    $this->speedPercentTenth = max(0, min(10, intval($speedPercentTenth)));
+
+    return $this;
+  }
+
+  /**
+   * @param int $launchTime   - unix timestamp when fleet leave source planet
+   * @param int $stayDuration - seconds how long fleet should stay executing mission task (i.e. HOLD or EXPLORE)
+   *
+   * @return array
+   */
+  public function calcTravelTimes($launchTime = SN_TIME_NOW, $stayDuration = 0) {
+    $this->timeLaunch = $launchTime;
+
+    $travel_data = flt_travel_data(
+      $this->getFleetOwnerRecord(),
+      ['galaxy' => $this->fleet_start_galaxy, 'system' => $this->fleet_start_system, 'planet' => $this->fleet_start_planet,],
+      ['galaxy' => $this->fleet_end_galaxy, 'system' => $this->fleet_end_system, 'planet' => $this->fleet_end_planet,],
+      $this->getShipListArray(),
+      $this->speedPercentTenth
+    );
+
+    $this->timeArrive = $this->timeLaunch + $travel_data['duration'];
+    $this->timeEndStay = $this->fleet_mission == MT_EXPLORE || $this->fleet_mission == MT_HOLD ? $this->timeArrive + $stayDuration : 0;
+    $this->timeReturn = $this->timeArrive + $stayDuration + $travel_data['duration'];
+
+    return $travel_data;
+  }
+
+
+  public function save() {
+    return parent::save(); // TODO: Change the autogenerated stub
   }
 
 }

@@ -2,6 +2,7 @@
 
 use DBAL\OldDbChangeSet;
 use Fleet\DbFleetStatic;
+use Fleet\Fleet;
 use Planet\DBStaticPlanet;
 
 function flt_fleet_speed($user, $fleet, $shipData = []) {
@@ -156,21 +157,6 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
-//  $flying_fleets = array();
-//  $query = doquery("SELECT fleet_group, fleet_start_time FROM {{fleets}} WHERE
-//  fleet_end_galaxy = {$planet_dst['galaxy']} AND
-//  fleet_end_system = {$planet_dst['system']} AND
-//  fleet_end_planet = {$planet_dst['planet']} AND
-//  fleet_end_type   = {$planet_dst['planet_type']} AND
-//  fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
-//  while($bashing_fleets = db_fetch($query)) {
-//    // Checking for ACS - each ACS count only once
-//    if($bashing_fleets['fleet_group']) {
-//      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
-//    } else {
-//      $bashing_list[] = $bashing_fleets['fleet_start_time'];
-//    }
-//  }
   $bashing_fleet_list = DbFleetStatic::fleet_list_bashing($user['id'], $planet_dst);
   foreach ($bashing_fleet_list as $fleet_row) {
     // Checking for ACS - each ACS count only once
@@ -186,7 +172,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     return ATTACK_ALLOWED;
   }
 
-  $query = doquery("SELECT bashing_time FROM {{bashing}} WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
+  $query = doquery("SELECT bashing_time FROM `{{bashing}}` WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
   while ($bashing_row = db_fetch($query)) {
     $bashing_list[] = $bashing_row['bashing_time'];
   }
@@ -209,13 +195,40 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
-function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false) {
+/**
+ * @param array $planet_src - source planet record/vector
+ * @param array $planet_dst - destination planet record/vector
+ * @param array $fleet      - array of ship amount [(int)shipId => (float)shipAmount]
+ * @param int   $mission    - Mission ID
+ * @param array $options    - [
+ *                          'resources' => (float),
+ *                          'fleet_speed_percent' => (int)1..10
+ *                          'fleet_group' => (int|string)
+ *                          'flying_fleets' => (int)
+ *                          'target_structure' => (int) - targeted defense structure snID for MISSILE missions
+ *                          'stay_time' => (int) - stay HOURS
+ *                          ]
+ *
+ * @return int
+ */
+function flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $options = []) {
   $result = null;
 
-  return sn_function_call('flt_can_attack', array($planet_src, $planet_dst, $fleet, $mission, $options, &$result));
+  return sn_function_call('flt_can_attack', [$planet_src, $planet_dst, $fleet, $mission, $options, &$result]);
 }
 
-function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false, &$result) {
+/**
+ * @param array $planet_src
+ * @param array $planet_dst
+ * @param array $fleet
+ * @param int   $mission
+ * @param array $options
+ * @param int   $result
+ *
+ * @return int
+ * @see flt_can_attack()
+ */
+function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $options = [], &$result) {
   //TODO: try..catch
   global $config, $user;
 
@@ -226,6 +239,8 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   if (empty($fleet) || !is_array($fleet)) {
     return $result = ATTACK_NO_FLEET;
   }
+
+  !is_array($options) ? $options = [] : false;
 
   $sn_groups_mission = sn_get_groups('missions');
   if (!isset($sn_groups_mission[$mission])) {
@@ -322,7 +337,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
       return $result = ATTACK_WRONG_MISSION;
     };
 
-    $acs = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
+    $acs = doquery("SELECT * FROM `{{aks}}` WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
     if (!$acs['id']) {
       return $result = ATTACK_NO_ACS;
     }
@@ -482,23 +497,39 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   return $result = ATTACK_ALLOWED;
 }
 
-/*
-$user - actual user record
-$from - actual planet record
-$to - actual planet record
-$fleet - array of records $unit_id -> $amount
-$mission - fleet mission
-*/
-
-function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array()) {
-//ini_set('error_reporting', E_ALL);
-
+/**
+ * @param array $user    - actual user record
+ * @param array $from    - actual planet record
+ * @param array $to      - actual planet record
+ * @param array $fleet   - array of records $unit_id -> $amount
+ * @param int   $mission - fleet mission
+ * @param array $options
+ *
+ * @return int
+ * @throws Exception
+ * @see flt_can_attack()
+ */
+function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $options = array()) {
   $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
 
   // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
   $user = db_user_by_id($user['id'], true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
+
+//  $fleet = [
+//    202 => 1,
+//  ];
+//  $resources = [
+//    901 => 1,
+//  ];
+//  var_dump($fleet);
+//  var_dump($resources);
+//  var_dump(mrc_get_level($user, $from, 202));
+//  var_dump($from['metal']);
+//  var_dump($from['deuterium']);
+//  die();
+
 
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if ($can_attack != ATTACK_ALLOWED) {
@@ -507,123 +538,75 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     return $can_attack;
   }
 
-  $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
+  empty($options['fleet_speed_percent']) ? $options['fleet_speed_percent'] = 10 : false;
+  $options['stay_time'] = !empty($options['stay_time']) ? $options['stay_time'] * PERIOD_HOUR : 0;
 
-  $travel_data = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
+  $fleetObj = new Fleet();
+  $travel_data = $fleetObj
+    ->setMission($mission)
+    ->setSourceFromPlanetRecord($from)
+    ->setDestinationFromPlanetRecord($to)
+    ->setUnits($fleet)
+    ->setSpeedPercentInTenth($options['fleet_speed_percent'])
+    ->calcTravelTimes(SN_TIME_NOW, $options['stay_time']);
+  $fleetObj->save();
 
-  $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
+  $result = fltSendFleetAdjustPlanetResources($from['id'], $resources, $travel_data['consumption']);
 
-  if ($mission == MT_EXPLORE || $mission == MT_HOLD) {
-    $stay_duration = $options['stay_time'] * 3600;
-    $stay_time = $fleet_start_time + $stay_duration;
-  } else {
-    $stay_duration = 0;
-    $stay_time = 0;
-  }
-  $fleet_end_time = $fleet_start_time + $travel_data['duration'] + $stay_duration;
-
-  $fleet_ship_count = 0;
-  $fleet_string = '';
-  $db_changeset = array();
-  $planet_fields = array();
-  foreach ($fleet as $unit_id => $amount) {
-    if (!$amount || !$unit_id) {
-      continue;
-    }
-
-    if (in_array($unit_id, sn_get_groups('fleet'))) {
-      $fleet_ship_count += $amount;
-      $fleet_string .= "{$unit_id},{$amount};";
-      $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, -$amount, $user, $from['id']);
-    } elseif (in_array($unit_id, sn_get_groups('resources_loot'))) {
-      $planet_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
-    }
-  }
-
-  $to['id_owner'] = intval($to['id_owner']);
-
-//  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-//  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
-//  $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
-//  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
-//  $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
-//  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
-//  if($from['id'])
-//  {
-//    $QryInsertFleet .= "`fleet_start_planet_id` = '{$from['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
-//  $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
-//  $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
-//  $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
-//  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
-//  $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
-//  if($to['id'])
-//  {
-//    $QryInsertFleet .= "`fleet_end_planet_id` = '{$to['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
-//  $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
-//  $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
-//  $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
-//  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
-//  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
-//  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
-//  $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
-//  $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
-//  $QryInsertFleet .= "`start_time` = " . SN_TIME_NOW . ";";
-//  doquery( $QryInsertFleet);
-
-  $fleet_set = array(
-    'fleet_owner'   => $user['id'],
-    'fleet_mission' => $mission,
-    'fleet_amount'  => $fleet_ship_count,
-    'fleet_array'   => $fleet_string,
-
-    'fleet_start_time'      => $fleet_start_time,
-    'fleet_start_planet_id' => intval($from['id']) ? $from['id'] : null,
-    'fleet_start_galaxy'    => $from['galaxy'],
-    'fleet_start_system'    => $from['system'],
-    'fleet_start_planet'    => $from['planet'],
-    'fleet_start_type'      => $from['planet_type'],
-
-    'fleet_end_time'      => $fleet_end_time,
-    'fleet_end_stay'      => $stay_time,
-    'fleet_end_planet_id' => intval($to['id']) ? $to['id'] : null,
-    'fleet_end_galaxy'    => $to['galaxy'],
-    'fleet_end_system'    => $to['system'],
-    'fleet_end_planet'    => $to['planet'],
-    'fleet_end_type'      => $to['planet_type'],
-    'fleet_target_owner'  => intval($to['id_owner']) ? $to['id_owner'] : 0,
-
-    'fleet_resource_metal'     => floatval($fleet[RES_METAL]),
-    'fleet_resource_crystal'   => floatval($fleet[RES_CRYSTAL]),
-    'fleet_resource_deuterium' => floatval($fleet[RES_DEUTERIUM]),
-
-    'fleet_group' => $fleet_group,
-    'start_time'  => SN_TIME_NOW,
-  );
-  DbFleetStatic::fleet_insert_set_dbq($fleet_set);
-
-  $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
-  $db_changeset['planets'][] = array(
-    'action'  => SQL_OP_UPDATE,
-    P_VERSION => 1,
-    'where'   => array(
-      'id' => $from['id'],
-    ),
-    'fields'  => $planet_fields,
-  );
-
-  OldDbChangeSet::db_changeset_apply($db_changeset);
-
-  // $internal_transaction = false;sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
+  $result = fltSendFleetAdjustPlanetUnits($user, $from['id'], $fleet);
 
   $internal_transaction ? sn_db_transaction_commit() : false;
+
   $from = DBStaticPlanet::db_planet_by_id($from['id']);
 
+//  var_dump(mrc_get_level($user, $from, 202));
+//  var_dump($from['metal']);
+//  var_dump($from['deuterium']);
+//  die();
+
   return ATTACK_ALLOWED;
-//ini_set('error_reporting', E_ALL ^ E_NOTICE);
+}
+
+/**
+ * @param array      $user
+ * @param int|string $fromId
+ * @param float[]    $fleet - [(int)shipId => (float)count]
+ *
+ * @return bool
+ */
+function fltSendFleetAdjustPlanetUnits($user, $fromId, $fleet) {
+  $result = [];
+
+  foreach ($fleet as $unit_id => $amount) {
+    if (floatval($amount) >= 1 && intval($unit_id) && in_array($unit_id, sn_get_groups('fleet'))) {
+      $result[] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, -$amount, $user, $fromId);
+    }
+  }
+
+  return OldDbChangeSet::db_changeset_apply(['unit' => $result]);
+}
+
+/**
+ * @param int|string $fromId      - Source planet ID
+ * @param array      $resources   - Array of resources to transfer [(int)resourceId => (float)amount]
+ * @param int|float  $consumption - Fleet consumption
+ *
+ * @return bool
+ *
+ * @throws Exception
+ */
+function fltSendFleetAdjustPlanetResources($fromId, $resources, $consumption) {
+  $planetObj = SN::$gc->repoV2->getPlanet($fromId);
+
+  $planetObj->changeResource(RES_DEUTERIUM, -$consumption);
+
+  foreach ($resources as $resource_id => $amount) {
+    if (floatval($amount) >= 1 && intval($resource_id) && in_array($resource_id, sn_get_groups('resources_loot'))) {
+      $planetObj->changeResource($resource_id, -$amount);
+    }
+  }
+
+  return $planetObj->save();
 }
 
 function flt_calculate_ship_to_transport_sort($a, $b) {
@@ -643,7 +626,7 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
   foreach ($ship_list as $transport_id => $cork) {
     $ship_data[$transport_id] = flt_travel_data($user, $from, $to, array($transport_id => 1), 10);
   }
-  uasort($ship_data, flt_calculate_ship_to_transport_sort);
+  uasort($ship_data, 'flt_calculate_ship_to_transport_sort');
 
   $fleet_hold = 0;
   $fleet_capacity = 0;

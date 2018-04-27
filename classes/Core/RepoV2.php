@@ -60,24 +60,27 @@ class RepoV2 implements IContainer {
     return $this;
   }
 
+
   /**
-   * @param array $name - [entityClassName, dbId]
+   * @param string     $className
+   * @param int|string $objectId
    *
    * @return EntityDb|null
    */
-  public function __get($name) {
-    return $this->__isset($name) ? $this->repo[reset($name)][end($name)] : null;
+  public function get($className, $objectId) {
+    return $this->is_set($className, $objectId) ? $this->repo[$className][$objectId] : null;
   }
 
   /**
-   * Get entity verion
+   * Get entity version
    *
-   * @param array $name - [entityClassName, dbId]
+   * @param $className
+   * @param $objectId
    *
    * @return int
    */
-  protected function version($name) {
-    return !empty($version = $this->versionId[$this->getClassName($name)][$this->getDbId($name)]) ? $version : -1;
+  protected function version($className, $objectId) {
+    return !empty($version = $this->versionId[$className][$objectId]) ? $version : -1;
   }
 
   /**
@@ -85,38 +88,36 @@ class RepoV2 implements IContainer {
    *
    * Supports transactions and version tracking (between transactions)
    *
-   * @param array $name - [entityClassName, dbId]
+   * @param string     $className - fully qualified class name
+   * @param int|string $objectId  - entity ID
    *
    * @return EntityDb|null
    *
    * @throws Exception
    */
-  public function getOrLoad($name) {
-    $className = $this->getClassName($name);
-    $dbId = $this->getDbId($name);
-
-    if ($this->__isset($name)) {
+  public function getOrLoad($className, $objectId) {
+    if ($this->is_set($className, $objectId)) {
       // If entity exists in repo - getting it
-      $entity = $this->__get($name);
+      $entity = $this->get($className, $objectId);
 
       // If in transaction and version missmatch - record should be refreshed just for a case
-      if (sn_db_transaction_check(false) && $this->version($name) < SN::$transaction_id) {
+      if (sn_db_transaction_check(false) && $this->version($className, $objectId) < SN::$transaction_id) {
         // Entity will care by itself - should it be really reloaded or not
         $entity->reload();
       }
 
       if ($entity->isNew()) {
-        $this->__unset($name);
+        $this->un_set($className, $objectId);
       }
     } else {
       /**
        * @var EntityDb $entity
        */
       $entity = new $className();
-      $entity->dbLoadRecord($dbId);
+      $entity->dbLoadRecord($objectId);
 
       if (!$entity->isNew()) {
-        $this->__set($name, $entity);
+        $this->set($entity);
       }
     }
 
@@ -136,7 +137,7 @@ class RepoV2 implements IContainer {
    * @throws Exception
    */
   public function getPlanet($planetId) {
-    return $this->getOrLoad([Planet::class, $planetId]);
+    return $this->getOrLoad(Planet::class, $planetId);
   }
 
   /**
@@ -147,104 +148,80 @@ class RepoV2 implements IContainer {
    * @throws Exception
    */
   public function getFleet($fleetId) {
-    return $this->getOrLoad([Fleet::class, $fleetId]);
+    return $this->getOrLoad(Fleet::class, $fleetId);
   }
+
 
   /**
    * Writes entity to repository
    *
-   * Entity should not be already set - otherwise exception raised
+   * Entity should not be already in registry - otherwise exception raised
    *
-   * @param array    $name - [entityClassName, dbId]
    * @param EntityDb $value
    *
-   * @return void
+   * @return bool
    * @throws Exception
    */
-  public function __set($name, $value) {
-    if (!($className = $this->getClassName($name))) {
-      throw new Exception("Mallformed name " . var_export($name, true) . " in RepoV2::__set(). ");
+  public function set($value) {
+    $className = $this->getClassStoreName(get_class($value));
+    $objectId = $value->id;
+
+    if (empty($value->id)) {
+      throw new Exception("Trying to add in registry entity [" . implode(',', [$className, $objectId]) . "] with zero objectId");
     }
 
-    if ($this->__isset($name) && $this->__get($name) !== $value) {
-      throw new Exception("Trying to overwrite entity [" . implode(',', $name) . "] which already set. Unset it first!");
+    if ($this->is_set($className, $objectId) && $this->get($className, $objectId) !== $value) {
+      throw new Exception("Trying to overwrite entity [" . implode(',', [$className, $objectId]) . "] which already set. Unset it first!");
     }
 
-    $dbId = $this->getDbId($name);
-    $this->repo[$className][$dbId] = $value;
-    $this->versionId[$className][$dbId] = SN::$transaction_id;
+    $this->repo[$className][$objectId] = $value;
+    $this->versionId[$className][$objectId] = SN::$transaction_id;
+
+    return true;
   }
 
+
   /**
-   * @param array $name - [entityClassName, dbId]
+   * @param string $className
    *
    * @return string
    */
-  protected function getClassName($name) {
-    if (!$this->isNameValid($name)) {
-      return false;
-    }
-
-    $className = reset($name);
-    if (!empty($this->synonyms[$className])) {
-      $className = $this->synonyms[$className];
-    }
-
-    return $className;
+  protected function getClassStoreName($className) {
+    return !empty($this->synonyms[$className]) ? $this->synonyms[$className] : $className;
   }
 
   /**
-   * @param array $name - [entityClassName, dbId]
-   *
-   * @return mixed
-   */
-  protected function getDbId($name) {
-    $dbId = end($name);
-
-    return $dbId;
-  }
-
-  /**
-   * @param array $name - [entityClassName, dbId]
+   * @param string     $className
+   * @param int|string $objectId
    *
    * @return bool
    */
-  protected function isNameValid($name) {
-    return is_array($name) && count($name) == 2;
+  public function is_set($className, $objectId) {
+    return is_array($this->repo[$className]) && isset($this->repo[$className][$objectId]);
   }
 
   /**
-   * Checks if entity with specified DB ID registered in repository
-   *
-   * Repository also holds entity current version (for transaction support)
-   * Repository stores ONLY EXISTING OBJECTS - so it's not caches unsuccessful data retrieves
-   *
-   * @param array $name - [entityClassName, dbId]
-   *
-   * @return bool
-   */
-  public function __isset($name) {
-    if (!($className = $this->getClassName($name))) {
-      return false;
-    }
-    $dbId = $this->getDbId($name);
-
-    return is_array($this->repo[$className]) && isset($this->repo[$className][$dbId]);
-  }
-
-  /**
-   * @param array $name - [entityClassName, dbId]
+   * @param string     $className
+   * @param int|string $objectId
    *
    * @return void
    */
-  public function __unset($name) {
-    if (!($className = $this->getClassName($name))) {
-      return;
-    }
+  public function un_set($className, $objectId) {
+    unset($this->repo[$className][$objectId]);
+    unset($this->versionId[$className][$objectId]);
+  }
 
-    $dbId = $this->getDbId($name);
-    unset($this->repo[$className][$dbId]);
-    unset($this->versionId[$className][$dbId]);
+  /**
+   * @param EntityDb $entity
+   *
+   * @return void
+   */
+  public function unsetByEntity($entity) {
+    $className = $this->getClassStoreName($entity);
+    $objectId = $entity->id;
+
+    unset($this->repo[$className][$objectId]);
+    unset($this->versionId[$className][$objectId]);
   }
 
   /**
@@ -262,6 +239,58 @@ class RepoV2 implements IContainer {
   public function clear() {
     $this->repo = [];
     $this->versionId = [];
+  }
+
+  /**
+   * @param array    $name - [entityClassName, objectId]
+   * @param EntityDb $value
+   *
+   * @return void
+   * @throws Exception
+   *
+   * @deprecated
+   * @see RepoV2::set()
+   */
+  public function __set($name, $value) {
+    throw new Exception("DEPRECATED! Method RepoV2::__set() is DEPRECATED! Use RepoV2::set() instead!");
+  }
+
+  /**
+   * @param array $name - [entityClassName, objectId]
+   *
+   * @return void
+   * @throws Exception
+   * @deprecated
+   */
+  public function __get($name) {
+    throw new Exception("DEPRECATED! Method RepoV2::__get() is DEPRECATED! Use RepoV2::get() instead!");
+  }
+
+  /**
+   * Checks if entity with specified DB ID registered in repository
+   *
+   * Repository also holds entity current version (for transaction support)
+   * Repository stores ONLY EXISTING OBJECTS - so it's not caches unsuccessful data retrieves
+   *
+   * @param array $name - [entityClassName, objectId]
+   *
+   * @return void
+   * @throws Exception
+   * @deprecated
+   */
+  public function __isset($name) {
+    throw new Exception("DEPRECATED! Method RepoV2::__isset() is DEPRECATED! Use RepoV2::is_set() instead!");
+  }
+
+  /**
+   * @param array $name - [entityClassName, objectId]
+   *
+   * @return void
+   * @throws Exception
+   * @deprecated
+   */
+  public function __unset($name) {
+    throw new Exception("DEPRECATED! Method RepoV2::__unset() is DEPRECATED! Use RepoV2::un_set() instead!");
   }
 
 }

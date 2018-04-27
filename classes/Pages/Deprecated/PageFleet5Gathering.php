@@ -75,7 +75,7 @@ class PageFleet5Gathering {
         if (floor(mrc_get_level($user, $planetRecord, RES_DEUTERIUM, true)) >= $travel_data['consumption']) {
           $will_take = min($planetResources, $fleetFullCapacity) - $travel_data['consumption'];
 
-          $this->fillFleetResources($user, $resources_taken, $planetRecord, $will_take, $fleet);
+          $resourcesTaken = $this->fillFleetResources($user, $resources_taken, $planetRecord, $will_take, $fleet);
           $result = ATTACK_ALLOWED;
         } else {
           $result = ATTACK_NO_FUEL;
@@ -102,6 +102,7 @@ class PageFleet5Gathering {
           'RESOURCES_TEXT' => HelperString::numberFloorAndFormat($planetResources),
 
           'FLEET'               => $fleet,
+          'FLEET_RESOURCES'     => $resourcesTaken,
           'FLEET_CAPACITY'      => $fleetFullCapacity,
           'FLEET_CAPACITY_TEXT' => prettyNumberStyledCompare($fleetFullCapacity, -$planetResources),
 
@@ -203,6 +204,7 @@ class PageFleet5Gathering {
    * @param array $fleet
    */
   protected function fillFleetResources(&$user, $resources_taken, $planetRecord, $will_take, &$fleet) {
+    $result = [];
     foreach (sn_get_groups('resources_loot') as $resource_id) {
       if ($resources_taken[$planetRecord['id']] != 1 && !$resources_taken[$planetRecord['id']][$resource_id]) {
         continue;
@@ -210,31 +212,40 @@ class PageFleet5Gathering {
 
       $resource_amount = floor(mrc_get_level($user, $planetRecord, $resource_id, true, true));
 
-      $fleet[$resource_id] = min($will_take, $resource_amount);
+      $result[$resource_id] = min($will_take, $resource_amount);
       $will_take -= $resource_amount;
 
       if ($will_take <= 0) {
         break;
       }
     }
+
+    return $result;
   }
 
 
   /**
-   * @param array     $user
-   * @param array     $planetrow
+   * @param array     $playerRecord
+   * @param array     $planetRecord
    * @param \template $template
    */
-  public function modelFleet5Gathering(&$user, &$planetrow, $template) {
+  public function modelFleet5Gathering(&$playerRecord, &$planetRecord, $template) {
     if (empty($resources_taken = sys_get_param('resources')) || !is_array($resources_taken)) {
       return;
     }
 
-    $planet_list = $this->flt_build_gathering($user, $planetrow, $resources_taken);
+    $planet_list = $this->flt_build_gathering($playerRecord, $planetRecord, $resources_taken);
 
     foreach ($planet_list as $planet_id => $planet_data) {
       if ($planet_data['RESULT'] == ATTACK_ALLOWED) {
-        $planet_data['RESULT'] = flt_t_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $planet_data['RESULT'] = flt_t_send_fleet(
+          $playerRecord,
+          $planet_data['PLANET_DB_DATA'],
+          $planetRecord,
+          $planet_data['FLEET'],
+          $planet_data['FLEET_RESOURCES'],
+          MT_TRANSPORT);
       }
 
       $planet_data['MESSAGE'] = $this->lang['fl_attack_error'][$planet_data['RESULT']];

@@ -19,16 +19,16 @@ use SN;
  *
  * @method bool insert()
  *
- * @property int|string $id - Record ID name would be normalized to 'id'
+ * @property int|string $id        - Record ID name would be normalized to 'id'
  * @property string     $name
  * @property int|float  $id_owner
  * @property int        $galaxy
  * @property int        $system
  * @property int        $planet
  * @property int        $planet_type
- * property int|float $metal
- * property int|float $crystal
- * property int|float $deuterium
+ * @property int|float  $metal
+ * @property int|float  $crystal
+ * @property int|float  $deuterium
  * property int|float $energy_max
  * property int|float $energy_used
  * property int $last_jump_time
@@ -81,6 +81,15 @@ class Planet extends EntityDb {
    * @var RecordPlanet $_container
    */
   protected $_container;
+
+  /**
+   * @var float[] $resources
+   */
+  protected $resources = [
+    RES_METAL     => 0,
+    RES_CRYSTAL   => 0,
+    RES_DEUTERIUM => 0,
+  ];
 
   /**
    * @var Governor $governor
@@ -319,6 +328,64 @@ class Planet extends EntityDb {
   public function reset() {
     $this->governor = null;
 
+    $this->resources = [
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    ];
+
     return parent::reset();
   }
+
+  /**
+   * @return RecordPlanet
+   */
+  public function _getContainer() {
+    return $this->_container;
+  }
+
+
+  /**
+   * @param int   $resourceId
+   * @param float $resourceCount
+   *
+   * @throws \Exception
+   */
+  public function changeResource($resourceId, $resourceCount) {
+    if (empty($resourceCount)) {
+      return;
+    }
+
+    if (!array_key_exists($resourceId, $this->resources)) {
+      throw new \Exception("PLANET ERROR! Trying to change unknown resource type [{$resourceId}] '{$resourceCount}' on planet [{$this->id}]");
+    }
+
+    $resourceCount = ceil($resourceCount);
+
+    if ($this->resources[$resourceId] + $resourceCount < 0) {
+      throw new \Exception("PLANET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when planet [{$this->id}] has only {$this->resources[$resourceId]}");
+    }
+
+    $this->resources[$resourceId] += $resourceCount;
+
+    $fieldName = pname_resource_name($resourceId);
+    $this->_getContainer()->inc()->$fieldName = $resourceCount;
+
+//    $this->metal = $this->resources[RES_METAL];
+//    $this->crystal = $this->resources[RES_CRYSTAL];
+//    $this->deuterium = $this->resources[RES_DEUTERIUM];
+  }
+
+  public function dbLoadRecord($id) {
+    $result = parent::dbLoadRecord($id);
+
+    if(!$this->isNew()) {
+      $this->resources[RES_METAL] = $this->_getContainer()->metal;
+      $this->resources[RES_CRYSTAL] = $this->_getContainer()->crystal;
+      $this->resources[RES_DEUTERIUM] = $this->_getContainer()->deuterium;
+    }
+
+    return $result;
+  }
+
 }
