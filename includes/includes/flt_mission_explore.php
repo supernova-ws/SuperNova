@@ -1,5 +1,7 @@
 <?php
 
+use Fleet\DbFleetStatic;
+
 /**
  * MissionCaseExpedition.php
  *
@@ -310,12 +312,12 @@ function flt_mission_explore(&$mission_data) {
 //    $query_data .=  " WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
 //    doquery($query_data);
 //    db_fleet_update_set_safe_string($fleet_row['fleet_id'], implode(',', $query_data));
-    fleet_update_set($fleet_row['fleet_id'], $query_data, $query_delta);
+    DbFleetStatic::fleet_update_set($fleet_row['fleet_id'], $query_data, $query_delta);
   } else {
     // Удалить флот
 //    $query_data = "DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
 //    doquery($query_data);
-    db_fleet_delete($fleet_row['fleet_id']);
+    DbFleetStatic::db_fleet_delete($fleet_row['fleet_id']);
   }
 //  $query_data .=  " WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
 //  doquery($query_data);

@@ -1,5 +1,6 @@
 <?php
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 /**
@@ -22,7 +23,7 @@ function flt_mission_recycle(&$mission_data)
   if(!isset($destination_planet['id']))
   {
     // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
-    fleet_send_back($mission_data['fleet']);
+    DbFleetStatic::fleet_send_back($mission_data['fleet']);
     return CACHE_FLEET;
   }
 
@@ -119,7 +120,7 @@ function flt_mission_recycle(&$mission_data)
     'fleet_resource_crystal' => $NewCargo['Crystal'],
     'fleet_resource_deuterium' => $NewCargo['Deuterium'],
   );
-  fleet_update_set($fleet_row['fleet_id'], $fleet_set);
+  DbFleetStatic::fleet_update_set($fleet_row['fleet_id'], $fleet_set);
 
   return CACHE_FLEET | CACHE_PLANET_DST;
 }

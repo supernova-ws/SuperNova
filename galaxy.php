@@ -17,6 +17,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
@@ -53,7 +54,7 @@ $CurrentGalaxy = $planetrow['galaxy'];
 
 //$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 //$maxfleet_count = $maxfleet['flying_fleet_count'];
-$flying_fleet_count = fleet_count_flying($user['id']);
+$flying_fleet_count = DbFleetStatic::fleet_count_flying($user['id']);
 
 if ($mode == 1) {
 } elseif ($mode == 2 || $mode == 3) {
@@ -91,7 +92,7 @@ if (!empty($planet_precache_query)) {
   }
 }
 
-$system_fleet_list = fleet_list_by_planet_coords($uni_galaxy, $uni_system);
+$system_fleet_list = DbFleetStatic::fleet_list_by_planet_coords($uni_galaxy, $uni_system);
 foreach ($system_fleet_list as $fleet_row) {
   $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
   $fleet_type = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];

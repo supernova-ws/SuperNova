@@ -3,6 +3,7 @@
  * Created by Gorlum 24.09.2017 18:09
  */
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Que\DBStaticQue;
 use Unit\DBStaticUnit;
@@ -143,7 +144,7 @@ class StatCalculator {
     // Calculation of Fleet-In-Flight
     static::sta_set_time_limit('calculating flying fleets stats');
     $i = 0;
-    $query = db_fleet_list_query_all_stat();
+    $query = DbFleetStatic::db_fleet_list_query_all_stat();
     $row_num = db_num_rows($query);
     while ($fleet_row = db_fetch($query)) {
       if ($i++ % 100 == 0) {

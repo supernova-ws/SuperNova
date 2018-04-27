@@ -15,6 +15,7 @@
 **/
 
 use DBAL\OldDbChangeSet;
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
@@ -162,7 +163,7 @@ else
 //  $QryInsertFleet .= "`start_time` = ". SN_TIME_NOW . ";";
 //  doquery($QryInsertFleet);
 
-  $fleet_set = array(
+  $fleet_set = [
     'fleet_owner' => $user['id'],
     'fleet_mission' => $target_mission,
     'fleet_amount' => $fleet_ship_count,
@@ -181,8 +182,8 @@ else
     'fleet_end_type' => $target_planet_type,
     'fleet_target_owner' => $target_row['id_owner'],
     'start_time' => SN_TIME_NOW,
-  );
-  fleet_insert_set($fleet_set);
+  ];
+  DbFleetStatic::fleet_insert_set_dbq($fleet_set);
 }
 
 DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");

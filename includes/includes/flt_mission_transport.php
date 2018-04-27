@@ -1,5 +1,7 @@
 <?php
 
+use Fleet\DbFleetStatic;
+
 /**
  * flt_mission_transport.php
  *
@@ -17,7 +19,7 @@ function flt_mission_transport(&$mission_data)
   if(!isset($destination_planet['id']) || !$destination_planet['id_owner'])
   {
     // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
-    fleet_send_back($fleet_row);
+    DbFleetStatic::fleet_send_back($fleet_row);
     return CACHE_FLEET;
   }
 

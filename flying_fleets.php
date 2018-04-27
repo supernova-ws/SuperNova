@@ -1,5 +1,7 @@
 <?php
 
+use Fleet\DbFleetStatic;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $user, $debug;
@@ -48,7 +50,7 @@ if (!$planetrow) {
 $template = gettemplate('flying_fleets', true);
 
 $i = 0;
-$fleet_list = fleet_list_by_owner_id($user['id']);
+$fleet_list = DbFleetStatic::fleet_list_by_owner_id($user['id']);
 foreach ($fleet_list as $fleet_id => $fleet_row) {
   $i++;
   $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
@@ -61,8 +63,8 @@ foreach ($fleet_list as $fleet_id => $fleet_row) {
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
-$FlyingExpeditions = fleet_count_flying($user['id'], MT_EXPLORE);
-$fleet_flying_amount = fleet_count_flying($user['id'], MT_NONE);
+$FlyingExpeditions = DbFleetStatic::fleet_count_flying($user['id'], MT_EXPLORE);
+$fleet_flying_amount = DbFleetStatic::fleet_count_flying($user['id'], MT_NONE);
 
 $template->assign_vars(array(
   'FLEETS_FLYING'      => $fleet_flying_amount,

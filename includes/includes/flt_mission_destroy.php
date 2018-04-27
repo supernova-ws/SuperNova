@@ -1,5 +1,7 @@
 <?php
 
+use Fleet\DbFleetStatic;
+
 require_once('includes/includes/flt_mission_attack.php');
 
 /*
@@ -9,7 +11,7 @@ function flt_mission_destroy($mission_data) {
   $fleet_row = $mission_data['fleet'];
   $destination_planet = $mission_data['dst_planet'];
   if(!$destination_planet || !is_array($destination_planet) || $destination_planet['planet_type'] != PT_MOON) {
-    fleet_send_back($fleet_row);
+    DbFleetStatic::fleet_send_back($fleet_row);
 
     return CACHE_FLEET;
   }

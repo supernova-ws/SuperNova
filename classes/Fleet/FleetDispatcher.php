@@ -109,7 +109,7 @@ class FleetDispatcher {
    * @return array
    */
   protected function fleet_list_current_tick() {
-    return db_fleet_list(
+    return DbFleetStatic::db_fleet_list(
       "
     (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
     OR
@@ -276,10 +276,10 @@ class FleetDispatcher {
       $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
       // Формируем запрос, блокирующий сразу все нужные записи
 
-      db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
+      DbFleetStatic::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
 
 //    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
-      $fleet_row = db_fleet_get($fleet_row['fleet_id']);
+      $fleet_row = DbFleetStatic::db_fleet_get($fleet_row['fleet_id']);
       if (!$fleet_row || empty($fleet_row)) {
         // Fleet was destroyed in course of previous actions
         sn_db_transaction_commit();
@@ -436,14 +436,14 @@ class FleetDispatcher {
 
     // Флот, который возвращается на захваченную планету, пропадает
     if ($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
-      db_fleet_delete($fleet_row['fleet_id']);
+      DbFleetStatic::db_fleet_delete($fleet_row['fleet_id']);
 
       return $result;
     }
 
     $db_changeset = array();
     if (!$only_resources) {
-      db_fleet_delete($fleet_row['fleet_id']);
+      DbFleetStatic::db_fleet_delete($fleet_row['fleet_id']);
 
       if ($fleet_row['fleet_owner'] == $planet_arrival['id_owner']) {
         $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
@@ -462,7 +462,7 @@ class FleetDispatcher {
         'fleet_resource_deuterium' => 0,
         'fleet_mess'               => 1,
       );
-      fleet_update_set($fleet_row['fleet_id'], $fleet_set);
+      DbFleetStatic::fleet_update_set($fleet_row['fleet_id'], $fleet_set);
     }
 
     if (!empty($db_changeset)) {

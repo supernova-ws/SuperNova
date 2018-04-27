@@ -1,5 +1,7 @@
 <?php
 
+use Fleet\DbFleetStatic;
+
 require_once(SN_ROOT_PHYSICAL . 'includes/includes/ube_attack_calculate.php');
 
 /*
@@ -33,13 +35,13 @@ function flt_mission_attack($mission_data, $save_report = true) {
     // "Уничтожение" не на луну
     ($fleet_row['fleet_mission'] == MT_DESTROY && $destination_planet['planet_type'] != PT_MOON)
   ) {
-    fleet_send_back($fleet_row);
+    DbFleetStatic::fleet_send_back($fleet_row);
 
     return null;
   }
 
-  $acs_fleet_list = empty($fleet_row['fleet_group']) ? [$fleet_row] : fleet_list_by_group($fleet_row['fleet_group']);
-  $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $fleet_row['fleet_start_time']);
+  $acs_fleet_list = empty($fleet_row['fleet_group']) ? [$fleet_row] : DbFleetStatic::fleet_list_by_group($fleet_row['fleet_group']);
+  $fleet_list_on_hold = DbFleetStatic::fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $fleet_row['fleet_start_time']);
 
   $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
   $combat_data = $ubePrepare->prepareFromMissionArray($mission_data, $fleet_list_on_hold, $acs_fleet_list);

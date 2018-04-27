@@ -4,6 +4,7 @@
 // @copyright 2008 by Chlorel for XNova
 
 use DBAL\OldDbChangeSet;
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Unit\DBStaticUnit;
 
@@ -232,7 +233,7 @@ function sn_fleet_page3() {
     'fleet_resource_deuterium' => $TransDeuterium,
     'start_time' => SN_TIME_NOW,
   );
-  $fleet_id = fleet_insert_set($fleet_set);
+  $fleet_id = DbFleetStatic::fleet_insert_set_dbq($fleet_set);
 
   DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   OldDbChangeSet::db_changeset_apply($db_changeset);

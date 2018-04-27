@@ -5,6 +5,7 @@
 
 namespace Player;
 
+use Fleet\DbFleetStatic;
 use SN;
 use Planet\DBStaticPlanet;
 
@@ -65,7 +66,7 @@ class PlayerStatic {
     }
 
     // Deleting all fleets
-    db_fleet_list_delete_by_owner($UserID);
+    DbFleetStatic::db_fleet_list_delete_by_owner($UserID);
 
     // Deleting all planets
     DBStaticPlanet::db_planet_list_delete_by_owner($UserID);

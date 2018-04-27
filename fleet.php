@@ -24,6 +24,7 @@
 
 global $user, $planetrow, $lang;
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
@@ -62,7 +63,7 @@ $options['fleets_max'] = GetMaxFleets($user);
 $MaxFleets = GetMaxFleets($user);
 //$FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", true);
 //$FlyingFleets = $FlyingFleets['Number'];
-$FlyingFleets = fleet_count_flying($user['id']);
+$FlyingFleets = DbFleetStatic::fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
   messageBox($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
@@ -71,7 +72,7 @@ $MaxExpeditions = get_player_max_expeditons($user);
 if($MaxExpeditions) {
 //  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
 //  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
-  $FlyingExpeditions  = fleet_count_flying($user['id'], MT_EXPLORE);
+  $FlyingExpeditions  = DbFleetStatic::fleet_count_flying($user['id'], MT_EXPLORE);
 } else {
   $FlyingExpeditions = 0;
 }

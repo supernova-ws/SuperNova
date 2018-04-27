@@ -11,6 +11,7 @@
  * @copyright 2008 by Pada for XNova.project.es
  */
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
@@ -67,7 +68,7 @@ DBStaticPlanet::db_planet_set_by_id($user['current_planet'], "deuterium = deuter
 
 $template = gettemplate('planet_fleet_list', true);
 
-$fleet_list = fleet_and_missiles_list_by_coordinates($planet_scanned, true);
+$fleet_list = DbFleetStatic::fleet_and_missiles_list_by_coordinates($planet_scanned, true);
 $fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
 tpl_assign_fleet($template, $fleets);
 

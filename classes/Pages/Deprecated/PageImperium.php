@@ -5,6 +5,7 @@
 
 namespace Pages\Deprecated;
 
+use Fleet\DbFleetStatic;
 use \template;
 use \classLocale;
 use Planet\DBStaticPlanet;
@@ -393,7 +394,7 @@ class PageImperium {
       'COLONIES_CURRENT' => get_player_current_colonies($user),
       'COLONIES_MAX'     => get_player_max_colonies($user),
 
-      'EXPEDITIONS_CURRENT' => fleet_count_flying($user['id'], MT_EXPLORE),
+      'EXPEDITIONS_CURRENT' => DbFleetStatic::fleet_count_flying($user['id'], MT_EXPLORE),
       'EXPEDITIONS_MAX'     => get_player_max_expeditons($user),
 
       'PLANET_DENSITY_RICHNESS_NORMAL'  => PLANET_DENSITY_RICHNESS_NORMAL,

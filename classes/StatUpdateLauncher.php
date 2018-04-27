@@ -3,6 +3,8 @@
  * Created by Gorlum 24.09.2017 17:15
  */
 
+use Fleet\DbFleetStatic;
+
 /**
  * Class StatUpdateLauncher
  *
@@ -68,7 +70,7 @@ class StatUpdateLauncher {
 
         StatCalculator::sys_stat_calculate();
 
-        db_fleet_aks_purge();
+        DbFleetStatic::db_fleet_acs_purge();
 
         $total_time = microtime(true) - $total_time;
         $msg = "Stat update complete in {$total_time} seconds.";

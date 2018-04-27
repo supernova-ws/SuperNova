@@ -1,6 +1,7 @@
 <?php
 
 use DBAL\OldDbChangeSet;
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Unit\DBStaticUnit;
 
@@ -211,11 +212,11 @@ function sn_ube_combat_result_apply(&$combat_data) {
       if ($new_fleet_count) {
         if (!empty($fleet_query) || !empty($fleet_delta)) {
           $fleet_query['fleet_amount'] = $new_fleet_count;
-          fleet_update_set($fleet_id, $fleet_query, $fleet_delta);
+          DbFleetStatic::fleet_update_set($fleet_id, $fleet_query, $fleet_delta);
         }
       } else {
         // Удаляем пустые флоты
-        db_fleet_delete($fleet_id);
+        DbFleetStatic::db_fleet_delete($fleet_id);
         DBStaticUnit::db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
     } else // Планета

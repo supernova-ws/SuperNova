@@ -1,5 +1,6 @@
 <?php
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 if(SN_IN_FLEET !== true) {
@@ -12,7 +13,7 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
   sys_redirect("fleet.php");
 }
 
-$fleet = db_fleet_get($fleetid);
+$fleet = DbFleetStatic::db_fleet_get($fleetid);
 if(!$fleet) {
   messageBox($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
@@ -66,7 +67,7 @@ if($userToAdd_unsafe) {
         $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
 
 //        doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
-        fleet_update_set($fleetid, array(
+        DbFleetStatic::fleet_update_set($fleetid, array(
           'fleet_group' => $aks['id'],
           'fleet_mission' => MT_AKS,
         ));
@@ -121,7 +122,7 @@ if($aks['eingeladen'] && is_array($members = SN::db_get_record_list(LOC_USER, "`
 }
 
 $i++;
-$fleet_row = db_fleet_get($fleetid);
+$fleet_row = DbFleetStatic::db_fleet_get($fleetid);
 
 if(is_array($fleet_row) && !empty($fleet_row)) {
 $planet_start = DBStaticPlanet::db_planet_by_id($fleet_row['fleet_start_planet_id']);

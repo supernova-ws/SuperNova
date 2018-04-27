@@ -72,7 +72,7 @@ class MissionEspionage extends MissionData {
 
   protected function dbApplyChanges() {
     if (is_object($this->missionReport) && $this->missionReport->isSpyDetected()) {
-      db_fleet_delete($this->fleet['fleet_id']);
+      DbFleetStatic::db_fleet_delete($this->fleet['fleet_id']);
 
       $debris_planet_id = $this->dst_planet['planet_type'] == PT_PLANET ? $this->dst_planet['id'] : $this->dst_planet['parent_planet'];
 
@@ -81,7 +81,7 @@ class MissionEspionage extends MissionData {
       DBStaticPlanet::db_planet_set_by_id($debris_planet_id,
         "`debris_metal` = `debris_metal` + " . floor($this->missionReport->getProbesNumber() * $spy_cost[RES_METAL] * 0.3) . ", `debris_crystal` = `debris_crystal` + " . floor($this->missionReport->getProbesNumber() * $spy_cost[RES_CRYSTAL] * 0.3));
     } else {
-      fleet_send_back($this->fleet);
+      DbFleetStatic::fleet_send_back($this->fleet);
     }
   }
 

@@ -1,6 +1,7 @@
 <?php
 
 // Compare function to sort fleet in time order
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 function tpl_assign_fleet_compare($a, $b) {
@@ -335,7 +336,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
   global $user;
 
   if ($fleet_db_list === 0) {
-    $fleet_db_list = fleet_and_missiles_list_by_coordinates($planet);
+    $fleet_db_list = DbFleetStatic::fleet_and_missiles_list_by_coordinates($planet);
   }
 
   foreach ($fleet_db_list as $fleet) {

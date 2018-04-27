@@ -1,5 +1,6 @@
 <?php
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Player\playerTimeDiff;
 
@@ -543,7 +544,7 @@ function sn_options_vacation($user) {
       die();
     }
 
-    if (fleet_count_flying($user['id'])) {
+    if (DbFleetStatic::fleet_count_flying($user['id'])) {
       messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }

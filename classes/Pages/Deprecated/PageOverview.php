@@ -5,6 +5,7 @@
 
 namespace Pages\Deprecated;
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use SN;
 use HelperString;
@@ -135,7 +136,7 @@ class PageOverview extends PageDeprecated {
       $template->assign_block_vars('planet', $templatizedPlanet);
     }
 
-    $fleets = flt_parse_fleets_to_events(fleet_and_missiles_list_incoming($user['id']));
+    $fleets = flt_parse_fleets_to_events(DbFleetStatic::fleet_and_missiles_list_incoming($user['id']));
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
 

@@ -260,11 +260,15 @@ class DbQuery {
   }
 
   /**
-   * @param array|array[] $values
+   * Set values for a query
+   *
+   * Values used for INSERT/REPLACE ... SET queries as one-dimension array and INSERT/REPLACE ... VALUES as two-dimension array
+   *
+   * @param array|array[] $values - [(str)name => (mixed)value] | [ [(str)name => (mixed)value] ]
    *
    * @return $this
    */
-  public function setValues($values = array()) {
+  public function setValues($values = []) {
     HelperArray::merge($this->values, $values, HelperArray::MERGE_PHP);
 
     return $this;

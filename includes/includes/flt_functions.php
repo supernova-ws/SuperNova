@@ -1,6 +1,7 @@
 <?php
 
 use DBAL\OldDbChangeSet;
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 function flt_fleet_speed($user, $fleet, $shipData = []) {
@@ -170,7 +171,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
 //      $bashing_list[] = $bashing_fleets['fleet_start_time'];
 //    }
 //  }
-  $bashing_fleet_list = fleet_list_bashing($user['id'], $planet_dst);
+  $bashing_fleet_list = DbFleetStatic::fleet_list_bashing($user['id'], $planet_dst);
   foreach ($bashing_fleet_list as $fleet_row) {
     // Checking for ACS - each ACS count only once
     if ($fleet_row['fleet_group']) {
@@ -339,7 +340,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   if (!$flying_fleets) {
 //    $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 //    $flying_fleets = $flying_fleets['flying_fleets'];
-    $flying_fleets = fleet_count_flying($user['id']);
+    $flying_fleets = DbFleetStatic::fleet_count_flying($user['id']);
   }
   if (GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE) {
     return $result = ATTACK_NO_SLOTS;
@@ -602,7 +603,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     'fleet_group' => $fleet_group,
     'start_time'  => SN_TIME_NOW,
   );
-  fleet_insert_set($fleet_set);
+  DbFleetStatic::fleet_insert_set_dbq($fleet_set);
 
   $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
   $db_changeset['planets'][] = array(
