@@ -547,6 +547,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
     ->setSourceFromPlanetRecord($from)
     ->setDestinationFromPlanetRecord($to)
     ->setUnits($fleet)
+    ->setUnits($resources)
     ->setSpeedPercentInTenth($options['fleet_speed_percent'])
     ->calcTravelTimes(SN_TIME_NOW, $options['stay_time']);
   $fleetObj->save();
