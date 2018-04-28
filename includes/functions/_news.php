@@ -95,7 +95,7 @@ sum(acc.account_metamatter_total) as `mm`,
 select sum(payment_amount) from `{{payment}}` as pay
 WHERE payment_currency = 'USD' and pay.payment_user_id = sv.survey_vote_user_id
 GROUP BY payment_user_id, payment_currency
-) as `usd`
+) as `money`
 
 FROM `{{survey_votes}}` as sv
 left join `{{survey_answers}}` as sa on sa.survey_answer_id = sv.survey_parent_answer_id
@@ -107,10 +107,10 @@ group by sv.survey_parent_id, sv.survey_parent_answer_id
         while ($row = db_fetch($mQuery)) {
           $survey_vote_result[$row['survey_answer_id']] += [
             'MM'  => $row['mm'],
-            'USD' => $row['usd'],
+            'MONEY' => $row['money'],
           ];
           $total_mm += $row['mm'];
-          $total_money += $row['usd'];
+          $total_money += $row['money'];
         }
       }
 
