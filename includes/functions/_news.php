@@ -14,6 +14,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
    */
   global $config, $user;
 
+  $mmModuleIsActive = !empty(SN::$gc->modules->getModulesInGroup('payment'));
+
   $sqlText = "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
     FROM
       `{{announce}}` AS a
@@ -65,7 +67,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
 
     if ($announce['survey_id']) {
       $survey_query = doquery(
-        "SELECT survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
+        "SELECT survey_answer_id, survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
           FROM `{{survey_answers}}` AS sa
             LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id
           WHERE sa.survey_parent_id = {$announce['survey_id']}
@@ -74,9 +76,42 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       );
       $survey_vote_result = array();
       $total_votes = 0;
+      $total_mm = 0;
+      $total_money = 0;
       while ($row = db_fetch($survey_query)) {
-        $survey_vote_result[] = $row;
+        $survey_vote_result[$row['survey_answer_id']] = $row;
         $total_votes += $row['VOTES'];
+      }
+
+      if ($mmModuleIsActive && $user['authlevel'] >= AUTH_LEVEL_ADMINISTRATOR) {
+        $mQuery = doquery("
+SELECT 
+sa.survey_answer_id,
+sa.survey_answer_text,
+count(*), 
+sum(acc.account_metamatter_total) as `mm`,
+
+(
+select sum(payment_amount) from `{{payment}}` as pay
+WHERE payment_currency = 'USD' and pay.payment_user_id = sv.survey_vote_user_id
+GROUP BY payment_user_id, payment_currency
+) as `usd`
+
+FROM `{{survey_votes}}` as sv
+left join `{{survey_answers}}` as sa on sa.survey_answer_id = sv.survey_parent_answer_id
+left join `{{account_translate}}` as act on act.user_id = sv.survey_vote_user_id
+left join `{{account}}` as acc on acc.account_id = act.provider_account_id
+where sv.survey_parent_id = {$announce['survey_id']}
+group by sv.survey_parent_id, sv.survey_parent_answer_id
+;");
+        while ($row = db_fetch($mQuery)) {
+          $survey_vote_result[$row['survey_answer_id']] += [
+            'MM'  => $row['mm'],
+            'USD' => $row['usd'],
+          ];
+          $total_mm += $row['mm'];
+          $total_money += $row['usd'];
+        }
       }
 
       if (empty($survey_vote) && !$survey_complete) {
@@ -95,12 +130,20 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
           $vote_result['PERCENT'] = $vote_percent;
           $vote_result['PERCENT_TEXT'] = round($vote_percent, 1);
           $vote_result['VOTES'] = HelperString::numberFloorAndFormat($vote_result['VOTES']);
+
+          if ($mmModuleIsActive && $user['authlevel'] >= AUTH_LEVEL_ADMINISTRATOR) {
+            $vote_result['PERCENT_MM'] = $total_mm ? $vote_result['MM'] / $total_mm * 100 : 0;
+            $vote_result['PERCENT_MONEY'] = $total_money ? $vote_result['MONEY'] / $total_money * 100 : 0;
+          }
+
           $template->assign_block_vars('announces.survey_votes', $vote_result);
         }
       }
       // Dirty hack
       $template->assign_block_vars('announces.total_votes', array(
         'TOTAL_VOTES' => $total_votes,
+        'TOTAL_MM' => $total_mm,
+        'TOTAL_MONEY' => $total_money,
       ));
     }
   }
@@ -108,6 +151,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
   $template->assign_vars([
     'PAGER_MESSAGES' => $pager ? $pager->render() : '',
     'NEWS_COUNT'     => HelperString::numberFloorAndFormat($announce_list->getTotalRecords()),
+
+    'MM_MODULE_ACTIVE' => $mmModuleIsActive,
   ]);
 }
 

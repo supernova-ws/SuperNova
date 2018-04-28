@@ -2,6 +2,13 @@
 <script type="text/javascript">
   var LA_survey_result_sent = '{LA_survey_result_sent}';
 </script>
+"{MM_MODULE_ACTIVE}"
+<!-- IF MM_MODULE_ACTIVE && AUTHLEVEL >= 3 -->
+<!-- DEFINE $SURVEY_ANSWER_COL_SPAN = '6' -->
+<!-- ELSE -->
+<!-- DEFINE $SURVEY_ANSWER_COL_SPAN = '2' -->
+<!-- ENDIF -->
+
 <!-- BEGIN announces -->
   <tr>
     <td>
@@ -47,7 +54,7 @@
       <div class="survey_block" survey_id="{announces.SURVEY_ID}">
         <table width="100%" class="c_l border_image_small">
           <tr>
-            <th class="survey_header" colspan="2">
+            <th class="survey_header" colspan="{$SURVEY_ANSWER_COL_SPAN}">
               {L_survey}: {announces.SURVEY_TEXT}
             </th>
           </tr>
@@ -83,12 +90,18 @@
                 </div>
               </div>
             </td>
+            <!-- IF MM_MODULE_ACTIVE && AUTHLEVEL >= 3 -->
+            <td class="c_r">{survey_votes.MM|num|format}</td>
+            <td class="c_r">{survey_votes.PERCENT_MM|num|format}%</td>
+            <td class="c_r">{survey_votes.USD|num|format}</td>
+            <td class="c_r">{survey_votes.PERCENT_MONEY|num|format}%</td>
+            <!-- ENDIF -->
           </tr>
           <!-- END survey_votes -->
         <!-- ENDIF -->
           <!-- BEGIN total_votes -->
           <tr>
-            <th class="survey_voted" colspan="2">
+            <th class="survey_voted" colspan="{$SURVEY_ANSWER_COL_SPAN}">
               <span class="warning">
               <!-- IF total_votes.TOTAL_VOTES -->
                 <!-- IF announces.SURVEY_CAN_VOTE -->
@@ -106,7 +119,7 @@
           </tr>
           <!-- END total_votes -->
           <tr>
-            <th class="c_c survey_length" colspan="2">
+            <th class="c_c survey_length" colspan="{$SURVEY_ANSWER_COL_SPAN}">
               <!-- IF announces.SURVEY_COMPLETE -->
                 <span class="warning">{L_survey_complete}</span>
               <!-- ELSE -->
