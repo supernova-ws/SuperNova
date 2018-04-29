@@ -73,31 +73,31 @@
             </th>
           </tr>
         <!-- ELSE -->
-          <!-- BEGIN survey_votes -->
+          <!-- BEGIN survey_answers -->
           <tr>
             <td colspan="2">
               <div class="survey_votes">
-                <div class="survey_votes_bar ok_bg" style="width: {survey_votes.PERCENT}%;"></div>
+                <div class="survey_votes_bar ok_bg" style="width: {survey_answers.PERCENT}%;"></div>
                 <div class="survey_votes_text">
-                  {survey_votes.TEXT}
+                  {survey_answers.TEXT}
                 </div>
 
                 <div class="survey_votes_percent">
-                  {survey_votes.PERCENT_TEXT}%
+                  {survey_answers.PERCENT_TEXT}%
                 </div>
                 <div class="survey_votes_number">
-                  {survey_votes.VOTES}
+                  {survey_answers.VOTES}
                 </div>
               </div>
             </td>
             <!-- IF MM_MODULE_ACTIVE && AUTHLEVEL >= 3 -->
-            <td class="c_r">{survey_votes.MM|num|format}</td>
-            <td class="c_r">{survey_votes.PERCENT_MM|num|format}%</td>
-            <!--<td class="c_r">{survey_votes.MONEY|num|format}</td>-->
-            <!--<td class="c_r">{survey_votes.PERCENT_MONEY|num|format}%</td>-->
+            <td class="c_r">{survey_answers.MM|num|format}</td>
+            <td class="c_r">{survey_answers.PERCENT_MM|num|format}%</td>
+            <!--<td class="c_r">{survey_answers.MONEY|num|format}</td>-->
+            <!--<td class="c_r">{survey_answers.PERCENT_MONEY|num|format}%</td>-->
             <!-- ENDIF -->
           </tr>
-          <!-- END survey_votes -->
+          <!-- END survey_answers -->
         <!-- ENDIF -->
           <!-- BEGIN total_votes -->
           <tr>
