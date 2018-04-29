@@ -4,7 +4,7 @@
 </script>
 
 <!-- IF MM_MODULE_ACTIVE && AUTHLEVEL >= 3 -->
-<!-- DEFINE $SURVEY_ANSWER_COL_SPAN = '6' -->
+<!-- DEFINE $SURVEY_ANSWER_COL_SPAN = '4' -->
 <!-- ELSE -->
 <!-- DEFINE $SURVEY_ANSWER_COL_SPAN = '2' -->
 <!-- ENDIF -->
@@ -93,8 +93,8 @@
             <!-- IF MM_MODULE_ACTIVE && AUTHLEVEL >= 3 -->
             <td class="c_r">{survey_votes.MM|num|format}</td>
             <td class="c_r">{survey_votes.PERCENT_MM|num|format}%</td>
-            <td class="c_r">{survey_votes.MONEY|num|format}</td>
-            <td class="c_r">{survey_votes.PERCENT_MONEY|num|format}%</td>
+            <!--<td class="c_r">{survey_votes.MONEY|num|format}</td>-->
+            <!--<td class="c_r">{survey_votes.PERCENT_MONEY|num|format}%</td>-->
             <!-- ENDIF -->
           </tr>
           <!-- END survey_votes -->

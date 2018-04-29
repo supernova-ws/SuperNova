@@ -814,12 +814,12 @@ function tpl_navbar_render_notes(&$template, &$user) {
 function tpl_navbar_render_news(&$template, &$user, $config) {
   if ($config->game_news_overview) {
     $user_last_read_safe = intval($user['news_lastread']);
-    $newsSql = "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}";
+    $newsSql = "AND UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe} ";
     $newsOverviewShowSeconds = intval($config->game_news_overview_show);
     if ($newsOverviewShowSeconds) {
-      $newsSql .= " AND `tsTimeStamp` >= DATE_SUB(NOW(), INTERVAL {$newsOverviewShowSeconds} SECOND)";
+      $newsSql .= "AND `tsTimeStamp` >= DATE_SUB(NOW(), INTERVAL {$newsOverviewShowSeconds} SECOND) ";
     }
-    nws_render($template, $newsSql, $config->game_news_overview);
+    nws_render($user, $template, $newsSql, $config->game_news_overview);
   }
 }
 

@@ -8,12 +8,7 @@ use General\Helpers\PagingRenderer;
  * @param string   $query_where
  * @param int      $query_limit
  */
-function nws_render(&$template, $query_where = '', $query_limit = 20) {
-  /**
-   * @var classConfig $config
-   */
-  global $config, $user;
-
+function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
   $mmModuleIsActive = !empty(SN::$gc->modules->getModulesInGroup('payment'));
 
   $sqlText = "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
@@ -21,7 +16,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       `{{announce}}` AS a
       LEFT JOIN `{{survey}}` AS s ON s.survey_announce_id = a.idAnnounce
       LEFT JOIN `{{users}}` AS u ON u.id = a.user_id
-    {$query_where}
+    WHERE 1 {$query_where}
     ORDER BY `tsTimeStamp` DESC, idAnnounce";
 
   $announce_list = new DbSqlPaging($sqlText, $query_limit, sys_get_param_int(PagingRenderer::KEYWORD));
@@ -47,10 +42,10 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       'TIME'            => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
       'ANNOUNCE'        => SN::$gc->bbCodeParser->expandBbCode($announce['strAnnounce'], intval($announce['authlevel'])),
       'DETAIL_URL'      => $announce['detail_url'],
-      'USER_NAME'       =>
-        isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true)) :
-          js_safe_string($announce['user_name']),
-      'NEW'             => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
+      'USER_NAME'       => !empty($users[$announce['user_id']])
+        ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true))
+        : js_safe_string($announce['user_name']),
+      'NEW'             => $announce['unix_time'] + SN::$config->game_news_actual >= SN_TIME_NOW,
       'FUTURE'          => $announce['unix_time'] > SN_TIME_NOW,
       'SURVEY_ID'       => $announce['survey_id'],
       'SURVEY_TEXT'     => $announce['survey_question'],
@@ -106,7 +101,7 @@ group by sv.survey_parent_id, sv.survey_parent_answer_id
 ;");
         while ($row = db_fetch($mQuery)) {
           $survey_vote_result[$row['survey_answer_id']] += [
-            'MM'  => $row['mm'],
+            'MM'    => $row['mm'],
             'MONEY' => $row['money'],
           ];
           $total_mm += $row['mm'];
@@ -116,7 +111,7 @@ group by sv.survey_parent_id, sv.survey_parent_answer_id
 
       if (empty($survey_vote) && !$survey_complete) {
         // Can vote
-        $survey_query = doquery("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
+        $survey_query = doquery("SELECT * FROM `{{survey_answers}}` WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
         while ($row = db_fetch($survey_query)) {
           $template->assign_block_vars('announces.survey_answers', array(
             'ID'   => $row['survey_answer_id'],
@@ -142,7 +137,7 @@ group by sv.survey_parent_id, sv.survey_parent_answer_id
       // Dirty hack
       $template->assign_block_vars('announces.total_votes', array(
         'TOTAL_VOTES' => $total_votes,
-        'TOTAL_MM' => $total_mm,
+        'TOTAL_MM'    => $total_mm,
         'TOTAL_MONEY' => $total_money,
       ));
     }
@@ -157,7 +152,7 @@ group by sv.survey_parent_id, sv.survey_parent_answer_id
 }
 
 function nws_mark_read(&$user) {
-  if (isset($user['id'])) {
+  if (!empty($user['id'])) {
     db_user_set_by_id($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
     $user['news_lastread'] = SN_TIME_NOW;
   }
@@ -178,7 +173,7 @@ function survey_vote(&$user) {
     $is_answer_exists = doquery("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
     if (!empty($is_answer_exists)) {
       $user_name_safe = db_escape($user['username']);
-      doquery("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
+      doquery("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
     }
   }
   sn_db_transaction_commit();
