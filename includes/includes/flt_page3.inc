@@ -147,9 +147,9 @@ function sn_fleet_page3() {
   }
 
   if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
-    $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
+    $TargetPlanet = ['galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0];
   }
-  $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
+  $options = [P_FLEET_ATTACK_SPEED_PERCENT_TENTH => $speed_percent, P_FLEET_ATTACK_FLEET_GROUP => $fleet_group, P_FLEET_ATTACK_RESOURCES_SUM => $StorageNeeded];
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED) {

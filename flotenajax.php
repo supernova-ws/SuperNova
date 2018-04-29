@@ -96,7 +96,7 @@ switch($target_mission)
 
 }
 
-$options = array('target_structure' => $target_structure = sys_get_param_int('structures'));
+$options = [P_FLEET_ATTACK_TARGET_STRUCTURE => $target_structure = sys_get_param_int('structures')];
 $cant_attack = flt_can_attack($planetrow, $target_row, $fleet_array, $target_mission, $options);
 
 

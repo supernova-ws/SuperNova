@@ -78,3 +78,11 @@ const P_MISSION_EXPEDITION_OUTCOME_TYPE = 'outcome_type';
 const P_MISSION_EXPEDITION_OUTCOME_SECONDARY = 'secondary';
 const P_MULTIPLIER = 'multiplier';
 const P_MESSAGE_ID = 'messageId';
+
+const P_FLEET_ATTACK_RES_LIST = 'resource_list';
+const P_FLEET_ATTACK_SPEED_PERCENT_TENTH = 'fleet_speed_percent_tenth';
+const P_FLEET_ATTACK_STAY_TIME = 'stay_time';
+const P_FLEET_ATTACK_TARGET_STRUCTURE = 'target_structure';
+const P_FLEET_ATTACK_FLYING_COUNT = 'flying_fleets';
+const P_FLEET_ATTACK_FLEET_GROUP = 'fleet_group';
+const P_FLEET_ATTACK_RESOURCES_SUM = 'resources';

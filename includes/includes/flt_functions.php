@@ -201,12 +201,13 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
  * @param array $fleet      - array of ship amount [(int)shipId => (float)shipAmount]
  * @param int   $mission    - Mission ID
  * @param array $options    - [
- *                          'resources' => (float),
- *                          'fleet_speed_percent' => (int)1..10
- *                          'fleet_group' => (int|string)
- *                          'flying_fleets' => (int)
- *                          'target_structure' => (int) - targeted defense structure snID for MISSILE missions
- *                          'stay_time' => (int) - stay HOURS
+ *                          P_FLEET_ATTACK_RESOURCES_SUM       => (float),
+ *                          P_FLEET_ATTACK_RES_LIST            => [(int)resId => (float)amount]
+ *                          P_FLEET_ATTACK_SPEED_PERCENT_TENTH => (int)1..10
+ *                          P_FLEET_ATTACK_FLEET_GROUP         => (int|string)
+ *                          P_FLEET_ATTACK_FLYING_COUNT        => (int)
+ *                          P_FLEET_ATTACK_TARGET_STRUCTURE    => (int) - targeted defense structure snID for MISSILE missions
+ *                          P_FLEET_ATTACK_STAY_TIME           => (int) - stay HOURS
  *                          ]
  *
  * @return int
@@ -291,14 +292,22 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
       $resources += $ship_count;
     }
   }
+
+  if (empty($resources) && !empty($options[P_FLEET_ATTACK_RES_LIST]) && is_array($options[P_FLEET_ATTACK_RES_LIST])) {
+    $resources = array_sum($options[P_FLEET_ATTACK_RES_LIST]);
+  }
+
   /*
-    if($ships <= 0)
-    {
+    if($ships < 1) {
       return ATTACK_NO_FLEET;
     }
   */
 
-  if (isset($options['resources']) && $options['resources'] > 0 && !(isset($sn_data_mission['transport']) && $sn_data_mission['transport'])) {
+  if (
+    isset($options[P_FLEET_ATTACK_RESOURCES_SUM])
+    && $options[P_FLEET_ATTACK_RESOURCES_SUM] > 0
+    && !empty($sn_data_mission['transport'])
+  ) {
     return $result = ATTACK_RESOURCE_FORBIDDEN;
   }
 
@@ -309,12 +318,12 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
     }
   */
 
-  $speed = $options['fleet_speed_percent'];
+  $speed = $options[P_FLEET_ATTACK_SPEED_PERCENT_TENTH];
   if ($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10)) {
     return $result = ATTACK_WRONG_SPEED;
   }
 
-  $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
+  $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options[P_FLEET_ATTACK_SPEED_PERCENT_TENTH]);
 
 
   if (mrc_get_level($user, $planet_src, RES_DEUTERIUM) < $fleet[RES_DEUTERIUM] + $travel_data['consumption']) {
@@ -331,7 +340,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
-  $fleet_group = $options['fleet_group'];
+  $fleet_group = $options[P_FLEET_ATTACK_FLEET_GROUP];
   if ($fleet_group) {
     if ($mission != MT_AKS) {
       return $result = ATTACK_WRONG_MISSION;
@@ -351,10 +360,8 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
     }
   }
 
-  $flying_fleets = $options['flying_fleets'];
+  $flying_fleets = $options[P_FLEET_ATTACK_FLYING_COUNT];
   if (!$flying_fleets) {
-//    $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
-//    $flying_fleets = $flying_fleets['flying_fleets'];
     $flying_fleets = DbFleetStatic::fleet_count_flying($user['id']);
   }
   if (GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE) {
@@ -481,7 +488,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
       return $result = ATTACK_MISSILE_TOO_FAR;
     }
 
-    if (isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], sn_get_groups('defense_active'))) {
+    if (!empty($options[P_FLEET_ATTACK_TARGET_STRUCTURE]) && !in_array($options[P_FLEET_ATTACK_TARGET_STRUCTURE], sn_get_groups('defense_active'))) {
       return $result = ATTACK_WRONG_STRUCTURE;
     }
   }
@@ -531,6 +538,10 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
 //  die();
 
 
+  !is_array($resources) ? $resources = [] : false;
+  if(empty($options[P_FLEET_ATTACK_RES_LIST])) {
+    $options[P_FLEET_ATTACK_RES_LIST] = $resources;
+  }
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if ($can_attack != ATTACK_ALLOWED) {
     $internal_transaction ? sn_db_transaction_rollback() : false;
@@ -538,8 +549,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
     return $can_attack;
   }
 
-  empty($options['fleet_speed_percent']) ? $options['fleet_speed_percent'] = 10 : false;
-  $options['stay_time'] = !empty($options['stay_time']) ? $options['stay_time'] * PERIOD_HOUR : 0;
+  empty($options[P_FLEET_ATTACK_SPEED_PERCENT_TENTH]) ? $options[P_FLEET_ATTACK_SPEED_PERCENT_TENTH] = 10 : false;
+  $options[P_FLEET_ATTACK_STAY_TIME] = !empty($options[P_FLEET_ATTACK_STAY_TIME]) ? $options[P_FLEET_ATTACK_STAY_TIME] * PERIOD_HOUR : 0;
 
   $fleetObj = new Fleet();
   $travel_data = $fleetObj
@@ -548,8 +559,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
     ->setDestinationFromPlanetRecord($to)
     ->setUnits($fleet)
     ->setUnits($resources)
-    ->setSpeedPercentInTenth($options['fleet_speed_percent'])
-    ->calcTravelTimes(SN_TIME_NOW, $options['stay_time']);
+    ->setSpeedPercentInTenth($options[P_FLEET_ATTACK_SPEED_PERCENT_TENTH])
+    ->calcTravelTimes(SN_TIME_NOW, $options[P_FLEET_ATTACK_STAY_TIME]);
   $fleetObj->save();
 
   $result = fltSendFleetAdjustPlanetResources($from['id'], $resources, $travel_data['consumption']);
