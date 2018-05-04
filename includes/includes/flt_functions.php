@@ -306,7 +306,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
   if (
     isset($options[P_FLEET_ATTACK_RESOURCES_SUM])
     && $options[P_FLEET_ATTACK_RESOURCES_SUM] > 0
-    && !empty($sn_data_mission['transport'])
+    && empty($sn_data_mission['transport'])
   ) {
     return $result = ATTACK_RESOURCE_FORBIDDEN;
   }
