@@ -141,7 +141,7 @@ class MissionEspionageReport {
     $onPlanet = mrc_get_level($u, $p, SHIP_SATELLITE_SPUTNIK, false, true);
 
     return !empty($onPlanet) && $onPlanet >= 1
-      ? floor(pow($onPlanet, 0.75))
+      ? floor(pow($onPlanet, 0.52))
       : 0;
   }
 
