@@ -150,9 +150,7 @@ function db_user_last_registered_username() {
 }
 
 function db_user_count($online = false) {
-  global $config;
-
-  $result = doquery('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
+  $result = doquery('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''), true);
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
 

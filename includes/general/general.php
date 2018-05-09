@@ -522,3 +522,25 @@ function moduleAward() {
 function moduleCaptain() {
   return SN::$gc->modules->getModule('unit_captain');
 }
+
+/**
+ * Updates users online count
+ *
+ * We should move this to separate function due to ambiguency of pass() method
+ *
+ * @param $usersOnline
+ */
+function dbUpdateUsersOnline($usersOnline) {
+  SN::$config->pass()->var_online_user_count = $usersOnline;
+}
+
+/**
+ * Updates total user count
+ *
+ * We should move this to separate function due to ambiguency of pass() method
+ *
+ * @param $userCount
+ */
+function dbUpdateUsersCount($userCount) {
+  SN::$config->pass()->users_amount = $userCount;
+}

@@ -80,8 +80,12 @@
  *
  * @property int        $url_faq                       URL of FAQ root
  *
- * @property int        $users_amount                  => 1 - Total users count
- * @property int        $var_online_user_count         => 0, // Current online user count
+ * @property int        $users_amount                  => 1,                // Total users count
+ * @property int        $game_users_online_timeout     => PERIOD_MINUTE_15, // How long user should considered ONLINE for online counter (seconds)
+ * @property int        $game_users_update_online      => 30,               // How often user online should be refreshed (seconds)
+ * @property int        $var_online_user_time          => 0,                // When last time user online was refreshed (Unix timestamp)
+ * @property int        $var_online_user_count         => 0,                // Last calculated online user count
+ * @property int        $server_log_online             => 0,                // Log online user count
  *
  * @property int        $quest_total                   => 0, // Total number of quests
  *
@@ -364,8 +368,6 @@ class classConfig extends classPersistent {
     'security_ban_extra'               => '',
     'security_write_full_url_disabled' => 1, // Disables writing full URLs to counter table
 
-    'server_log_online' => 0, //
-
     'server_que_length_hangar'     => '5', //
     'server_que_length_research'   => '1', //
     'server_que_length_structures' => '5', //
@@ -403,7 +405,12 @@ class classConfig extends classPersistent {
     'url_purchase_metamatter' => '',
     'url_rules'               => '',
 
-    'users_amount' => 1,
+    'users_amount'              => 1,                // Total users count
+    'game_users_online_timeout' => PERIOD_MINUTE_15, // Seconds, How long user should considered ONLINE for online counter
+    'game_users_update_online'  => 30,               // How often user online should be refreshed (seconds)
+    'var_online_user_time'      => 0,                // When last time user online was refreshed
+    'var_online_user_count'     => 0,                // Last calculated online user count
+    'server_log_online'         => 0,                // Log online user count
 
     'user_birthday_celebrate' => 0, // When last time celebrations (i.e. giftgiving) was made
     'user_birthday_gift'      => 0, // User birthday gift
@@ -415,12 +422,10 @@ class classConfig extends classPersistent {
 
     'var_news_last' => 0, // Last news post time
 
-    'var_online_user_count' => 0, // Current online user count
-
     // Statistic
-    'var_stat_update'       => 0,
-    'var_stat_update_end'   => 0,
-    'var_stat_update_msg'   => 'Update never started',
+    'var_stat_update'     => 0,
+    'var_stat_update_end' => 0,
+    'var_stat_update_msg' => 'Update never started',
 
   );
 

@@ -336,7 +336,7 @@ class StatCalculator {
     doquery("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
     // Counting real user count and updating values
-    $config->pass()->users_amount = db_user_count();
+    dbUpdateUsersCount(db_user_count());
 
     sn_db_transaction_commit();
   }

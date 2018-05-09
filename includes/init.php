@@ -161,9 +161,10 @@ if(SN::$config->user_birthday_gift && SN_TIME_NOW - SN::$config->user_birthday_c
   sn_user_birthday_celebrate();
 }
 
-if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + 30 < SN_TIME_NOW) {
-  SN::$config->db_saveItem('var_online_user_count', db_user_count(true));
-  SN::$config->db_saveItem('var_online_user_time', SN_TIME_NOW);
+if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + SN::$config->game_users_update_online < SN_TIME_NOW) {
+  dbUpdateUsersCount(db_user_count());
+  dbUpdateUsersOnline(db_user_count(true));
+  SN::$config->pass()->var_online_user_time = SN_TIME_NOW;
   if(SN::$config->server_log_online) {
     doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
   }

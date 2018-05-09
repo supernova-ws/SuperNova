@@ -89,7 +89,7 @@ class PlayerStatic {
 
     // Deleting player's record
     SN::db_del_record_by_id(LOC_USER, $UserID);
-    SN::$config->pass()->users_amount = SN::$config->pass()->users_amount - 1;
+    dbUpdateUsersCount(SN::$config->pass()->users_amount - 1);
 
     if ($internalTransaction) {
       sn_db_transaction_commit();
