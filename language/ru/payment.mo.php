@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a16.13
+* @version 43a18.26
 *
 */
 
@@ -88,11 +88,11 @@ $a_lang_array = (array(
     'USD' => 'Доллар США',
     'EUR' => 'Евро',
     'UAH' => 'Украинская гривна',
-    'WMR' => 'WebMoney рубль',
-    'WMZ' => 'WebMoney доллар',
-    'WME' => 'WebMoney евро',
-    'WMU' => 'WebMoney гривна',
-    'WMB' => 'WebMoney белорусский рубль',
+//    'WMR' => 'WebMoney рубль',
+//    'WMZ' => 'WebMoney доллар',
+//    'WME' => 'WebMoney евро',
+//    'WMU' => 'WebMoney гривна',
+//    'WMB' => 'WebMoney белорусский рубль',
   ),
 
   'pay_methods' => array(

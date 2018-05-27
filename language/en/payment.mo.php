@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 43a18.26
 *
 */
 
@@ -88,11 +88,11 @@ $a_lang_array = (array(
     'USD' => 'Dollar USA',
     'EUR' => 'Euro',
     'UAH' => 'Ukrainian hryvna',
-    'WMR' => 'WebMoney rouble',
-    'WMZ' => 'WebMoney dollar',
-    'WME' => 'WebMoney euro',
-    'WMU' => 'WebMoney hryvna',
-    'WMB' => 'WebMoney belorussian rouble',
+//    'WMR' => 'WebMoney rouble',
+//    'WMZ' => 'WebMoney dollar',
+//    'WME' => 'WebMoney euro',
+//    'WMU' => 'WebMoney hryvna',
+//    'WMB' => 'WebMoney belorussian rouble',
   ),
 
   'pay_methods' => array(

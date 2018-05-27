@@ -9,7 +9,7 @@ use Modules\sn_module;
  * Time: 3:49
  */
 abstract class sn_module_payment extends sn_module {
-  public $versionCommitted = '#43a15.27#';
+  public $versionCommitted = '#43a18.26#';
 
   public $active = false;
 
@@ -91,27 +91,32 @@ abstract class sn_module_payment extends sn_module {
         'button'   => true,
       ],
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => [
-        'currency' => 'WMR',
+//        'currency' => 'WMR',
+        'currency' => 'RUB',
         'image'    => 'design/images/payments/emoney/webmoney_wmr.gif',
         'button'   => true,
       ],
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => [
-        'currency' => 'WMZ',
+//        'currency' => 'WMZ',
+        'currency' => 'RUB',
         'image'    => 'design/images/payments/emoney/webmoney_wmz.gif',
         'button'   => true,
       ],
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => [
-        'currency' => 'WMU',
+//        'currency' => 'WMU',
+        'currency' => 'RUB',
         'image'    => 'design/images/payments/emoney/webmoney_wmu.gif',
         'button'   => true,
       ],
       PAYMENT_METHOD_EMONEY_WEBMONEY_WME => [
-        'currency' => 'WME',
+//        'currency' => 'WME',
+        'currency' => 'RUB',
         'image'    => 'design/images/payments/emoney/webmoney_wme.gif',
         'button'   => true,
       ],
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => [
-        'currency' => 'WMB',
+//        'currency' => 'WMB',
+        'currency' => 'RUB',
         'image'    => 'design/images/payments/emoney/webmoney_wmb.gif',
         'button'   => true,
       ],
