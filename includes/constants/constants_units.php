@@ -268,19 +268,27 @@ define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_3RD', 2323); // Лучший Го
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_2ND', 2324); // Лучший Гость - День Рождения СН - 2016
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_1ST', 2325); // Лучший Гость - День Рождения СН - 2016
 
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_SIMPLE', 2326); // СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BRONZE', 2327); // СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_SILVER', 2328); // СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_GOLD',   2329); // СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_PLATINUM', 2330); // СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_DIAMOND', 2331); // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_SIMPLE   = 2326; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_BRONZE   = 2327; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_SILVER   = 2328; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_GOLD     = 2329; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_PLATINUM = 2330; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_DIAMOND  = 2331; // СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_1ST = 2332; // Лучший Гость - СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_2ND = 2333; // Лучший Гость - СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_3RD = 2334; // Лучший Гость - СуперНовый Год - 2018
 
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_1ST', 2332); // Лучший Гость - СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_2ND', 2333); // Лучший Гость - СуперНовый Год - 2018
-define('UNIT_AWARD_MEMORY_NEW_YEAR_2018_BEST_3RD', 2334); // Лучший Гость - СуперНовый Год - 2018
+const UNIT_AWARD_MEMORY_8_MARCH_MAN_MEMORIAL = 2335; // 2310 old  // Значек за подарок Женщине от Мужчины во время ивента 8 марта - универсальный
 
-define('UNIT_AWARD_MEMORY_8_MARCH_MAN_MEMORIAL', 2335); // 2310 old  // Значек за подарок Женщине от Мужчины во время ивента 8 марта - универсальный
-
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BRONZE   = 2336; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_SILVER   = 2337; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_SIMPLE   = 2338; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_GOLD     = 2339; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_PLATINUM = 2340; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_DIAMOND  = 2341; // День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_1ST = 2342; // Лучший Гость - День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_2ND = 2343; // Лучший Гость - День Рождения СН - 2018
+const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_3RD = 2344; // Лучший Гость - День Рождения СН - 2018
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
