@@ -119,6 +119,8 @@ $template_result += array(
   'UNIT_TYPE'        => $unit_type,
   'UNIT_TYPE_NAME'   => $lang['tech'][$unit_type],
   'UNIT_DESCRIPTION' => $lang['info'][$unit_id]['description'],
+
+  'UNIT_IMAGE_LARGE' => SN::$gc->skinModel->isImageFileExists($unit_id . '_large'),
 );
 
 $template_result['.'][TPL_BLOCK_REQUIRE] = unit_requirements_render($user, $planetrow, $unit_id);

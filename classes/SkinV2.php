@@ -226,7 +226,11 @@ class SkinV2 implements SkinInterface {
   }
 
   /**
-   * @inheritdoc
+   * Возвращает строку для вывода в компилированном темплейте PTL
+   *
+   * @param PTLTag $ptlTag
+   *
+   * @return string
    */
   public function imageFromPTLTag($ptlTag) {
     // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению

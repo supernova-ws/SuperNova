@@ -37,7 +37,7 @@ class SkinModel {
    * @param GlobalContainer $gc
    */
   public function __construct(GlobalContainer $gc) {
-    $this->gc = $gc;
+    $this->gc    = $gc;
     $this->skins = array();
 
     // Берем текущий скин
@@ -70,6 +70,26 @@ class SkinModel {
    */
   public function getImageCurrent($image_tag, $template = null) {
     return $this->getImageFrom($this->activeSkin->getName(), $image_tag, $template);
+  }
+
+  /**
+   * @param string        $image_tag
+   * @param template|null $template
+   *
+   * @return bool
+   */
+  public function isImageFileExists($image_tag, $template = null) {
+    $largeUrl = $this->getImageCurrent($image_tag, $template);
+    if (strpos($largeUrl, SKIN_IMAGE_MISSED_FILE_PATH) !== false) {
+      // Image not found in directory
+      $result = false;
+    } else {
+      // Image found in directory. But what for actual file?
+      $imageRelativePath = substr($largeUrl, strlen(SN_ROOT_VIRTUAL));
+      $result            = file_exists(SN_ROOT_PHYSICAL . $imageRelativePath);
+    }
+
+    return $result;
   }
 
   public function getImageFrom($skinName, $image_tag, $template) {

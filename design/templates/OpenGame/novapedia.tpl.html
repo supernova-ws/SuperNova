@@ -9,10 +9,22 @@
 
   <tr class="c_j">
     <td colspan="3">
+      <!-- IF UNIT_IMAGE_LARGE -->
+      <div>
+        <div>
+          <img src="{I_[UNIT_ID]_large}" align="top" border="0" style="max-width: 50em">
+        </div>
+
+        <div style="display: table-row; position: relative; margin: 0.5em;">
+          {UNIT_DESCRIPTION}
+        </div>
+      </div>
+      <!-- ELSE -->
       <div style="display: table-row; position: relative; margin: 7px;">
         <img src="{I_[UNIT_ID]}" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
         {UNIT_DESCRIPTION}
       </div>
+      <!-- ENDIF -->
 
       <!-- IF UNIT_EFFECT -->
       <hr />
