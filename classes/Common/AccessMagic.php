@@ -6,6 +6,8 @@
 
 namespace Common;
 use Core\GlobalContainer;
+use \ArrayObject;
+use SN;
 
 /**
  * Class AccessMagic
@@ -25,9 +27,9 @@ class AccessMagic implements Interfaces\IContainer {
   /**
    * Property values
    *
-   * @var array
+   * @var array|ArrayObject
    */
-  protected $values = array();
+  protected $values = [];
 
   /**
    * AccessMagic constructor.
@@ -35,7 +37,7 @@ class AccessMagic implements Interfaces\IContainer {
    * @param GlobalContainer|null $services
    */
   public function __construct(GlobalContainer $services = null) {
-    $this->services = empty($services) ? \SN::$gc : $services;
+    $this->services = empty($services) ? SN::$gc : $services;
   }
 
 
@@ -50,17 +52,6 @@ class AccessMagic implements Interfaces\IContainer {
   }
 
   /**
-   * Magic getter
-   *
-   * @param string $name
-   *
-   * @return mixed
-   */
-  public function __get($name) {
-    return $this->__isset($name) ? $this->values[$name] : null;
-  }
-
-  /**
    * Magic checker for property set
    *
    * @param string $name
@@ -72,21 +63,23 @@ class AccessMagic implements Interfaces\IContainer {
   }
 
   /**
+   * Magic getter
+   *
+   * @param string $name
+   *
+   * @return mixed
+   */
+  public function __get($name) {
+    return $this->__isset($name) ? $this->values[$name] : null;
+  }
+
+  /**
    * Magic un-setter
    *
    * @param string $name
    */
   public function __unset($name) {
     unset($this->values[$name]);
-  }
-
-  /**
-   * Extracts values as array [$propertyName => $propertyValue]
-   *
-   * @return array
-   */
-  public function asArray() {
-    return $this->values;
   }
 
   /**
@@ -102,7 +95,16 @@ class AccessMagic implements Interfaces\IContainer {
    * Clears container contents
    */
   public function clear() {
-    $this->values = array();
+    $this->values = [];
+  }
+
+  /**
+   * Extracts values as array [$propertyName => $propertyValue]
+   *
+   * @return array|ArrayObject
+   */
+  public function asArray() {
+    return $this->values;
   }
 
 }

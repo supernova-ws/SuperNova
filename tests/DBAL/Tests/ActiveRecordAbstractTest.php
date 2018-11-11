@@ -157,7 +157,7 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::__construct
-   * @covers ::AcceptChanges
+   * @covers ::commit
    */
   public function testConstructor() {
     $object = new RecordActiveAbstractObject();
@@ -165,12 +165,12 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
     $this->assertAttributeEquals(true, '_isNew', $object);
 //    $this->assertEquals(0, $object->id);
 //
-//    $object->acceptChanges();
+//    $object->commit();
 //    $this->assertAttributeEquals(true, '_isNew', $object);
 //    $this->assertEquals(0, $object->id);
 //
 //    $object->id = 5;
-//    $object->acceptChanges();
+//    $object->commit();
 //    $this->assertAttributeEquals(false, '_isNew', $object);
 //    $this->assertEquals(5, $object->id);
 

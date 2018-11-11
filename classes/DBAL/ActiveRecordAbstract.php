@@ -235,7 +235,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
       return false;
     }
 
-    $this->acceptChanges();
+    $this->commit();
     $this->_isNew = false;
 
     return true;

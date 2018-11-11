@@ -8,6 +8,7 @@ namespace Alliance;
 use Core\GlobalContainer;
 use \Exception;
 use \HelperString;
+use Player\RecordPlayer;
 
 /**
  * Class Alliance
@@ -179,10 +180,25 @@ class Alliance extends RecordAlliance {
   }
 
   /**
+   * Get Alliance owner
+   *
+   * @return AllianceMember|null
+   */
+  public function getOwner() {
+    $player = RecordPlayer::findById($this->ownerId);
+    $owner  = ! empty($player) ? new AllianceMember($this, $player) : null;
+
+    return $owner;
+  }
+
+  /**
    * @return array
    */
   public function asPtl() {
-    $ownerName = $this->getMemberList()->getOwner() instanceof AllianceMember ? $this->getMemberList()->getOwner()->getMemberName() : '';
+//    $ownerName = $this->getMemberList()->getOwner() instanceof AllianceMember ? $this->getMemberList()->getOwner()->getMemberName() : '';
+
+    $owner = $this->getOwner();
+    $ownerName = $owner instanceof AllianceMember ? $owner->getMemberName() : '';
 
     return
       $this->ptlArray()

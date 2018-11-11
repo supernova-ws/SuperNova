@@ -1,4 +1,7 @@
 <?php
+
+use Alliance\Alliance;
+
 /**
  * Created by Gorlum 15.06.2017 10:08
  */
@@ -18,7 +21,7 @@ function sn_admin_ally_model($template = null) {
     ($newOwnerId = sys_get_param_id('new_owner_id'))
   ) {
     try {
-      if (empty($alliance = \Alliance\Alliance::findById($allyId))) {
+      if (empty($alliance = Alliance::findById($allyId))) {
         throw new \Exception('{ Альянс с указанным ID не найден }', ERR_ERROR);
       }
       if (empty($newOwnerMember = $alliance->getMemberList()->getById($newOwnerId))) {
@@ -42,15 +45,19 @@ function sn_admin_ally_model($template = null) {
   return $template;
 }
 
-function sn_admin_ally_view_one($template = null, $allyId) {
+/**
+ * @param template|null $template
+ *
+ * @param Alliance      $alliance
+ *
+ * @return null|template
+ */
+function sn_admin_ally_view_one($template, $alliance) {
   global $template_result;
 
   messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
   $template = gettemplate('admin/admin_ally_one', $template);
-  if (empty($alliance = \Alliance\Alliance::findById($allyId))) {
-    return $template;
-  }
 
   $template_result['.']['members'] = $alliance->getMemberList()->asPtl();
 
@@ -69,7 +76,7 @@ function sn_admin_ally_view_all($template = null) {
 
   $template = gettemplate('admin/admin_ally_all', $template);
 
-  foreach (\Alliance\Alliance::findAll([]) as $alliance) {
+  foreach (Alliance::findAll([]) as $alliance) {
     $template->assign_block_vars('ally', $alliance->asPtl());
   };
 
@@ -86,6 +93,7 @@ function sn_admin_ally_view($template = null) {
   messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
   $allyId = sys_get_param_id('ally_id');
+  $alliance = Alliance::findById($allyId);
 
-  return $allyId ? sn_admin_ally_view_one($template, $allyId) : sn_admin_ally_view_all($template);
+  return !empty($alliance) ? sn_admin_ally_view_one($template, $alliance) : sn_admin_ally_view_all($template);
 }

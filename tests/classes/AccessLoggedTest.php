@@ -97,11 +97,15 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
    * @covers ::getDeltas
    * @covers ::blockDelta
    * @covers ::clear
-   * @covers ::acceptChanges
+   * @covers ::commit
+   * @covers ::rollback
+   * @covers ::isChanged
    */
   public function testDelta() {
     // Checking base inc()
+    $this->assertFalse($this->object->isChanged());
     $this->object->inc()->fromZero = 5;
+    $this->assertTrue($this->object->isChanged());
     $this->assertFalse($this->object->isEmpty());
     $this->assertTrue(isset($this->object->fromZero));
     $this->assertTrue($this->object->__isset('fromZero'));
@@ -125,11 +129,11 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
     // Checking deltas extraction
     $this->assertAttributeEquals($this->object->getDeltas(), '_deltas', $this->object);
 
-    // Checking flush()
+    // Checking commit()
     $this->object->changed = 7;
     $this->object->changed = 8;
     $this->assertAttributeEquals(['changed' => 8], '_changes', $this->object);
-    $this->object->acceptChanges();
+    $this->object->commit();
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], 'values', $this->object);
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], '_startValues', $this->object);
     $this->assertAttributeEquals([], '_deltas', $this->object);
@@ -144,7 +148,33 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5], '_deltas', $this->object);
     $this->assertAttributeEquals(['changed' => 9], '_changes', $this->object);
     $this->object->clear();
+
+    $this->assertFalse($this->object->isChanged());
+    $this->object->changed = 3;
+    // TODO - Это тоже должно работать!
+//    $this->assertTrue($this->object->isChanged());
+    $this->assertFalse($this->object->isChanged());
+    $this->object->changed = 5;
+    $this->assertTrue($this->object->isChanged());
+    $this->object->clear();
+
     $this->test__construct();
+
+    $this->object->changed = 3;
+    $this->object->inc()->integer = 4;
+    $this->assertTrue($this->object->isChanged());
+    $this->assertAttributeEquals(['changed' => 3, 'integer' => 0], '_startValues', $this->object);
+    $this->assertAttributeEquals(['integer' => 4], '_deltas', $this->object);
+    $this->object->commit();
+    $this->assertAttributeEquals(['changed' => 3, 'integer' => 4], '_startValues', $this->object);
+    $this->object->changed = 7;
+    $this->object->inc()->integer = 2;
+    $this->assertEquals(7, $this->object->changed);
+    $this->assertEquals(6, $this->object->integer);
+    $this->object->rollback();
+    $this->assertEquals(3, $this->object->changed);
+    $this->assertEquals(4, $this->object->integer);
+    $this->object->clear();
 
     // Checking delta block after direct change
     $this->expectExceptionMessage('Common\AccessLogged::changed already changed - can not use DELTA');
