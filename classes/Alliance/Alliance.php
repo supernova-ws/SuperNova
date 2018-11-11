@@ -69,7 +69,7 @@ class Alliance extends RecordAlliance {
           continue;
         }
 
-        $tmp = explode(',', $str_rank);
+        $tmp     = explode(',', $str_rank);
         $rank_id = count($ranks);
         foreach ($ally_rights as $key => $value) {
           $ranks[$rank_id][$value] = $tmp[$key];
@@ -186,7 +186,7 @@ class Alliance extends RecordAlliance {
    */
   public function getOwner() {
     $player = RecordPlayer::findById($this->ownerId);
-    $owner  = ! empty($player) ? new AllianceMember($this, $player) : null;
+    $owner  = !empty($player) ? new AllianceMember($this, $player) : null;
 
     return $owner;
   }
@@ -197,18 +197,20 @@ class Alliance extends RecordAlliance {
   public function asPtl() {
 //    $ownerName = $this->getMemberList()->getOwner() instanceof AllianceMember ? $this->getMemberList()->getOwner()->getMemberName() : '';
 
-    $owner = $this->getOwner();
+    $owner     = $this->getOwner();
     $ownerName = $owner instanceof AllianceMember ? $owner->getMemberName() : '';
 
     return
       $this->ptlArray()
       + [
-        '.'                => [
+        '.'                  => [
           'title' => $this->titles->asPtl()
         ],
-        'OWNER_NAME_SAFE'  => HelperString::htmlSafe($ownerName),
-        'CREATED_TEXT'     => date(FMT_DATE_TIME_SQL, $this->createdUnixTime),
-        'STAT_POINTS_TEXT' => HelperString::numberFloorAndFormat($this->statPoints),
+        'OWNER_NAME_SAFE'    => HelperString::htmlSafe($ownerName),
+        'CREATED_TEXT'       => date(FMT_DATE_TIME_SQL, $this->createdUnixTime),
+        'STAT_POINTS_TEXT'   => HelperString::numberFloorAndFormat($this->statPoints),
+        'DESCRIPTION_HTML'   => AllianceHelper::formatText($this->description),
+        'TEXT_INTERNAL_HTML' => AllianceHelper::formatText($this->textInternal),
       ];
   }
 

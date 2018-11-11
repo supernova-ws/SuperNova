@@ -1,5 +1,6 @@
 <?php
 
+use Alliance\AllianceHelper;
 use Alliance\DBStaticAlly;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
@@ -86,25 +87,16 @@ else
   ));
 }
 
-$patterns[] = "#\[fc\]([a-z0-9\#]+)\[/fc\](.*?)\[/f\]#Ssi";
-$replacements[] = '<font color="\1">\2</font>';
-$patterns[] = '#\[img\](.*?)\[/img\]#Smi';
-$replacements[] = '<img src="\1" alt="\1" style="border:0px;" />';
-$patterns[] = "#\[fc\]([a-z0-9\#\ \[\]]+)\[/fc\]#Ssi";
-$replacements[] = '<font color="\1">';
-$patterns[] = "#\[/f\]#Ssi";
-$replacements[] = '</font>';
-
-$template->assign_vars(array(
-  'ALLY_DESCRIPTION' => nl2br(preg_replace($patterns, $replacements, $ally['ally_description'])),
-  'ALLY_TEXT'        => nl2br(preg_replace($patterns, $replacements, $ally['ally_text'])),
+$template->assign_vars([
+  'ALLY_DESCRIPTION' => AllianceHelper::formatText($ally['ally_description']),
+  'ALLY_TEXT'        => AllianceHelper::formatText($ally['ally_text']),
   'ally_id'          => $ally['id'],
   'ALLY_MEMBERS'     => $ally['ally_members'],
   'ally_web'         => $ally['ally_web'],
   'ally_tag'         => $ally['ally_tag'],
   'ally_image'       => $ally['ally_image'],
   'ally_name'        => $ally['ally_name'],
-));
+]);
 
 $relations = ali_relations($ally['id']);
 foreach($relations as $relation)
