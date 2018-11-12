@@ -426,16 +426,16 @@ switch ($new_version) {
       );
     }, PATCH_PRE_CHECK);
 
+    upd_do_query('COMMIT;', true);
+
+    $new_version = 43;
+
+  case 43:
 //    // #ctv
 //    updPatchApply(6, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
-    upd_do_query('COMMIT;', true);
-
-//    $new_version = 43;
-//
-//  case 43:
-
+//    $new_version = 44;
 }
 upd_log_message('Upgrade complete.');
 

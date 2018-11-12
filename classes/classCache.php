@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43a18.4#
+ * @version #43b0#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -25,17 +25,35 @@
  * @package supernova
  */
 class classCache implements ArrayAccess {
+  /**
+   * CACHER_NOT_INIT - not initialized
+   */
   const CACHER_NOT_INIT = -1;
+  /**
+   * CACHER_NO_CACHE - no cache - array() used
+   */
   const CACHER_NO_CACHE = 0;
+  /**
+   * CACHER_XCACHE   - xCache
+   */
   const CACHER_XCACHE = 1;
 
-  // CACHER_NOT_INIT - not initialized
-  // CACHER_NO_CACHE - no cache - array() used
-  // CACHER_XCACHE   - xCache
+  /**
+   * @var int $mode - cacher mode
+   */
   protected static $mode = self::CACHER_NOT_INIT;
+  /**
+   * @var array $data - Cacher data
+   */
   protected static $data;
+  /**
+   * @var string $prefix - Cacher prefix
+   */
   protected $prefix;
 
+  /**
+   * @var $cacheObject static - Singleton object
+   */
   protected static $cacheObject;
 
   public function __construct($prefIn = 'CACHE_', $init_mode = false) {

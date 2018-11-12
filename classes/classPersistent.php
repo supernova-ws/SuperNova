@@ -69,7 +69,7 @@ class classPersistent extends classCache {
 
     $query = doquery("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
     while($row = db_fetch($query)) {
-      $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
+      $this[$row[$this->sql_index_field]] = $row[$this->sql_value_field];
     }
 
     $this->_DB_LOADED = true;
