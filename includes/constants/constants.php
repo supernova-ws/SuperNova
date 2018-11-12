@@ -8,9 +8,9 @@ define('__SN_CONSTANTS_DEFINED', true);
 
 defined('INSIDE') or die('Hacking attempt');
 
-define('DB_VERSION', '42');
-define('SN_RELEASE', '42');
-define('SN_VERSION', '43b1');
+define('DB_VERSION', '43');
+define('SN_RELEASE', '43');
+define('SN_VERSION', '43b2');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
