@@ -160,7 +160,7 @@ class PlayerLevelHelper {
   protected function calcLevels() {
     $this->playerLevels = [];
 
-    $multiplier = $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
+    $multiplier = 5; // $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
     !$multiplier ? $multiplier = 5 : false;
 
     $levelPoints = $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_POINTS);
