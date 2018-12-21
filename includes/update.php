@@ -450,7 +450,8 @@ switch ($new_version) {
             "PRIMARY KEY (`id`)",
             "UNIQUE KEY `I_promo_code` (`code`)",
           ],
-          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+//          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
 
@@ -467,7 +468,8 @@ switch ($new_version) {
             "KEY `FK_user_id` (`user_id`)",
             "KEY `I_promo_code_id` (`promo_code_id`,`user_id`)",
           ],
-          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+//          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
     }, PATCH_PRE_CHECK);
