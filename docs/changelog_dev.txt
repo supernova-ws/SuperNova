@@ -1597,10 +1597,206 @@ OldDbChangeSet::db_changeset_apply - а от этого вообще избав�
         - Дебафф может быть снят софт-ресетом
 
 
+https://aftershock.news/?q=node/701115
+
+
+    /**
+     * Return IP address
+     *
+     * @return mixed
+     */
+    public static function ipGet()
+    {
+        $realIp = self::ipGetForwarded();
+
+        return empty($realIp) ? $_SERVER['REMOTE_ADDR'] : $realIp;
+    }
+
+    /**
+     * @return string
+     */
+    protected static function ipGetForwarded()
+    {
+        $realIp = '';
+
+        if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $realIp;
+        }
+
+        $finalIp = trim($_SERVER['REMOTE_ADDR']);
+
+        $proxyChain = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        array_walk($proxyChain, 'trim');
+
+        foreach ($proxyChain as $proxyAddress) {
+            // Checking if IP address is not local or reserved for internal networks
+            // Also if IP is like in REMOTE_ADDR - ignoring this too. It's not our case
+            if ($proxyAddress != $finalIp && self::ipIsGlobal($proxyAddress)) {
+                $realIp = $proxyAddress;
+                break;
+            }
+        }
+
+        return $realIp;
+    }
+
+    /**
+     * @param string $ip
+     *
+     * @return bool
+     */
+    public static function ipIsGlobal($ip)
+    {
+        return
+            filter_var(
+                $ip,
+                FILTER_VALIDATE_IP,
+                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE // FILTER_FLAG_IPV4 |
+            ) !== false;
+    }
+
+
+
+
+/**
+ * Measure time passed from last ping or start point
+ *
+ * @param bool $fromStart Show time from start
+ */
+function timerPing($label = '', $fromStart = false)
+{
+    static $timer;
+
+    if (empty($timer)) {
+        $timer = [microtime(true)];
+    } else {
+        if ($fromStart) {
+            $startPoint = $timer[0];
+            $msg        = 'From start';
+        } else {
+            $startPoint = end($timer);
+            $msg        = 'From last ping';
+        }
+        $timer[] = microtime(true);
+
+        print '[' . (count($timer) - 1) . '] ' .
+              (! empty($label) ? $label . ' - ' : '') .
+              $msg . ' ' . number_format(end($timer) - $startPoint, 5) . "s<br/>\n";
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+class Timer
+{
+    /**
+     * @var float[] $times
+     */
+    private static $times = [];
+
+    public static function init()
+    {
+        if (empty(static::$times)) {
+            static::$times[] = microtime(true);
+        }
+    }
+
+    /**
+     * @param bool $fromStart
+     *
+     * @return float
+     */
+    public static function elapsed($fromStart = false)
+    {
+        static::init();
+
+        $prevTime = $fromStart ? self::first() : self::last();
+
+        static::$times[] = microtime(true);
+
+        return self::last() - $prevTime;
+    }
+
+
+    /**
+     * @param bool $fromStart
+     *
+     * @return string
+     */
+    public static function formatted($fromStart = false)
+    {
+        return number_format(static::elapsed($fromStart), 6) . 's';
+    }
+
+    public static function msg($message, $fromStart = false)
+    {
+        $last = reset(debug_backtrace());
+
+        print
+            $message .
+            ($fromStart ? ' FROM START ' : ' in ') .
+            self::formatted($fromStart) .
+            ' ---- ' . $last['file'] . '@' . $last['line'] .
+            "\n<br />";
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function last()
+    {
+        return end(static::$times);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function first()
+    {
+        return reset(static::$times);
+    }
+
+}
+
+
+[*] Добавить запрос в код
+    SELECT
+    payment_user_id, u.username, FROM_UNIXTIME(u.register_time) as reg_date, min(payment_date) as first_pay, max(payment_date) as last_pay,
+    FORMAT((UNIX_TIMESTAMP(min(payment_date)) - (u.register_time))/60/60/24,3) as days_first_pay,
+    FORMAT((UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(max(payment_date)))/60/60/24,3) as days_last_pay,
+    format(sum(if(payment_currency = 'UAH', payment_amount/11,payment_amount)), 2) as payment_sum
+    FROM `game_payment` as p
+    join game_users as u on u.id = p.payment_user_id
+    where payment_status = 1
+    group by payment_user_id
+    order by u.register_time;
+[*] Проапдейдить таблицу платежей - перебить все платежи в USD по курсу
+
+
+
+[*] Переделать расчёт бонусов Альянса
+        - Масштабировать бонусы в зависимости от количества игроков в Альянсе и прописанного минимума линейно.
+            - Для 7 минимума и 3 игроков бонусы будут floor(3/7 * уровень)
+
+
 [*] БД
     - Дропнуть sn_annonce - не перепутать!
     - sn_iraks => sn_fleet
     - Дропнуть sn_log_halloween_2015
+
+
+[*] Холод Вершины - для алла
+    - Дебаф на алл/игрока за занимание первого места
+    - Одиночество на пике - для игрока
 
 
 [*] Промо-коды
@@ -1609,13 +1805,95 @@ OldDbChangeSet::db_changeset_apply - а от этого вообще избав�
     - Фиксировать, какой промокод введен для сбора статистики
     - Уведомлять окном об окончании бонусного према
     - Может давать что-то на старте
+[*] Промки
+    + Сохранение
+    - Применение
+    - Поддержка количества
+    - Поддержка даты действия
+    - Админка-отчёт по промкам (?)
+    - Сортировка списка промок по разным критериям
 
-[*] Холод Вершины - для алла
-    - Дебаф на алл/игрока за занимание первого места
-    - Одиночество на пике - для игрока
+
+[24.11.2018 22:47:56] taych[NewSTAR]>по поводу рекрутинга. а нельзя придумать что по поводу принятия в альянсы..например доску обьявлений по приёму или вступления.по клику просто мышкой.
+[24.11.2018 23:02:55] Сингулярность[БАС]>Хотя идея со списком Альянсов, открытых для приёма - в принципе хорошая
+
+[*] Удержание
+    Можно. Тут прикол в чем. У меня полет на него около трех суток. Если уйти в РО, то можно только повернуть назад. Итого 6 суток. Т.е. неделю продержать не получается. Я придумал по другому. Я долетаю. Переработчики разбиваются. Это уже когда противник в РО. И я шлю рабов на обломки. А потом еще и заворачиваю. Короче, там до полутора, а то и двух недель можно довести
+    Прошлый раз Спрут на этом и прокололся. Вышел из РО - а привязки все еще есть
+    Он очень хочет упрыгнуть из 11-13
+    Ну а сейчас они тоже на вооружение взяли эту тактику. Меня держать по 800-900 часов в одну сторону. То есть уже и РО не спасет. И стоит мне пропустить выход Спрута, а я не могу все время не спать - он упрыгнет, а я уже никуда не денусь
+
+
+[*] Атаки
+    Ввести настраиваемый минимальный промежуток между атаками (и/или между отправкой флотов?)
+
+
+
+{function timerDump timer=[]}
+    <table>
+        <tr>
+            <th>Message</th>
+            <th>Length</th>
+            <th>From start</th>
+            <th>Location</th>
+        </tr>
+        {foreach from=$timer key=key item=timestamp}
+            {if $key}
+                <tr>
+                    <td>{$timestamp['message']}</td>
+                    <td>{$timestamp['time']-$timer[$key-1]['time']|round:5}</td>
+                    <td>{$timestamp['time']-$timer[0]['time']|round:5}</td>
+                    <td>{$timestamp['location']}</td>
+                </tr>
+            {/if}
+        {/foreach}
+    </table>
+{/function}
+{call timerDump timer=$timer}
+'timer' => Timer::getLog(),
+
+
+
+game_counter
+    I_counter_device_id	(device_id, user_id)
+
+
+Первый - пошел
+Parviz - бан. Ботоводство. Хозяину бота - (очень сильное подозрение на ailouros ) первое и последнее предупреждение
+Альянсу Proxima Prime - первое предупреждение
+Второй - пошел!
+auro007 - Ботоводство
+Альянсу Про - второе предупреждение
+
+-- Funt, Dron,  Hronos, Змей, warcraft - вроде как мультики
+
+Старый Новый год или Обрезание Господне - 14 января
+Международный день «спасибо» - 11 января
+Рождество Христово - 7 января
+Рождественский сочельник  и начало святок - 6 января
+День заворачивания подарков  - 30 декабря
+День подарков - 26 декабря
+Рождество у католиков  с 24 на 25 декабря
+День дальней авиации ВВС России  - 23 декабря
+День энергетика - 22 декабря
+
 
 #ctv
 
+[*] Пофиксить
+    $multiplier = 5; // $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
+    class PlayerLevelHelper::calcLevels()
+
+
+!!!!!!!!!!!!! Писать в таблицу counter параметры GET запроса в отдельную колонку
+
+
+2018-12-21 14:00:41 44a5
+[~] ad_promo_code
+    Поддержка модуля ad_promo_code
+
+[@] Код
+    db_mysql::doquery() - убран неиспользуемый параметр $table
 
 
 2018-11-12 22:51:12 43b2

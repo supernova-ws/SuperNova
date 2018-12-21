@@ -182,8 +182,21 @@ class DbQuery {
     return doquery($this->update());
   }
 
+  public function doUpdateDb() {
+    return $this->db->doquery($this->update());
+  }
+
+  /**
+   * @return array|bool|\mysqli_result|null
+   * @deprecated
+   */
   public function doDelete() {
     return doquery($this->delete());
+  }
+
+  // TODO - Do something with delete when there is no records
+  public function doDeleteDb() {
+    return $this->db->doquery($this->delete());
   }
 
   /**
@@ -206,7 +219,7 @@ class DbQuery {
    *
    * @return string
    */
-  protected function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
+  public function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
 
     $this->buildCommand($this->setInsertCommand($replace));

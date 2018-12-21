@@ -275,7 +275,7 @@ function db_player_name_exists($player_name_unsafe) {
 
   $player_name_safe = SN::$db->db_escape($player_name_unsafe);
 
-  $player_name_exists = SN::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+  $player_name_exists = SN::$db->doQueryAndFetch("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE");
   return !empty($player_name_exists);
 }
 
@@ -286,6 +286,6 @@ function db_player_name_exists($player_name_unsafe) {
  */
 // OK v4.7
 function db_player_get_max_id() {
-  $max_user_id = SN::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{users}}`", true);
+  $max_user_id = SN::$db->doQueryAndFetch("SELECT MAX(`id`) as `max_user_id` FROM `{{users}}`");
   return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
 }

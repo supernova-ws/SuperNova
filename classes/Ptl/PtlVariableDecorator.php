@@ -20,6 +20,8 @@ class PtlVariableDecorator {
 //  const PARAM_NUMERIC_LIMIT = 'percent'; // _number_color_value replacement - see Decorators in PTL test
 //  const PARAM_NUMERIC_LIMIT = 'limit';
 
+  const PARAM_DATETIME = 'datetime'; // define date and/or time decorator
+
   /**
    * Сортированный список поддерживаемых параметров
    *
@@ -35,6 +37,8 @@ class PtlVariableDecorator {
     self::PARAM_NUMERIC_FORMAT => self::PARAM_NUMERIC,
     self::PARAM_NUMERIC_COLOR  => self::PARAM_NUMERIC,
 //    self::PARAM_NUMERIC_LIMIT  => self::PARAM_NUMERIC,
+
+    self::PARAM_DATETIME       => self::PARAM_DATETIME,
   );
 
   /**
@@ -48,6 +52,7 @@ class PtlVariableDecorator {
     $ptlTag = new PTLTag(substr($strTagFull, 1, strlen($strTagFull) - 2), $template, static::$allowedParams);
 
     $phpCompiledVar = static::num($phpCompiledVar, $ptlTag);
+    $phpCompiledVar = static::datetime($phpCompiledVar, $ptlTag);
 
     return $phpCompiledVar;
   }
@@ -63,6 +68,10 @@ class PtlVariableDecorator {
    */
   protected static function func($funcName, $value, $params = []) {
     return $funcName . '(' . $value . (!empty($params) ? ',' . implode(',', $params) : '') . ')';
+  }
+
+  protected static function func2($funcName, $params = []) {
+    return $funcName . '(' . (!empty($params) ? implode(',', $params) : '') . ')';
   }
 
   /**
@@ -95,6 +104,32 @@ class PtlVariableDecorator {
 
           case self::PARAM_NUMERIC_COLOR:
             $result = static::func('prettyNumberStyledDefault', $result);
+          break;
+        }
+      }
+
+    }
+
+    return $result;
+  }
+
+  /**
+   * @param        $phpCompiledVar
+   * @param PTLTag $ptlTag
+   */
+  protected static function datetime($phpCompiledVar, $ptlTag) {
+    $result = $phpCompiledVar;
+
+    if (array_key_exists(self::PARAM_DATETIME, $ptlTag->params)) {
+      // Just dump other params
+      foreach (static::$allowedParams as $paramName => $limitTag) {
+        if ($limitTag != self::PARAM_DATETIME || !array_key_exists($paramName, $ptlTag->params)) {
+          continue;
+        }
+
+        switch ($paramName) {
+          case self::PARAM_DATETIME:
+            $result = "empty($result) ? '' : " . static::func2('date', ["'" . FMT_DATE_TIME_SQL . "'", $result]);
           break;
         }
       }

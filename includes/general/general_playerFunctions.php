@@ -113,7 +113,13 @@ function GetMaxFleets(&$user) {
 
 
 // ----------------------------------------------------------------------------------------------------------------
-function sys_player_new_adjust($user_id, $planet_id) { $result = null; return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result)); }
+/**
+ * @param int|string $user_id
+ * @param int|string $capitalPlanetId
+ *
+ * @return mixed
+ */
+function sys_player_new_adjust($user_id, $capitalPlanetId) { $result = null; return sn_function_call('sys_player_new_adjust', array($user_id, $capitalPlanetId, &$result)); }
 
 function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
   return $result;

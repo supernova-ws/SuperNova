@@ -19,6 +19,16 @@
 * @package rpg
 *
 */
+
+/**
+ * @param int   $user_id
+ * @param int   $change_type
+ * @param float $dark_matter
+ * @param bool  $comment
+ * @param bool  $already_changed
+ *
+ * @return bool|int
+ */
 function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false) {
   global $debug, $config, $dm_change_legit, $user;
 

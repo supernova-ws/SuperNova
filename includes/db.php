@@ -98,8 +98,21 @@ function sn_db_connect() {
 function sn_db_disconnect() {
   return SN::$db->db_disconnect();
 }
+
+/**
+ * @param        $query
+ * @param string $table
+ * @param bool   $fetch
+ * @param bool   $skip_query_check
+ *
+ * @return array|bool|mysqli_result|null
+ * @deprecated
+ */
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  return SN::$db->doquery($query, $table, $fetch, $skip_query_check);
+  if(is_bool($table) || !is_string($table)) {
+    $fetch = $table;
+  }
+  return SN::$db->doquery($query, $fetch, $skip_query_check);
 }
 function db_fetch(&$query) {
   return SN::$db->db_fetch($query);

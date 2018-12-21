@@ -953,8 +953,6 @@ function gettemplate($files, $template = null, $template_path = null) {
 
   $template_ex = '.tpl.html';
 
-  is_string($files) ? $files = array(basename($files) => $files) : false;
-
   !is_object($template) ? $template = new template(SN_ROOT_PHYSICAL) : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
@@ -969,6 +967,17 @@ function gettemplate($files, $template = null, $template_path = null) {
   // В норме же - страницы заявляют сами, какие им пакеты нужны. Так что сначала всегда должны грузится основные языковые пакеты, а уже ПОВЕРХ них - пакеты модулей
   !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
   $sn_page_name ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
+
+  if (empty($files)) {
+    // Make sure that all empty files will translate to empty array
+    $files = [];
+  } elseif(is_string($files)) {
+    // If we have single filename - making array from it
+    $files = [basename($files) => $files];
+  } elseif (!is_array($files)) {
+    // And final touch - all other non-string and non-array inputs converted to empty array
+    $files = [];
+  }
 
   foreach ($files as &$filename) {
     $filename = $filename . $template_ex;

@@ -72,7 +72,9 @@ class PlayerToAccountTranslate {
       $provider_account_id_safe = intval($provider_account_id_unsafe);
 
       // TODO - Здесь могут отсутствовать аккаунты - проверять провайдером
-      $query = static::$db->doquery("SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE");
+      $query = static::$db->doquery(
+        "SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE"
+      );
       while($row = static::$db->db_fetch($query)) {
         $account_translation[$row['user_id']][$provider_id_unsafe][$provider_account_id_unsafe] = true;
       }
@@ -98,7 +100,8 @@ class PlayerToAccountTranslate {
     $query = static::$db->doquery(
       "SELECT * FROM {{account_translate}} WHERE `user_id` = {$user_id_safe} " .
       ($provider_id_unsafe ? "AND `provider_id` = {$provider_id_safe} " : '') .
-      "ORDER BY `timestamp` FOR UPDATE");
+      "ORDER BY `timestamp` FOR UPDATE"
+    );
     while($row = static::$db->db_fetch($query)) {
       $account_translation[$row['user_id']][$row['provider_id']][$row['provider_account_id']] = $row;
     }
@@ -110,7 +113,9 @@ class PlayerToAccountTranslate {
     static::init();
 
     $user_id_safe = static::$db->db_escape($user_id_unsafe);
-    return static::$db->doquery("DELETE FROM `{{account_translate}}` WHERE `user_id` = {$user_id_safe});");
+    return static::$db->doquery(
+      "DELETE FROM `{{account_translate}}` WHERE `user_id` = {$user_id_safe});"
+    );
   }
 
 }

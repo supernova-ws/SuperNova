@@ -6,6 +6,7 @@ use Bonus\BonusCatalog;
 use Bonus\ValueStorage;
 use Common\ContainerPlus;
 use Core\SnPimp;
+use DBAL\StorageSqlV2;
 use Modules\ModulesManager;
 use \SN;
 use \General;
@@ -32,6 +33,7 @@ use Player\PlayerLevelHelper;
  * @property \Storage               $storage
  * @property \Core\RepoV2           $repoV2
  * @property \Core\StorageV2        $storageV2
+ * @property StorageSqlV2           $storageSqlV2
  * @property \Design                $design
  * @property \BBCodeParser          $bbCodeParser
  * @property \Fleet\FleetDispatcher $fleetDispatcher
@@ -125,6 +127,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->storageV2 = function (GlobalContainer $gc) {
       return new StorageV2($gc);
+    };
+
+    $gc->storageSqlV2 = function (GlobalContainer $gc) {
+      return new StorageSqlV2($gc);
     };
 
     $gc->design = function (GlobalContainer $gc) {

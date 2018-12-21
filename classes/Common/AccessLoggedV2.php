@@ -17,7 +17,16 @@ use Exception;
  *
  * @package Common
  */
-class AccessLoggedV2 extends AccessLogged {
+class AccessLoggedV2 extends AccessLoggedAbstract {
+  public function __set($name, $value) {
+    if ($this->_currentOperation === self::ACCESS_SET) {
+      $this->valueSet($name, $value);
+    } else {
+      $this->valueDelta($name, $value);
+    }
+  }
+
+
   /**
    * @param string $name
    * @param mixed $value

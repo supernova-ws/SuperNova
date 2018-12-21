@@ -157,20 +157,20 @@ class ActiveRecordAbstractTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::__construct
-   * @covers ::commit
+   * @covers ::accept
    */
   public function testConstructor() {
     $object = new RecordActiveAbstractObject();
-    $this->assertAttributeEquals(\SN::$gc, 'services', $object);
+//    $this->assertAttributeEquals(\SN::$gc, 'services', $object);
     $this->assertAttributeEquals(true, '_isNew', $object);
 //    $this->assertEquals(0, $object->id);
 //
-//    $object->commit();
+//    $object->accept();
 //    $this->assertAttributeEquals(true, '_isNew', $object);
 //    $this->assertEquals(0, $object->id);
 //
 //    $object->id = 5;
-//    $object->commit();
+//    $object->accept();
 //    $this->assertAttributeEquals(false, '_isNew', $object);
 //    $this->assertEquals(5, $object->id);
 

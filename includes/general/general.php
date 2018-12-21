@@ -83,7 +83,7 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
 /**
  * Adding one handler for specific function name
  *
- * @param callable[]   $functions
+ * @param callable[][]   $functions
  * @param string       $function_name
  * @param string|array $function_data
  * @param string       $class_module_name
@@ -97,7 +97,8 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
   }
 
   $overwrite = $override_with[0] == '*';
-  if ($overwrite) {
+  $prepend = $override_with[0] == '+';
+  if ($overwrite || $prepend) {
     $override_with = substr($override_with, 1);
   }
 
@@ -120,7 +121,11 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
     }
   }
 
-  $functions[$function_name][] = $function_data;
+  if($prepend) {
+    array_unshift($functions[$function_name], $function_data);
+  } else {
+    $functions[$function_name][] = $function_data;
+  }
 }
 
 

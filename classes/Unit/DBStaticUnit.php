@@ -1,8 +1,14 @@
 <?php
 
+/** @noinspection SqlResolve */
+
 namespace Unit;
+
 use _SnCacheInternal;
+use Exception;
 use mysqli_result;
+use Planet\DBStaticPlanet;
+use Planet\Planet;
 use SN;
 
 class DBStaticUnit {
@@ -24,7 +30,7 @@ class DBStaticUnit {
     return $unit;
   }
 
-  public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0) {
+  public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
     SN::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
@@ -35,7 +41,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
-    $query = doquery(
+    $query  = doquery(
       "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
       ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
       ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
@@ -84,7 +90,7 @@ class DBStaticUnit {
     return SN::db_ins_record(LOC_UNIT, $set);
   }
 
-  public static function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
+  public static function db_unit_list_delete($user_id, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
     return SN::db_del_record_list(LOC_UNIT,
       "`unit_location_type` = {$unit_location_type}" .
       ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
@@ -108,6 +114,7 @@ class DBStaticUnit {
 
 
   public static function db_unit_list_admin_delete_mercenaries_finished() {
+    /** @noinspection SqlWithoutWhere */
     return doquery("DELETE FROM {{unit}} WHERE unit_time_finish IS NOT NULL AND unit_time_finish < FROM_UNIXTIME(" . SN_TIME_NOW . ") AND unit_type = " . UNIT_MERCENARIES);
   }
 
@@ -121,41 +128,155 @@ class DBStaticUnit {
     );
   }
 
-  public static function dbUserAdd($playerId, $unitSnId, $level) {
-    if (!($unitRecord = \Unit\RecordUnit::findFirst([
+  /**
+   * Adjust unit amount
+   *
+   * @param int   $playerId
+   * @param int   $planetId
+   * @param int   $unitSnId
+   * @param float $amount
+   * @param int   $reason
+   *
+   * @return bool
+   *
+   * @throws Exception
+   */
+  public static function dbChangeUnit($playerId, $planetId, $unitSnId, $amount, $reason = RPG_NONE) {
+    $result = false;
+
+    // TODO - Lock user
+    $userArray = db_user_by_id($playerId);
+
+    if ($unitSnId == RES_DARK_MATTER) {
+      // Add dark matter to user
+      $result = boolval(rpg_points_change($playerId, $reason, $amount));
+    } elseif (in_array($unitSnId, sn_get_groups(UNIT_RESOURCES_STR_LOOT))) {
+      // Add resources to user's capital
+      if ($userArray['user_as_ally'] == 1) {
+        // TODO - If ally - adding resources to user record
+      } else {
+        // Adding resources to planet
+        $planet = new Planet();
+        $planet->dbLoadRecord($planetId);
+        $planet->changeResource($unitSnId, $amount);
+        $planet->save();
+
+        $result = true;
+      }
+    } elseif (in_array($unitSnId, sn_get_groups(UNIT_ARTIFACTS_STR))) {
+      // Add artifacts to player
+      $result = self::dbAdd($playerId, 0, $unitSnId, $amount);
+    } elseif (!empty($planetId) && in_array($unitSnId, sn_get_groups([UNIT_SHIPS_STR, UNIT_DEFENCE_STR,]))) {
+      // Add fleet or defense to user's capital
+      $result = self::dbAdd($playerId, $planetId, $unitSnId, $amount);
+    }
+
+    return $result;
+  }
+
+
+  /**
+   * Add unit to player/planet
+   *
+   * Supports units. DOES NOT support resources
+   *
+   * DOES NOT autodetect location
+   *
+   * @param int   $playerId
+   * @param int   $planetId 0 - for player units
+   * @param int   $unitSnId
+   * @param float $amount
+   *
+   * @return bool
+   */
+  protected static function dbAdd($playerId, $planetId, $unitSnId, $amount) {
+    if (!in_array($unitSnId, sn_get_groups([UNIT_SHIPS_STR, UNIT_DEFENCE_STR, UNIT_ARTIFACTS_STR,]))) {
+      return false;
+    }
+
+    if ($planetId == 0) {
+      $locationType = LOC_USER;
+      $locationId   = $playerId;
+    } else {
+      $locationType = LOC_PLANET;
+      $locationId   = $planetId;
+    }
+
+    $fields = [
       'unit_player_id'     => $playerId,
-      'unit_location_type' => LOC_USER,
-      'unit_location_id'   => $playerId,
+      'unit_location_type' => $locationType,
+      'unit_location_id'   => $locationId,
       'unit_snid'          => $unitSnId,
-    ]))) {
-      if ($level < 0) {
+    ];
+    if (!($unitRecord = RecordUnit::findFirst($fields))) {
+      if ($amount < 0) {
         return false;
       }
 
       // New unit
-      $unitRecord = \Unit\RecordUnit::build([
-        'unit_player_id'     => $playerId,
-        'unit_location_type' => LOC_USER,
-        'unit_location_id'   => $playerId,
-        'unit_type'          => get_unit_param($unitSnId, P_UNIT_TYPE),
-        'unit_snid'          => $unitSnId,
-        'unit_level'         => $level,
-      ]);
+//      $unitRecord = RecordUnit::build([
+//        'unit_player_id'     => $playerId,
+//        'unit_location_type' => $locationType,
+//        'unit_location_id'   => $locationId,
+//        'unit_snid'          => $unitSnId,
+//        'unit_type'          => get_unit_param($unitSnId, P_UNIT_TYPE),
+//        'unit_level'         => $level,
+//      ]);
 
-//      var_dump($unitRecord);die();
+      $fields     += [
+        'unit_type'  => get_unit_param($unitSnId, P_UNIT_TYPE),
+        'unit_level' => $amount,
+      ];
+      $unitRecord = RecordUnit::build($fields);
 
       return $unitRecord->insert();
     } else {
-      if ($unitRecord->unit_level + $level < 0) {
+      if ($unitRecord->unit_level + $amount < 0) {
+        // TODO - Log error or throw Exception
         return false;
       }
 
-      $unitRecord->inc()->unit_level = $level;
+      $unitRecord->inc()->unit_level = $amount;
 
       return $unitRecord->update();
     }
+  }
 
-
+  public static function dbUserAdd($playerId, $unitSnId, $amount) {
+//    if (!($unitRecord = RecordUnit::findFirst([
+//      'unit_player_id'     => $playerId,
+//      'unit_location_type' => LOC_USER,
+//      'unit_location_id'   => $playerId,
+//      'unit_snid'          => $unitSnId,
+//    ]))) {
+//      if ($level < 0) {
+//        return false;
+//      }
+//
+//      // New unit
+//      $unitRecord = RecordUnit::build([
+//        'unit_player_id'     => $playerId,
+//        'unit_location_type' => LOC_USER,
+//        'unit_location_id'   => $playerId,
+//        'unit_type'          => get_unit_param($unitSnId, P_UNIT_TYPE),
+//        'unit_snid'          => $unitSnId,
+//        'unit_level'         => $level,
+//      ]);
+//
+////      var_dump($unitRecord);die();
+//
+//      return $unitRecord->insert();
+//    } else {
+//      if ($unitRecord->unit_level + $level < 0) {
+//        // TODO - Log error or throw Exception
+//        return false;
+//      }
+//
+//      $unitRecord->inc()->unit_level = $level;
+//
+//      return $unitRecord->update();
+//    }
+    return self::dbAdd($playerId, 0, $unitSnId, $amount);
   }
 
 }

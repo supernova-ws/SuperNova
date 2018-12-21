@@ -19,10 +19,10 @@ use SN;
  */
 class AccessMagic implements Interfaces\IContainer {
 
-  /**
-   * @var GlobalContainer $services
-   */
-  protected $services;
+//  /**
+//   * @var GlobalContainer $services
+//   */
+//  protected $services;
 
   /**
    * Property values
@@ -37,7 +37,7 @@ class AccessMagic implements Interfaces\IContainer {
    * @param GlobalContainer|null $services
    */
   public function __construct(GlobalContainer $services = null) {
-    $this->services = empty($services) ? SN::$gc : $services;
+//    $this->services = empty($services) ? SN::$gc : $services;
   }
 
 

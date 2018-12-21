@@ -34,9 +34,9 @@ global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $u
 
 $config->reset();
 $config->db_loadAll();
-$config->db_prefix = SN::$db->db_prefix; // Оставить пока для совместимости
+$config->db_prefix    = SN::$db->db_prefix; // Оставить пока для совместимости
 $config->cache_prefix = SN::$cache_prefix;
-$config->debug = 0;
+$config->debug        = 0;
 
 
 //$config->db_loadItem('db_version');
@@ -50,9 +50,9 @@ if ($config->db_version == DB_VERSION) {
   );
 }
 
-$upd_log = '';
+$upd_log     = '';
 $new_version = floatval($config->db_version);
-$minVersion = 40;
+$minVersion  = 40;
 if ($new_version < $minVersion) {
   die("This version does not supports upgrades from SN below v{$minVersion}. Please, use SN v42 to upgrade old database.<br />
 Эта версия игры не поддерживает обновление движка версий ниже v{$minVersion}. Пожалуйста, используйте SN v42 для апгрейда со старых версий игры.");
@@ -68,9 +68,9 @@ $old_server_status = $config->db_loadItem('game_disable');
 $config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 
 upd_log_message('Server disabled. Loading table info...');
-$update_tables = array();
+$update_tables  = array();
 $update_indexes = array();
-$query = upd_do_query('SHOW TABLES;', true);
+$query          = upd_do_query('SHOW TABLES;', true);
 while ($row = db_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
@@ -381,7 +381,7 @@ switch ($new_version) {
     });
 
     // 2018-03-07 09:23:41 43a13.23 + 2018-03-07 12:00:47 43a13.24
-    updPatchApply(2, function() use ($update_tables) {
+    updPatchApply(2, function () use ($update_tables) {
       upd_alter_table('festival_gifts', [
         "ADD COLUMN `disclosure` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `amount`",
         "ADD COLUMN `message` VARCHAR(4096) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `disclosure`",
@@ -389,7 +389,7 @@ switch ($new_version) {
     });
 
     // 2018-03-12 13:23:10 43a13.33
-    updPatchApply(3, function() use ($update_tables) {
+    updPatchApply(3, function () use ($update_tables) {
       upd_alter_table('player_options',
         [
           "MODIFY COLUMN `value` VARCHAR(16000) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
@@ -399,7 +399,7 @@ switch ($new_version) {
     });
 
     // 2018-03-24 21:31:51 43a16.16 - OiS
-    updPatchApply(4, function() use ($update_tables) {
+    updPatchApply(4, function () use ($update_tables) {
       if (empty($update_tables['festival_ois_player'])) {
         upd_create_table(
           'festival_ois_player',
@@ -418,7 +418,7 @@ switch ($new_version) {
     });
 
     // 2018-03-25 08:11:39 43a16.21
-    updPatchApply(5, function() use ($update_tables) {
+    updPatchApply(5, function () use ($update_tables) {
       upd_alter_table(
         'que',
         "ADD COLUMN `que_unit_one_time_raw` DECIMAL(20,5) NOT NULL DEFAULT 0",
@@ -431,8 +431,49 @@ switch ($new_version) {
     $new_version = 43;
 
   case 43:
+    // 2018-12-21 14:00:41 44a5 Module "ad_promo_code" support
+    updPatchApply(6, function () use ($update_tables) {
+      if (empty($update_tables['ad_promo_codes'])) {
+        upd_create_table(
+          'ad_promo_codes',
+          [
+            "`id` int(10) unsigned NOT NULL AUTO_INCREMENT",
+            "`code` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'Promo code itself. Unique'",
+            "`description` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Promo code description'",
+            "`reg_only` tinyint(1) NOT NULL DEFAULT '1'",
+            "`from` datetime DEFAULT NULL",
+            "`to` datetime DEFAULT NULL",
+            "`max_use` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Max time code can be used. 0 - unlimited'",
+            "`used_times` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'How many time code was used'",
+            "`adjustments` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL",
+
+            "PRIMARY KEY (`id`)",
+            "UNIQUE KEY `I_promo_code` (`code`)",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+        );
+      }
+
+      if (empty($update_tables['ad_promo_codes_uses'])) {
+        upd_create_table(
+          'ad_promo_codes_uses',
+          [
+            "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+            "`promo_code_id` int(10) unsigned NOT NULL",
+            "`user_id` bigint(20) unsigned NOT NULL",
+            "`use_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+
+            "PRIMARY KEY (`id`)",
+            "KEY `FK_user_id` (`user_id`)",
+            "KEY `I_promo_code_id` (`promo_code_id`,`user_id`)",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+        );
+      }
+    }, PATCH_PRE_CHECK);
+
 //    // #ctv
-//    updPatchApply(6, function() use ($update_tables) {
+//    updPatchApply(7, function() use ($update_tables) {
 //    }, PATCH_PRE_CHECK);
 
 //    $new_version = 44;

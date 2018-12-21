@@ -55,3 +55,6 @@ define('RPG_BATCH_OPERATION', 47);
 define('RPG_EVENT_MARCH8', 48);
 define('RPG_LOGIN_TOKEN', 49);
 define('RPG_EVENT_MARCH8_REWARD', 50);
+define('RPG_PROMO_CODE', 51);
+
+// Next 52

@@ -97,8 +97,8 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
    * @covers ::getDeltas
    * @covers ::blockDelta
    * @covers ::clear
-   * @covers ::commit
-   * @covers ::rollback
+   * @covers ::accept
+   * @covers ::reject
    * @covers ::isChanged
    */
   public function testDelta() {
@@ -129,11 +129,11 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
     // Checking deltas extraction
     $this->assertAttributeEquals($this->object->getDeltas(), '_deltas', $this->object);
 
-    // Checking commit()
+    // Checking accept()
     $this->object->changed = 7;
     $this->object->changed = 8;
     $this->assertAttributeEquals(['changed' => 8], '_changes', $this->object);
-    $this->object->commit();
+    $this->object->accept();
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], 'values', $this->object);
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], '_startValues', $this->object);
     $this->assertAttributeEquals([], '_deltas', $this->object);
@@ -165,13 +165,13 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
     $this->assertTrue($this->object->isChanged());
     $this->assertAttributeEquals(['changed' => 3, 'integer' => 0], '_startValues', $this->object);
     $this->assertAttributeEquals(['integer' => 4], '_deltas', $this->object);
-    $this->object->commit();
+    $this->object->accept();
     $this->assertAttributeEquals(['changed' => 3, 'integer' => 4], '_startValues', $this->object);
     $this->object->changed = 7;
     $this->object->inc()->integer = 2;
     $this->assertEquals(7, $this->object->changed);
     $this->assertEquals(6, $this->object->integer);
-    $this->object->rollback();
+    $this->object->reject();
     $this->assertEquals(3, $this->object->changed);
     $this->assertEquals(4, $this->object->integer);
     $this->object->clear();

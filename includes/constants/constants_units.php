@@ -60,6 +60,7 @@ define('TECH_GRAVITON', 199);
 
 // === Hangar units
 // --- Ships
+define('UNIT_SHIPS_STR', 'fleet');
 define('UNIT_SHIPS', 200);
 
 define('SHIP_CARGO_SMALL', 202);
@@ -100,6 +101,7 @@ const SHIP_MEDIUM_TORPEDO_SPIRAL = 232; // Торпедоносец против
 const SHIP_NEXT = 233;
 
 // --- Defense
+define('UNIT_DEFENCE_STR', 'defense');
 define('UNIT_DEFENCE', 400);
 define('UNIT_DEF_TURRET_MISSILE', 401);
 define('UNIT_DEF_TURRET_LASER_SMALL', 402);
@@ -112,6 +114,7 @@ define('UNIT_DEF_SHIELD_BIG', 408);
 define('UNIT_DEF_SHIELD_PLANET', 409);
 
 // --- Missiles
+define('UNIT_DEF_MISSILES_STR', 'missile');
 define('UNIT_DEF_MISSILES', 500);
 define('UNIT_DEF_MISSILE_INTERCEPTOR', 502);
 define('UNIT_DEF_MISSILE_INTERPLANET', 503);
@@ -143,6 +146,9 @@ define('BONUS_SERVER', 0);
 define('BONUS_MERCENARY', UNIT_MERCENARIES); // DO NOT MOVE ABOVE MERCENARIES SECTION!
 
 // === Resources
+define('UNIT_RESOURCES_STR', 'resources');
+define('UNIT_RESOURCES_STR_LOOT', 'resources_loot');
+define('UNIT_RESOURCES_STR_TRADER', 'resources_trader');
 define('UNIT_RESOURCES', 900);
 define('RES_METAL', 901);
 define('RES_CRYSTAL', 902);
@@ -153,6 +159,7 @@ define('RES_METAMATTER', 950);
 define('RES_TIME', 999);
 
 // === Artifacts
+define('UNIT_ARTIFACTS_STR', 'artifacts');
 define('UNIT_ARTIFACTS', 1000);
 define('ART_LHC', 1001);      // Additional moon chance
 define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 DM

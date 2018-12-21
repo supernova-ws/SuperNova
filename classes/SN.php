@@ -250,10 +250,9 @@ class SN {
 
     static::db_transaction_check(null);
 
-    $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
+    SN::$gc->db->transactionStart($level);
 
     static::$transaction_id++;
-    doquery('START TRANSACTION');
 
     if ($config->db_manual_lock_enabled) {
       $config->db_loadItem('var_db_manually_locked');
@@ -273,7 +272,7 @@ class SN {
     static::db_transaction_check(true);
 
     _SnCacheInternal::cache_lock_unset_all();
-    doquery('COMMIT');
+    SN::$gc->db->transactionCommit();
 
     //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
@@ -284,7 +283,8 @@ class SN {
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
     _SnCacheInternal::cache_lock_unset_all();
-    doquery('ROLLBACK');
+
+    SN::$gc->db->transactionRollback();
 
     //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
@@ -303,10 +303,20 @@ class SN {
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
     foreach ($tables as $table_name => $condition) {
-      self::$db->doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
+      self::$db->doquery(
+        "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
+      );
     }
   }
 
+  /**
+   * @param      $query
+   * @param bool $fetch
+   * @param bool $skip_lock
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
   public static function db_query_select($query, $fetch = false, $skip_lock = false) {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
@@ -318,14 +328,32 @@ class SN {
     return $result;
   }
 
+  /**
+   * @param $query
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
   public static function db_query_update($query) {
     return self::$db->doquery($query, false);
   }
 
+  /**
+   * @param $query
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
   public static function db_query_delete($query) {
     return self::$db->doquery($query, false);
   }
 
+  /**
+   * @param $query
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
   public static function db_query_insert($query) {
     return self::$db->doquery($query, false);
   }

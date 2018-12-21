@@ -3,7 +3,8 @@
 /**
  * @var template $template
  */
-global $template;
+
+global $sn_page_name, $sn_mvc, $template, $template_result;
 
 if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '')) {
   require_once('common.' . substr(strrchr(__FILE__, '.'), 1));

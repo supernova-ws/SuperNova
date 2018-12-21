@@ -172,7 +172,7 @@ class Account {
 
     $account_id_safe = round(floatval($account_id_unsafe));
 
-    $account_row = $this->db->doquery("SELECT * FROM `{{account}}` WHERE `account_id` = {$account_id_safe}", true);
+    $account_row = $this->db->doQueryAndFetch("SELECT * FROM `{{account}}` WHERE `account_id` = {$account_id_safe}");
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -188,7 +188,7 @@ class Account {
 
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
 
-    $account_row = $this->db->doquery("SELECT * FROM `{{account}}` WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE", true);
+    $account_row = $this->db->doQueryAndFetch("SELECT * FROM `{{account}}` WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE");
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -204,7 +204,7 @@ class Account {
 
     $email_safe = $this->db->db_escape($email_unsafe);
     if($email_safe) {
-      $account_row = $this->db->doquery("SELECT * FROM `{{account}}` WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
+      $account_row = $this->db->doQueryAndFetch("SELECT * FROM `{{account}}` WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;");
 
       return $this->assign_from_db_row($account_row);
     } else {
@@ -227,7 +227,14 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account = $this->db->doquery("SELECT * FROM `{{account}}` WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE", true);
+    $account = $this->db->doQueryAndFetch(
+      "SELECT * FROM `{{account}}` 
+      WHERE 
+        LOWER(`account_name`) = LOWER('{$account_name_safe}') 
+        OR LOWER(`account_name`) = LOWER('{$email_safe}') 
+        OR LOWER(`account_email`) = LOWER('{$email_safe}') 
+        FOR UPDATE"
+    );
     return $this->assign_from_db_row($account);
   }
 
@@ -369,7 +376,9 @@ class Account {
     $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
     $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
 
-    $this->db->doquery("INSERT INTO `{{log_metamatter}}` SET
+    $this->db->doquery(
+      "INSERT INTO `{{log_metamatter}}` 
+      SET
         `provider_id` = {$provider_id_safe},
         `account_id` = {$account_id_safe},
         `account_name` = '{$account_name_safe}',
@@ -380,7 +389,8 @@ class Account {
         `comment` = '{$comment_safe}',
         `server_name` = '{$server_name_safe}',
         `page` = '{$page_url_safe}'
-      ;");
+      ;"
+    );
     $result = $this->db->db_insert_id();
 
     return $result;

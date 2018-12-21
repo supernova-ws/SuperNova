@@ -57,7 +57,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
     }
 
 
-    $this->commit();
+    $this->accept();
 
 //    $this->_isNew = false;
 
@@ -90,7 +90,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
 //      return false;
 //    }
 //
-//    $this->commit();
+//    $this->accept();
 //
 //    $fields = static::findRecordFirst($recordId);
 //    if (empty($fields)) {
@@ -150,8 +150,8 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
   }
 
 //  // TODO - Возможно - не нужно наследовать
-//  public function commit() {
-//    parent::commit();
+//  public function accept() {
+//    parent::accept();
 ////    $this->_isNew = empty($this->id);
 //  }
 
@@ -165,7 +165,7 @@ class ActiveRecordAbstractIndexed extends ActiveRecordAbstract {
     }
 
     $this->{self::ID_PROPERTY_NAME} = $this->dbLastInsertId();
-    $this->commit();
+    $this->accept();
 
     return true;
   }

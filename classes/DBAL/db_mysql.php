@@ -2,9 +2,6 @@
 
 namespace DBAL;
 
-use Core\GlobalContainer;
-use DBAL\db_mysql_v5;
-use \DBAL\DbMysqliResultIterator;
 use mysqli_result;
 use SN;
 
@@ -18,6 +15,13 @@ class db_mysql {
   const DB_MYSQL_TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
   const DB_MYSQL_TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
   const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+
+  /**
+   * DB schemes
+   *
+   * @var \DBAL\Schema|null $schema
+   */
+  protected static $schema = null;
 
   /**
    * Статус соеднения с MySQL
@@ -52,11 +56,9 @@ class db_mysql {
   public $time_mysql_total = 0.0;
 
   /**
-   * DB schemes
-   *
-   * @var \DBAL\Schema|null $schema
+   * @var bool $inTransaction
    */
-  protected static $schema = null;
+  protected $inTransaction = false;
 
   /**
    * DBAL\db_mysql constructor.
@@ -172,12 +174,8 @@ class db_mysql {
     return $sql;
   }
 
-  public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
+  public function doquery($query, $fetch = false, $skip_query_check = false) {
     global $numqueries, $debug, $config;
-
-    if (!is_string($table)) {
-      $fetch = $table;
-    }
 
     if (!$this->connected) {
       $this->sn_db_connect();
@@ -200,7 +198,7 @@ class db_mysql {
       $arr = debug_backtrace();
       $file = end(explode('/', $arr[0]['file']));
       $line = $arr[0]['line'];
-      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
+      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th><th>$fetch</th></tr>");
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
@@ -221,10 +219,17 @@ class db_mysql {
     }
 
     set_error_handler([$this, 'handlerQueryWarning']);
-    $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    $sqlquery = $this->db_sql_query($sql);
+    if(!$sqlquery) {
+      $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    }
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+  }
+
+  public function doQueryAndFetch($query) {
+    return $this->doquery($query, true);
   }
 
   public function doQueryFast($query, $fetch = false) {
@@ -244,7 +249,7 @@ class db_mysql {
    * @return DbMysqliResultIterator
    */
   public function selectIterator($query, $skip_query_check = false) {
-    return new DbMysqliResultIterator($this->doquery($query, '', false, $skip_query_check));
+    return new DbMysqliResultIterator($this->doquery($query, false, $skip_query_check));
   }
 
   /**
@@ -254,7 +259,7 @@ class db_mysql {
    * @return int|null
    */
   public function selectValue($query, $skip_query_check = false) {
-    $row = $this->doquery($query, '', true, $skip_query_check);
+    $row = $this->doquery($query, true, $skip_query_check);
 
     return !empty($row) ? intval(reset($row)) : null;
   }
@@ -265,7 +270,7 @@ class db_mysql {
    * @return array|null
    */
   public function dbqSelectAndFetch(\DBAL\DbQuery $dbQuery) {
-    return $this->doquery($dbQuery->select(), true);
+    return $this->doQueryAndFetch($dbQuery->select());
   }
 
 
@@ -495,4 +500,34 @@ class db_mysql {
     return $this->driver->mysql_stat();
   }
 
+  public function getDbSettings() {
+    return $this->dbsettings;
+  }
+
+  public function transactionStart($level = '') {
+    $this->inTransaction = true;
+
+    $level ? $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};") : false;
+
+    $this->db_sql_query('START TRANSACTION;');
+  }
+
+  public function transactionCommit() {
+    $this->db_sql_query('COMMIT;');
+    $this->inTransaction = false;
+  }
+
+  public function transactionRollback() {
+    $this->db_sql_query('ROLLBACK;');
+    $this->inTransaction = false;
+  }
+
+  /**
+   * Check if transaction started
+   *
+   * @return bool
+   */
+  public function transactionCheck() {
+    return $this->inTransaction;
+  }
 }
