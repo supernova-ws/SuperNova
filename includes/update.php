@@ -584,13 +584,13 @@ switch ($new_version) {
         SET c.player_entry_id = spe.id"
         );
 
-        upd_alter_table('security_player_entry', [
-          "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
-        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_player_id']));
-
-        upd_alter_table('security_player_entry', [
-          "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
-        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_device_id']));
+//        upd_alter_table('security_player_entry', [
+//          "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
+//        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_player_id']));
+//
+//        upd_alter_table('security_player_entry', [
+//          "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
+//        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_device_id']));
 
         upd_alter_table('security_player_entry', [
           // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
