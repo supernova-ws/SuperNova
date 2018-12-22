@@ -481,7 +481,7 @@ switch ($new_version) {
     });
 
     // 2018-12-22 11:42:20 44a12
-    updPatchApply(7, function () use ($update_tables, $update_indexes, $config) {
+    updPatchApply(7, function () use ($update_tables, $update_indexes, $config, $update_foreigns) {
       // Creating table for HTTP query strings
       upd_create_table(
         'security_query_strings',
@@ -520,6 +520,11 @@ switch ($new_version) {
         // Adding main index column
         "ADD COLUMN `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT FIRST",
         "ADD PRIMARY KEY (`id`)",
+
+        // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
+        "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
+        "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
+        "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
       ], empty($update_tables['security_player_entry']['id']));
 
       if (!empty($update_tables['counter']['device_id'])) {
@@ -598,6 +603,13 @@ switch ($new_version) {
       }
     }, PATCH_PRE_CHECK);
 
+    // TODO - remove when make this patch OK
+    upd_alter_table('security_player_entry', [
+      // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
+      "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
+      "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
+      "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
+    ], empty($update_foreigns['security_player_entry']['FK_security_player_entry_browser_id']));
 
 //    // #ctv
 //    updPatchApply(8, function() use ($update_tables, $update_indexes) {
