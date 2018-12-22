@@ -496,8 +496,9 @@ switch ($new_version) {
 
       // Adjusting table `counter` to use HTTP query string instead of full URLs
       upd_alter_table('counter', [
-        "DROP COLUMN `plain_url_id`",
+        "DROP FOREIGN KEY `FK_counter_plain_url_id`",
         "DROP KEY `I_counter_plain_url_id`",
+        "DROP COLUMN `plain_url_id`",
 
         "ADD COLUMN `query_string_id` bigint(20) unsigned DEFAULT NULL AFTER `page_url_id`",
         "ADD KEY `I_counter_query_string_id` (`query_string_id`)",
