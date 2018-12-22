@@ -585,9 +585,13 @@ switch ($new_version) {
         );
 
         upd_alter_table('security_player_entry', [
+          // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
           "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
+          "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
+          "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
           // Removing index which is superseded by new index `I_player_entry_unique`
           "DROP KEY `I_player_entry_device_id`",
+          "DROP KEY `I_player_entry_player_id`",
           // Removing unused field `security_player_entry`.`player_id`
           "DROP COLUMN `player_id`",
         ], !empty($update_indexes['security_player_entry']['I_player_entry_device_id']));
@@ -603,13 +607,6 @@ switch ($new_version) {
         $config->upd_lock_time = $oldLockTime;
       }
     }, PATCH_PRE_CHECK);
-
-    // TODO - remove when make this patch OK
-    upd_alter_table('security_player_entry', [
-      // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
-      "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
-      "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
-    ], empty($update_foreigns['security_player_entry']['FK_security_player_entry_browser_id']));
 
 //    // #ctv
 //    updPatchApply(8, function() use ($update_tables, $update_indexes) {
