@@ -17,8 +17,8 @@ use \DBAL\DbMysqliResultIterator;
  */
 class LogCounterShrinker extends VisitMerger {
   const RESERVE_WEEKS = 0; // How much weeks of logs left unshrinked
-  const BATCH_DELETE_PER_LOOP = 1000;
-  const BATCH_UPDATE_PER_LOOP = 1000;
+  const BATCH_DELETE_PER_LOOP = 10000;
+  const BATCH_UPDATE_PER_LOOP = 10000;
   const BATCH_DELETE_PER_QUERY = 25;
 
   protected $batchSize = 10000;

@@ -1884,8 +1884,25 @@ auro007 - Ботоводство
     $multiplier = 5; // $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
     class PlayerLevelHelper::calcLevels()
 
+[*] DB
+    В таблице `security_player_entry` убрать (?) `device_id` и `browser_id`
+    В таблице `counter` заменить комбинацию полей на ссылку на `security_player_entry`
+
+[*] JSON!!!!
+    - SN::$user_options[PLAYER_OPTION_MENU_SORT] = serialize($this->menu_reorder($menuOrderNew));
+
 
 !!!!!!!!!!!!! Писать в таблицу counter параметры GET запроса в отдельную колонку
+
+
+
+2018-12-22 11:42:20 44a12
+[+] Счётчик
+    Оптимизирована работа счётчика посещений:
+        - Добавлена новая таблица `security_query_strings` для записи параметров запроса
+            - `counter` теперь ссылается на записи в ней, а не на полный URL страницы
+        - Изменена таблица `security_player_entry` - исключён ИД пользователя
+            - `counter` теперь ссылается на записи в ней и не содержит поля с ИД устройства, браузера, IP/прокси
 
 
 2018-12-22 08:27:16 44a10

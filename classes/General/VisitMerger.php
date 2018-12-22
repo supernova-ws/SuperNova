@@ -161,12 +161,13 @@ abstract class VisitMerger {
    * @return string
    */
   protected function calcSignature($logRecord) {
-    return
-      $logRecord->userId . '_' .
-      $logRecord->deviceId . '_' .
-      $logRecord->browserId . '_' .
-      $logRecord->ip . '_' .
-      $logRecord->proxies;
+//    return
+//      $logRecord->userId . '_' .
+//      $logRecord->deviceId . '_' .
+//      $logRecord->browserId . '_' .
+//      $logRecord->ip . '_' .
+//      $logRecord->proxies;
+    return $logRecord->userId . '_'  . $logRecord->playerEntryId;
   }
 
   /**

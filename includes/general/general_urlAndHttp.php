@@ -85,5 +85,10 @@ function sec_player_ip() {
       ),
   );
 
+  // Quick hack to support IPv6 at least on local host
+  if($ip['ip'] == '::1') {
+    $ip['ip'] = '127.0.0.1';
+  }
+
   return array_map('db_escape', $ip);
 }

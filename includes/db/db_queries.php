@@ -1,5 +1,7 @@
 <?php
 
+use DBAL\DbQuery;
+
 require_once('db_helpers.php');
 
 require_once('db_queries_users.php');
@@ -240,24 +242,47 @@ function db_message_insert_all($message_type, $from, $subject, $text)
 /**
  * Хелпер для работы с простыми хэш-таблицами в БД
  *
- * @param string $current_value_unsafe
- * @param string $db_id_field_name
  * @param string $db_table_name
- * @param string $db_value_field_name
+ * @param string $db_id_field_name
+ * @param array  $conditions
  *
  * @return int
  */
-// OK v4
-// TODO - вынести в отдельный класс
-function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $db_table_name, $db_value_field_name) {
-  $current_value_safe = db_escape($current_value_unsafe);
-  $value_id = doquery("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE", true);
-  if(!isset($value_id['id_field']) || !$value_id['id_field']) {
-    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
-    $variable_id = db_insert_id();
+function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditions) {
+  $dbq    = new DbQuery(SN::$gc->db);
+  $record = $dbq
+    ->setTable($db_table_name)
+    ->setWhereArray($conditions)
+    ->setForUpdate()
+    ->doSelectFetch();
+
+  if (empty($record)) {
+    $dbq = new DbQuery(SN::$gc->db);
+    $dbq
+      ->setTable($db_table_name)
+      ->setValues($conditions)
+      ->doInsert();
+
+    $variable_id = SN::$gc->db->db_insert_id();
   } else {
-    $variable_id = $value_id['id_field'];
+    $variable_id = $record[$db_id_field_name];
   }
+
+//  if ($this->forUpdate) {
+//    $dbq->setForUpdate();
+//  }
+//
+//  return static::$db->selectIterator($dbq->select());
+
+
+//  $current_value_safe = db_escape($current_value_unsafe);
+//  $value_id = doquery("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE", true);
+//  if(!isset($value_id['id_field']) || !$value_id['id_field']) {
+//    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
+//    $variable_id = db_insert_id();
+//  } else {
+//    $variable_id = $value_id['id_field'];
+//  }
 
   return $variable_id;
 }

@@ -1,13 +1,13 @@
 {
   "require": {
     "ext-json": "*",
-    "ext-mysql": "*",
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "ext-curl": "*"
   },
   "require-dev": {
     "ext-json": "*",
-    "ext-mysql": "*",
     "ext-mysqli": "*",
+    "ext-curl": "*",
     "phpunit/phpunit": "5.*"
   }
 }

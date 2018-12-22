@@ -1,25 +1,28 @@
 <?php
-/*
- update.php
 
- Automated DB upgrade system
+/** @noinspection SqlResolve */
 
- @package supernova
- @version 26
-
- 25 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
-   [!] Now it's all about transactions...
-   [~] Converted doquery to internal wrapper with logging ability
- 24 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
-   [+] Converted pre v18 entries to use later implemented functions
- v18-v23 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
-   [!] DB code updates
- 17 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
-   [~] PCG1 compliant
-
- v01-v16 copyright (c) 2009-2010 Gorlum for http://supernova.ws
-   [!] DB code updates
-*/
+/**
+ * update.php
+ *
+ * Automated DB upgrade system
+ *
+ * @package supernova
+ * @version 26
+ *
+ * 25 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
+ * [!] Now it's all about transactions...
+ * [~] Converted doquery to internal wrapper with logging ability
+ * 24 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
+ * [+] Converted pre v18 entries to use later implemented functions
+ * v18-v23 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ * [!] DB code updates
+ * 17 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ * [~] PCG1 compliant
+ *
+ * v01-v16 copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ * [!] DB code updates
+ */
 
 if (!defined('INIT')) {
 //  include_once('init.php');
@@ -28,7 +31,7 @@ if (!defined('INIT')) {
 
 define('IN_UPDATE', true);
 
-require('includes/upd_helpers.php');
+require_once 'includes/upd_helpers.php';
 
 global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
@@ -79,9 +82,10 @@ upd_log_message('Table info loaded. Now looking DB for upgrades...');
 upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
 
 
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '1G');
 
 switch ($new_version) {
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 40:
     upd_log_version_update();
 
@@ -200,6 +204,7 @@ switch ($new_version) {
     // 2017-02-03 16:10:49 41b1
     $new_version = 41;
 
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 41:
     upd_log_version_update();
     // 2017-02-07 09:43:45 42a0
@@ -298,6 +303,7 @@ switch ($new_version) {
     upd_do_query('COMMIT;', true);
     $new_version = 42;
 
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 42:
     // 2017-10-11 09:51:49 43a4.3
     upd_alter_table('messages', [
@@ -424,7 +430,7 @@ switch ($new_version) {
         "ADD COLUMN `que_unit_one_time_raw` DECIMAL(20,5) NOT NULL DEFAULT 0",
         empty($update_tables['que']['que_unit_one_time_raw'])
       );
-    }, PATCH_PRE_CHECK);
+    });
 
     upd_do_query('COMMIT;', true);
 
@@ -472,10 +478,128 @@ switch ($new_version) {
           'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
+    });
+
+    // 2018-12-22 11:42:20 44a12
+    updPatchApply(7, function () use ($update_tables, $update_indexes, $config) {
+      // Creating table for HTTP query strings
+      upd_create_table(
+        'security_query_strings',
+        [
+          "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`query_string` varchar(250) CHARACTER SET utf8 NOT NULL DEFAULT ''",
+          "PRIMARY KEY (`id`)",
+          "UNIQUE KEY `I_query_string` (`query_string`)",
+        ],
+        'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+      );
+
+      // Adjusting table `counter` to use HTTP query string instead of full URLs
+      upd_alter_table('counter', [
+        "DROP COLUMN `plain_url_id`",
+        "DROP KEY `I_counter_plain_url_id`",
+
+        "ADD COLUMN `query_string_id` bigint(20) unsigned DEFAULT NULL AFTER `page_url_id`",
+        "ADD KEY `I_counter_query_string_id` (`query_string_id`)",
+
+        "ADD COLUMN `player_entry_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
+        "ADD KEY `I_counter_player_entry_id` (`player_entry_id`)",
+
+        "DROP KEY `I_counter_device_id`",
+        "ADD KEY `I_counter_device_id` (device_id, browser_id, user_ip, user_proxy)",
+      ], empty($update_tables['counter']['query_string_id']));
+
+      // Adjusting `security_player_entry` to match new structure
+      upd_alter_table('security_player_entry', [
+        // Adding temporary key for `player_id` field - needs for FOREIGN KEY
+        "ADD KEY `I_player_entry_player_id` (`player_id`)",
+        // Replacing primary index with secondary one
+        "DROP PRIMARY KEY",
+
+        // Adding main index column
+        "ADD COLUMN `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT FIRST",
+        "ADD PRIMARY KEY (`id`)",
+      ], empty($update_tables['security_player_entry']['id']));
+
+      if (!empty($update_tables['counter']['device_id'])) {
+        $oldLockTime           = $config->upd_lock_time;
+        $config->upd_lock_time = 60;
+
+        upd_drop_table('spe_temp');
+        upd_create_table(
+          'spe_temp',
+          [
+            "`device_id` bigint(20) unsigned NOT NULL DEFAULT '0'",
+            "`browser_id` bigint(20) unsigned NOT NULL DEFAULT '0'",
+            "`user_ip` int(10) unsigned NOT NULL DEFAULT '0'",
+            "`user_proxy` varchar(255) COLLATE latin1_bin NOT NULL DEFAULT ''",
+            "`first_visit` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+
+            "UNIQUE KEY `I_temp_key` (`device_id`,`browser_id`,`user_ip`,`user_proxy`)",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+        // Repopulating temp table with records with `user_id` == NULL
+        upd_do_query(
+          "INSERT IGNORE INTO `{{spe_temp}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
+          SELECT `device_id`, `browser_id`, `user_ip`, `user_proxy`, min(`first_visit`) 
+          FROM `{{security_player_entry}}`
+          GROUP BY `device_id`, `browser_id`, `user_ip`, `user_proxy`"
+        );
+        // Populating temp table with data from `counter`
+        upd_do_query(
+          "INSERT IGNORE INTO `{{spe_temp}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
+          SELECT `device_id`, `browser_id`, `user_ip`, `user_proxy`, min(`visit_time`)
+          FROM `{{counter}}`
+          GROUP BY `device_id`, `browser_id`, `user_ip`, `user_proxy`"
+        );
+
+        // Deleting all records from `security_player_entry`
+        upd_do_query("TRUNCATE TABLE `{{security_player_entry}}`;");
+        // Adding unique index for all significant fields
+        upd_alter_table('security_player_entry', [
+          "ADD UNIQUE KEY `I_player_entry_unique` (`device_id`, `browser_id`, `user_ip`, `user_proxy`)",
+        ], empty($update_indexes['security_player_entry']['I_player_entry_unique']));
+        // Filling `security_player_entry` from temp table
+        upd_do_query(
+          "INSERT IGNORE INTO `{{security_player_entry}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
+          SELECT `device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`
+          FROM `{{spe_temp}}`"
+        );
+        // Dropping temp table - it has no use anymore
+        upd_drop_table('spe_temp');
+
+        // Updating counter to match player entries
+        upd_do_query(
+          "UPDATE `{{counter}}` AS c
+          LEFT JOIN `{{security_player_entry}}` AS spe
+            ON spe.device_id = c.device_id AND spe.browser_id = c.browser_id
+                AND spe.user_ip = c.user_ip AND spe.user_proxy = c.user_proxy
+        SET c.player_entry_id = spe.id"
+        );
+
+        upd_alter_table('security_player_entry', [
+          // Removing unused field `security_player_entry`.`player_id`
+          "DROP COLUMN `player_id`",
+          // Removing index which is superseded by new index `I_player_entry_unique`
+          "DROP KEY `I_player_entry_device_id`",
+        ], !empty($update_indexes['security_player_entry']['I_player_entry_device_id']));
+
+        // Remove unused fields from `counter` table
+        upd_alter_table('counter', [
+          "DROP COLUMN `device_id`",
+          "DROP COLUMN `browser_id`",
+          "DROP COLUMN `user_ip`",
+          "DROP COLUMN `user_proxy`",
+        ], !empty($update_tables['counter']['device_id']));
+
+        $config->upd_lock_time = $oldLockTime;
+      }
     }, PATCH_PRE_CHECK);
 
+
 //    // #ctv
-//    updPatchApply(7, function() use ($update_tables) {
+//    updPatchApply(8, function() use ($update_tables, $update_indexes) {
 //    }, PATCH_PRE_CHECK);
 
 //    $new_version = 44;
@@ -488,7 +612,7 @@ SN::$cache->unset_by_prefix('lng_');
 
 if ($new_version) {
   $config->db_saveItem('db_version', $new_version);
-  upd_log_message("<font color=green>DB version is now {$new_version}</font>");
+  upd_log_message("<span style='color: green;'>DB version is now {$new_version}</span>");
 } else {
   upd_log_message("DB version didn't changed from {$config->db_version}");
 }

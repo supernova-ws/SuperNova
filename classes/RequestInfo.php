@@ -50,17 +50,24 @@ class RequestInfo {
   public $page_address_id = 0;
 
   /**
-   * Короткий УРЛ - без параметров
+   * Query param
    *
-   * @var string
+   * @var string $queryString
    */
-  protected $page_url = '';
+  protected $queryString = '';
   /**
-   * ID короткого УРЛа в таблице УРЛов
+   * Query param ID
    *
    * @var int
    */
-  public $page_url_id = 0;
+  public $queryStringId = 0;
+
+  /**
+   * Player entry ID - pointer to combination of player ID, device ID, browser ID, user IP, user proxy
+   *
+   * @var int $playerEntryId
+   */
+  protected $playerEntryId = 0;
 
   /**
    * Адрес IPv4 в виде строки
@@ -89,18 +96,18 @@ class RequestInfo {
     // Инфа об устройстве и браузере - общая для всех
     sn_db_transaction_start();
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
-    if($this->device_cypher) {
+    if ($this->device_cypher) {
       $cypher_safe = db_escape($this->device_cypher);
-      $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
-      if(!empty($device_id['device_id'])) {
+      $device_id   = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+      if (!empty($device_id['device_id'])) {
         $this->device_id = $device_id['device_id'];
       }
     }
 
-    if($this->device_id <= 0) {
+    if ($this->device_id <= 0) {
       do {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
-        $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+        $row         = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
       doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = db_insert_id();
@@ -109,54 +116,86 @@ class RequestInfo {
     sn_db_transaction_commit();
 
     sn_db_transaction_start();
-    $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
-    $this->browser_id = db_get_set_unique_id_value($_SERVER['HTTP_USER_AGENT'], 'browser_id', 'security_browser', 'browser_user_agent');
+    $this->browser_id = db_get_set_unique_id_value(
+      'security_browser',
+      'browser_id',
+      ['browser_user_agent' => $this->user_agent = $_SERVER['HTTP_USER_AGENT'],]
+    );
     sn_db_transaction_commit();
 
     sn_db_transaction_start();
-    $this->page_address = substr($_SERVER['PHP_SELF'], strlen(SN_ROOT_RELATIVE));
-    $this->page_address_id = db_get_set_unique_id_value($this->page_address, 'url_id', 'security_url', 'url_string');
+    $this->page_address_id = db_get_set_unique_id_value(
+      'security_url',
+      'url_id',
+      ['url_string' => $this->page_address = substr($_SERVER['PHP_SELF'], strlen(SN_ROOT_RELATIVE)),]
+    );
     sn_db_transaction_commit();
 
-    if($this->write_full_url) {
+    // Not a simulator - because it can have loooooong string
+    if (strpos($_SERVER['REQUEST_URI'], '/simulator.php') !== 0) {
       sn_db_transaction_start();
-      $this->page_url = substr($_SERVER['REQUEST_URI'], strlen(SN_ROOT_RELATIVE));
-      if(strpos($_SERVER['REQUEST_URI'], '/simulator.php') === 0) {
-        $this->page_url = '/simulator.php';
-      }
-      $this->page_url_id = db_get_set_unique_id_value($this->page_url, 'url_id', 'security_url', 'url_string');
+      $this->queryStringId = db_get_set_unique_id_value(
+        'security_query_strings',
+        'id',
+        ['query_string' => $this->queryString = $_SERVER['QUERY_STRING'],]
+      );
       sn_db_transaction_commit();
     }
 
-    $ip = sec_player_ip();
-    $this->ip_v4_string = $ip['ip'];
-    $this->ip_v4_int = ip2longu($this->ip_v4_string);
+    $ip                      = sec_player_ip();
+    $this->ip_v4_string      = $ip['ip'];
+    $this->ip_v4_int         = ip2longu($this->ip_v4_string);
     $this->ip_v4_proxy_chain = $ip['proxy_chain'];
+
+    sn_db_transaction_start();
+    $this->playerEntryId = db_get_set_unique_id_value(
+      'security_player_entry',
+      'id',
+      [
+        'device_id'  => $this->device_id,
+        'browser_id' => $this->browser_id,
+        'user_ip'    => $this->ip_v4_int,
+        'user_proxy' => $this->ip_v4_proxy_chain,
+      ]
+    );
+    sn_db_transaction_commit();
+
   }
 
   /**
    * Вставляет запись системы безопасности
    *
-   * @param $user_id_unsafe
+   * @param $userId
    *
-   * @return array|bool|mysqli_result|null
-   *
+   * @return int
+   * @deprecated
    */
-  public function db_security_entry_insert($user_id_unsafe) {
+  // TODO - remove
+  public function db_security_entry_insert($userId) {
     // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
-    if(empty($user_id_unsafe)) {
+    if (empty($userId)) {
       // self::flog('Нет ИД пользователя');
       return true;
     }
 
-    $user_id_safe = round(floatval($user_id_unsafe));
+    sn_db_transaction_start();
+    $pEntry = db_get_set_unique_id_value(
+      'security_player_entry',
+      'id',
+      [
+//        'player_id'  => $userId,
+        'device_id'  => $this->device_id,
+        'browser_id' => $this->browser_id,
+        'user_ip'    => $this->ip_v4_int,
+        'user_proxy' => $this->ip_v4_proxy_chain,
+      ]
+    );
+    sn_db_transaction_commit();
+
+    return $pEntry;
+
 
     // self::flog('Вставляем запись системы безопасности');
-    return doquery(
-      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-        VALUES ({$user_id_safe}," . $this->device_id . "," . $this->browser_id . "," .
-      $this->ip_v4_int . ", '" . db_escape($this->ip_v4_proxy_chain) . "');"
-    );
   }
 
   /**
@@ -167,31 +206,27 @@ class RequestInfo {
   public function db_counter_insert($user_id_unsafe) {
     global $config, $sys_stop_log_hit, $is_watching;
 
-    if($sys_stop_log_hit || !$config->game_counter) {
+    if ($sys_stop_log_hit || !$config->game_counter) {
       return;
     }
 
     $user_id_safe = db_escape($user_id_unsafe);
-    $proxy_safe = db_escape($this->ip_v4_proxy_chain);
+    $proxy_safe   = db_escape($this->ip_v4_proxy_chain);
 
     $is_watching = true;
-//    doquery(
-//      "INSERT INTO {{counter}}
-//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-//        VALUES
-//          ('" . SN_TIME_SQL. "', {$user_id_safe}, " . $this->device_id . "," . $this->browser_id . ", " .
-//      $this->ip_v4_int . ", '{$proxy_safe}', " . $this->page_address_id . ", " . $this->page_url_id . ");");
     doquery(
       "INSERT INTO {{counter}} SET
-        `visit_time` = '" . SN_TIME_SQL. "',
+        `visit_time` = '" . SN_TIME_SQL . "',
         `user_id` = {$user_id_safe},
-        `device_id` = {$this->device_id},
-        `browser_id` = {$this->browser_id},
-        `user_ip` = {$this->ip_v4_int},
-        `user_proxy` = '{$proxy_safe}',
-        `page_url_id` = {$this->page_address_id}" .
-        ($this->write_full_url ? ", `plain_url_id` = {$this->page_url_id}" : '' ).
+        `player_entry_id` = {$this->playerEntryId},
+        `page_url_id` = {$this->page_address_id},
+        `query_string_id` = {$this->queryStringId}" .
       ";");
+
+//    `device_id` = {$this->device_id},
+//        `browser_id` = {$this->browser_id},
+//        `user_ip` = {$this->ip_v4_int},
+//        `user_proxy` = '{$proxy_safe}',
 
     $is_watching = false;
   }

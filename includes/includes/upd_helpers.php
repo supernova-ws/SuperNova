@@ -359,7 +359,7 @@ function updPatchApply($patchId, $callable, $preCheck = PATCH_REGISTER) {
   if (!updPatchExists($patchId)) {
     $callable();
 
-    if (!$preCheck) {
+    if ($preCheck == PATCH_REGISTER) {
       updPatchRegister($patchId);
     }
   }
