@@ -24,7 +24,8 @@ function sn_options_model() {
   sys_user_options_unpack($user);
 
   $savedOk = false;
-  if (sys_get_param_str('mode') == 'change') {
+//  if (sys_get_param_str('mode') == 'change') {
+  if (sys_get_param_str('save_settings')) {
     if (!is_array($template_result['.']['result'])) {
       $template_result['.']['result'] = [];
     }
