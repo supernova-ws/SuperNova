@@ -594,6 +594,9 @@ switch ($new_version) {
 
         // Remove unused fields from `counter` table
         upd_alter_table('counter', [
+          "DROP KEY `I_counter_user_id`",
+          "ADD KEY `I_counter_user_id` (`user_id`, `player_entry_id`)",
+
           "DROP FOREIGN KEY `FK_counter_device_id`",
           "DROP KEY `I_counter_device_id`",
           "DROP COLUMN `device_id`",
