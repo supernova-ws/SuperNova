@@ -504,7 +504,7 @@ switch ($new_version) {
         "ADD KEY `I_counter_query_string_id` (`query_string_id`)",
 
         "ADD COLUMN `player_entry_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
-        "ADD KEY `I_counter_player_entry_id` (`player_entry_id`)",
+        "ADD KEY `I_counter_player_entry_id` (`player_entry_id`, `user_id`)",
 
         "DROP KEY `I_counter_device_id`",
         "ADD KEY `I_counter_device_id` (device_id, browser_id, user_ip, user_proxy)",
@@ -584,20 +584,8 @@ switch ($new_version) {
         SET c.player_entry_id = spe.id"
         );
 
-//        upd_alter_table('security_player_entry', [
-//          "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
-//        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_player_id']));
-//
-//        upd_alter_table('security_player_entry', [
-//          "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
-//        ], !empty($update_foreigns['security_player_entry']['FK_security_player_entry_device_id']));
-
         upd_alter_table('security_player_entry', [
-          // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
-//          "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
-//          "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
 //          "DROP KEY `I_player_entry_device_id`",
-
           "DROP KEY `I_player_entry_device_id`",
           "DROP KEY `I_player_entry_player_id`",
           // Removing unused field `security_player_entry`.`player_id`
@@ -617,6 +605,11 @@ switch ($new_version) {
           "DROP COLUMN `user_ip`",
           "DROP COLUMN `user_proxy`",
         ], !empty($update_tables['counter']['device_id']));
+
+//        upd_alter_table('counter', [
+//          "DROP KEY `I_counter_user_id`",
+//          "ADD KEY `I_counter_user_id` (`user_id`, `player_entry_id`)",
+//        ], !empty($update_tables['counter']['device_id']));
 
         $config->upd_lock_time = $oldLockTime;
       }
