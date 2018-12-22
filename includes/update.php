@@ -585,10 +585,11 @@ switch ($new_version) {
         );
 
         upd_alter_table('security_player_entry', [
-          // Removing unused field `security_player_entry`.`player_id`
-          "DROP COLUMN `player_id`",
+          "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
           // Removing index which is superseded by new index `I_player_entry_unique`
           "DROP KEY `I_player_entry_device_id`",
+          // Removing unused field `security_player_entry`.`player_id`
+          "DROP COLUMN `player_id`",
         ], !empty($update_indexes['security_player_entry']['I_player_entry_device_id']));
 
         // Remove unused fields from `counter` table
@@ -607,7 +608,6 @@ switch ($new_version) {
     upd_alter_table('security_player_entry', [
       // Foreign keys is not needed - we want to maintain info about player entries even if dictionary info is deleted
       "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
-      "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
       "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
     ], empty($update_foreigns['security_player_entry']['FK_security_player_entry_browser_id']));
 
