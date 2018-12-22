@@ -595,12 +595,18 @@ switch ($new_version) {
           "DROP KEY `I_player_entry_player_id`",
           // Removing unused field `security_player_entry`.`player_id`
           "DROP COLUMN `player_id`",
-        ], !empty($update_indexes['security_player_entry']['I_player_entry_player_id']));
+        ], !empty($update_tables['security_player_entry']['player_id']));
 
         // Remove unused fields from `counter` table
         upd_alter_table('counter', [
+          "DROP FOREIGN KEY `FK_counter_device_id`",
+          "DROP KEY `I_counter_device_id`",
           "DROP COLUMN `device_id`",
+
+          "DROP FOREIGN KEY `FK_counter_browser_id`",
+          "DROP KEY `I_counter_browser_id`",
           "DROP COLUMN `browser_id`",
+
           "DROP COLUMN `user_ip`",
           "DROP COLUMN `user_proxy`",
         ], !empty($update_tables['counter']['device_id']));
