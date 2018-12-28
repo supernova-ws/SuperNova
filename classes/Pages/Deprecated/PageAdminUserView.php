@@ -192,6 +192,10 @@ class PageAdminUserView extends PageDeprecated {
   public static function modelStatic($template = null) {
     global $user;
 
+    define('IN_ADMIN', true);
+
+    messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+
     $user_id = sys_get_param_id('uid');
     if (!($user_row = db_user_by_id($user_id))) {
       return $template;

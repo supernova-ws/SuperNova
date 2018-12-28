@@ -7,6 +7,12 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use Pages\Deprecated\PageAdminMining;
+use Pages\Deprecated\PageAdminModules;
+use Pages\Deprecated\PageAdminPayment;
+use Pages\Deprecated\PageAdminUserView;
+use Pages\Deprecated\PageImperium;
+
 if (!defined('INSIDE')) {
   die('Hack attempt!');
 }
@@ -25,9 +31,9 @@ $sn_mvc = [
     'chat'     => ['sn_chat_model'],
     'chat_add' => ['sn_chat_add_model'],
 
-    'imperium' => [\Pages\Deprecated\PageImperium::class . '::' . 'modelStatic'],
+    'imperium' => [PageImperium::class . '::' . 'modelStatic'],
 
-    'admin/user_view'  => [\Pages\Deprecated\PageAdminUserView::class . '::' . 'modelStatic'],
+    'admin/user_view'  => [PageAdminUserView::class . '::' . 'modelStatic'],
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
@@ -39,14 +45,14 @@ $sn_mvc = [
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
-    'imperium'      => [\Pages\Deprecated\PageImperium::class . '::' . 'viewStatic'],
+    'imperium'      => [PageImperium::class . '::' . 'viewStatic'],
     'techtree'      => ['sn_techtree_view'],
 
-    'admin/user_view'     => [\Pages\Deprecated\PageAdminUserView::class . '::viewStatic'],
+    'admin/user_view'     => [PageAdminUserView::class . '::viewStatic'],
     'admin/admin_ally'    => ['sn_admin_ally_view'],
-    'admin/admin_mining'  => [\Pages\Deprecated\PageAdminMining::class . '::' . 'viewStatic'],
-    'admin/admin_modules' => [\Pages\Deprecated\PageAdminModules::class . '::' . 'viewStatic'],
-    'admin/admin_payment' => [\Pages\Deprecated\PageAdminPayment::class . '::' . 'viewStatic'],
+    'admin/admin_mining'  => [PageAdminMining::class . '::' . 'viewStatic'],
+    'admin/admin_modules' => [PageAdminModules::class . '::' . 'viewStatic'],
+    'admin/admin_payment' => [PageAdminPayment::class . '::' . 'viewStatic'],
   ],
 
   // For now - common for same VIEW and MODEL

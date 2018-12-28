@@ -1,3 +1,4 @@
+<!--suppress HtmlUnknownAttribute -->
 <style type="text/css">
   .activity
   {
@@ -21,6 +22,16 @@
     width: 34em;
   }
 
+  .activity .day > div > div
+  {
+    padding: 0;
+    border: 0;
+    margin-left: 25%;
+    width: 50%;
+    background-color: red
+  }
+
+  /*noinspection CssUnusedSymbol*/
   .activity .weekend
   {
     color: red;
@@ -73,8 +84,13 @@
     <!-- DEFINE $MINUTES = '' -->
     <!-- ENDIF -->
 
+    <div title="{hourly.TIME}{$MINUTES}" class="{hourly.TIME_CLASS}">
+      <!-- IF hourly.MINUTES -->
+      <div style="height: {hourly.LENGTH_PERCENT}%;">
 
-    <div title="{hourly.TIME}{$MINUTES}" class="{hourly.TIME_CLASS}">&nbsp;</div>
+      </div>
+      <!-- ENDIF -->
+    </div>
 
     <!-- IF hourly.CLOSE_DAY -->
   </div>
@@ -83,6 +99,5 @@
 
   <!-- BEGINELSE hourly -->
   <h2>{ Нет активности у указанного игрока }</h2>
-
   <!-- END hourly -->
 </div>

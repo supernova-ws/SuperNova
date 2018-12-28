@@ -1,6 +1,8 @@
 <?php
 /** @noinspection SqlResolve */
 
+ini_set('memory_limit', '512M');
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
@@ -9,33 +11,15 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
-
-//require_once "../includes/init.php";
 //messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-ini_set('memory_limit', '512M');
 
 $userId = sys_get_param_id('id');
 
 $template = gettemplate('admin/admin_user_activity');
-
 visualize($userId);
-
 $template->assign_recursive($template_result);
-
-//var_dump($template_result);
-
 display($template, "Активность игрока [{$userId}] {$template_result['USER_NAME']}");
-
-//$userId = 7222945; // Parviz
-# $userId = 7123683; // auro007
-# $userId = 2;
-
-// visualize(7222945); // Parviz
-//visualize(7123683); // auro007
-
-// visualize(7006539); // [7006539] Ночной Дозор
 
 function visualize($userId) {
   global $template_result;
@@ -57,18 +41,14 @@ function visualize($userId) {
   $user = SN::$db->doQueryAndFetch("SELECT `username` FROM `{{users}}` WHERE `id` = {$userIdSafe}");
 
   $template_result += [
-    'RECORDS' => count($iter),
-    'USER_ID' => $userId,
+    'RECORDS'   => count($iter),
+    'USER_ID'   => $userId,
     'USER_NAME' => $user['username'],
   ];
-
-//  $template_result['USER_ID']   = $userId;
-//  $template_result['RECORDS']   = count($iter);
 
   if (!count($iter)) {
     return;
   }
-
 
   $from = null;
   $to   = null;
@@ -103,6 +83,8 @@ function visualize($userId) {
   }
 
   $template_result += [
+    'PERIOD' => $activityPeriod,
+
     'DATE_FROM' => $from,
     'DATE_TO'   => $to,
   ];
@@ -144,10 +126,13 @@ function visualize($userId) {
       $dayOpened = 0;
     }
 
-    $toTemplate[] = [
-      'TIME'       => date(FMT_TIME, $hour),
-      'MINUTES'    => round($length / PERIOD_MINUTE, 1),
-      'TIME_CLASS' => $length ? 'present' : 'none',
+    $lengthPercent = $length / $activityPeriod * 100;
+    $toTemplate[]  = [
+      'TIME'           => date(FMT_TIME, $hour),
+      'LENGTH'         => $length,
+      'LENGTH_PERCENT' => $lengthPercent > 100 ? 100 : $lengthPercent,
+      'MINUTES'        => round($length / PERIOD_MINUTE, 1), // unused?
+      'TIME_CLASS'     => $length ? 'present' : 'none',
 
       'OPEN_DAY'  => $openDay,
       'CLOSE_DAY' => $closeDay,
