@@ -1,0 +1,88 @@
+<style type="text/css">
+  .activity
+  {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+  }
+
+  .activity.header
+  {
+    font-size: 150%;
+  }
+
+  .activity .day
+  {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 34em;
+  }
+
+  .activity .weekend
+  {
+    color: red;
+  }
+
+  .activity .none, .activity .present
+  {
+    display: inline-block;
+    height: 1.5em;
+    width: 1em;
+    background-color: black;
+    border: 1px solid white;
+  }
+
+  .activity .present
+  {
+    background-color: white;
+    border-color: black;
+  }
+</style>
+
+<h1>Активность игрока [{USER_ID}] {USER_NAME}</h1>
+<!-- IF DATE_TO --><h2>с {DATE_TO} по {DATE_FROM}</h2><!-- ENDIF -->
+
+<div class="activity header">
+  <div class="none"></div>&nbsp;- Нет активности&nbsp;
+  <div class="present"></div>&nbsp;- Есть активность
+</div><br/>
+
+<h3>Навестись мышкой на квадрат - время и длительность (если есть активность)</h3>
+
+{ Records found: } {RECORDS}<br/><br/>
+
+<!-- DEFINE $DAY_OPENED = 0 -->
+<!-- DEFINE $FIRST_DAY = ' style="justify-content: flex-end;"' -->
+
+<div class="activity">
+  <!-- BEGIN hourly -->
+
+  <!-- IF hourly.OPEN_DAY -->
+  <div class="day" {$FIRST_DAY}>
+    <span class='{hourly.DAY_CLASS}'>{hourly.DATE}</span>
+    <!-- DEFINE $FIRST_DAY = '' -->
+    <!-- DEFINE $DAY_OPENED = 1 -->
+    <!-- ENDIF -->
+
+    <!-- IF hourly.MINUTES -->
+    <!-- DEFINE $MINUTES = ' - {hourly.MINUTES}m' -->
+    <!-- ELSE -->
+    <!-- DEFINE $MINUTES = '' -->
+    <!-- ENDIF -->
+
+
+    <div title="{hourly.TIME}{$MINUTES}" class="{hourly.TIME_CLASS}">&nbsp;</div>
+
+    <!-- IF hourly.CLOSE_DAY -->
+  </div>
+  <!-- DEFINE $DAY_OPENED = 0 -->
+  <!-- ENDIF -->
+
+  <!-- BEGINELSE hourly -->
+  <h2>{ Нет активности у указанного игрока }</h2>
+
+  <!-- END hourly -->
+</div>
