@@ -297,6 +297,17 @@ const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_1ST = 2342; // Лучший Гос�
 const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_2ND = 2343; // Лучший Гость - День Рождения СН - 2018
 const UNIT_AWARD_MEMORY_SUPER_BORN_2018_BEST_3RD = 2344; // Лучший Гость - День Рождения СН - 2018
 
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_SIMPLE   = 2345; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_BRONZE   = 2346; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_SILVER   = 2347; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_GOLD     = 2348; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_PLATINUM = 2349; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_DIAMOND  = 2350; // СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_BEST_1ST = 2351; // Лучший Гость - СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_BEST_2ND = 2352; // Лучший Гость - СуперНовый Год - 2019
+const UNIT_AWARD_MEMORY_NEW_YEAR_2019_BEST_3RD = 2353; // Лучший Гость - СуперНовый Год - 2019
+
+
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
 define('UNIT_AWARD_BADGE_BLITZ', 2601); // Медали за Блиц-сервер
