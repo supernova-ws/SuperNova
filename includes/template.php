@@ -288,16 +288,20 @@ function sn_display($page, $title = '') {
     /**
      * @var template $page_item
      */
-    if (!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
+    if (
+      !$result_added
+      && is_object($page_item)
+      && (
+        isset($page_item->_tpldata['result'])
+        ||
+        !empty($template_result['.']['result'])
+      )
+    ) {
       $resultTemplate = gettemplate('_result_message');
+
       $resultTemplate->_tpldata = $page_item->_tpldata;
+      $resultTemplate->assign_recursive($template_result);
       displayP($resultTemplate);
-//      $page_item = gettemplate('_result_message', $page_item);
-//      $temp = $page_item->files['_result_message'];
-//      unset($page_item->files['_result_message']);
-//      $page_item->files = array_reverse($page_item->files);
-//      $page_item->files['_result_message'] = $temp;
-//      $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
 //    $page_item->assign_recursive($template_result);
@@ -1102,4 +1106,28 @@ function tplAddPlus($value) {
  */
 function tplPrettyPlus($value) {
   return ($value >= 0 ? '+' : '') . HelperString::numberFloorAndFormat($value);
+}
+
+/**
+ * Add message to result box
+ *
+ * If $template specified - message would be added to template supplied. Otherwise - to $template_result
+ *
+ * @param string $message
+ * @param int    $status
+ * @param null   $template
+ */
+function tplAddResult($message, $status = ERR_NONE, $template = null) {
+  global $template_result;
+
+  $block = [
+    'STATUS' => $status,
+    'MESSAGE' => $message,
+  ];
+
+  if($template instanceof template) {
+    $template->assign_block_vars('result', $block);
+  } else {
+    $template_result['.']['result'][] = $block;
+  }
 }

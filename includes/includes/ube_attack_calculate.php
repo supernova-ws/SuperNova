@@ -238,8 +238,9 @@ function sn_ube_combat_result_apply(&$combat_data) {
 
   // TODO: Связать сабы с флотами констраинтами ON DELETE SET NULL
   if (!empty($db_save[UBE_FLEET_GROUP])) {
+    DbFleetStatic::dbAcsDelete($db_save[UBE_FLEET_GROUP]);
+
     $db_save[UBE_FLEET_GROUP] = implode(',', $db_save[UBE_FLEET_GROUP]);
-    doquery("DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
   }
 
   if ($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {

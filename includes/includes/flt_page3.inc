@@ -128,7 +128,7 @@ function sn_fleet_page3() {
     $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
     if($_POST['acs_target_mr'] == $target) {
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
+      $aks = DbFleetStatic::dbAcsGetById($fleet_group);
       if (!$aks) {
         $fleet_group = 0;
       }

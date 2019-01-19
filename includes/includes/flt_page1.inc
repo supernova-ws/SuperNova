@@ -4,6 +4,7 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 
 if(SN_IN_FLEET !== true) {
@@ -100,7 +101,7 @@ if(count($colonies) > 1) {
 
 //ACS Start
 //Need to look for acs attacks.
-$aks_madnessred = doquery('SELECT * FROM {{aks}};');
+$aks_madnessred = DbFleetStatic::dbAcsGetAll();
 while($row = db_fetch($aks_madnessred)) {
   $members = explode(',', $row['eingeladen']);
   foreach($members as $a => $b) {

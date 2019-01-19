@@ -127,7 +127,7 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
   }
 
   if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == MT_AKS) {
-    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", true);
+    $aks = DbFleetStatic::dbAcsGetById($fleet['fleet_group']);
   }
 
   $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : GetSpyLevel($user);

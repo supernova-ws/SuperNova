@@ -351,10 +351,10 @@ const GROUP_UNIT_OBJECTS_IN_SPACE = 790002;
 
 
 define('GROUP_PART',         800000); // Зарезервировано для запчастей: 800.001 - 899.999
-// define('GROUP_PART_HULL',    801000); // Корпуса - 1000 штук
-// define('GROUP_PART_ARMOR',   802000); // Броня - 1000 штук
-// define('GROUP_PART_SHIELD',  803000); // Щиты - 1000 штук
-// define('GROUP_PART_WEAPON',  810000); // Оружие - 10000 штук
+ define('GROUP_PART_HULL',    801000); // Корпуса - 1000 штук
+ define('GROUP_PART_ARMOR',   802000); // Броня - 1000 штук
+ define('GROUP_PART_SHIELD',  803000); // Щиты - 1000 штук
+ define('GROUP_PART_WEAPON',  810000); // Оружие - 10000 штук
 
 
 define('UNIT_GROUP', 'groups'); // 900.000 // Зарезервировано для груп юнитов: 900.001 - 999.999

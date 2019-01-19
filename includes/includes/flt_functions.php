@@ -64,7 +64,17 @@ function flt_get_max_distance($ship_id, $speed_percent = 100, $shipsData = []) {
     return 0;
   }
 
-  return $distance = floor(($single_ship_data['capacity'] - 1) / $single_ship_data['consumption'] / pow($speed_percent / 100 + 1, 2) * 35000);
+  return $distance = calcDistance($speed_percent, $single_ship_data);
+}
+
+/**
+ * @param $speed_percent
+ * @param $single_ship_data
+ *
+ * @return float
+ */
+function calcDistance($speed_percent, $single_ship_data) {
+  return floor(($single_ship_data['capacity'] - 1) / $single_ship_data['consumption'] / pow($speed_percent / 100 + 1, 2) * 35000);
 }
 
 
@@ -233,15 +243,11 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
   //TODO: try..catch
   global $config, $user;
 
+  !is_array($options) ? $options = [] : false;
+
   if ($user['vacation']) {
     return $result = ATTACK_OWN_VACATION;
   }
-
-  if (empty($fleet) || !is_array($fleet)) {
-    return $result = ATTACK_NO_FLEET;
-  }
-
-  !is_array($options) ? $options = [] : false;
 
   $sn_groups_mission = sn_get_groups('missions');
   if (!isset($sn_groups_mission[$mission])) {
@@ -257,6 +263,11 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
 
   // TODO: В ракетных миссиях могут лететь только ракеты
   // TODO: В неракетных миссиях ракеты должны отсутствовать
+
+  if (empty($fleet) || !is_array($fleet)) {
+    return $result = ATTACK_NO_FLEET;
+  }
+
   $ships = 0;
   $recyclers = 0;
   $spies = 0;
@@ -266,10 +277,10 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
   foreach ($fleet as $ship_id => $ship_count) {
     $is_ship = in_array($ship_id, $ship_ids);
     $is_resource = in_array($ship_id, $resource_ids);
-    if (!$is_ship && !$is_resource) {
-      // TODO Спецобработчик для Капитана и модулей
+//    if (!$is_ship && !$is_resource) {
+//      // TODO Спецобработчик для Капитана и модулей
 //      return ATTACK_WRONG_UNIT;
-    }
+//    }
 
     if ($ship_count < 0) {
       return $result = $is_ship ? ATTACK_SHIP_COUNT_WRONG : ATTACK_RESOURCE_COUNT_WRONG;
@@ -296,12 +307,6 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
   if (empty($resources) && !empty($options[P_FLEET_ATTACK_RES_LIST]) && is_array($options[P_FLEET_ATTACK_RES_LIST])) {
     $resources = array_sum($options[P_FLEET_ATTACK_RES_LIST]);
   }
-
-  /*
-    if($ships < 1) {
-      return ATTACK_NO_FLEET;
-    }
-  */
 
   if (
     isset($options[P_FLEET_ATTACK_RESOURCES_SUM])
@@ -346,7 +351,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
       return $result = ATTACK_WRONG_MISSION;
     };
 
-    $acs = doquery("SELECT * FROM `{{aks}}` WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
+    $acs = DbFleetStatic::dbAcsGetById($fleet_group);
     if (!$acs['id']) {
       return $result = ATTACK_NO_ACS;
     }
@@ -357,6 +362,10 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
 
     if ($fleet_start_time > $acs['ankunft']) {
       return $result = ATTACK_ACS_TOO_LATE;
+    }
+
+    if(DbFleetStatic::acsIsAcsFull($acs['id'])) {
+      return $result = ATTACK_ACS_MAX_FLEETS;
     }
   }
 

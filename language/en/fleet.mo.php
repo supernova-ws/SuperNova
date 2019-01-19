@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 44a35
 *
 */
 
@@ -203,6 +203,8 @@ $a_lang_array = (array(
   'fl_aks_adding_error' => 'Error adding party to fleet:<br>%s',
   'fl_aks_hack_wrong_fleet' => 'Hacking attempt! Manipulation of the alien fleet Message sent to Administrator!',
   'fl_aks_too_slow' => 'Fleet is too slow and could not join the war Union',
+  'fl_aks_too_power' => 'Adding this player will make ACS too strong to attack target',
+  'fl_aks_full' => 'Maximum fleet number in one ACS reached',
   'fl_fleet_not_exists' => 'The fleet was not found',
   'fl_multi_ip_protection' => 'Protection against multi-accounts!<br>Unable to send resources to the player with same IP!',
   'fl_load_cargo' => 'Storage',

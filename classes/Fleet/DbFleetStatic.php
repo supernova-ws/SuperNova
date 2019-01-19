@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection SqlResolve */
+
 /**
  * Created by Gorlum 26.04.2018 14:00
  */
@@ -6,7 +7,9 @@
 namespace Fleet;
 
 use DBAL\DbQuery;
+use Exception;
 use mysqli_result;
+use SN;
 
 /**
  * Class DbFleetStatic
@@ -52,7 +55,7 @@ class DbFleetStatic {
    * Updates fleet record by ID with SET
    *
    * @param int   $fleet_id
-   * @param array $set - REPLACE-set, i.e. replacement of existing values
+   * @param array $set   - REPLACE-set, i.e. replacement of existing values
    * @param array $delta - DELTA-set, i.e. changes to existing values
    *
    * @return array|bool|mysqli_result|null
@@ -60,7 +63,7 @@ class DbFleetStatic {
   public static function fleet_update_set($fleet_id, $set, $delta = array()) {
     $result = false;
 
-    $fleet_id_safe = idval($fleet_id);
+    $fleet_id_safe   = idval($fleet_id);
     $set_string_safe = db_set_make_safe_string($set);
     !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
     if (!empty($fleet_id_safe) && !empty($set_string_safe)) {
@@ -82,6 +85,7 @@ class DbFleetStatic {
     $fleet_id_safe = idval($fleet_id);
     if (!empty($fleet_id_safe) && !empty($set_safe_string)) {
       /** @noinspection SqlResolve */
+      /** @noinspection SqlWithoutWhere */
       $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
       $result = false;
@@ -228,7 +232,7 @@ class DbFleetStatic {
    * TODO - deprecated
    */
   public static function db_fleet_list_query_all_stat() {
-    return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
+    return  doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
   }
 
 
@@ -262,7 +266,7 @@ class DbFleetStatic {
   /**
    * Get flying fleet count
    *
-   * @param int $player_id - Player ID
+   * @param int $player_id  - Player ID
    * @param int $mission_id - mission ID. "0" means "all"
    *
    * @return int
@@ -273,7 +277,7 @@ class DbFleetStatic {
     $player_id_safe = idval($player_id);
     if (!empty($player_id_safe)) {
       $mission_id_safe = intval($mission_id);
-      $result = static::db_fleet_count(
+      $result          = static::db_fleet_count(
         "`fleet_owner` = {$player_id_safe}" .
         ($mission_id_safe ? " AND `fleet_mission` = {$mission_id_safe}" : '')
       );
@@ -322,7 +326,7 @@ class DbFleetStatic {
    *
    * @param int $galaxy
    * @param int $system
-   * @param int $planet - planet position. "0" means "any"
+   * @param int $planet      - planet position. "0" means "any"
    * @param int $planet_type - planet type. "PT_ALL" means "any type"
    *
    * @return array
@@ -411,7 +415,7 @@ class DbFleetStatic {
   /**
    * LIST - Get missile attack list by condition
    *
-   * @param string $where - WHERE condition - SQL SAFE!
+   * @param string $where      - WHERE condition - SQL SAFE!
    * @param bool   $for_update - lock record with FOR UPDATE statement
    *
    * @return array - lift of fleet records from DB
@@ -485,8 +489,8 @@ class DbFleetStatic {
       return array();
     }
 
-    $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
-    $fleet_db_list = static::db_fleet_list($where, DB_SELECT_PLAIN);
+    $where           = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
+    $fleet_db_list   = static::db_fleet_list($where, DB_SELECT_PLAIN);
     $missile_db_list = static::db_missile_list($where, DB_SELECT_PLAIN);
 
     missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
@@ -505,6 +509,193 @@ class DbFleetStatic {
       ->setTable('aks')
       ->setWhereArrayDanger(['`id` NOT IN (SELECT DISTINCT `fleet_group` FROM `{{fleets}}`)'])
       ->doDelete();
+  }
+
+  public static function dbAcsGetById($acsId) {
+    return DbQuery::build()
+      ->setTable('aks')
+      ->setWhereArray(['id' => $acsId])
+      ->doSelectFetch();
+  }
+
+  public static function dbAcsGetByFleet($fleetId) {
+    return DbQuery::build()
+      ->setTable('aks')
+      ->setWhereArray(['flotten' => $fleetId])
+      ->doSelectFetch();
+  }
+
+  /**
+   * @param int|array $fleetList [(int|string)fleetId,...]
+   *
+   * @return int
+   */
+  public static function dbAcsDelete($fleetList) {
+    if (!is_array($fleetList) && !empty($fleetList)) {
+      $fleetList = [$fleetList];
+    }
+
+    if (empty($fleetList)) {
+      return 0;
+    }
+
+    $whereId = [];
+    foreach ($fleetList as $fleetId) {
+      $whereId[] = "'" . SN::$db->db_escape($fleetId) . "'";
+    }
+
+    return SN::$db->doquery("DELETE FROM `{{aks}}` WHERE `id` IN (" . implode(',', $whereId) . ")");
+  }
+
+  /**
+   * @param $userToAddID
+   * @param $fleetid
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function dbAcsAddUserByFleetId($userToAddID, $fleetid) {
+    return SN::$db->doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
+  }
+
+  /**
+   * @param int   $userId
+   * @param int   $fleetid
+   * @param array $fleet
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function dbAcsInsert($userId, $fleetid, $fleet) {
+    return doquery("INSERT INTO `{{aks}}` SET
+          `name` = '" . db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
+          `teilnehmer` = '" . $userId . "',
+          `flotten` = '" . $fleetid . "',
+          `ankunft` = '" . $fleet['fleet_start_time'] . "',
+          `galaxy` = '" . $fleet['fleet_end_galaxy'] . "',
+          `system` = '" . $fleet['fleet_end_system'] . "',
+          `planet` = '" . $fleet['fleet_end_planet'] . "',
+          `planet_type` = '" . $fleet['fleet_end_type'] . "',
+          `eingeladen` = '" . $userId . "',
+          `fleet_end_time` = '" . $fleet['fleet_end_time'] . "'");
+  }
+
+  /**
+   * @return array|bool|mysqli_result|null
+   */
+  public static function dbAcsGetAll() {
+    return doquery('SELECT * FROM `{{aks}}`;');
+  }
+
+
+  /**
+   * @param $user
+   * @param $fleet
+   * @param $userToAddRecord
+   *
+   * @return array
+   * @throws Exception
+   */
+  public static function acsAddUser($user, $fleet, $userToAddRecord) {
+    $userToAddID = !empty($userToAddRecord['id']) ? $userToAddRecord['id'] : 0;
+
+    if (empty($userToAddID)) {
+      throw new Exception(SN::$lang['fl_aks_player_error']);
+    }
+
+    if ($fleet['fleet_target_owner'] == $userToAddID) {
+      throw new Exception(SN::$lang['flt_aks_player_same']);
+    }
+
+    $aks = DbFleetStatic::dbAcsGetByFleet($fleet['fleet_id']);
+
+    $aks = DbFleetStatic::acsAddUser2($aks, $fleet, $userToAddID, $user['id']);
+
+    return $aks;
+  }
+
+
+  /**
+   * @param array $aks
+   * @param array $fleet
+   * @param       $userToAddID
+   * @param       $userId
+   *
+   * @return array
+   *
+   * @throws Exception
+   */
+  public static function acsAddUser2($aks, $fleet, $userToAddID, $userId) {
+    $fleetid = $fleet['fleet_id'];
+
+    if (!$aks) {
+      // No AСS exists - making one
+      if (!$fleet['fleet_group']) {
+        DbFleetStatic::dbAcsInsert($userId, $fleetid, $fleet);
+        $aks = DbFleetStatic::dbAcsGetByFleet($fleetid);
+
+        DbFleetStatic::fleet_update_set($fleetid, array(
+          'fleet_group'   => $aks['id'],
+          'fleet_mission' => MT_AKS,
+        ));
+        $fleet['fleet_group']   = $aks['id'];
+        $fleet['fleet_mission'] = MT_AKS;
+      } else {
+        throw new Exception(SN::$lang['fl_aks_already_in_aks']);
+      }
+    }
+
+    $invited_ar = explode(",", $aks['eingeladen']);
+    if (count($invited_ar) >= 5) {
+      throw new Exception(SN::$lang['flt_aks_error_too_much_players']);
+    }
+
+    $acsPoints = 0;
+    $isUserExists = false;
+    foreach ($invited_ar as $inv) {
+      if ($userToAddID == $inv) {
+        $isUserExists = true;
+      }
+
+      $invitedUserRecord = db_user_by_id($inv);
+      if(!empty($invitedUserRecord)) {
+        $acsPoints += $invitedUserRecord['total_points'];
+      }
+    }
+
+    $attackedPlayer = db_user_by_id($fleet['fleet_target_owner']);
+    if (
+      !empty($attackedPlayer['total_points'])
+      &&
+      SN::$gc->general->playerIs1stStrongerThen2nd($acsPoints, $attackedPlayer['total_points'])
+    ) {
+      throw new Exception(SN::$lang['fl_aks_too_power']);
+    }
+
+
+    if(self::acsIsAcsFull($aks['id'])) {
+      throw new Exception(SN::$lang['fl_aks_too_power']);
+    }
+
+    if ($isUserExists) {
+//      if ($userToAddID != $userId)
+        throw new Exception(SN::$lang['fl_aks_player_invited_already']);
+    } else {
+      DbFleetStatic::dbAcsAddUserByFleetId($userToAddID, $fleetid);
+      $aks['eingeladen'] .= ',' . $userToAddID;
+    }
+
+    return $aks;
+  }
+
+  /**
+   * @param int $acsId
+   *
+   * @return bool
+   */
+  public static function acsIsAcsFull($acsId) {
+    $fleetInAcs      = self::fleet_list_by_group($acsId);
+    $isMaxSubReached = count($fleetInAcs) >= 5;
+
+    return $isMaxSubReached;
   }
 
 }

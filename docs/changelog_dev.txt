@@ -831,6 +831,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 
 
+Скорость - на самом деле не скорость, а ускорение - сектора/секунду^2
+
+[*] Дейтреедобывающий корабль с отрицательным потреблением
+        Звездный ковш (?)
 
 
 #ctv
@@ -1476,7 +1480,7 @@ MissionExplore.php
 [*] В чате сворачивать http://ogame.supernova.ws/ > sn://
 
 [*] Спецагент/Агент - шпион/разведчик/контр-разведчик
-        - Спецздание - КБУ - Комитет Безопасности Управления - найм и прокачка Агентов
+        - Спецздание - КБУ - Комитет Безопасности (Безопасного?) Управления - найм и прокачка Агентов
         - Скиллы:
             - Разведка/Шпионаж
             - Диверсия - действие наносящий физический урон (подрыв и т. д)
@@ -1658,32 +1662,6 @@ https://aftershock.news/?q=node/701115
 
 
 
-/**
- * Measure time passed from last ping or start point
- *
- * @param bool $fromStart Show time from start
- */
-function timerPing($label = '', $fromStart = false)
-{
-    static $timer;
-
-    if (empty($timer)) {
-        $timer = [microtime(true)];
-    } else {
-        if ($fromStart) {
-            $startPoint = $timer[0];
-            $msg        = 'From start';
-        } else {
-            $startPoint = end($timer);
-            $msg        = 'From last ping';
-        }
-        $timer[] = microtime(true);
-
-        print '[' . (count($timer) - 1) . '] ' .
-              (! empty($label) ? $label . ' - ' : '') .
-              $msg . ' ' . number_format(end($timer) - $startPoint, 5) . "s<br/>\n";
-    }
-}
 
 
 
@@ -1692,80 +1670,6 @@ function timerPing($label = '', $fromStart = false)
 
 
 
-
-
-
-
-class Timer
-{
-    /**
-     * @var float[] $times
-     */
-    private static $times = [];
-
-    public static function init()
-    {
-        if (empty(static::$times)) {
-            static::$times[] = microtime(true);
-        }
-    }
-
-    /**
-     * @param bool $fromStart
-     *
-     * @return float
-     */
-    public static function elapsed($fromStart = false)
-    {
-        static::init();
-
-        $prevTime = $fromStart ? self::first() : self::last();
-
-        static::$times[] = microtime(true);
-
-        return self::last() - $prevTime;
-    }
-
-
-    /**
-     * @param bool $fromStart
-     *
-     * @return string
-     */
-    public static function formatted($fromStart = false)
-    {
-        return number_format(static::elapsed($fromStart), 6) . 's';
-    }
-
-    public static function msg($message, $fromStart = false)
-    {
-        $last = reset(debug_backtrace());
-
-        print
-            $message .
-            ($fromStart ? ' FROM START ' : ' in ') .
-            self::formatted($fromStart) .
-            ' ---- ' . $last['file'] . '@' . $last['line'] .
-            "\n<br />";
-    }
-
-    /**
-     * @return mixed
-     */
-    public static function last()
-    {
-        return end(static::$times);
-    }
-
-    /**
-     * @return mixed
-     */
-    public static function first()
-    {
-        return reset(static::$times);
-    }
-
-}
 
 
 [*] Добавить запрос в код
@@ -1797,21 +1701,6 @@ class Timer
 [*] Холод Вершины - для алла
     - Дебаф на алл/игрока за занимание первого места
     - Одиночество на пике - для игрока
-
-
-[*] Промо-коды
-    - Для отслеживания источника новорегов
-    - Т.е. уникальные по источникам, но многоразовые (по сроку действия?)
-    - Фиксировать, какой промокод введен для сбора статистики
-    - Уведомлять окном об окончании бонусного према
-    - Может давать что-то на старте
-[*] Промки
-    + Сохранение
-    - Применение
-    - Поддержка количества
-    - Поддержка даты действия
-    - Админка-отчёт по промкам (?)
-    - Сортировка списка промок по разным критериям
 
 
 [24.11.2018 22:47:56] taych[NewSTAR]>по поводу рекрутинга. а нельзя придумать что по поводу принятия в альянсы..например доску обьявлений по приёму или вступления.по клику просто мышкой.
@@ -1867,26 +1756,20 @@ auro007 - Ботоводство
 
 -- Funt, Dron,  Hronos, Змей, warcraft - вроде как мультики
 
-Старый Новый год или Обрезание Господне - 14 января
-Международный день «спасибо» - 11 января
-Рождество Христово - 7 января
-Рождественский сочельник  и начало святок - 6 января
-День заворачивания подарков  - 30 декабря
-День подарков - 26 декабря
-Рождество у католиков  с 24 на 25 декабря
-День дальней авиации ВВС России  - 23 декабря
-День энергетика - 22 декабря
+[*] ? Бонус к добыче при потере большого процента флота
 
+[*] Страница Альянса - добавить список игроков
+[*] Статистика - добавить фильтр по Альянсам и, возможно, статусам
+
+[*] Лог отпусков
+
+[*] В "Поиске" игрока и "Списке игроков" - вывешивать полные регалии на нике
 
 #ctv
 
 [*] Пофиксить
     $multiplier = 5; // $this->valueStorage->getValue(UNIT_SERVER_FLEET_NOOB_FACTOR);
     class PlayerLevelHelper::calcLevels()
-
-[*] DB
-    В таблице `security_player_entry` убрать (?) `device_id` и `browser_id`
-    В таблице `counter` заменить комбинацию полей на ссылку на `security_player_entry`
 
 [*] JSON!!!!
     - SN::$user_options[PLAYER_OPTION_MENU_SORT] = serialize($this->menu_reorder($menuOrderNew));
@@ -1911,7 +1794,24 @@ auro007 - Ботоводство
 Экспа - дорогие полёты (по дейтерию), но убрать потери флота
 
 
+!!!!!!!!!!!!!
+[*] Добавить штраф +10% за счёт каждого следующего флота
+    - game_noob_factor
+
+[*] Сделать разрешение на обратную атаку
+
+
 #ctv
+
+
+
+
+2019-01-19 13:34:11 44a35
+[+] Флоты/САБ
+    Максимальное количество флотов в САБе ограничено 5
+    Теперь САБ ограничивается по сумме очков игроков:
+        - Ограничение распространяется так же и в большую сторону, т.е. при атаке "слабыми" игроками "сильных"
+        - В остальном - правила и коэфициенты те же, что и при расчёте сильных/слабых игроков (ака "нуб-защита")
 
 
 2018-12-29 15:53:35 44a32
