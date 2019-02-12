@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '43');
 define('SN_RELEASE', '43');
-define('SN_VERSION', '44a35');
+define('SN_VERSION', '44a41');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));

@@ -107,7 +107,8 @@ class RequestInfo {
     if ($this->device_id <= 0) {
       do {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
-        $row         = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+
+        $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
       doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = db_insert_id();
@@ -115,31 +116,16 @@ class RequestInfo {
     }
     sn_db_transaction_commit();
 
-    sn_db_transaction_start();
-    $this->browser_id = db_get_set_unique_id_value(
-      'security_browser',
-      'browser_id',
-      ['browser_user_agent' => $this->user_agent = $_SERVER['HTTP_USER_AGENT'],]
-    );
-    sn_db_transaction_commit();
+    $this->user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    $this->browser_id = db_get_set_unique_id_value('security_browser', 'browser_id', ['browser_user_agent' => $this->user_agent,]);
 
-    sn_db_transaction_start();
-    $this->page_address_id = db_get_set_unique_id_value(
-      'security_url',
-      'url_id',
-      ['url_string' => $this->page_address = substr($_SERVER['PHP_SELF'], strlen(SN_ROOT_RELATIVE)),]
-    );
-    sn_db_transaction_commit();
+    $this->page_address    = substr($_SERVER['PHP_SELF'], strlen(SN_ROOT_RELATIVE));
+    $this->page_address_id = db_get_set_unique_id_value('security_url', 'url_id', ['url_string' => $this->page_address,]);
 
     // Not a simulator - because it can have loooooong string
     if (strpos($_SERVER['REQUEST_URI'], '/simulator.php') !== 0) {
-      sn_db_transaction_start();
-      $this->queryStringId = db_get_set_unique_id_value(
-        'security_query_strings',
-        'id',
-        ['query_string' => $this->queryString = $_SERVER['QUERY_STRING'],]
-      );
-      sn_db_transaction_commit();
+      $this->queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+      $this->queryStringId = db_get_set_unique_id_value('security_query_strings', 'id', ['query_string' => $this->queryString,]);
     }
 
     $ip                      = sec_player_ip();
@@ -147,7 +133,6 @@ class RequestInfo {
     $this->ip_v4_int         = ip2longu($this->ip_v4_string);
     $this->ip_v4_proxy_chain = $ip['proxy_chain'];
 
-    sn_db_transaction_start();
     $this->playerEntryId = db_get_set_unique_id_value(
       'security_player_entry',
       'id',
@@ -158,8 +143,6 @@ class RequestInfo {
         'user_proxy' => $this->ip_v4_proxy_chain,
       ]
     );
-    sn_db_transaction_commit();
-
   }
 
   /**
@@ -178,7 +161,6 @@ class RequestInfo {
       return true;
     }
 
-    sn_db_transaction_start();
     $pEntry = db_get_set_unique_id_value(
       'security_player_entry',
       'id',
@@ -190,7 +172,6 @@ class RequestInfo {
         'user_proxy' => $this->ip_v4_proxy_chain,
       ]
     );
-    sn_db_transaction_commit();
 
     return $pEntry;
 

@@ -11,6 +11,10 @@ use Core\GlobalContainer;
  * Singleton
  */
 class SN {
+  const DB_TRANSACTION_SHOULD_NOT_BE = null;
+  const DB_TRANSACTION_SHOULD_BE = true;
+  const DB_TRANSACTION_WHATEVER = false;
+
   /**
    * @var SN $_sn
    */
@@ -225,7 +229,7 @@ class SN {
    *
    * @return bool Текущий статус транзакции
    */
-  public static function db_transaction_check($status = null) {
+  public static function db_transaction_check($status = self::DB_TRANSACTION_WHATEVER) {
     $error_msg = false;
     if ($status && !static::$db_in_transaction) {
       $error_msg = 'No transaction started for current operation';
