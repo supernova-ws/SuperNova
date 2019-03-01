@@ -31,8 +31,8 @@ class StatUpdateLauncher {
   public static function scheduler_process() {
     global $user, $lang;
 
-    $config = &SN::$config;
-    $debug = &SN::$debug;
+    $config = SN::$config;
+    $debug = SN::$debug;
 
     $is_admin_request = false;
 

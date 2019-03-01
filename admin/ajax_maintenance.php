@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection SqlResolve */
 
 define('IN_ADMIN', true);
 
@@ -85,23 +85,23 @@ $ques = array(
   // TODO I-шки - неделя на разграбление - или сколько там стата хранится...
 
   // Удаляем планеты без пользователей
-  'DELETE FROM `{{planets}}` WHERE `id_owner` not in (select id from {{users}}) AND id_owner <> 0;', // TODO NO FK Переписать на джоине
+  'DELETE FROM `{{planets}}` WHERE `id_owner` not in (select id from `{{users}}`) AND id_owner <> 0;', // TODO NO FK Переписать на джоине
   // Удаляем юниты без планет
-  'DELETE un FROM {{unit}} AS un
-    LEFT JOIN {{planets}} AS pl ON pl.id = un.unit_location_id
+  'DELETE un FROM `{{unit}}` AS un
+    LEFT JOIN `{{planets}}` AS pl ON pl.id = un.unit_location_id
   WHERE unit_location_type = ' . LOC_PLANET . ' AND pl.id IS NULL;',
   // Удаляем пустые юниты с 0 уровнем (кроме Капитана) - TODO - перенести в модуль, если нужно!
 //  'DELETE FROM {{unit}} WHERE unit_location_type = ' . LOC_PLANET . ' AND unit_level = 0 AND unit_type <> ' . UNIT_CAPTAIN,
   // Удаляем очереди на ничьих планетах
-  'DELETE q FROM {{que}} AS q
-    LEFT JOIN {{planets}} AS p ON p.id = q.que_planet_id
+  'DELETE q FROM `{{que}}` AS q
+    LEFT JOIN `{{planets}}` AS p ON p.id = q.que_planet_id
   WHERE
     que_type IN (' . QUE_STRUCTURES . ', ' . QUE_HANGAR . ', ' . SUBQUE_FLEET . ', ' . SUBQUE_DEFENSE . ')
     AND
     (p.id_owner = 0 OR p.id_owner IS NULL);',
 
   // Удаляем пустые САБы
-  'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
+  'DELETE FROM `{{aks}}` WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM `{{fleets}}`);', // TODO Переписать на джоине
 
   // UBE reports
   "DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(NOW(), INTERVAL 60 DAY) {$best_reports};", // TODO Настройка
@@ -109,26 +109,26 @@ $ques = array(
   // Чистка сообщений - ВРЕМЕННО ОТКЛЮЧЕНО
 //  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
   // Удаляются сообщения, старше  4 недель, кроме личных и Альянсовских
-  'DELETE FROM {{messages}} WHERE
+  'DELETE FROM `{{messages}}` WHERE
     UNIX_TIMESTAMP() - message_time > 4*7 * 24 * 60 * 60 AND
     message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ', ' . MSG_TYPE_ADMIN . ');',
   // Удаляются сообщения у пользователей, которые неактивны больше 4 недель - кроме личных и Альянсовских
   'DELETE m FROM `{{users}}` AS u
-  JOIN {{messages}} AS m ON m.message_owner = u.id
+  JOIN `{{messages}}` AS m ON m.message_owner = u.id
   WHERE
     message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ') AND
     authlevel = 0 AND  user_as_ally IS NULL AND /* Не админы, Не Альянсы */
     UNIX_TIMESTAMP() - onlinetime > 4*7 *86400;',
 
-  'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
+  'DELETE FROM `{{chat}}` WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
 
   // Recalculate Alliance members
-  "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id
+  "UPDATE `{{alliance}}` as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM `{{users}}` WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id
     SET a.`ally_members` = u.ally_memeber_count;",
   // Deleting empty Alliances - ВРЕМЕННО ОТКЛЮЧЕНО
 //  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
 //  'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
-  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
+  "UPDATE `{{users}}` SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from `{{alliance}}`);",
 
   // Пакуем данные по логу ТМ
   array(
@@ -146,7 +146,7 @@ $ques = array(
     GROUP BY
       log_dark_matter_sender;",
 
-    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';",
+    "DELETE FROM `{{log_dark_matter}}` WHERE log_dark_matter_timestamp < '{$pack_until}';",
   ),
 
   // Пакуем статистические данные по онлайну пользователей
@@ -162,7 +162,7 @@ $ques = array(
     GROUP BY
       (UNIX_TIMESTAMP(online_timestamp) DIV " . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ");",
 
-    "DELETE FROM {{log_users_online}} WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
+    "DELETE FROM `{{log_users_online}}` WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
   ),
 
   // Удаляем старые записи из логов
@@ -174,12 +174,12 @@ $ques = array(
 
 
   // Удаляем устройства, на которые никто не ссылается
-  "DELETE sd FROM {{security_device}} AS sd
-    LEFT JOIN {{security_player_entry}} AS spe ON spe.device_id = sd.device_id
+  "DELETE sd FROM `{{security_device}}` AS sd
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
   WHERE player_id IS NULL;",
   // Удаляем браузеры, на которые никто не ссылается
-  "DELETE sb FROM {{security_browser}} AS sb
-    LEFT JOIN {{security_player_entry}} AS spe ON spe.browser_id = sb.browser_id
+  "DELETE sb FROM `{{security_browser}}` AS sb
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
   WHERE player_id IS NULL;",
 
   // Удаляем записи визитов без пользователей
@@ -208,8 +208,8 @@ function sn_maintenance_pack_user_list($user_list) {
 global $config, $debug, $lang;
 
 sn_db_transaction_start();
-$old_server_status = SN::$config->db_loadItem('game_disable');
-$old_server_status == GAME_DISABLE_NONE ? SN::$config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
+$old_server_status = SN::$config->pass()->game_disable;
+$old_server_status == GAME_DISABLE_NONE ? SN::$config->pass()->game_disable = GAME_DISABLE_MAINTENANCE : false;
 sn_db_transaction_commit();
 
 foreach($ques as $que_transaction) {
@@ -242,7 +242,7 @@ $debug->warning('Упакован stats_hide_player_list', 'System maintenance',
 sn_db_transaction_commit();
 
 sn_db_transaction_start();
-SN::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(SN::$config->db_loadItem('game_watchlist')));
+SN::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(SN::$config->pass()->game_watchlist));
 $debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 

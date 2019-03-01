@@ -22,6 +22,13 @@ class classPersistent extends classCache {
   protected $defaults = array();
 
   /**
+   * List of fields which should have not empty values
+   *
+   * @var string[] $notEmptyFields [(str)fieldName => (str)fieldName, ...]
+   */
+  protected $notEmptyFields = [];
+
+  /**
    * @var bool $force
    */
   protected $force = false;
@@ -135,10 +142,16 @@ class classPersistent extends classCache {
   public function __get($name) {
     if($this->force) {
       $this->force = false;
-      $this->db_loadItem($name);
+      $value = $this->db_loadItem($name);
+    } else {
+      $value = parent::__get($name);
     }
 
-    return parent::__get($name);
+    if(isset($this->notEmptyFields[$name]) && empty($value) && isset($this->defaults[$name])) {
+      $value = $this->defaults[$name];
+    }
+
+    return $value;
   }
 
   public function __set($name, $value) {

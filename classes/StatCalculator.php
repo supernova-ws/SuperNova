@@ -69,7 +69,7 @@ class StatCalculator {
   public static function sys_stat_calculate() {
     global $config, $sta_update_step;
 
-    ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '1024M');
+    ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '1G');
 
     static::$memoryStart = memory_get_usage(true);
     static::$timeLastOperation = microtime(true);

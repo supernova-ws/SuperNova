@@ -12,6 +12,10 @@
  *
  * @property string     $db_prefix                     - REMOVE! Just for compatibility!
  *
+ * @property int        $debug
+ *
+ * @property string     $db_version
+ *
  * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
  *
  * @property string     $auth_vkontakte_app_id
@@ -42,6 +46,8 @@
  * @property int        $game_maxPlanet                => 15
  *
  * @property string     $game_name                     Server name as it would be seen through game
+ *
+ * @property string     $game_watchlist
  *
  * @property int        $metal_basic_income            => 40,
  * @property int        $crystal_basic_income          => 20,
@@ -148,6 +154,11 @@
  * @property string     $stats_minimal_interval        => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
  * @property string     $stats_schedule                => '04:00:00' - Schedule for running stat updates - see readme.txt
  * @property string     $stats_php_memory              => ???????????????
+ *
+ * @property int        $upd_lock_time                 => Update lock time
+ *
+ * @property string     $var_db_update                 => '0' - SQL_DATE_TIME
+ * @property string     $var_db_update_end             => '0' - SQL_DATE_TIME
  *
  * @property string     $var_stat_update               => '0' - SQL_DATE_TIME - when stat update was started
  * @property string     $var_stat_update_end           => '0' - SQL_DATE_TIME - ?????????
@@ -387,7 +398,7 @@ class classConfig extends classPersistent {
     'stats_hide_pm_link'     => 0,
     'stats_minimal_interval' => STATS_RUN_INTERVAL_MINIMUM, // Minimal stats interval
     'stats_schedule'         => '04:00:00',
-    'stats_php_memory'       => '1024M',
+    'stats_php_memory'       => '1G',
 
     'tpl_minifier'  => 0, // Template minifier
     'tpl_allow_php' => 0, // PTL allow INCLUDEPHP and PHP tags
@@ -398,7 +409,7 @@ class classConfig extends classPersistent {
     'uni_price_galaxy'    => 10000,
     'uni_price_system'    => 1000,
 
-    'upd_lock_time' => 60, // How long update will lock table. Also update increment time when it requires
+    'upd_lock_time' => 300, // How long update will lock table. Also update increment time when it requires
 
     'url_faq'                 => '',
     'url_forum'               => '',
@@ -420,7 +431,7 @@ class classConfig extends classPersistent {
     'var_db_update'     => 0, // Time of last DB update
     'var_db_update_end' => 0, // Time when last DB update should end. Need to prevent duplicate update
 
-    'var_news_last' => 0, // Last news post time
+    'var_news_last'       => 0, // Last news post time
 
     // Statistic
     'var_stat_update'     => 0,
@@ -429,13 +440,17 @@ class classConfig extends classPersistent {
 
   );
 
+  protected $notEmptyFields = [
+    'upd_lock_time' => 'upd_lock_time',
+  ];
+
   public function __construct($gamePrefix = 'sn_') {
     parent::__construct($gamePrefix, 'config');
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
     if (!isset(self::$cacheObject)) {
-      $className = get_class();
+      $className         = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }
 

@@ -36,7 +36,7 @@ switch ($mode) {
     SN::$config->db_loadAll();
     SN::$db->schema()->clear();
 
-    SN::$config->db_loadItem('game_watchlist');
+    SN::$config->pass()->game_watchlist;
     if (SN::$config->game_watchlist) {
       SN::$config->game_watchlist_array = explode(';', SN::$config->game_watchlist);
     } else {
@@ -60,7 +60,7 @@ switch ($mode) {
   break;
 
   case ADM_TOOL_FORCE_ALL:
-    SN::$config->db_saveItem('db_version', 37);
+    SN::$config->db_saveItem('db_version', 40);
     require_once('../includes/update.php');
   break;
 

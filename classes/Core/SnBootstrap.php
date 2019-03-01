@@ -95,15 +95,14 @@ class SnBootstrap {
   /**
    * @param \classConfig $config
    */
-  public static function performUpdate(&$config) {
-    $update_file = SN_ROOT_PHYSICAL . "includes/update.php";
+  public static function performUpdate($config) {
     if (
-      !file_exists($update_file)
+      !file_exists($update_file = SN_ROOT_PHYSICAL . "includes/update.php")
       ||
       (
-        filemtime($update_file) <= $config->db_loadItem('var_db_update')
+        filemtime($update_file) <= $config->pass()->var_db_update
         &&
-        $config->db_loadItem('db_version') >= DB_VERSION
+        $config->pass()->db_version >= DB_VERSION
       )
     ) {
       return;
@@ -111,15 +110,15 @@ class SnBootstrap {
 
     if (defined('IN_ADMIN')) {
       sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
-      if (SN_TIME_NOW >= $config->db_loadItem('var_db_update_end')) {
-        $config->db_saveItem('var_db_update_end', SN_TIME_NOW + ($config->upd_lock_time ? $config->upd_lock_time : 300));
+      if (SN_TIME_NOW >= $config->pass()->var_db_update_end) {
+        $config->pass()->var_db_update_end = SN_TIME_NOW + $config->upd_lock_time;
         sn_db_transaction_commit();
 
         require_once($update_file);
 
         $current_time = time();
-        $config->db_saveItem('var_db_update', $current_time);
-        $config->db_saveItem('var_db_update_end', $current_time);
+        $config->pass()->var_db_update = $current_time;
+        $config->pass()->var_db_update_end = $current_time;
       } elseif (filemtime($update_file) > $config->var_db_update) {
         $timeout = $config->var_db_update_end - SN_TIME_NOW;
         die(
