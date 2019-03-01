@@ -7,12 +7,10 @@ namespace DBAL;
 
 
 class Schema {
-
   /**
-   * @var \DBAL\db_mysql $db
+   * @var db_mysql $db
    */
   protected $db;
-
   /**
    * List of all table names
    *
@@ -23,13 +21,12 @@ class Schema {
    * @var string[] $tablesSn
    */
   protected $tablesSn = null;
-
   /**
    * @var TableSchema[] $tableSchemas
    */
   protected $tableSchemas = [];
 
-  public function __construct(\DBAL\db_mysql $db) {
+  public function __construct(db_mysql $db) {
     $this->db = $db;
   }
 
@@ -38,26 +35,27 @@ class Schema {
   }
 
   public function clear() {
-    $this->tablesAll = null;
-    $this->tablesSn = null;
+    $this->tablesAll    = null;
+    $this->tablesSn     = null;
     $this->tableSchemas = [];
   }
 
   protected function loadTableNamesFromDb() {
     $this->clear();
     $this->tablesAll = array();
-    $this->tablesSn = array();
+    $this->tablesSn  = array();
 
     $query = $this->db->mysql_get_table_list();
 
     $prefix_length = strlen($this->db->db_prefix);
 
-    while($row = $this->db->db_fetch($query)) {
-      foreach($row as $table_name) {
+    while ($row = $this->db->db_fetch($query)) {
+      foreach ($row as $table_name) {
         $this->tablesAll[$table_name] = $table_name;
 
-        if(strpos($table_name, $this->db->db_prefix) === 0) {
+        if (strpos($table_name, $this->db->db_prefix) === 0) {
           $table_name_sn = substr($table_name, $prefix_length);
+
           $this->tablesSn[$table_name_sn] = $table_name_sn;
         }
       }
@@ -70,7 +68,7 @@ class Schema {
    * @return \string[]
    */
   public function getAllTables() {
-    if(!isset($this->tablesAll)) {
+    if (!isset($this->tablesAll)) {
       $this->loadTableNamesFromDb();
     }
 
@@ -83,7 +81,7 @@ class Schema {
    * @return string[]
    */
   public function getSnTables() {
-    if(!isset($this->tablesSn)) {
+    if (!isset($this->tablesSn)) {
       $this->loadTableNamesFromDb();
     }
 
@@ -107,11 +105,25 @@ class Schema {
    * @return TableSchema
    */
   public function getTableSchema($tableName) {
-    if(empty($this->tableSchemas[$tableName])) {
+    if (empty($this->tableSchemas[$tableName])) {
       $this->tableSchemas[$tableName] = new TableSchema($tableName, $this);
     }
 
     return $this->tableSchemas[$tableName];
+  }
+
+  /**
+   * @param $table
+   * @param $index
+   *
+   * @return bool
+   */
+  public function isIndexExists($table, $index) {
+    return $this->isSnTableExists($table) && $this->getTableSchema($table)->isIndexExists($index);
+  }
+
+  public function isFieldExists($table, $field) {
+    return $this->isSnTableExists($table) && $this->getTableSchema($table)->isFieldExists($field);
   }
 
 }

@@ -1,4 +1,5 @@
-<?php /** @noinspection SqlResolve */
+<?php
+/** @noinspection SqlResolve */
 
 /**
  * Created by Gorlum 01.03.2019 6:03
@@ -6,28 +7,33 @@
 
 namespace Core;
 
-
 use classConfig;
+use DBAL\db_mysql;
+use DBAL\DbFieldDescription;
+use DBAL\DbIndexDescription;
 use mysqli_result;
 use SN;
 
 class Updater {
 
-  public $update_tables = [];
-  public $update_indexes = [];
-  public $update_foreigns = [];
-  public $update_indexes_full = [];
+  protected $update_tables = [];
 
   /**
    * @var classConfig $config
    */
   protected $config;
+  /**
+   * @var db_mysql $db
+   */
   protected $db;
 
   protected $upd_log = '';
 
   public $new_version = 0;
   protected $old_server_status;
+
+  // Does updater terminated successfully
+  public $successTermination = false;
 
   public function __construct() {
     $this->config = SN::$gc->config;
@@ -55,19 +61,29 @@ class Updater {
     $this->upd_log_message('Update started. Disabling server');
     $this->old_server_status = $this->config->pass()->game_disable;
     $this->config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
+    $this->upd_log_message('Server disabled.');
 
-    $this->upd_log_message('Server disabled. Loading table info...');
-    $this->update_tables  = [];
-    $this->update_indexes = [];
-
-    $query = $this->upd_do_query('SHOW TABLES;', true);
-    while ($row = db_fetch_row($query)) {
-      $this->upd_load_table_info($row[0]);
-    }
-    $this->upd_log_message('Table info loaded. Now looking DB for upgrades...');
+    $this->upd_log_message('Now looking DB for upgrades...');
   }
 
   public function __destruct() {
+    if ($this->successTermination) {
+      $this->upd_log_message('Upgrade complete.');
+    } else {
+      $this->upd_log_message('Upgrade was aborted! DB can be in invalid state!');
+    }
+
+    $this->upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
+
+    SN::$cache->unset_by_prefix('lng_');
+
+    if ($this->new_version) {
+      $this->config->pass()->db_version = $this->new_version;
+      $this->upd_log_message("<span style='color: green;'>DB version is now {$this->new_version}</span>");
+    } else {
+      $this->upd_log_message("DB version didn't changed from {$this->config->db_version}");
+    }
+
     $this->config->db_loadAll();
     /*
     if($user['authlevel'] >= 3) {
@@ -91,74 +107,9 @@ class Updater {
     }
   }
 
-  /**
-   * @deprecated
-   */
   public function upd_log_version_update() {
-    $this->upd_do_query('START TRANSACTION;', true);
-    $this->upd_add_more_time();
-
-    $this->upd_log_message("Detected outdated version {$this->new_version}. Upgrading...");
-  }
-
-  public function upd_log_version_update2() {
     $this->upd_add_more_time();
     $this->upd_log_message("Detected outdated version {$this->new_version}. Upgrading...");
-  }
-
-  public function upd_unset_table_info($table_name) {
-    if (isset($this->update_tables[$table_name])) {
-      unset($this->update_tables[$table_name]);
-    }
-
-    if (isset($this->update_indexes[$table_name])) {
-      unset($this->update_indexes[$table_name]);
-    }
-
-    if (isset($this->update_foreigns[$table_name])) {
-      unset($this->update_foreigns[$table_name]);
-    }
-  }
-
-  public function upd_drop_table($table_name) {
-    $this->db->db_sql_query("DROP TABLE IF EXISTS {$this->config->db_prefix}{$table_name};");
-
-    $this->upd_unset_table_info($table_name);
-  }
-
-
-  public function upd_load_table_info($prefix_table_name, $prefixed = true) {
-    $tableName = $prefixed ? str_replace($this->config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
-
-    $prefix_table_name = $prefixed ? $prefix_table_name : $this->config->db_prefix . $prefix_table_name;
-
-    $this->upd_unset_table_info($tableName);
-
-    $q1 = $this->upd_do_query("SHOW FULL COLUMNS FROM {$prefix_table_name};", true);
-    while ($r1 = db_fetch($q1)) {
-      $this->update_tables[$tableName][$r1['Field']] = $r1;
-    }
-
-    $q1 = $this->upd_do_query("SHOW INDEX FROM {$prefix_table_name};", true);
-    while ($r1 = db_fetch($q1)) {
-      $this->update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
-
-      $this->update_indexes_full[$tableName][$r1['Key_name']][$r1['Column_name']] = $r1;
-    }
-
-    $q1 = $this->upd_do_query(
-      "SELECT * 
-      FROM `information_schema`.`KEY_COLUMN_USAGE` 
-      WHERE 
-        `TABLE_SCHEMA` = '" . db_escape(SN::$db_name) . "' 
-        AND TABLE_NAME = '{$prefix_table_name}' 
-        AND `REFERENCED_TABLE_NAME` is not null;",
-      true);
-    while ($r1 = db_fetch($q1)) {
-      $table_referenced = str_replace($this->config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
-
-      $this->update_foreigns[$tableName][$r1['CONSTRAINT_NAME']] .= "{$r1['COLUMN_NAME']},{$table_referenced},{$r1['REFERENCED_COLUMN_NAME']};";
-    }
   }
 
   public function upd_check_key($key, $default_value, $condition = false) {
@@ -174,6 +125,41 @@ class Updater {
     } else {
       $this->config->pass()->$key = null;
     }
+  }
+
+
+  /**
+   * @param string       $table_name
+   * @param string|array $declaration
+   * @param string       $tableOptions
+   *
+   * @return bool|mysqli_result
+   */
+  public function upd_create_table($table_name, $declaration, $tableOptions = '') {
+    $result = null;
+
+    if (!$this->isTableExists($table_name)) {
+      if (is_array($declaration)) {
+        $declaration = implode(',', $declaration);
+      }
+      $declaration = trim($declaration);
+      if (substr($declaration, 0, 1) != '(') {
+        $declaration = "($declaration)";
+      }
+      $tableOptions = trim($tableOptions);
+      if (!empty($tableOptions)) {
+        $declaration .= $tableOptions;
+      }
+      $result = $this->upd_do_query("CREATE TABLE IF NOT EXISTS `{$this->config->db_prefix}{$table_name}` {$declaration}");
+      $error  = db_error();
+      if ($error) {
+        die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
+      }
+
+      $this->db->schema()->clear();
+    }
+
+    return $result;
   }
 
   /**
@@ -206,45 +192,14 @@ class Updater {
       die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
     }
 
-    $this->upd_load_table_info($table, false);
+    $this->db->schema()->clear();
 
     return $result;
   }
 
-  /**
-   * @param string       $table_name
-   * @param string|array $declaration
-   * @param string       $tableOptions
-   *
-   * @return bool|mysqli_result
-   */
-  public function upd_create_table($table_name, $declaration, $tableOptions = '') {
-    $result = null;
-
-    if (!$this->update_tables[$table_name]) {
-      $this->upd_do_query('set foreign_key_checks = 0;', true);
-      if (is_array($declaration)) {
-        $declaration = implode(',', $declaration);
-      }
-      $declaration = trim($declaration);
-      if (substr($declaration, 0, 1) != '(') {
-        $declaration = "($declaration)";
-      }
-      $tableOptions = trim($tableOptions);
-      if (!empty($tableOptions)) {
-        $declaration .= $tableOptions;
-      }
-      $result = $this->upd_do_query("CREATE TABLE IF NOT EXISTS `{$this->config->db_prefix}{$table_name}` {$declaration}");
-      $error  = db_error();
-      if ($error) {
-        die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
-      }
-      $this->upd_do_query('set foreign_key_checks = 1;', true);
-      $this->upd_load_table_info($table_name, false);
-      $this->db->schema()->clear();
-    }
-
-    return $result;
+  public function upd_drop_table($table_name) {
+    $this->db->db_sql_query("DROP TABLE IF EXISTS {$this->config->db_prefix}{$table_name};");
+    $this->db->schema()->clear();
   }
 
   public function upd_add_more_time($time = 0) {
@@ -302,7 +257,7 @@ class Updater {
     }
 
     if (strpos($query, '{{') !== false) {
-      foreach ($this->update_tables as $tableName => $cork) {
+      foreach ($this->db->schema()->getSnTables() as $tableName => $cork) {
         $query = str_replace("{{{$tableName}}}", $this->db->db_prefix . $tableName, $query);
       }
     }
@@ -331,12 +286,36 @@ class Updater {
     }
   }
 
+  /**
+   * @param $table
+   * @param $field
+   *
+   * @return DbFieldDescription
+   */
+  public function getFieldDescription($table, $field) {
+    return $this->db->schema()->getTableSchema($table)->fields[$field];
+  }
+
+  /**
+   * @param $table
+   * @param $index
+   *
+   * @return DbIndexDescription
+   */
+  public function getIndexDescription($table, $index) {
+    return $this->db->schema()->getTableSchema($table)->indexes[$index];
+  }
+
   public function isTableExists($table) {
-    return ! empty($this->update_tables[$table]);
+    return $this->db->schema()->isSnTableExists($table);
   }
 
   public function isFieldExists($table, $field) {
+    return $this->db->schema()->isFieldExists($table, $field);
+  }
 
+  public function isIndexExists($table, $index) {
+    return $this->db->schema()->isIndexExists($table, $index);
   }
 
 }

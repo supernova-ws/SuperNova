@@ -19,7 +19,7 @@ class db_mysql {
   /**
    * DB schemes
    *
-   * @var \DBAL\Schema|null $schema
+   * @var Schema|null $schema
    */
   protected static $schema = null;
 
@@ -72,9 +72,12 @@ class db_mysql {
 //    $this->operator = new DbRowDirectOperator($this);
   }
 
+  /**
+   * @return Schema
+   */
   public function schema() {
     if (!isset(self::$schema)) {
-      self::$schema = new \DBAL\Schema($this);
+      self::$schema = new Schema($this);
     }
 
     return self::$schema;
@@ -369,7 +372,10 @@ class db_mysql {
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
     $q1 = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
     while ($r1 = db_fetch($q1)) {
-      $result[$r1['Field']] = $r1;
+      $dbf = new DbFieldDescription();
+      $dbf->fromMySqlDescription($r1);
+
+      $result[$r1['Field']] = $dbf;
     }
 
     return $result;
@@ -378,23 +384,22 @@ class db_mysql {
   /**
    * @param string $tableName_unsafe
    *
-   * @return array[]
+   * @return DbIndexDescription[]
    */
   public function mysql_get_indexes($tableName_unsafe) {
+    /**
+     * @var DbIndexDescription[] $result
+     */
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
     $q1 = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['Key_name'];
-
-      $result[$indexName]['name'] = $r1['Key_name'];
-      $result[$indexName]['signature'][] = $r1['Column_name'];
-      $result[$indexName]['fields'][$r1['Column_name']] = $r1;
-    }
-
-    foreach ($result as &$indexDescription) {
-      $indexDescription['signature'] = implode(',', $indexDescription['signature']);
+      if(empty($result[$indexName])) {
+        $result[$indexName] = new DbIndexDescription();
+      }
+      $result[$indexName]->addField($r1);
     }
 
     return $result;

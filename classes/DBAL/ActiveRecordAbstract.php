@@ -323,7 +323,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * @return DbFieldDescription[]
    */
   protected static function dbGetFieldsDescription() {
-    return static::db()->schema()->getTableSchema(static::tableName())->fieldsObject;
+    return static::db()->schema()->getTableSchema(static::tableName())->fields;
   }
 
   /**

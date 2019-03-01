@@ -126,7 +126,7 @@ class StorageSqlV2 {
    * @return DbFieldDescription[]
    */
   public function fields($tableName) {
-    return static::$db->schema()->getTableSchema($tableName)->fieldsObject;
+    return static::$db->schema()->getTableSchema($tableName)->fields;
   }
 
 

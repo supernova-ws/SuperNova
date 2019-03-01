@@ -13,24 +13,14 @@ class TableSchema {
    */
   protected $db;
 
-  /**
-   * @var Schema $dbSchema
-   */
-  protected $dbSchema;
-
   public $tableName = '';
 
   /**
-   * @var \array[] $fields
+   * @var DbFieldDescription[] $fields
    */
   public $fields = [];
-
   /**
-   * @var DbFieldDescription[] $fieldsObject
-   */
-  public $fieldsObject = [];
-  /**
-   * @var \array[] $indexes
+   * @var DbIndexDescription[] $indexesObject
    */
   public $indexes = [];
   /**
@@ -41,29 +31,25 @@ class TableSchema {
   /**
    * TableSchema constructor.
    *
-   * @param string              $tableName
-   * @param \DBAL\db_mysql|null $db
+   * @param string $tableName
+   * @param Schema $dbSchema
    */
   public function __construct($tableName, Schema $dbSchema) {
-    $this->dbSchema = $dbSchema;
+    $this->db = $dbSchema->getDb();
+
     $this->tableName = $tableName;
 
-    $this->db = $this->dbSchema->getDb();
-
-    $this->fields = $this->db->mysql_get_fields($this->tableName);
-    $this->indexes = $this->db->mysql_get_indexes($this->tableName);
+    $this->fields      = $this->db->mysql_get_fields($this->tableName);
+    $this->indexes     = $this->db->mysql_get_indexes($this->tableName);
     $this->constraints = $this->db->mysql_get_constraints($this->tableName);
-
-    $this->fillFields();
   }
 
-  protected function fillFields() {
-    $this->fieldsObject = [];
-    foreach ($this->fields as $fieldData) {
-      $dbf = new DbFieldDescription();
-      $dbf->fromMySqlDescription($fieldData);
-      $this->fieldsObject[$dbf->Field] = $dbf;
-    }
+  public function isFieldExists($field) {
+    return isset($this->fields[$field]);
+  }
+
+  public function isIndexExists($index) {
+    return isset($this->indexes[$index]);
   }
 
 }

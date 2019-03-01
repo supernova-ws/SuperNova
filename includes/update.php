@@ -13,12 +13,10 @@ use Core\Updater;
  */
 
 if (!defined('INIT')) {
-//  include_once('init.php');
   die('Unauthorized access');
 }
 
 if (defined('IN_UPDATE')) {
-//  include_once('init.php');
   die('Update already started');
 }
 
@@ -28,149 +26,132 @@ global $sn_cache, $debug, $sys_log_disabled;
 
 $updater = new Updater();
 
-//$updater->upd_check_key('upd_lock_time', 300, !isset(SN::$gc->config->upd_lock_time));
-//set_time_limit(SN::$gc->config->upd_lock_time + 10);
-//$updater->upd_log_message('Update started. Disabling server');
-//$old_server_status = SN::$gc->config->db_loadItem('game_disable');
-//SN::$gc->config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
-//
-//$updater->upd_log_message('Server disabled. Loading table info...');
-//$updater->update_tables = array();
-//$update_indexes         = array();
-//$query                  = $updater->upd_do_query('SHOW TABLES;', true);
-//while ($row = db_fetch_row($query)) {
-//  $updater->upd_load_table_info($row[0]);
-//}
-//$updater->upd_log_message('Table info loaded. Now looking DB for upgrades...');
-//
-//$updater->upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
-//
-//
-//ini_set('memory_limit', '1G');
-
 switch ($updater->new_version) {
   /** @noinspection PhpMissingBreakStatementInspection */
   case 40:
     $updater->upd_log_version_update();
+    $this->upd_do_query('START TRANSACTION;', true);
 
-    if (! $updater->isTableExists('festival')) {
-      $updater->upd_create_table('festival', " (
-          `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-          `start` datetime NOT NULL COMMENT 'Festival start datetime',
-          `finish` datetime NOT NULL COMMENT 'Festival end datetime',
-          `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Название акции/ивента',
-          PRIMARY KEY (`id`),
-          KEY `I_festival_date_range` (`start`,`finish`,`id`) USING BTREE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+    if (!$updater->isTableExists('festival')) {
+      $updater->upd_create_table('festival',
+        [
+          "`id` smallint(5) unsigned NOT NULL AUTO_INCREMENT",
+          "`start` datetime NOT NULL COMMENT 'Festival start datetime'",
+          "`finish` datetime NOT NULL COMMENT 'Festival end datetime'",
+          "`name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Название акции/ивента'",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_festival_date_range` (`start`,`finish`,`id`) USING BTREE"
+        ],
+        "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
       );
 
-      $updater->upd_create_table('festival_highspot', " (
-          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-          `festival_id` smallint(5) unsigned DEFAULT NULL,
-          `class` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Highspot class',
-          `start` datetime NOT NULL COMMENT 'Highspot start datetime',
-          `finish` datetime NOT NULL COMMENT 'Highspot end datetime',
-          `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-          PRIMARY KEY (`id`),
-          KEY `I_highspot_order` (`start`,`finish`,`id`),
-          KEY `I_highspot_festival_id` (`festival_id`,`start`,`finish`,`id`) USING BTREE,
-          CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `{{festival}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      $updater->upd_create_table('festival_highspot',
+        [
+          "`id` int(10) unsigned NOT NULL AUTO_INCREMENT",
+          "`festival_id` smallint(5) unsigned DEFAULT NULL",
+          "`class` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Highspot class'",
+          "`start` datetime NOT NULL COMMENT 'Highspot start datetime'",
+          "`finish` datetime NOT NULL COMMENT 'Highspot end datetime'",
+          "`name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_highspot_order` (`start`,`finish`,`id`)",
+          "KEY `I_highspot_festival_id` (`festival_id`,`start`,`finish`,`id`) USING BTREE",
+          "CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `{{festival}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        ],
+        "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
       );
 
-      $updater->upd_create_table('festival_highspot_activity', " (
-          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-          `highspot_id` int(10) unsigned DEFAULT NULL,
-          `class` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Класс события - ID модуля события',
-          `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Тип активити: 1 - триггер, 2 - хук',
-          `start` datetime NOT NULL COMMENT 'Запланированное время запуска',
-          `finish` datetime DEFAULT NULL COMMENT 'Реальное время запуска',
-          `params` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Параметры активити в виде сериализованного архива',
-          PRIMARY KEY (`id`),
-          KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE,
-          KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE,
-          CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      $updater->upd_create_table('festival_highspot_activity',
+        [
+          "`id` int(10) unsigned NOT NULL AUTO_INCREMENT",
+          "`highspot_id` int(10) unsigned DEFAULT NULL",
+          "`class` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Класс события - ID модуля события'",
+          "`type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Тип активити: 1 - триггер, 2 - хук'",
+          "`start` datetime NOT NULL COMMENT 'Запланированное время запуска'",
+          "`finish` datetime DEFAULT NULL COMMENT 'Реальное время запуска'",
+          "`params` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Параметры активити в виде сериализованного архива'",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE",
+          "KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE",
+          "CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        ],
+        "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+      );
+
+      $updater->upd_create_table('festival_unit',
+        [
+          "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`highspot_id` int(10) unsigned DEFAULT NULL",
+          "`player_id` bigint(20) unsigned DEFAULT NULL",
+          "`unit_id` bigint(20) NOT NULL DEFAULT '0'",
+          "`unit_level` bigint(20) unsigned NOT NULL DEFAULT '0'",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_festival_unit_player_id` (`player_id`,`highspot_id`) USING BTREE",
+          "KEY `I_festival_unit_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE",
+          "CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          "CONSTRAINT `FK_festival_unit_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        ],
+        "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+
+      $updater->upd_create_table('festival_unit_log',
+        [
+          "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`highspot_id` int(10) unsigned DEFAULT NULL",
+          "`player_id` bigint(20) unsigned NOT NULL COMMENT 'User ID'",
+          "`player_name` varchar(32) NOT NULL DEFAULT ''",
+          "`unit_id` bigint(20) unsigned NOT NULL DEFAULT '0'",
+          "`timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "`unit_level` int(11) NOT NULL DEFAULT '0'",
+          "`unit_image` varchar(255) NOT NULL DEFAULT ''",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_festival_unit_log_player_id` (`player_id`,`highspot_id`,`id`) USING BTREE",
+          "KEY `I_festival_unit_log_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE",
+          "CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          "CONSTRAINT `FK_festival_unit_log_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        ], "ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
-
-    if (! $updater->isTableExists('festival_unit')) {
-      $updater->upd_create_table('festival_unit', " (
-          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-          `highspot_id` int(10) unsigned DEFAULT NULL,
-          `player_id` bigint(20) unsigned DEFAULT NULL,
-          `unit_id` bigint(20) NOT NULL DEFAULT '0',
-          `unit_level` bigint(20) unsigned NOT NULL DEFAULT '0',
-          PRIMARY KEY (`id`),
-          KEY `I_festival_unit_player_id` (`player_id`,`highspot_id`) USING BTREE,
-          KEY `I_festival_unit_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE,
-          CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `FK_festival_unit_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
-      );
-    }
-
-    // 2015-12-21 06:06:09 41a0.12
-    if (! $updater->isTableExists('festival_unit_log')) {
-      $updater->upd_create_table('festival_unit_log', " (
-          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-          `highspot_id` int(10) unsigned DEFAULT NULL,
-          `player_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
-          `player_name` varchar(32) NOT NULL DEFAULT '',
-          `unit_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-          `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          `unit_level` int(11) NOT NULL DEFAULT '0',
-          PRIMARY KEY (`id`),
-          KEY `I_festival_unit_log_player_id` (`player_id`,`highspot_id`,`id`) USING BTREE,
-          KEY `I_festival_unit_log_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE,
-          CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `FK_festival_unit_log_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-      );
-    }
-
-    // 2015-12-22 00:00:32 41a0.17
-    $updater->upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($updater->update_tables['festival_unit_log']['unit_image']));
 
     // 2016-01-15 10:57:17 41a1.4
     $updater->upd_alter_table(
       'security_browser',
       "MODIFY COLUMN `browser_user_agent` VARCHAR(250) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
-      $updater->update_tables['security_browser']['browser_user_agent']['Collation'] == 'latin1_bin'
+      $updater->getFieldDescription('security_browser', 'browser_user_agent')->Collation == 'latin1_bin'
     );
 
-    if ($updater->update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
+//    if ($updater->getIndexDescription('security_browser', 'I_browser_user_agent')['browser_user_agent']['Index_type'] == 'BTREE') {
+    if ($updater->getIndexDescription('security_browser', 'I_browser_user_agent')->Index_type == 'BTREE') {
       $updater->upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       $updater->upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
 
     // 2016-12-03 20:36:46 41a61.0
-    if (! $updater->isTableExists('auth_vkontakte_account')) {
-      $updater->upd_create_table('auth_vkontakte_account', " (
-          `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-          `access_token` varchar(250) NOT NULL DEFAULT '',
-          `expires_in` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          `email` varchar(250) NOT NULL DEFAULT '',
-
-          `first_name` varchar(250) NOT NULL DEFAULT '',
-          `last_name` varchar(250) NOT NULL DEFAULT '',
-
-          `account_id` bigint(20) unsigned NULL COMMENT 'Account ID',
-
-          PRIMARY KEY (`user_id`),
-          CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `{{account}}` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    if (!$updater->isTableExists('auth_vkontakte_account')) {
+      $updater->upd_create_table('auth_vkontakte_account',
+        [
+          "`user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`access_token` varchar(250) NOT NULL DEFAULT ''",
+          "`expires_in` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "`email` varchar(250) NOT NULL DEFAULT ''",
+          "`first_name` varchar(250) NOT NULL DEFAULT ''",
+          "`last_name` varchar(250) NOT NULL DEFAULT ''",
+          "`account_id` bigint(20) unsigned NULL COMMENT 'Account ID'",
+          "PRIMARY KEY (`user_id`)",
+          "CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `{{account}}` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE"
+        ],
+        "ENGINE=InnoDB DEFAULT CHARSET=utf8"
       );
     }
 
-    $updater->upd_do_query('COMMIT;', true);
-
     // 2017-02-03 16:10:49 41b1
     $updater->new_version = 41;
+    $updater->upd_do_query('COMMIT;', true);
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 41:
     $updater->upd_log_version_update();
+    $this->upd_do_query('START TRANSACTION;', true);
 
     // 2017-02-07 09:43:45 42a0
     $updater->upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset(SN::$gc->config->game_news_overview_show));
@@ -180,28 +161,28 @@ switch ($updater->new_version) {
 
     // 2017-02-14 17:13:45 42a20.11
     // TODO - REMOVE DROP TABLE AND CONDITION!
-    if (!isset($updater->update_indexes['text']['I_text_next_alt'])) {
+    if (!$updater->isIndexExists('text', 'I_text_next_alt')) {
       $updater->upd_drop_table('text');
       $updater->upd_create_table('text',
-        "
-        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-        `parent` bigint(20) unsigned DEFAULT NULL COMMENT 'Parent record. NULL - no parent',
-        `context` bigint(20) unsigned DEFAULT NULL COMMENT 'Tutorial context. NULL - main screen',
-        `prev` bigint(20) unsigned DEFAULT NULL COMMENT 'Previous text part. NULL - first part',
-        `next` bigint(20) unsigned DEFAULT NULL COMMENT 'Next text part. NULL - final part',
-        `next_alt` bigint(20) unsigned DEFAULT NULL COMMENT 'Alternative next text part. NULL - no alternative',
-        `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Text title',
-        `content` text COLLATE utf8_unicode_ci COMMENT 'Content - 64k fits to all!',
-        PRIMARY KEY (`id`),
-        KEY `I_text_parent` (`parent`),
-        KEY `I_text_prev` (`prev`),
-        KEY `I_text_next` (`next`),
-        KEY `I_text_next_alt` (`next_alt`),
-        CONSTRAINT `FK_text_parent` FOREIGN KEY (`parent`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        CONSTRAINT `FK_text_prev` FOREIGN KEY (`prev`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        CONSTRAINT `FK_text_next` FOREIGN KEY (`next`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        CONSTRAINT `FK_text_next_alt` FOREIGN KEY (`next_alt`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-        ",
+        [
+          "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`parent` bigint(20) unsigned DEFAULT NULL COMMENT 'Parent record. NULL - no parent'",
+          "`context` bigint(20) unsigned DEFAULT NULL COMMENT 'Tutorial context. NULL - main screen'",
+          "`prev` bigint(20) unsigned DEFAULT NULL COMMENT 'Previous text part. NULL - first part'",
+          "`next` bigint(20) unsigned DEFAULT NULL COMMENT 'Next text part. NULL - final part'",
+          "`next_alt` bigint(20) unsigned DEFAULT NULL COMMENT 'Alternative next text part. NULL - no alternative'",
+          "`title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Text title'",
+          "`content` text COLLATE utf8_unicode_ci COMMENT 'Content - 64k fits to all!'",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_text_parent` (`parent`)",
+          "KEY `I_text_prev` (`prev`)",
+          "KEY `I_text_next` (`next`)",
+          "KEY `I_text_next_alt` (`next_alt`)",
+          "CONSTRAINT `FK_text_parent` FOREIGN KEY (`parent`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+          "CONSTRAINT `FK_text_prev` FOREIGN KEY (`prev`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+          "CONSTRAINT `FK_text_next` FOREIGN KEY (`next`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+          "CONSTRAINT `FK_text_next_alt` FOREIGN KEY (`next_alt`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        ],
         'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
       );
     }
@@ -212,31 +193,31 @@ switch ($updater->new_version) {
     $updater->upd_do_query("UPDATE `{{log_metamatter}}` SET `reason` = " . 35 . " WHERE `reason` = " . 6);
 
     // 2017-03-06 00:43:16 42a26.4
-    if (! $updater->isTableExists('festival_gifts')) {
+    if (!$updater->isTableExists('festival_gifts')) {
       $updater->upd_create_table('festival_gifts',
-        "
-        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-        `highspot_id` int(10) unsigned DEFAULT NULL,
-        `from` bigint(20) unsigned DEFAULT NULL,
-        `to` bigint(20) unsigned DEFAULT NULL,
-        `amount` bigint(20) unsigned NOT NULL,
-        PRIMARY KEY (`id`),
-        KEY `I_highspot_id` (`highspot_id`,`from`,`to`) USING BTREE,
-        KEY `I_to_from` (`highspot_id`,`to`,`from`) USING BTREE
-        ",
+        [
+          "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+          "`highspot_id` int(10) unsigned DEFAULT NULL",
+          "`from` bigint(20) unsigned DEFAULT NULL",
+          "`to` bigint(20) unsigned DEFAULT NULL",
+          "`amount` bigint(20) unsigned NOT NULL",
+          "PRIMARY KEY (`id`)",
+          "KEY `I_highspot_id` (`highspot_id`,`from`,`to`) USING BTREE",
+          "KEY `I_to_from` (`highspot_id`,`to`,`from`) USING BTREE",
+        ],
         'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
       );
     }
 
     // 2017-03-11 20:09:51 42a26.15
-    if (empty($updater->update_tables['users']['skin'])) {
+    if (!$updater->isFieldExists('users', 'skin')) {
       $updater->upd_alter_table(
         'users',
         [
           "ADD COLUMN `template` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OpenGame' AFTER `que_processed`",
           "ADD COLUMN `skin` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'EpicBlue' AFTER `template`",
         ],
-        empty($updater->update_tables['users']['skin'])
+        !$updater->isFieldExists('users', 'skin')
       );
 
       $query = $updater->upd_do_query("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
@@ -256,57 +237,54 @@ switch ($updater->new_version) {
       }
     }
 
-    $updater->upd_alter_table(
-      'users',
-      array(
-        "DROP COLUMN `dpath`",
-      ),
-      !empty($updater->update_tables['users']['dpath'])
-    );
+    $updater->upd_alter_table('users', ["DROP COLUMN `dpath`",], $updater->isFieldExists('users', 'dpath'));
 
     // 2017-06-12 13:47:36 42c1
-    $updater->upd_do_query('COMMIT;', true);
     $updater->new_version = 42;
+    $updater->upd_do_query('COMMIT;', true);
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 42:
     $updater->upd_log_version_update();
+    $this->upd_do_query('START TRANSACTION;', true);
 
     // 2017-10-11 09:51:49 43a4.3
-    $updater->upd_alter_table('messages', [
-      "ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",
-    ], empty($updater->update_tables['messages']['message_json']));
+    $updater->upd_alter_table('messages',
+      ["ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",],
+      !$updater->isFieldExists('messages', 'message_json')
+    );
 
 
     // 2017-10-17 09:49:24 43a6.0
     // Removing old index i_user_id
-    $updater->upd_alter_table('counter', [
-      'DROP KEY `i_user_id`'
-    ], !empty($updater->update_indexes_full['counter']['i_user_id']));
+    $updater->upd_alter_table('counter', ['DROP KEY `i_user_id`',], $updater->isIndexExists('counter', 'i_user_id'));
     // Adding new index I_counter_user_id
-    $updater->upd_alter_table('counter', [
-      'ADD KEY `I_counter_user_id` (`user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)'
-    ], empty($updater->update_indexes_full['counter']['I_counter_user_id']));
+    $updater->upd_alter_table('counter',
+      [
+        'ADD KEY `I_counter_user_id` (`user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)'
+      ],
+      !$updater->isIndexExists('counter', 'I_counter_user_id')
+    );
 
     // Adding new field visit_length
     $updater->upd_alter_table('counter', [
       "ADD COLUMN `visit_length` int unsigned NOT NULL DEFAULT 0 AFTER `visit_time`",
-    ], empty($updater->update_tables['counter']['visit_length']));
+    ], !$updater->isFieldExists('counter', 'visit_length'));
 
     // Adding key for logger update
     $updater->upd_alter_table('counter', [
       'ADD KEY `I_counter_visit_time` (`visit_time`, `counter_id`)'
-    ], empty($updater->update_indexes_full['counter']['I_counter_visit_time']));
+    ], !$updater->isIndexExists('counter', 'I_counter_visit_time'));
 
     // 2017-10-18 09:27:27 43a6.1
     $updater->upd_alter_table('counter', [
       "ADD COLUMN `hits` int unsigned NOT NULL DEFAULT 1 AFTER `visit_length`",
-    ], empty($updater->update_tables['counter']['hits']));
+    ], !$updater->isFieldExists('counter', 'hits'));
 
     // 2017-11-24 05:07:29 43a7.16
     $updater->upd_alter_table('festival_highspot', [
       "ADD COLUMN `params` text NOT NULL DEFAULT '' COMMENT 'Параметры хайспота в виде JSON-encoded' AFTER `name`",
-    ], empty($updater->update_tables['festival_highspot']['params']));
+    ], !$updater->isFieldExists('festival_highspot', 'params'));
 
     // 2017-11-26 06:40:25 43a8.3
     $player_metamatter_immortal = SN::$gc->config->player_metamatter_immortal;
@@ -320,7 +298,7 @@ switch ($updater->new_version) {
     );
 
     // 2018-02-27 08:32:46 43a12.8
-    if (! $updater->isTableExists('server_patches')) {
+    if (!$updater->isTableExists('server_patches')) {
       $updater->upd_create_table(
         'server_patches',
         [
@@ -359,7 +337,7 @@ switch ($updater->new_version) {
       $updater->upd_alter_table('festival_gifts', [
         "ADD COLUMN `disclosure` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `amount`",
         "ADD COLUMN `message` VARCHAR(4096) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `disclosure`",
-      ], empty($updater->update_tables['festival_gifts']['disclosure']));
+      ], !$updater->isFieldExists('festival_gifts', 'disclosure'));
     });
 
     // 2018-03-12 13:23:10 43a13.33
@@ -368,13 +346,13 @@ switch ($updater->new_version) {
         [
           "MODIFY COLUMN `value` VARCHAR(16000) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
         ],
-        $updater->update_tables['player_options']['value']['Type'] == 'varchar(1900)'
+        $updater->getFieldDescription('player_options', 'value')->Type == 'varchar(1900)'
       );
     });
 
     // 2018-03-24 21:31:51 43a16.16 - OiS
     $updater->updPatchApply(4, function () use ($updater) {
-      if (! $updater->isTableExists('festival_ois_player')) {
+      if (!$updater->isTableExists('festival_ois_player')) {
         $updater->upd_create_table(
           'festival_ois_player',
           [
@@ -396,20 +374,20 @@ switch ($updater->new_version) {
       $updater->upd_alter_table(
         'que',
         "ADD COLUMN `que_unit_one_time_raw` DECIMAL(20,5) NOT NULL DEFAULT 0",
-        empty($updater->update_tables['que']['que_unit_one_time_raw'])
+        !$updater->isFieldExists('que', 'que_unit_one_time_raw')
       );
     });
 
-    $updater->upd_do_query('COMMIT;', true);
     $updater->new_version = 43;
+    $updater->upd_do_query('COMMIT;', true);
 
   case 43:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
-    $updater->upd_log_version_update2();
+    $updater->upd_log_version_update();
 
     // 2018-12-21 14:00:41 44a5 Module "ad_promo_code" support
     $updater->updPatchApply(6, function () use ($updater) {
-      if (! $updater->isTableExists('ad_promo_codes')) {
+      if (!$updater->isTableExists('ad_promo_codes')) {
         $updater->upd_create_table(
           'ad_promo_codes',
           [
@@ -426,12 +404,11 @@ switch ($updater->new_version) {
             "PRIMARY KEY (`id`)",
             "UNIQUE KEY `I_promo_code` (`code`)",
           ],
-//          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
           'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
 
-      if (! $updater->isTableExists('ad_promo_codes_uses')) {
+      if (!$updater->isTableExists('ad_promo_codes_uses')) {
         $updater->upd_create_table(
           'ad_promo_codes_uses',
           [
@@ -444,7 +421,6 @@ switch ($updater->new_version) {
             "KEY `FK_user_id` (`user_id`)",
             "KEY `I_promo_code_id` (`promo_code_id`,`user_id`)",
           ],
-//          'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
           'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
@@ -478,7 +454,7 @@ switch ($updater->new_version) {
 
         "DROP KEY `I_counter_device_id`",
         "ADD KEY `I_counter_device_id` (device_id, browser_id, user_ip, user_proxy)",
-      ], empty($updater->update_tables['counter']['query_string_id']));
+      ], !$updater->isFieldExists('counter', 'query_string_id'));
 
       // Adjusting `security_player_entry` to match new structure
       $updater->upd_alter_table('security_player_entry', [
@@ -495,10 +471,10 @@ switch ($updater->new_version) {
         "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
         "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
         "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
-      ], empty($updater->update_tables['security_player_entry']['id']));
+      ], !$updater->isFieldExists('security_player_entry', 'id'));
 
-      if (!empty($updater->update_tables['counter']['device_id'])) {
-        $oldLockTime           = SN::$gc->config->upd_lock_time;
+      if ($updater->isFieldExists('counter', 'device_id')) {
+        $oldLockTime                   = SN::$gc->config->upd_lock_time;
         SN::$gc->config->upd_lock_time = 300;
 
         $updater->upd_do_query('START TRANSACTION;', true);
@@ -536,7 +512,7 @@ switch ($updater->new_version) {
         // Adding unique index for all significant fields
         $updater->upd_alter_table('security_player_entry', [
           "ADD UNIQUE KEY `I_player_entry_unique` (`device_id`, `browser_id`, `user_ip`, `user_proxy`)",
-        ], empty($updater->update_indexes['security_player_entry']['I_player_entry_unique']));
+        ], ! $updater->isIndexExists('security_player_entry', 'I_player_entry_unique'));
         // Filling `security_player_entry` from temp table
         $updater->upd_do_query(
           "INSERT IGNORE INTO `{{security_player_entry}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
@@ -556,13 +532,12 @@ switch ($updater->new_version) {
         );
 
         $updater->upd_alter_table('security_player_entry', [
-//          "DROP KEY `I_player_entry_device_id`",
           "DROP KEY `I_player_entry_device_id`",
           "DROP KEY `I_player_entry_player_id`",
           // Removing unused field `security_player_entry`.`player_id`
           "DROP COLUMN `player_id`",
-        ], !empty($updater->update_tables['security_player_entry']['player_id']));
-
+        ], $updater->isFieldExists('security_player_entry', 'player_id'));
+// todo - вынести вниз в отдельный патч (?) Сверить с живыми
         // Remove unused fields from `counter` table
         $updater->upd_alter_table('counter', [
           "DROP KEY `I_counter_user_id`",
@@ -578,7 +553,7 @@ switch ($updater->new_version) {
 
           "DROP COLUMN `user_ip`",
           "DROP COLUMN `user_proxy`",
-        ], !empty($updater->update_tables['counter']['device_id']));
+        ], $updater->isFieldExists('counter', 'device_id'));
 
 //        upd_alter_table('counter', [
 //          "DROP KEY `I_counter_user_id`",
@@ -594,21 +569,12 @@ switch ($updater->new_version) {
 //    $updater->updPatchApply(8, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
-    $updater->upd_do_query('COMMIT;', true);
 //    $new_version = 44;
-}
-$updater->upd_log_message('Upgrade complete.');
-
-$updater->upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
-
-SN::$cache->unset_by_prefix('lng_');
-
-if ($updater->new_version) {
-  SN::$gc->config->pass()->db_version = $updater->new_version;
-  $updater->upd_log_message("<span style='color: green;'>DB version is now {$updater->new_version}</span>");
-} else {
-  $db_version = SN::$gc->config->db_version;
-  $updater->upd_log_message("DB version didn't changed from {$db_version}");
+    $updater->upd_do_query('COMMIT;', true);
 }
 
+
+
+$updater->successTermination = true;
+// DO NOT DELETE ! This will invoke destructor !
 unset($updater);
