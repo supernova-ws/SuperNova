@@ -35,12 +35,13 @@ class db_mysql {
    * @var string
    */
   public $db_prefix = '';
+  public $dbName = '';
   /**
    * Настройки БД
    *
    * @var array
    */
-  protected $dbsettings = array();
+  protected $dbsettings = [];
   /**
    * Драйвер для прямого обращения к MySQL
    *
@@ -84,14 +85,14 @@ class db_mysql {
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 
-    $this->dbsettings = $dbsettings;
+    $this->setDbSettings($dbsettings);
   }
 
   public function sn_db_connect($external_db_settings = null) {
     $this->db_disconnect();
 
     if (!empty($external_db_settings) && is_array($external_db_settings)) {
-      $this->dbsettings = $external_db_settings;
+      $this->setDbSettings($external_db_settings);
     }
 
     if (empty($this->dbsettings)) {
@@ -498,6 +499,16 @@ class db_mysql {
 
   public function db_get_server_stat() {
     return $this->driver->mysql_stat();
+  }
+
+  /**
+   * @param array $dbSettings
+   */
+  public function setDbSettings($dbSettings) {
+    $this->dbsettings = $dbSettings;
+    $this->dbName = $this->dbsettings['name'];
+
+    return $this;
   }
 
   public function getDbSettings() {

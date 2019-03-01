@@ -24,73 +24,36 @@ if (defined('IN_UPDATE')) {
 
 define('IN_UPDATE', true);
 
+global $sn_cache, $debug, $sys_log_disabled;
+
 $updater = new Updater();
 
-global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
+//$updater->upd_check_key('upd_lock_time', 300, !isset(SN::$gc->config->upd_lock_time));
+//set_time_limit(SN::$gc->config->upd_lock_time + 10);
+//$updater->upd_log_message('Update started. Disabling server');
+//$old_server_status = SN::$gc->config->db_loadItem('game_disable');
+//SN::$gc->config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
+//
+//$updater->upd_log_message('Server disabled. Loading table info...');
+//$updater->update_tables = array();
+//$update_indexes         = array();
+//$query                  = $updater->upd_do_query('SHOW TABLES;', true);
+//while ($row = db_fetch_row($query)) {
+//  $updater->upd_load_table_info($row[0]);
+//}
+//$updater->upd_log_message('Table info loaded. Now looking DB for upgrades...');
+//
+//$updater->upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
+//
+//
+//ini_set('memory_limit', '1G');
 
-// Closing any transaction that can be opened to this moment
-$updater->upd_do_query('ROLLBACK;', true);
-
-$config->reset();
-$config->db_loadAll();
-$config->db_prefix    = SN::$db->db_prefix; // Оставить пока для совместимости
-$config->cache_prefix = SN::$cache_prefix;
-$config->debug        = 0;
-
-//$config->db_loadItem('db_version');
-if ($config->db_version < DB_VERSION_MIN) {
-  die(
-  'Internal error! Updater detects DB version LESSER then can be handled!<br />
-    Possible you have VERY out-of-date SuperNova version<br />
-    Use SuperNova version not greater then  ' . DB_VERSION_MIN .' to make preliminary upgraded and then use newest version again<br />
-    List of available releases <a href="https://github.com/supernova-ws/SuperNova/releases">GIT repository</a>'
-  );
-} elseif ($config->db_version > DB_VERSION) {
-  $config->pass()->var_db_update_end = SN_TIME_NOW;
-  die(
-  'Internal error! Updater detects DB version greater then can be handled!<br />
-    Possible you have out-of-date SuperNova version<br />
-    Please upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>'
-  );
-}
-
-$upd_log     = '';
-$new_version = floatval($config->db_version);
-$minVersion  = 40;
-if ($new_version < $minVersion) {
-  die("This version does not supports upgrades from SN below v{$minVersion}. Please, use SN v42 to upgrade old database.<br />
-Эта версия игры не поддерживает обновление движка версий ниже v{$minVersion}. Пожалуйста, используйте SN v42 для апгрейда со старых версий игры.");
-}
-
-$updater->upd_check_key('upd_lock_time', 300, !isset($config->upd_lock_time));
-
-set_time_limit($config->upd_lock_time + 10);
-
-$updater->upd_log_message('Update started. Disabling server');
-
-$old_server_status = $config->db_loadItem('game_disable');
-$config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
-
-$updater->upd_log_message('Server disabled. Loading table info...');
-$update_tables  = array();
-$update_indexes = array();
-$query          = $updater->upd_do_query('SHOW TABLES;', true);
-while ($row = db_fetch_row($query)) {
-  $updater->upd_load_table_info($row[0]);
-}
-$updater->upd_log_message('Table info loaded. Now looking DB for upgrades...');
-
-$updater->upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
-
-
-ini_set('memory_limit', '1G');
-
-switch ($new_version) {
+switch ($updater->new_version) {
   /** @noinspection PhpMissingBreakStatementInspection */
   case 40:
     $updater->upd_log_version_update();
 
-    if (empty($update_tables['festival'])) {
+    if (! $updater->isTableExists('festival')) {
       $updater->upd_create_table('festival', " (
           `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
           `start` datetime NOT NULL COMMENT 'Festival start datetime',
@@ -131,7 +94,7 @@ switch ($new_version) {
       );
     }
 
-    if (empty($update_tables['festival_unit'])) {
+    if (! $updater->isTableExists('festival_unit')) {
       $updater->upd_create_table('festival_unit', " (
           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `highspot_id` int(10) unsigned DEFAULT NULL,
@@ -148,7 +111,7 @@ switch ($new_version) {
     }
 
     // 2015-12-21 06:06:09 41a0.12
-    if (empty($update_tables['festival_unit_log'])) {
+    if (! $updater->isTableExists('festival_unit_log')) {
       $updater->upd_create_table('festival_unit_log', " (
           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `highspot_id` int(10) unsigned DEFAULT NULL,
@@ -167,22 +130,22 @@ switch ($new_version) {
     }
 
     // 2015-12-22 00:00:32 41a0.17
-    $updater->upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($update_tables['festival_unit_log']['unit_image']));
+    $updater->upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($updater->update_tables['festival_unit_log']['unit_image']));
 
     // 2016-01-15 10:57:17 41a1.4
     $updater->upd_alter_table(
       'security_browser',
       "MODIFY COLUMN `browser_user_agent` VARCHAR(250) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
-      $update_tables['security_browser']['browser_user_agent']['Collation'] == 'latin1_bin'
+      $updater->update_tables['security_browser']['browser_user_agent']['Collation'] == 'latin1_bin'
     );
 
-    if ($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
+    if ($updater->update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
       $updater->upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       $updater->upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
 
     // 2016-12-03 20:36:46 41a61.0
-    if (empty($update_tables['auth_vkontakte_account'])) {
+    if (! $updater->isTableExists('auth_vkontakte_account')) {
       $updater->upd_create_table('auth_vkontakte_account', " (
           `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `access_token` varchar(250) NOT NULL DEFAULT '',
@@ -203,21 +166,21 @@ switch ($new_version) {
     $updater->upd_do_query('COMMIT;', true);
 
     // 2017-02-03 16:10:49 41b1
-    $new_version = 41;
+    $updater->new_version = 41;
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 41:
     $updater->upd_log_version_update();
 
     // 2017-02-07 09:43:45 42a0
-    $updater->upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset($config->game_news_overview_show));
+    $updater->upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset(SN::$gc->config->game_news_overview_show));
 
     // 2017-02-13 13:44:18 42a17
-    $updater->upd_check_key('tutorial_first_item', 1, !isset($config->tutorial_first_item));
+    $updater->upd_check_key('tutorial_first_item', 1, !isset(SN::$gc->config->tutorial_first_item));
 
     // 2017-02-14 17:13:45 42a20.11
     // TODO - REMOVE DROP TABLE AND CONDITION!
-    if (!isset($update_indexes['text']['I_text_next_alt'])) {
+    if (!isset($updater->update_indexes['text']['I_text_next_alt'])) {
       $updater->upd_drop_table('text');
       $updater->upd_create_table('text',
         "
@@ -249,7 +212,7 @@ switch ($new_version) {
     $updater->upd_do_query("UPDATE `{{log_metamatter}}` SET `reason` = " . 35 . " WHERE `reason` = " . 6);
 
     // 2017-03-06 00:43:16 42a26.4
-    if (empty($update_tables['festival_gifts'])) {
+    if (! $updater->isTableExists('festival_gifts')) {
       $updater->upd_create_table('festival_gifts',
         "
         `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -266,14 +229,14 @@ switch ($new_version) {
     }
 
     // 2017-03-11 20:09:51 42a26.15
-    if (empty($update_tables['users']['skin'])) {
+    if (empty($updater->update_tables['users']['skin'])) {
       $updater->upd_alter_table(
         'users',
         [
           "ADD COLUMN `template` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OpenGame' AFTER `que_processed`",
           "ADD COLUMN `skin` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'EpicBlue' AFTER `template`",
         ],
-        empty($update_tables['users']['skin'])
+        empty($updater->update_tables['users']['skin'])
       );
 
       $query = $updater->upd_do_query("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
@@ -298,12 +261,12 @@ switch ($new_version) {
       array(
         "DROP COLUMN `dpath`",
       ),
-      !empty($update_tables['users']['dpath'])
+      !empty($updater->update_tables['users']['dpath'])
     );
 
     // 2017-06-12 13:47:36 42c1
     $updater->upd_do_query('COMMIT;', true);
-    $new_version = 42;
+    $updater->new_version = 42;
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 42:
@@ -312,51 +275,52 @@ switch ($new_version) {
     // 2017-10-11 09:51:49 43a4.3
     $updater->upd_alter_table('messages', [
       "ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",
-    ], empty($update_tables['messages']['message_json']));
+    ], empty($updater->update_tables['messages']['message_json']));
 
 
     // 2017-10-17 09:49:24 43a6.0
     // Removing old index i_user_id
     $updater->upd_alter_table('counter', [
       'DROP KEY `i_user_id`'
-    ], !empty($update_indexes_full['counter']['i_user_id']));
+    ], !empty($updater->update_indexes_full['counter']['i_user_id']));
     // Adding new index I_counter_user_id
     $updater->upd_alter_table('counter', [
       'ADD KEY `I_counter_user_id` (`user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)'
-    ], empty($update_indexes_full['counter']['I_counter_user_id']));
+    ], empty($updater->update_indexes_full['counter']['I_counter_user_id']));
 
     // Adding new field visit_length
     $updater->upd_alter_table('counter', [
       "ADD COLUMN `visit_length` int unsigned NOT NULL DEFAULT 0 AFTER `visit_time`",
-    ], empty($update_tables['counter']['visit_length']));
+    ], empty($updater->update_tables['counter']['visit_length']));
 
     // Adding key for logger update
     $updater->upd_alter_table('counter', [
       'ADD KEY `I_counter_visit_time` (`visit_time`, `counter_id`)'
-    ], empty($update_indexes_full['counter']['I_counter_visit_time']));
+    ], empty($updater->update_indexes_full['counter']['I_counter_visit_time']));
 
     // 2017-10-18 09:27:27 43a6.1
     $updater->upd_alter_table('counter', [
       "ADD COLUMN `hits` int unsigned NOT NULL DEFAULT 1 AFTER `visit_length`",
-    ], empty($update_tables['counter']['hits']));
+    ], empty($updater->update_tables['counter']['hits']));
 
     // 2017-11-24 05:07:29 43a7.16
     $updater->upd_alter_table('festival_highspot', [
       "ADD COLUMN `params` text NOT NULL DEFAULT '' COMMENT 'Параметры хайспота в виде JSON-encoded' AFTER `name`",
-    ], empty($update_tables['festival_highspot']['params']));
+    ], empty($updater->update_tables['festival_highspot']['params']));
 
     // 2017-11-26 06:40:25 43a8.3
+    $player_metamatter_immortal = SN::$gc->config->player_metamatter_immortal;
     $updater->upd_do_query(
       "INSERT INTO `{{player_award}}` (award_type_id, award_id, player_id, awarded)
         SELECT 2300, 2301, trans.user_id, acc.account_immortal
         FROM `{{account}}` AS acc
           JOIN `{{account_translate}}` AS trans ON trans.provider_id = 1 AND trans.provider_account_id = acc.account_id
           LEFT JOIN `{{player_award}}` AS award ON award.award_id = 2301 AND award.player_id = trans.user_id
-        WHERE acc.account_metamatter_total >= {$config->player_metamatter_immortal} AND award.id IS NULL;"
+        WHERE acc.account_metamatter_total >= {$player_metamatter_immortal} AND award.id IS NULL;"
     );
 
     // 2018-02-27 08:32:46 43a12.8
-    if (empty($update_tables['server_patches'])) {
+    if (! $updater->isTableExists('server_patches')) {
       $updater->upd_create_table(
         'server_patches',
         [
@@ -391,26 +355,26 @@ switch ($new_version) {
     });
 
     // 2018-03-07 09:23:41 43a13.23 + 2018-03-07 12:00:47 43a13.24
-    $updater->updPatchApply(2, function () use ($update_tables, $updater) {
+    $updater->updPatchApply(2, function () use ($updater) {
       $updater->upd_alter_table('festival_gifts', [
         "ADD COLUMN `disclosure` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `amount`",
         "ADD COLUMN `message` VARCHAR(4096) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `disclosure`",
-      ], empty($update_tables['festival_gifts']['disclosure']));
+      ], empty($updater->update_tables['festival_gifts']['disclosure']));
     });
 
     // 2018-03-12 13:23:10 43a13.33
-    $updater->updPatchApply(3, function () use ($update_tables, $updater) {
+    $updater->updPatchApply(3, function () use ($updater) {
       $updater->upd_alter_table('player_options',
         [
           "MODIFY COLUMN `value` VARCHAR(16000) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
         ],
-        $update_tables['player_options']['value']['Type'] == 'varchar(1900)'
+        $updater->update_tables['player_options']['value']['Type'] == 'varchar(1900)'
       );
     });
 
     // 2018-03-24 21:31:51 43a16.16 - OiS
-    $updater->updPatchApply(4, function () use ($update_tables, $updater) {
-      if (empty($update_tables['festival_ois_player'])) {
+    $updater->updPatchApply(4, function () use ($updater) {
+      if (! $updater->isTableExists('festival_ois_player')) {
         $updater->upd_create_table(
           'festival_ois_player',
           [
@@ -428,24 +392,24 @@ switch ($new_version) {
     });
 
     // 2018-03-25 08:11:39 43a16.21
-    $updater->updPatchApply(5, function () use ($update_tables, $updater) {
+    $updater->updPatchApply(5, function () use ($updater) {
       $updater->upd_alter_table(
         'que',
         "ADD COLUMN `que_unit_one_time_raw` DECIMAL(20,5) NOT NULL DEFAULT 0",
-        empty($update_tables['que']['que_unit_one_time_raw'])
+        empty($updater->update_tables['que']['que_unit_one_time_raw'])
       );
     });
 
     $updater->upd_do_query('COMMIT;', true);
-    $new_version = 43;
+    $updater->new_version = 43;
 
   case 43:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
     $updater->upd_log_version_update2();
 
     // 2018-12-21 14:00:41 44a5 Module "ad_promo_code" support
-    $updater->updPatchApply(6, function () use ($update_tables, $updater) {
-      if (empty($update_tables['ad_promo_codes'])) {
+    $updater->updPatchApply(6, function () use ($updater) {
+      if (! $updater->isTableExists('ad_promo_codes')) {
         $updater->upd_create_table(
           'ad_promo_codes',
           [
@@ -467,7 +431,7 @@ switch ($new_version) {
         );
       }
 
-      if (empty($update_tables['ad_promo_codes_uses'])) {
+      if (! $updater->isTableExists('ad_promo_codes_uses')) {
         $updater->upd_create_table(
           'ad_promo_codes_uses',
           [
@@ -487,7 +451,7 @@ switch ($new_version) {
     });
 
     // 2018-12-22 11:42:20 44a12
-    $updater->updPatchApply(7, function () use ($update_tables, $update_indexes, $config, $update_foreigns, $updater) {
+    $updater->updPatchApply(7, function () use ($updater) {
       // Creating table for HTTP query strings
       $updater->upd_create_table(
         'security_query_strings',
@@ -514,7 +478,7 @@ switch ($new_version) {
 
         "DROP KEY `I_counter_device_id`",
         "ADD KEY `I_counter_device_id` (device_id, browser_id, user_ip, user_proxy)",
-      ], empty($update_tables['counter']['query_string_id']));
+      ], empty($updater->update_tables['counter']['query_string_id']));
 
       // Adjusting `security_player_entry` to match new structure
       $updater->upd_alter_table('security_player_entry', [
@@ -531,11 +495,11 @@ switch ($new_version) {
         "DROP FOREIGN KEY `FK_security_player_entry_browser_id`",
         "DROP FOREIGN KEY `FK_security_player_entry_device_id`",
         "DROP FOREIGN KEY `FK_security_player_entry_player_id`",
-      ], empty($update_tables['security_player_entry']['id']));
+      ], empty($updater->update_tables['security_player_entry']['id']));
 
-      if (!empty($update_tables['counter']['device_id'])) {
-        $oldLockTime           = $config->upd_lock_time;
-        $config->upd_lock_time = 300;
+      if (!empty($updater->update_tables['counter']['device_id'])) {
+        $oldLockTime           = SN::$gc->config->upd_lock_time;
+        SN::$gc->config->upd_lock_time = 300;
 
         $updater->upd_do_query('START TRANSACTION;', true);
         $updater->upd_drop_table('spe_temp');
@@ -572,7 +536,7 @@ switch ($new_version) {
         // Adding unique index for all significant fields
         $updater->upd_alter_table('security_player_entry', [
           "ADD UNIQUE KEY `I_player_entry_unique` (`device_id`, `browser_id`, `user_ip`, `user_proxy`)",
-        ], empty($update_indexes['security_player_entry']['I_player_entry_unique']));
+        ], empty($updater->update_indexes['security_player_entry']['I_player_entry_unique']));
         // Filling `security_player_entry` from temp table
         $updater->upd_do_query(
           "INSERT IGNORE INTO `{{security_player_entry}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
@@ -597,7 +561,7 @@ switch ($new_version) {
           "DROP KEY `I_player_entry_player_id`",
           // Removing unused field `security_player_entry`.`player_id`
           "DROP COLUMN `player_id`",
-        ], !empty($update_tables['security_player_entry']['player_id']));
+        ], !empty($updater->update_tables['security_player_entry']['player_id']));
 
         // Remove unused fields from `counter` table
         $updater->upd_alter_table('counter', [
@@ -614,20 +578,20 @@ switch ($new_version) {
 
           "DROP COLUMN `user_ip`",
           "DROP COLUMN `user_proxy`",
-        ], !empty($update_tables['counter']['device_id']));
+        ], !empty($updater->update_tables['counter']['device_id']));
 
 //        upd_alter_table('counter', [
 //          "DROP KEY `I_counter_user_id`",
 //          "ADD KEY `I_counter_user_id` (`user_id`, `player_entry_id`)",
 //        ], !empty($update_tables['counter']['device_id']));
 
-        $config->upd_lock_time = $oldLockTime;
+        SN::$gc->config->upd_lock_time = $oldLockTime;
         $updater->upd_do_query('COMMIT;', true);
       }
     }, PATCH_REGISTER);
 
 //    // #ctv
-//    updPatchApply(8, function() use ($update_tables, $update_indexes) {
+//    $updater->updPatchApply(8, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
     $updater->upd_do_query('COMMIT;', true);
@@ -639,20 +603,12 @@ $updater->upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
 
 SN::$cache->unset_by_prefix('lng_');
 
-if ($new_version) {
-  $config->db_saveItem('db_version', $new_version);
-  $updater->upd_log_message("<span style='color: green;'>DB version is now {$new_version}</span>");
+if ($updater->new_version) {
+  SN::$gc->config->pass()->db_version = $updater->new_version;
+  $updater->upd_log_message("<span style='color: green;'>DB version is now {$updater->new_version}</span>");
 } else {
-  $updater->upd_log_message("DB version didn't changed from {$config->db_version}");
+  $db_version = SN::$gc->config->db_version;
+  $updater->upd_log_message("DB version didn't changed from {$db_version}");
 }
 
-$config->db_loadAll();
-/*
-if($user['authlevel'] >= 3) {
-  print(str_replace("\r\n", '<br>', $upd_log));
-}
-*/
-SN::$db->schema()->clear();
-
-$updater->upd_log_message('Restoring server status');
-$config->db_saveItem('game_disable', $old_server_status);
+unset($updater);
