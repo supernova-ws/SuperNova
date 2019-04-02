@@ -173,17 +173,17 @@ $ques = array(
     AND `log_timestamp` < DATE_SUB(NOW(),INTERVAL 7 DAY);',
 
 
-  // Удаляем устройства, на которые никто не ссылается
-  "DELETE sd FROM `{{security_device}}` AS sd
-    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
-  WHERE player_id IS NULL;",
+  // TODO Удаляем устройства, на которые никто не ссылается
+//  "DELETE sd FROM `{{security_device}}` AS sd
+//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
+//  WHERE player_id IS NULL;",
   // Удаляем браузеры, на которые никто не ссылается
-  "DELETE sb FROM `{{security_browser}}` AS sb
-    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
-  WHERE player_id IS NULL;",
+//  "DELETE sb FROM `{{security_browser}}` AS sb
+//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
+//  WHERE player_id IS NULL;",
 
   // Удаляем записи визитов без пользователей
-  'DELETE FROM `{{counter}}` WHERE `user_id` NOT IN (SELECT `id` FROM `{{users}}`);',
+//  'DELETE FROM `{{counter}}` WHERE `user_id` NOT IN (SELECT `id` FROM `{{users}}`);',
 );
 
 function sn_maintenance_pack_user_list($user_list) {
