@@ -16,7 +16,11 @@ if ($unit_id == RES_METAMATTER) {
 }
 
 lng_include('infos');
-if (!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]))) {
+if (
+  !$unit_id
+  ||
+  (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]) && !$unit_id == UNIT_CAN_NOT_BE_BUILD)
+) {
   sys_redirect('index.php?page=techtree');
 }
 
