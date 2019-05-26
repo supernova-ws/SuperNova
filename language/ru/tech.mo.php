@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a16.33
+* @version 44a83
 *
 */
 
@@ -191,6 +191,8 @@ $a_lang_array = (array(
     UNIT_CAPTAIN => 'Капитан',
 
     UNIT_PLANET_DENSITY => 'Плотность',
+
+    UNIT_CAN_NOT_BE_BUILD => 'Юнит не может быть построен игроком',
   ),
 
   'tech_short' => array(
@@ -314,6 +316,8 @@ $a_lang_array = (array(
 //    UNIT_CAPTAIN => 'Капитан',
 //
 //    UNIT_PLANET_DENSITY => 'Плотность',
+
+    UNIT_CAN_NOT_BE_BUILD => 'Нельзя строить',
   ),
 
 ));
