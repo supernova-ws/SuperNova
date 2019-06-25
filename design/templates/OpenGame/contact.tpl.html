@@ -1,20 +1,32 @@
-<br />
+<h1>{L_ctc_title}</h1>
+
 <table>
-  <tr><th colspan="3" class="c_l"><b>{L_ctc_title}</b></th></tr>
-
-  <tr><td colspan="3" class="c_c warning">{L_ctc_intro}</th></tr>
-
   <tr>
-    <th><font color="lime">{L_ctc_name}</font></th>
-    <th><font color="lime">{L_ctc_rank}</font></th>
-    <th><font color="lime">{L_ctc_mail}</font></th>
+    <td colspan="3" class="c_c warning">{L_ctc_intro}</td>
+  </tr>
+
+  <tr class="ok c_c">
+    <th>{L_ctc_name}</th>
+    <th>{L_ctc_rank}</th>
+    <th>{L_ctc_mail}</th>
   </tr>
 
   <!-- BEGIN contact -->
   <tr>
-    <th>{contact.NAME}</th>
+    <th>
+      <a href="messages.php?mode=write&id={contact.ID}">
+        <img src="design/images/icon_mail.gif" alt="{L_msg_compose}" title="{L_msg_compose}" border="0">
+        {contact.NAME}
+      </a>
+    </th>
     <th>{contact.LEVEL}</th>
-    <th><a href="mailto:{contact.EMAIL}">{contact.EMAIL}</a></th>
+    <th>
+      <!-- IF contact.EMAIL -->
+      <a href="mailto:{contact.EMAIL}">{contact.EMAIL}</a>
+      <!-- ELSE -->
+      &nbsp;
+      <!-- ENDIF -->
+    </th>
   </tr>
   <!-- END contact -->
 </table>

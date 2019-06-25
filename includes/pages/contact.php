@@ -11,9 +11,9 @@ function sn_contact_view($template = null) {
 
   $query = db_user_list("`authlevel` > 0 ORDER BY `authlevel` ASC");
 
-  // while($row = db_fetch($query))
   foreach ($query as $row) {
     $template_result['.']['contact'][] = array(
+      'ID'  => $row['id'],
       'NAME'  => $row['username'],
       'LEVEL' => $lang['user_level'][$row['authlevel']],
       'EMAIL' => $row['email'],
