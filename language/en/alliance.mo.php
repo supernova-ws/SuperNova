@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 44a100
 *
 */
 
@@ -124,6 +124,7 @@ $a_lang_array = (array(
   'ali_search_tip' => 'Search can be performed on the part of the name or tag of the Alliance',
   'ali_search_result_none' => 'No items found matching your search for Alliances.',
   'ali_search_result_tip' => 'Click on the name or tag of the Alliance that would see information about it.<br>Click "Enter" to send a request to join.',
+  'ali_search_show_all' => 'List and statistics for all Alliances',
   'ali_sys_name' => 'The Name',
   'ali_sys_tag' => 'Tag',
   'ali_sys_members' => 'Members',
