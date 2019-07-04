@@ -82,7 +82,11 @@ if (isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus
 }
 
 // Результат платежа
-if ($payment_id = sys_get_param_id('payment_id')) {
+if (
+    ($payment_id = sys_get_param_id('payment_id'))
+    ||
+    ($payment_id = sys_get_param_id('ik_pm_no'))
+) {
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if ($payment && $payment['payment_user_id'] == $user['id']) {
     if ($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {

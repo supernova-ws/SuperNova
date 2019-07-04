@@ -9,7 +9,7 @@ use Modules\sn_module;
  * Time: 3:49
  */
 abstract class sn_module_payment extends sn_module {
-  public $versionCommitted = '#44a5#';
+  public $versionCommitted = '#44a102#';
 
   public $active = false;
 
@@ -446,9 +446,31 @@ abstract class sn_module_payment extends sn_module {
     SN_PAYMENT_REQUEST_OK              => SN_PAYMENT_REQUEST_OK,
   );
 
-//  public function __construct($filename = __FILE__) {
-//    parent::__construct($filename);
-//  }
+  /**
+   * sn_module_payment constructor.
+   *
+   * @param string $filename
+   *
+   * @throws Exception
+   */
+  public function __construct($filename = __FILE__) {
+    parent::__construct($filename);
+
+    if (!empty($this->config['debug'])) {
+      $this->debug = true;
+    }
+  }
+
+  /**
+   * @param array $data
+   */
+  public function debug($data) {
+    if (!$this->debug) {
+      return;
+    }
+
+    file_put_contents(SN_ROOT_PHYSICAL . '_' . get_called_class() . '_debug.txt', $data, FILE_APPEND);
+  }
 
   /**
    * Компилирует запрос к платёжной системе
@@ -653,6 +675,13 @@ abstract class sn_module_payment extends sn_module {
     } catch (Exception $e) {
       $response['result'] = $e->getCode();
       $response['message'] = $e->getMessage();
+
+      $this->debug([
+        "\n",
+        "Kinda Error!\n",
+        '$response => ', var_export($response, true),
+        "\n",
+      ]);
     }
 
     if ($response['result'] == SN_PAYMENT_REQUEST_OK) {
