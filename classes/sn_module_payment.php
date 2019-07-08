@@ -9,7 +9,8 @@ use Modules\sn_module;
  * Time: 3:49
  */
 abstract class sn_module_payment extends sn_module {
-  public $versionCommitted = '#44a102#';
+  const DO_NOT_REDIRECT = 'DO_NOT_REDIRECT';
+  public $versionCommitted = '#44a104#';
 
   public $active = false;
 
@@ -551,7 +552,7 @@ abstract class sn_module_payment extends sn_module {
 
       // Проверяем - был ли этот платеж обработан?
       // TODO - Статусы бывают разные. Нужен спецфлаг payment_processed
-      if ($this->payment_status != PAYMENT_STATUS_NONE) {
+      if ($this->payment_status != PAYMENT_STATUS_NONE && empty($options[self::DO_NOT_REDIRECT])) {
         sn_db_transaction_rollback();
         sys_redirect(SN_ROOT_VIRTUAL . 'metamatter.php?payment_id=' . $this->payment_id);
         die();

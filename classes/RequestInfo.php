@@ -91,6 +91,9 @@ class RequestInfo {
   protected $write_full_url = false;
 
   public function __construct() {
+    // TODO - CHANGE!!!!
+    global $skip_log_query;
+
     $this->write_full_url = !SN::$config->security_write_full_url_disabled;
 
     // Инфа об устройстве и браузере - общая для всех
@@ -123,7 +126,7 @@ class RequestInfo {
     $this->page_address_id = db_get_set_unique_id_value('security_url', 'url_id', ['url_string' => $this->page_address,]);
 
     // Not a simulator - because it can have loooooong string
-    if (strpos($_SERVER['REQUEST_URI'], '/simulator.php') !== 0) {
+    if (strpos($_SERVER['REQUEST_URI'], '/simulator.php') !== 0 && !$skip_log_query) {
       $this->queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
       $this->queryStringId = db_get_set_unique_id_value('security_query_strings', 'id', ['query_string' => $this->queryString,]);
     }

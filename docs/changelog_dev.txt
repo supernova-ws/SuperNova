@@ -1917,6 +1917,12 @@ https://aftershock.news/?q=node/752122
 #ctv
 
 
+
+2019-07-08 10:09:17 44a104
+[~] Платежи
+    Поддержка модуля payment_unitpay_form
+
+
 2019-07-04 12:03:06 44a102
 [~] Платежи
     Поддержка модуля payment_interkassa_form
