@@ -186,7 +186,7 @@ $template->assign_recursive($template_result);
 $payment_type_selected = sys_get_param_int('payment_type');
 $payment_method_selected = sys_get_param_int('payment_method');
 
-$payment_module_valid = $payment_module_valid && (!$payment_method_selected || isset($payment_methods_available[$payment_type_selected][$payment_method_selected][$module_name]));
+$payment_module_valid = $payment_module_valid && (!$payment_method_selected || isset($payment_methods_available[$payment_type_selected][$payment_method_selected][$payment_module_request]));
 
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 if ($payment_module_valid) {
