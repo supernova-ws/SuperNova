@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #43a16.33#
+* @version #44a109#
 *
 */
 
@@ -757,6 +757,7 @@ $a_lang_array = [
   'sys_dark_matter_desc' => 'Тёмная материя - необнаружимая стандартными методами небарионная материя, на которую приходится 23% массы Вселенной. Из неё можно добывать невероятное количество энергии. Из-за этого, а так же из-за сложностей, связанных с её добычей, Тёмная Материя ценится очень высоко.',
   'sys_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
 
+  'sys_dark_matter_what_why_how' => 'Что такое <span class="dark_matter">Тёмная Материя</span> и <span class="metamatter">Метаматерия</span>',
   'sys_dark_matter_what_header' => 'Что такое <span class="dark_matter">Тёмная Материя</span>',
   'sys_dark_matter_description_header' => 'Зачем нужна <span class="dark_matter">Тёмная Материя</span>',
   'sys_dark_matter_description_text' => '<span class="dark_matter">Тёмная Материя</span> - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:

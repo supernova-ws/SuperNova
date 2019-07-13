@@ -56,6 +56,33 @@ function sn_get_url_contents($url) {
   return $return;
 }
 
+/**
+ * @param $url
+ * @param array $data
+ *
+ * @return bool|false|string
+ */
+function sn_post_url_contents($url, $data) {
+  if (function_exists('curl_init')) {
+    $crl = curl_init();
+    $timeout = 5;
+    curl_setopt($crl, CURLOPT_URL, $url);
+    curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt($crl, CURLOPT_POST, true);
+    curl_setopt($crl, CURLOPT_POSTFIELDS, $data);
+    $return = curl_exec($crl);
+
+//    var_dump('error: ' . curl_error($crl));
+
+    curl_close($crl);
+  } else {
+    $return = @file_get_contents($url);
+  }
+
+  return $return;
+}
+
 
 // ----------------------------------------------------------------------------------------------------------------
 function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {

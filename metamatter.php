@@ -202,11 +202,26 @@ if ($payment_module_valid) {
 
 if ($payment_type_selected && $payment_method_selected) {
   foreach ($payment_methods_available[$payment_type_selected][$payment_method_selected] as $module_name => $temp) {
-    $template->assign_block_vars('payment_module', array(
+    /**
+     * @var sn_module_payment $mod
+     */
+    $mod = SN::$gc->modules->getModule($module_name);
+
+    $aPrice = method_exists($mod, 'getPrice') ? $mod->getPrice($payment_method_selected, $player_currency, $request['metamatter']) : '';
+
+    $k = [
       'ID'          => $module_name,
       'NAME'        => SN::$lang["module_{$module_name}_name"],
       'DESCRIPTION' => SN::$lang["module_{$module_name}_description"],
-    ));
+    ];
+
+    if (is_array($aPrice) && !empty($aPrice)) {
+      $k['COST']     = $aPrice[$mod::FIELD_SUM];
+      $k['CURRENCY'] = $aPrice[$mod::FIELD_CURRENCY];
+    }
+
+
+    $template->assign_block_vars('payment_module', $k);
   }
 }
 
@@ -302,6 +317,24 @@ $currency = $payment_module_request ? sn_module_payment::$payment_methods[$payme
 $bonus_percent = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
 $income_metamatter_text = prettyNumberStyledDefault(sn_module_payment::bonus_calculate($request['metamatter']));
 
+$approxCost = '';
+if(!empty($module_name) && !empty($payment_method_selected)) {
+  $mod = SN::$gc->modules->getModule($module_name);
+
+  /**
+   * @var sn_module_payment $mod
+   */
+  $tPrice = method_exists($mod, 'getPrice') ? $mod->getPrice($payment_method_selected, $player_currency, $request['metamatter']) : '';
+  if(!empty($tPrice) && is_array($tPrice)) {
+    $approxCost = sprintf(
+      SN::$lang['pay_mm_buy_approximate_cost'],
+      HelperString::numberFormat($tPrice[$mod::FIELD_SUM], 2),
+      $tPrice[$mod::FIELD_CURRENCY]
+    );
+  }
+}
+
+
 $template->assign_vars(array(
   'PAGE_HEADER' => SN::$lang['sys_metamatter'],
 
@@ -337,6 +370,8 @@ $template->assign_vars(array(
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
     ? sprintf(SN::$lang['pay_mm_buy_real_income'], prettyNumberStyledDefault($bonus_percent), $income_metamatter_text)
     : '',
+
+  'METAMATTER_COST_ON_PAYMENT' => $approxCost,
 
   'DARK_MATTER_DESCRIPTION' => SN::$lang['info'][RES_DARK_MATTER]['description'],
 

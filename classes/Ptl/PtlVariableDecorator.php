@@ -16,6 +16,7 @@ class PtlVariableDecorator {
   const PARAM_NUMERIC_ROUND = 'round'; // round=<decimal numbers>
 
   const PARAM_NUMERIC_FORMAT = 'format';
+  const PARAM_NUMERIC_MONEY = 'money';
   const PARAM_NUMERIC_COLOR = 'color'; // Color values: red - negative, yellow - zero, green - positive. Implies "floor" and "format"
 //  const PARAM_NUMERIC_LIMIT = 'percent'; // _number_color_value replacement - see Decorators in PTL test
 //  const PARAM_NUMERIC_LIMIT = 'limit';
@@ -35,6 +36,7 @@ class PtlVariableDecorator {
     self::PARAM_NUMERIC_ROUND => self::PARAM_NUMERIC,
 
     self::PARAM_NUMERIC_FORMAT => self::PARAM_NUMERIC,
+    self::PARAM_NUMERIC_MONEY  => self::PARAM_NUMERIC,
     self::PARAM_NUMERIC_COLOR  => self::PARAM_NUMERIC,
 //    self::PARAM_NUMERIC_LIMIT  => self::PARAM_NUMERIC,
 
@@ -100,6 +102,10 @@ class PtlVariableDecorator {
 
           case self::PARAM_NUMERIC_FORMAT:
             $result = static::func('HelperString::numberFormat', $result, [0]);
+          break;
+
+          case self::PARAM_NUMERIC_MONEY:
+            $result = static::func('HelperString::numberFormat', $result, [2]);
           break;
 
           case self::PARAM_NUMERIC_COLOR:

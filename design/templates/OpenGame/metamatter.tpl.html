@@ -19,12 +19,13 @@
   <!-- END discount -->
 </script>
 
-<table id="payment_metamatter_info">
-  <!--width="{$TABLE_WIDTH}"-->
+<table id="payment_metamatter_info" class="border_image_small">
   <tr class="c_j">
     <th>
-      <span style="font-size: 1.8em">{L_sys_dark_matter_what_header}</span>
-      <button class="fr" onclick="sn_show_hide(this, 'dark_matter_what_it_is');"><span class="link_action">{L_sys_show}</span></button>
+      <div class="contFJ">
+      <span style="font-size: 1.8em">{L_sys_dark_matter_what_why_how}</span>
+      <button onclick="sn_show_hide(this, 'dark_matter_what_it_is');sn_show_hide(this, 'metamatter_what_description');"><span class="link_action">{L_sys_show}</span></button>
+      </div>
     </th>
   </tr>
   <tr class="c_j" id="dark_matter_what_it_is" style="display: none;">
@@ -36,41 +37,13 @@
         <div class="ok">{L_sys_dark_matter_obtain_text_convert}</div>
         <!-- ENDIF -->
       </div>
-    </td>
-  </tr>
-
-  <tr>
-    <th class="c_l">
-      <span style="font-size: 1.8em">{L_sys_dark_matter_description_header}</span>
-      <button class="fr" onclick="sn_show_hide(this, 'dark_matter_usage');"><span class="link_action">{L_sys_show}</span></button>
-    </th>
-  </tr>
-  <tr class="c_j" id="dark_matter_usage" style="display: none;">
-    <td>
+      <div>
       {L_sys_dark_matter_description_text}
-    </td>
-  </tr>
-
-  <tr class="c_j">
-    <th>
-      <span style="font-size: 1.8em">{L_sys_dark_matter_obtain_header}</span>
-      <button class="fr" onclick="sn_show_hide(this, 'dark_matter_obtain');"><span class="link_action">{L_sys_show}</span></button>
-    </th>
-  </tr>
-  <tr class="c_j" id="dark_matter_obtain" style="display: none;">
-    <td>
+      </div>
+      <div>
       {L_sys_dark_matter_obtain_text}
+      </div>
     </td>
-  </tr>
-</table>
-
-<table id="payment_metamatter">
-  <!--width="{$TABLE_WIDTH}"-->
-  <tr class="c_j">
-    <th>
-      <span style="font-size: 1.8em">{L_sys_metamatter_what_header}</span>
-      <button class="fr" onclick="sn_show_hide(this, 'metamatter_what_description');"><span class="link_action">{L_sys_show}</span></button>
-    </th>
   </tr>
   <tr class="c_j" id="metamatter_what_description" style="display: none;">
     <td>
@@ -78,9 +51,14 @@
         <img src="design/images/metamatter.png" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
         {L_sys_metamatter_what_description}
       </div>
+      <div style="display: table-row; position: relative; margin: 7px;">
+        {L_sys_metamatter_what_purchase}
+      </div><br />
     </td>
   </tr>
+</table>
 
+<table id="payment_metamatter">
   <!-- IF FALSE && (.exchange || .discount) -->
   <tr class="c_j">
     <th>
@@ -155,9 +133,6 @@
   </tr>
   <tr class="c_j">
     <td>
-      <div style="display: table-row; position: relative; margin: 7px;">
-        {L_sys_metamatter_what_purchase}
-      </div><br />
       <!-- IF .payment -->
         <!-- IF ! PAY_LINK_URL -->
         <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST" id="payment_form">
@@ -265,6 +240,10 @@
                 <!-- BEGIN payment_module -->
                 <div class="payment_mm_module" value="{payment_module.ID}">
                   {payment_module.NAME}
+                  <!-- IF payment_module.COST -->
+                  <br />
+                  <span class="notice">~{payment_module.COST|num|money} {payment_module.CURRENCY}</span>
+                  <!-- ENDIF -->
                 </div>
               <!-- END payment_module -->
               </div>
@@ -297,6 +276,10 @@
                 {C_adv_conversion_code_payment}<br />
                 <br />
                 <span class="notice">{L_pay_mm_buy_step2_text}</span>
+              <!-- ENDIF -->
+
+              <!-- IF METAMATTER_COST_ON_PAYMENT -->
+              <br /><br/>{METAMATTER_COST_ON_PAYMENT}
               <!-- ENDIF -->
             <!-- ENDIF -->
           <!-- ENDIF -->

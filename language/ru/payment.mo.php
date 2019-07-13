@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a18.26
+* @version 44a109
 *
 */
 
@@ -79,6 +79,7 @@ $a_lang_array = (array(
   'pay_mm_buy_conversion_cost' => 'Рассчётная стоимость %1$s единиц <span class="metamatter">Метаматерии</span> в валюте платежной системы составит <span class="%4$s">%2$s</span> %3$s',
   'pay_mm_buy_cost_base' => 'Стоимость составит',
   'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s <span class="metamatter">ММ</span>',
+  'pay_mm_buy_approximate_cost' => 'Приблизительная стоимость ММ на платёжной системе составляет <span class="notice">%1$s %2$s</span> (стоимость дана ПРИБЛИЗИТЕЛЬНО. Итоговая сумма на платёжной системе может отличаться)',
 
   'pay_currency_name' => 'Валюта',
   'pay_currency_symbol' => 'Символ',

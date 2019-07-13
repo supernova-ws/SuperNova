@@ -10,7 +10,10 @@ use Modules\sn_module;
  */
 abstract class sn_module_payment extends sn_module {
   const DO_NOT_REDIRECT = 'DO_NOT_REDIRECT';
-  public $versionCommitted = '#44a104#';
+  const FIELD_SUM = 'SUM';
+  const FIELD_CURRENCY = 'CURRENCY';
+
+  public $versionCommitted = '#44a109#';
 
   public $active = false;
 
@@ -701,7 +704,18 @@ abstract class sn_module_payment extends sn_module {
     return $response;
   }
 
-
+  /**
+   *
+   *
+   * @param string $payment_method_selected
+   * @param string $player_currency
+   * @param integer $metamatter
+   *
+   * @return array [self::FIELD_SUM => (float){sum_to_pay}, self::FIELD_CURRENCY => (str){currency_code}]. Currency code is optional. Empty if no data
+   */
+  public function getPrice($payment_method_selected, $player_currency, $metamatter) {
+    return [];
+  }
   // Function converts money values between currencies
 
   /**
