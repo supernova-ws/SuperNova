@@ -569,7 +569,7 @@ switch ($updater->new_version) {
 //    $updater->updPatchApply(8, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
-//    $new_version = 44;
+    $new_version = 44;
     $updater->upd_do_query('COMMIT;', true);
 }
 
