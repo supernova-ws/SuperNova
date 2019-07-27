@@ -1919,6 +1919,11 @@ https://aftershock.news/?q=node/752122
 #ctv
 
 
+2019-07-27 08:22:05 44d0
+[!] Project "SuperNova.WS" Release 44 "10 years anniversary"
+    Project "SuperNova.WS" Release 44 "10 years anniversary"
+
+
 2019-07-13 15:40:48 44a109
 [~] Платежи
     Добавлена поддержка отображения приблизительной конечной цены при покупке ММ (не для всех платёжных систем)
