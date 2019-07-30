@@ -1,5 +1,7 @@
 <?php
 
+use Common\Tools\VersionCheckerDeprecated;
+use Core\Autoloader;
 use \Core\SnBootstrap;
 use Player\playerTimeDiff;
 
@@ -34,8 +36,8 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 // Installing autoloader
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
-\Core\Autoloader::register('classes/');
-\Core\Autoloader::register('classes/UBE/');
+Autoloader::register('classes/');
+Autoloader::register('classes/UBE/');
 
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';
@@ -153,7 +155,7 @@ $lang->lng_switch(sys_get_param_str('lang'));
 
 
 if(SN::$config->server_updater_check_auto && SN::$config->server_updater_check_last + SN::$config->server_updater_check_period <= SN_TIME_NOW) {
-  \Common\Tools\VersionCheckerDeprecated::performCheckVersion();
+  VersionCheckerDeprecated::performCheckVersion();
 }
 
 if(SN::$config->user_birthday_gift && SN_TIME_NOW - SN::$config->user_birthday_celebrate > PERIOD_DAY) {
@@ -166,6 +168,7 @@ if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + SN
   dbUpdateUsersOnline(db_user_count(true));
   SN::$config->pass()->var_online_user_time = SN_TIME_NOW;
   if(SN::$config->server_log_online) {
+    /** @noinspection SqlResolve */
     doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
   }
 }
@@ -248,6 +251,7 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
 
 // TODO ban
 // TODO $skip_ban_check
+global $skip_ban_check;
 if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   if(defined('IN_API')) {
     return;
@@ -270,11 +274,8 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-$user_time_diff = playerTimeDiff::user_time_diff_get();
 global $time_diff;
-define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
-define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
-define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]); // Разница в GMT-времени между клиентом и сервером. Реальная разница в ходе часов
+$time_diff = playerTimeDiff::defineTimeDiff();
 
 // ...to controller
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;

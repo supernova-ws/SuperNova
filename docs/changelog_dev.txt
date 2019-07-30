@@ -1919,6 +1919,11 @@ https://aftershock.news/?q=node/752122
 #ctv
 
 
+2019-07-30 09:19:03 45a1
+[@] PlayerTimeDiff
+    Весь код, относящийся к замеру разницы времени, внесён в класс PlayerTimeDiff
+
+
 2019-07-27 08:22:05 44d0
 [!] Project "SuperNova.WS" Release 44 "10 years anniversary"
     Project "SuperNova.WS" Release 44 "10 years anniversary"

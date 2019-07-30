@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\DbQuery;
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Player\playerTimeDiff;
@@ -41,7 +42,7 @@ function sn_options_model() {
     list($user, $usernameResult) = sn_options_change_username($user);
     $template_result['.']['result'] = array_merge($template_result['.']['result'], $usernameResult);
 
-    sn_options_timediff(
+    playerTimeDiff::sn_options_timediff(
       sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
       sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
       sys_get_param_int('opt_time_diff_clear')
@@ -58,7 +59,7 @@ function sn_options_model() {
     $user['noipcheck'] = sys_get_param_int('noipcheck');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + SN::$config->player_delete_time);
 
-    \DBAL\DbQuery::build(SN::$db)
+    DbQuery::build(SN::$db)
       ->setTable('users')
       ->setValues([
         'email'                    => $user['email'],
@@ -289,33 +290,8 @@ function sn_options_gender($user) {
   return $user;
 }
 
-function sn_options_timediff($timeDiff, $force, $clear) {
-//  $timeDiff = sys_get_param_int('PLAYER_OPTION_TIME_DIFF');
-//  $force = sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED');
-//  $clear = sys_get_param_int('opt_time_diff_clear');
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-  if ($force) {
-    playerTimeDiff::user_time_diff_set(array(
-      PLAYER_OPTION_TIME_DIFF              => $timeDiff,
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => 1,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-    ));
-  } elseif ($clear || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-    playerTimeDiff::user_time_diff_set(array(
-      PLAYER_OPTION_TIME_DIFF              => '',
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => 0,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-    ));
-  }
-}
-
 /**
- * @param $user
- * @param $FMT_DATE
- * @param $pos
- * @param $match
+ * @param array $user
  *
  * @return array
  */
@@ -438,6 +414,7 @@ function sn_options_change_username($user) {
   // проверка на корректность
   sn_db_transaction_start();
   $username_safe = db_escape($username);
+  /** @noinspection SqlResolve */
   $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
   if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
     $user = db_user_by_id($user['id'], true);
@@ -460,7 +437,8 @@ function sn_options_change_username($user) {
 
       case SERVER_PLAYER_NAME_CHANGE_FREE:
         db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-        doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+        /** @noinspection SqlResolve */
+        doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
         // TODO: Change cookie to not force user relogin
         // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
         $result[] = [

@@ -369,14 +369,6 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
     $isDisplayTopNav = false;
   }
 
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-  $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
-  $measureTimeDiff = intval(
-    empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
-    &&
-    (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
-  );
-
   $template = gettemplate('_page_20_header', true);
 
   renderJavaScript();
@@ -410,7 +402,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
     'SN_TIME_NOW'          => SN_TIME_NOW,
     'LOGIN_LOGOUT'         => $template_result['LOGIN_LOGOUT'],
     'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
-    'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
+    'TIME_DIFF_MEASURE'    => playerTimeDiff::timeDiffTemplate(), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
 
     'title'              => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
     'ADV_SEO_JAVASCRIPT' => $config->adv_seo_javascript,

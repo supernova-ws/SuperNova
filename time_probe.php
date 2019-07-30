@@ -27,14 +27,5 @@ if($font_size = sys_get_param_str('font_size')) {
   sn_setcookie(SN_COOKIE_F, $font_size, SN_TIME_NOW + PERIOD_YEAR);
   SN::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;
 } else {
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-  if($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-    $time_diff = intval($user_time_diff[PLAYER_OPTION_TIME_DIFF]);
-  } else {
-    $user_time_diff = playerTimeDiff::user_time_diff_probe();
-    playerTimeDiff::user_time_diff_set($user_time_diff);
-    $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET];
-  }
-
-  echo $time_diff;
+  echo playerTimeDiff::timeProbeAjax();
 }
