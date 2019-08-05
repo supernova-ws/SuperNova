@@ -274,8 +274,7 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-global $time_diff;
-$time_diff = playerTimeDiff::defineTimeDiff();
+playerTimeDiff::defineTimeDiff();
 
 // ...to controller
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;

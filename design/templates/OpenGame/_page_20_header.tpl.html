@@ -77,14 +77,6 @@
 
       var timeTimerStart = timeBrowser;
 
-//      var SN_TIME_NOW_GMT_STRING = '{SN_TIME_NOW_GMT_STRING}';
-//      var SN_CLIENT_TIME_DIFF_GMT = parseInt('{SN_CLIENT_TIME_DIFF_GMT}') ? parseInt('{SN_CLIENT_TIME_DIFF_GMT}') : 0;
-////      date = new Date(SN_TIME_NOW_GMT_STRING);
-////      date2 = new Date(date.valueOf() + SN_CLIENT_TIME_DIFF_GMT * 1000);
-////      timeTimerStart = date2;
-//
-//      timeTimerStart = new Date(new Date(SN_TIME_NOW_GMT_STRING).valueOf() + SN_CLIENT_TIME_DIFF_GMT * 1000);
-
       if(parseInt('{TIME_DIFF_MEASURE}') || timeDiff === false) {
         timeDiff = 0;
         jQuery.post("time_probe.php", {'timeBrowser': timeBrowser.valueOf(), 'utc_offset': -timeBrowser.getTimezoneOffset() * 60, 'client_gmt': timeBrowser.toUTCString()}, function(data) {

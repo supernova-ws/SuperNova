@@ -152,9 +152,6 @@ function sn_options_view($template = null) {
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($user['deltime']);
 
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-
-
   sn_options_add_standard($template);
 
   $template->assign_vars([
@@ -203,7 +200,7 @@ function sn_options_view($template = null) {
     'user_settings_info'       => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
     'user_settings_bud'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
 
-    'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
+    'user_time_diff_forced' => playerTimeDiff::getTimeDiffForced(),
 
     'adm_pl_prot' => $user['admin_protection'],
 

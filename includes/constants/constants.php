@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '44');
 define('SN_RELEASE', '44');
-define('SN_VERSION', '45a1');
+define('SN_VERSION', '45a3');
 define('SN_RELEASE_STABLE', '44d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -897,10 +897,8 @@ define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_NORMAL', 1);
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_HIDDEN', 2);
 
-define('PLAYER_OPTION_TIME_DIFF', 0); // Чистая разница в ходе часов в секундах
-define('PLAYER_OPTION_TIME_DIFF_UTC_OFFSET', 1); // Разница между часовыми поясами в секундах
-define('PLAYER_OPTION_TIME_DIFF_FORCED', 2);
-define('PLAYER_OPTION_TIME_DIFF_MEASURE_TIME', 3);
+
+
 
 define('PLAYER_OPTION_SORT_ORDER_PLAIN', 0);
 define('PLAYER_OPTION_SORT_ORDER_REVERSE', 1);

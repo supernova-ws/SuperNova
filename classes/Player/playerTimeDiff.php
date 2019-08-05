@@ -7,6 +7,11 @@ namespace Player;
  * Time: 0:28
  */
 class playerTimeDiff {
+  const TIME_DIFF = 0; // Чистая разница в ходе часов в секундах
+  const TIME_DIFF_UTC_OFFSET = 1; // Разница между часовыми поясами в секундах
+  const TIME_DIFF_FORCED = 2;
+  const TIME_DIFF_MEASURE_TIME = 3; // Время когда происходил замер
+
   /**
    * Разница в ходе часов в секундах. Т.е. разница между GMT-временами браузера и сервера
    * @var int
@@ -31,65 +36,53 @@ class playerTimeDiff {
   public $last_measure_time = '2000-01-01';
 
 
-  static function user_time_diff_probe() {
+  static protected function user_time_diff_probe() {
     // Определяем время в браузере
     $client_time = strtotime(sys_get_param('client_gmt')); // Попытка определить по GMT-времени браузера. В нём будет часовой пояс (GMT), поэтому время будет автоматически преобразовано в часовой пояс сервера
     !$client_time ? $client_time = round(sys_get_param_float('timeBrowser') / 1000) : false; // Попытка определить по Date.valueOf() - миллисекунды с начала эпохи UNIX_TIME
     !$client_time ? $client_time = SN_TIME_NOW : false; // Если все попытки провалились - тупо берем время сервера
 
     $result = array(
-      PLAYER_OPTION_TIME_DIFF              => $client_time - SN_TIME_NOW,
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => ($browser_utc_offset = sys_get_param_int('utc_offset')) ? $browser_utc_offset - date('Z') : 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+      self::TIME_DIFF              => $client_time - SN_TIME_NOW,
+      self::TIME_DIFF_UTC_OFFSET   => ($browser_utc_offset = sys_get_param_int('utc_offset')) ? $browser_utc_offset - date('Z') : 0,
+      self::TIME_DIFF_FORCED       => sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
+      self::TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
     );
 
     return $result;
   }
 
-  static function user_time_diff_set($user_time_diff) {
+  static protected function user_time_diff_set($user_time_diff) {
     // Переопределяем массив, что бы элементы были в правильном порядке
-    $user_time_diff = array(
-      PLAYER_OPTION_TIME_DIFF              => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF] : '',
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-    );
+    $user_time_diff = self::sortDiffArray($user_time_diff);
+    $user_time_diff[self::TIME_DIFF_MEASURE_TIME] = SN_TIME_SQL;
 
     $user_time_diff_str = implode(';', $user_time_diff);
     sn_setcookie(SN_COOKIE_T, $user_time_diff_str, SN_TIME_NOW + PERIOD_MONTH);
   }
 
-  static function user_time_diff_get() {
-    $result = !empty($_COOKIE[SN_COOKIE_T]) ? explode(';', $_COOKIE[SN_COOKIE_T]) : null;
-    $result = array(
-      PLAYER_OPTION_TIME_DIFF              => isset($result[PLAYER_OPTION_TIME_DIFF]) ? $result[PLAYER_OPTION_TIME_DIFF] : '',
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => isset($result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => isset($result[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $result[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => isset($result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? $result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME] : '2000-01-01',
-    );
+  static protected function user_time_diff_get() {
+    $user_time_diff = !empty($_COOKIE[SN_COOKIE_T]) ? explode(';', $_COOKIE[SN_COOKIE_T]) : null;
+    $user_time_diff = self::sortDiffArray($user_time_diff);
 
-    return $result;
+    return $user_time_diff;
   }
 
   static public function sn_options_timediff($timeDiff, $force, $clear) {
-//  $timeDiff = sys_get_param_int('PLAYER_OPTION_TIME_DIFF');
-//  $force = sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED');
-//  $clear = sys_get_param_int('opt_time_diff_clear');
     $user_time_diff = playerTimeDiff::user_time_diff_get();
     if ($force) {
       playerTimeDiff::user_time_diff_set(array(
-        PLAYER_OPTION_TIME_DIFF              => $timeDiff,
-        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-        PLAYER_OPTION_TIME_DIFF_FORCED       => 1,
-        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+        self::TIME_DIFF              => $timeDiff,
+        self::TIME_DIFF_UTC_OFFSET   => 0,
+        self::TIME_DIFF_FORCED       => 1,
+        self::TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
       ));
-    } elseif ($clear || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
+    } elseif ($clear || $user_time_diff[self::TIME_DIFF_FORCED]) {
       playerTimeDiff::user_time_diff_set(array(
-        PLAYER_OPTION_TIME_DIFF              => '',
-        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-        PLAYER_OPTION_TIME_DIFF_FORCED       => 0,
-        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+        self::TIME_DIFF              => '',
+        self::TIME_DIFF_UTC_OFFSET   => 0,
+        self::TIME_DIFF_FORCED       => 0,
+        self::TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
       ));
     }
   }
@@ -99,12 +92,12 @@ class playerTimeDiff {
    */
   static public function timeProbeAjax() {
     $userTimeDiff = playerTimeDiff::user_time_diff_get();
-    if ($userTimeDiff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-      $time_diff = intval($userTimeDiff[PLAYER_OPTION_TIME_DIFF]);
+    if ($userTimeDiff[self::TIME_DIFF_FORCED]) {
+      $time_diff = intval($userTimeDiff[self::TIME_DIFF]);
     } else {
       $userTimeDiff = playerTimeDiff::user_time_diff_probe();
       playerTimeDiff::user_time_diff_set($userTimeDiff);
-      $time_diff = $userTimeDiff[PLAYER_OPTION_TIME_DIFF] + $userTimeDiff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET];
+      $time_diff = $userTimeDiff[self::TIME_DIFF] + $userTimeDiff[self::TIME_DIFF_UTC_OFFSET];
     }
 
     return $time_diff;
@@ -116,11 +109,11 @@ class playerTimeDiff {
   static public function defineTimeDiff() {
     $user_time_diff = playerTimeDiff::user_time_diff_get();
 
-    $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET];
+    $time_diff = $user_time_diff[self::TIME_DIFF] + $user_time_diff[self::TIME_DIFF_UTC_OFFSET];
 
     define('SN_CLIENT_TIME_DIFF', $time_diff);
     define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
-    define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
+    define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[self::TIME_DIFF]);
 
     return $time_diff; // Разница в GMT-времени между клиентом и сервером. Реальная разница в ходе часов
   }
@@ -130,14 +123,40 @@ class playerTimeDiff {
    */
   static public function timeDiffTemplate() {
     $user_time_diff          = playerTimeDiff::user_time_diff_get();
-    $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
+    $user_time_measured_unix = intval(isset($user_time_diff[self::TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[self::TIME_DIFF_MEASURE_TIME]) : 0);
     $measureTimeDiff         = intval(
-      empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
+      empty($user_time_diff[self::TIME_DIFF_FORCED])
       &&
-      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
+      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[self::TIME_DIFF] == '')
     );
 
     return $measureTimeDiff;
+  }
+
+  /**
+   * @return int
+   */
+  static public function getTimeDiffForced() {
+    $user_time_diff        = playerTimeDiff::user_time_diff_get();
+    $user_time_diff_forced = $user_time_diff[self::TIME_DIFF_FORCED];
+
+    return $user_time_diff_forced;
+  }
+
+  /**
+   * @param array $user_time_diff
+   *
+   * @return array
+   */
+  protected static function sortDiffArray(array $user_time_diff) {
+    $user_time_diff = [
+      self::TIME_DIFF              => isset($user_time_diff[self::TIME_DIFF]) ? $user_time_diff[self::TIME_DIFF] : '',
+      self::TIME_DIFF_UTC_OFFSET   => isset($user_time_diff[self::TIME_DIFF_UTC_OFFSET]) ? $user_time_diff[self::TIME_DIFF_UTC_OFFSET] : 0,
+      self::TIME_DIFF_FORCED       => isset($user_time_diff[self::TIME_DIFF_FORCED]) ? $user_time_diff[self::TIME_DIFF_FORCED] : 0,
+      self::TIME_DIFF_MEASURE_TIME => isset($user_time_diff[self::TIME_DIFF_MEASURE_TIME]) ? $user_time_diff[self::TIME_DIFF_MEASURE_TIME] : '2000-01-01',
+    ];
+
+    return $user_time_diff;
   }
 
 }
