@@ -54,6 +54,7 @@ class playerTimeDiff {
 
   static protected function user_time_diff_set($user_time_diff) {
     // Переопределяем массив, что бы элементы были в правильном порядке
+    !is_array($user_time_diff) ? $user_time_diff = [] : false;
     $user_time_diff = self::sortDiffArray($user_time_diff);
     $user_time_diff[self::TIME_DIFF_MEASURE_TIME] = SN_TIME_SQL;
 
@@ -63,6 +64,7 @@ class playerTimeDiff {
 
   static protected function user_time_diff_get() {
     $user_time_diff = !empty($_COOKIE[SN_COOKIE_T]) ? explode(';', $_COOKIE[SN_COOKIE_T]) : null;
+    !is_array($user_time_diff) ? $user_time_diff = [] : false;
     $user_time_diff = self::sortDiffArray($user_time_diff);
 
     return $user_time_diff;
