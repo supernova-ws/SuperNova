@@ -230,9 +230,9 @@ div.market_services {
   background-image: none;
 }
 
-.ui-tabs-active.ui-state-active {
-  background-color: #222D42; /* #344566 */
-}
+/*.ui-tabs-active.ui-state-active {*/
+/*  background-color: #222D42; !* #344566 *!*/
+/*}*/
 
 .ui-tabs .ui-tabs-panel {
   background-color: #222D42;

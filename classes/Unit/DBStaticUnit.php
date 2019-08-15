@@ -7,7 +7,6 @@ namespace Unit;
 use _SnCacheInternal;
 use Exception;
 use mysqli_result;
-use Planet\DBStaticPlanet;
 use Planet\Planet;
 use SN;
 
@@ -166,7 +165,7 @@ class DBStaticUnit {
     } elseif (in_array($unitSnId, sn_get_groups(UNIT_ARTIFACTS_STR))) {
       // Add artifacts to player
       $result = self::dbAdd($playerId, 0, $unitSnId, $amount);
-    } elseif (!empty($planetId) && in_array($unitSnId, sn_get_groups([UNIT_SHIPS_STR, UNIT_DEFENCE_STR,]))) {
+    } elseif (!empty($planetId) && in_array($unitSnId, sn_get_groups([UNIT_STRUCTURES_STR, UNIT_SHIPS_STR, UNIT_DEFENCE_STR, ]))) {
       // Add fleet or defense to user's capital
       $result = self::dbAdd($playerId, $planetId, $unitSnId, $amount);
     }
@@ -190,7 +189,7 @@ class DBStaticUnit {
    * @return bool
    */
   protected static function dbAdd($playerId, $planetId, $unitSnId, $amount) {
-    if (!in_array($unitSnId, sn_get_groups([UNIT_SHIPS_STR, UNIT_DEFENCE_STR, UNIT_ARTIFACTS_STR,]))) {
+    if (!in_array($unitSnId, sn_get_groups([UNIT_SHIPS_STR, UNIT_DEFENCE_STR, UNIT_ARTIFACTS_STR, UNIT_STRUCTURES_STR,]))) {
       return false;
     }
 

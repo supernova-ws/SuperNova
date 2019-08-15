@@ -2,6 +2,7 @@
 
 use DBAL\DbQuery;
 use Fleet\DbFleetStatic;
+use Old\Avatar;
 use Planet\DBStaticPlanet;
 use Player\playerTimeDiff;
 
@@ -48,9 +49,7 @@ function sn_options_model() {
       sys_get_param_int('opt_time_diff_clear')
     );
 
-    require_once('includes/includes/sys_avatar.php');
-
-    $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
+    $avatar_upload_result = Avatar::sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
     $user['email'] = sys_get_param_str('db_email');

@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.45
+* @version 45a13
 *
 */
 
@@ -588,4 +588,6 @@ $a_lang_array = (array(
 
   'admin_title_access_denied' => 'Access denied',
 
+  'adm_player' => 'Player',
+  'adm_planets' => 'Planets',
 ));

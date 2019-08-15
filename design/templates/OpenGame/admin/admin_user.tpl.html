@@ -2,19 +2,37 @@
 
 <h3><a href="admin/admin_user_activity.php?id={USER_ID}" class="link">Посмотреть активность игрока</a></h3>
 
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".tabs").tabs();
+    $("#tab_container").show();
+
+    // var index = $('.tabs a[href="#tab_planet"]').parent().index();
+    // $(".tabs").tabs("option", "active", index);
+    // $(".tabs").tabs("option", "active", 1);
+  });
+</script>
+
 <form action="" method="get">
   <input type="hidden" name="page" value="admin/user_view"/>
   <input type="hidden" name="uid" value="{USER_ID}"/>
 
-  <table class="c_l">
-    <!-- BEGIN block -->
-      <tr>
-        <th class="c_l" colspan="2">
-          {block.TITLE}
-        </th>
-      </tr>
+  <div id="tab_container" style="font-size: 1em; width: 50em; display: none;" class="tabs">
+    <ul>
+      <li><a href="#tab_user">{L_adm_player}</a></li>
+      <li><a href="#tab_planet">{L_adm_planets}</a></li>
+    </ul>
 
-      <!-- BEGIN field -->
+    <div id="tab_user">
+      <table class="c_l no_border_image">
+        <!-- BEGIN block -->
+        <tr>
+          <th class="c_l" colspan="2">
+            {block.TITLE}
+          </th>
+        </tr>
+
+        <!-- BEGIN field -->
         <tr>
           <td>{field.NAME}</td>
           <td>
@@ -28,9 +46,30 @@
             <!-- ENDIF -->
           </td>
         </tr>
-      <!-- END field -->
+        <!-- END field -->
 
-    <!-- END block -->
-  </table>
+        <!-- END block -->
+      </table>
+    </div>
+
+    <div id="tab_planet">
+      <table class="no_border_image">
+        <tr>
+          <th class="c_c">
+            {L_adm_planets}
+          </th>
+        </tr>
+        <!-- BEGIN planet -->
+        <tr>
+          <td class="c_l">
+            <a href="admin/planet_edit.php?planet_id={planet.ID}" class="link">{planet.NAME_RENDERED}</a>
+          </td>
+        </tr>
+        <!-- END planet -->
+      </table>
+    </div>
+
+
+  </div>
 
 </form>

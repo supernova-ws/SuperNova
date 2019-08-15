@@ -6,7 +6,7 @@
 namespace Pages\Deprecated;
 
 use Account;
-use Modules\sn_module;
+use Planet\DBStaticPlanet;
 use SN;
 use template;
 
@@ -274,6 +274,18 @@ class PageAdminUserView extends PageDeprecated {
 
     if (!empty($exclude)) {
       $result['.']['block'][] = self::userBlockAssign($exclude, '!!! НЕИЗВЕСТНЫЕ ПАРАМЕТРЫ !!!', array_keys($exclude));
+    }
+
+//    $pl = reset(DBStaticPlanet::db_planet_list_sorted($user_row));
+//    var_dump($pl);
+//    var_dump(uni_render_planet_full($pl, '', false, true));
+
+    foreach(DBStaticPlanet::db_planet_list_sorted($user_row) as $planetRow) {
+      $result['.']['planet'][] = [
+        'ID' => $planetRow['id'],
+        'NAME' => $planetRow['name'],
+        'NAME_RENDERED' => uni_render_planet_full($planetRow, '', false, true),
+      ];
     }
 
     $template->assign_recursive($result);

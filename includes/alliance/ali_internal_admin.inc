@@ -1,6 +1,7 @@
 <?php
 
 use Alliance\DBStaticAlly;
+use Old\Avatar;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
@@ -22,15 +23,12 @@ $allyTextID = sys_get_param_int('t', 1);
 $allyTextID = ($allyTextID<1 || $allyTextID>3) ? 1 : $allyTextID;
 
 if(sys_get_param_str('isSaveOptions')) {
-  require_once('includes/includes/sys_avatar.php');
-
   $new_image = $ally['ally_image'];
-  $avatar_upload_result = sys_avatar_upload($ally['id'], $new_image, 'ally');
-  $template->assign_vars(array(
+  $avatar_upload_result = Avatar::sys_avatar_upload($ally['id'], $new_image, 'ally');
+  $template->assign_vars([
     'AVATAR_UPLOAD_STATUS' => $avatar_upload_result['STATUS'],
     'AVATAR_UPLOAD_MESSAGE' => $avatar_upload_result['MESSAGE'],
-  ));
-//  $template->assign_block_vars('result', $avatar_upload_result);
+  ]);
 
   $ally_changeset = array();
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {

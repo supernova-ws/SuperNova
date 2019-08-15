@@ -32,7 +32,9 @@
             </select>
           </td>
           <td class="noborder" >
-            <input name="msg" type="text" id="msg" style="width:100%" maxlength="120" onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}" />
+            <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   name="msg" type="text" id="msg" style="width:100%" maxlength="120"
+                   onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}" />
           </td>
           <td class="noborder" align="left" width="160px">
             &nbsp;&nbsp;<input type="button" name="send" value="{L_chat_send}" id="send" onClick="addMessage();event.returnValue = false;return false;" style="width: 100px" />
