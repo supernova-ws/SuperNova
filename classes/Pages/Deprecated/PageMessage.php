@@ -1,13 +1,17 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
+/** @noinspection SqlIdentifier */
+/** @noinspection SqlRedundantOrderingDirection */
+/** @noinspection SqlResolve */
+
 /**
  * Created by Gorlum 08.10.2017 17:14
  */
 
 namespace Pages\Deprecated;
 
+use DBAL\db_mysql;
 use \SN;
 use \classLocale;
-use \DBAL\DbQuery;
 use DBAL\DbSqlPaging;
 use Fleet\MissionEspionageReport;
 use General\Helpers\PagingRenderer;
@@ -122,7 +126,7 @@ class PageMessage extends PageDeprecated {
   protected $deleteRange = '';
 
   /**
-   * @var \DBAL\db_mysql $db
+   * @var db_mysql $db
    */
   protected $db;
 
@@ -310,6 +314,7 @@ class PageMessage extends PageDeprecated {
           }
         }
         $SubUpdateQry = implode(',', $SubUpdateQry);
+        $SubSelectQry = '';
       } else {
         $messageClassNameNew = $this->messageClassList[MSG_TYPE_NEW]['name'];
         $messageClassNameCurrent = $this->messageClassList[$this->current_class]['name'];
@@ -336,8 +341,18 @@ class PageMessage extends PageDeprecated {
       $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
     }
 
+    $wasIgnored = 0;
     $template = gettemplate('msg_message_list', true);
     foreach ($message_query as $message_row) {
+      if(
+        $message_row['message_type'] == MSG_TYPE_PLAYER
+        &&
+        SN::$gc->ignores->isIgnored(floatval($message_row['message_owner']), floatval($message_row['message_sender']))
+      ) {
+        $wasIgnored++;
+        continue;
+      }
+
       $text = $message_row['message_text'];
       if ($message_row['message_json']) {
         switch ($message_row['message_type']) {
@@ -367,6 +382,8 @@ class PageMessage extends PageDeprecated {
         'SUBJ' => htmlspecialchars($message_row['message_subject']),
         'TEXT' => $text,
 
+        'CAN_IGNORE' => $message_row['message_type'] == MSG_TYPE_PLAYER,
+
         'FROM_ID'        => $message_row['message_sender'],
         'SUBJ_SANITIZED' => htmlspecialchars($message_row['message_subject']),
         'STYLE'          => $this->current_class == MSG_TYPE_OUTBOX ? $this->messageClassList[MSG_TYPE_OUTBOX]['name'] : $this->messageClassList[$message_row['message_type']]['name'],
@@ -379,6 +396,7 @@ class PageMessage extends PageDeprecated {
       "MESSAGE_CLASS"      => $this->current_class,
       "MESSAGE_CLASS_TEXT" => $current_class_text,
       "PAGER_MESSAGES"     => $pager ? $pager->render() : '',
+      "MESSAGES_IGNORED"   => $wasIgnored,
     ));
 
     return $template;

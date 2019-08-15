@@ -2,18 +2,28 @@
 
 namespace Core;
 
+use BBCodeParser;
 use Bonus\BonusCatalog;
 use Bonus\ValueStorage;
+use classCache;
+use classConfig;
 use Common\ContainerPlus;
-use Core\SnPimp;
+use DBAL\db_mysql;
 use DBAL\StorageSqlV2;
+use debug;
+use Design;
+use Fleet\FleetDispatcher;
 use Modules\ModulesManager;
+use Pm\PlayerIgnore;
+use SkinModel;
+use SkinV2;
 use \SN;
 use \General;
-use \Core\Watchdog;
-use \Core\Repository;
 use \Meta\Economic\EconomicHelper;
 use Player\PlayerLevelHelper;
+use /** @noinspection PhpDeprecationInspection */ Storage;
+use TextModel;
+use TheUser;
 
 
 /**
@@ -22,41 +32,43 @@ use Player\PlayerLevelHelper;
  * Used to describe internal structures of container
  *
  * Variables ------------------------------------------------------------------------------------------------------------
- * @property string                 $cachePrefix
+ * @property string            $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
- * @property \debug                 $debug
- * @property \DBAL\db_mysql         $db
- * @property \classCache            $cache
- * @property \classConfig           $config
- * @property \Core\Repository       $repository
- * @property \Storage               $storage
- * @property \Core\RepoV2           $repoV2
- * @property \Core\StorageV2        $storageV2
- * @property StorageSqlV2           $storageSqlV2
- * @property \Design                $design
- * @property \BBCodeParser          $bbCodeParser
- * @property \Fleet\FleetDispatcher $fleetDispatcher
- * @property Watchdog               $watchdog
+ * @property debug             $debug
+ * @property db_mysql          $db
+ * @property classCache        $cache
+ * @property classConfig       $config
+ * @property Repository        $repository
+ * @property Storage           $storage
+ * @property RepoV2            $repoV2
+ * @property StorageV2         $storageV2
+ * @property StorageSqlV2      $storageSqlV2
+ * @property Design            $design
+ * @property BBCodeParser      $bbCodeParser
+ * @property FleetDispatcher   $fleetDispatcher
+ * @property Watchdog          $watchdog
  *
- * @property ValueStorage           $valueStorage
- * @property BonusCatalog           $bonusCatalog
+ * @property ValueStorage      $valueStorage
+ * @property BonusCatalog      $bonusCatalog
  *
- * @property General                $general
- * @property EconomicHelper         $economicHelper
+ * @property General           $general
+ * @property EconomicHelper    $economicHelper
  *
- * @property PlayerLevelHelper      $playerLevelHelper
- * @property SnPimp                 $pimp
+ * @property PlayerLevelHelper $playerLevelHelper
+ * @property SnPimp            $pimp
  *
  * @property ModulesManager         $modules
  *
+ * @property PlayerIgnore           $ignores
+ *
  * Dummy objects -------------------------------------------------------------------------------------------------------
- * @property \TheUser               $theUser
+ * @property TheUser               $theUser
  *
  * Models --------------------------------------------------------------------------------------------------------------
- * @property \TextModel             $textModel
+ * @property TextModel             $textModel
  * @property string                 $skinEntityClass
- * @property \SkinModel             $skinModel
+ * @property SkinModel             $skinModel
  *
  * @package Common
  *
@@ -94,31 +106,33 @@ class GlobalContainer extends ContainerPlus {
     // Services --------------------------------------------------------------------------------------------------------
     // Default db
     $gc->db = function (GlobalContainer $c) {
-      SN::$db = new \DBAL\db_mysql($c);
+      SN::$db = new db_mysql($c);
 
       return SN::$db;
     };
 
     $gc->debug = function (/** @noinspection PhpUnusedParameterInspection */
       GlobalContainer $c) {
-      return new \debug();
+      return new debug();
     };
 
     $gc->cache = function (GlobalContainer $gc) {
-      return new \classCache($gc->cachePrefix);
+      return new classCache($gc->cachePrefix);
     };
 
     $gc->config = function (GlobalContainer $gc) {
-      return new \classConfig($gc->cachePrefix);
+      return new classConfig($gc->cachePrefix);
     };
 
 
     $gc->repository = function (GlobalContainer $gc) {
+      /** @noinspection PhpDeprecationInspection */
       return new Repository($gc);
     };
 
     $gc->storage = function (GlobalContainer $gc) {
-      return new \Storage($gc);
+      /** @noinspection PhpDeprecationInspection */
+      return new Storage($gc);
     };
 
     $gc->repoV2 = function (GlobalContainer $gc) {
@@ -134,22 +148,22 @@ class GlobalContainer extends ContainerPlus {
     };
 
     $gc->design = function (GlobalContainer $gc) {
-      return new \Design($gc);
+      return new Design($gc);
     };
 
     $gc->bbCodeParser = function (GlobalContainer $gc) {
-      return new \BBCodeParser($gc);
+      return new BBCodeParser($gc);
     };
 
     $gc->fleetDispatcher = function (GlobalContainer $gc) {
-      return new \Fleet\FleetDispatcher($gc);
+      return new FleetDispatcher($gc);
     };
 
     $gc->watchdog = function (GlobalContainer $gc) {
       return new Watchdog($gc);
     };
 
-    $gc->valueStorage = function (GlobalContainer $gc) {
+    $gc->valueStorage = function (/** @noinspection PhpUnusedParameterInspection */ GlobalContainer $gc) {
       return new ValueStorage([]);
     };
 
@@ -179,20 +193,23 @@ class GlobalContainer extends ContainerPlus {
 
     // Dummy objects ---------------------------------------------------------------------------------------------------
     $gc->theUser = function (GlobalContainer $gc) {
-      return new \TheUser($gc);
+      return new TheUser($gc);
     };
 
 
     // Models ----------------------------------------------------------------------------------------------------------
-    $gc->skinEntityClass = \SkinV2::class;
-    $gc->skinModel = function (GlobalContainer $gc) {
-      return new \SkinModel($gc);
+    $gc->skinEntityClass = SkinV2::class;
+    $gc->skinModel       = function (GlobalContainer $gc) {
+      return new SkinModel($gc);
     };
 
     $gc->textModel = function (GlobalContainer $gc) {
-      return new \TextModel($gc);
+      return new TextModel($gc);
     };
 
+    $gc->ignores = function (GlobalContainer $gc) {
+      return new PlayerIgnore($gc);
+    };
 
 //    $gc->types = function ($c) {
 //      return new \Common\Types();

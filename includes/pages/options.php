@@ -49,6 +49,7 @@ function sn_options_model() {
     );
 
     require_once('includes/includes/sys_avatar.php');
+
     $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
@@ -113,6 +114,9 @@ function sn_options_view($template = null) {
     }
   }
   $dir->close();
+
+  $ignores = SN::$gc->ignores->getIgnores($user['id'], true);
+  $template_result['.']['ignores'] = $ignores;
 
   foreach ($lang['opt_planet_sort_options'] as $key => &$value) {
     $template_result['.']['planet_sort_options'][] = array(

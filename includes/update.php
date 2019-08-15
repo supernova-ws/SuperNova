@@ -381,6 +381,7 @@ switch ($updater->new_version) {
     $updater->new_version = 43;
     $updater->upd_do_query('COMMIT;', true);
 
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 43:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
     $updater->upd_log_version_update();
@@ -563,14 +564,46 @@ switch ($updater->new_version) {
         SN::$gc->config->upd_lock_time = $oldLockTime;
         $updater->upd_do_query('COMMIT;', true);
       }
-    }, PATCH_REGISTER);
-
-//    // #ctv
-//    $updater->updPatchApply(8, function() use ($updater) {
-//    }, PATCH_PRE_CHECK);
+    });
 
     $updater->new_version = 44;
     $updater->upd_do_query('COMMIT;', true);
+
+  /** @noinspection PhpMissingBreakStatementInspection */
+  case 44:
+    // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
+    $updater->upd_log_version_update();
+
+    // 2019-08-15 00:10:48 45a8
+    $updater->updPatchApply(8, function () use ($updater) {
+      if (!$updater->isTableExists('player_ignore')) {
+        $updater->upd_create_table(
+          'player_ignore',
+          [
+            "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+            "`player_id` bigint(20) unsigned NOT NULL",
+            "`ignored_id` bigint(20) unsigned NOT NULL",
+            "`subsystem` tinyint(4) NOT NULL DEFAULT '0'",
+            "PRIMARY KEY (`id`)",
+            "UNIQUE KEY `I_player_ignore_all` (`player_id`,`ignored_id`,`subsystem`) USING BTREE",
+            "KEY `I_player_ignore_ignored` (`ignored_id`)",
+            "CONSTRAINT `FK_player_ignore_ignored` FOREIGN KEY (`ignored_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+            "CONSTRAINT `FK_player_ignore_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+      }
+
+    }, PATCH_PRE_CHECK);
+  // TODO - PATCH_REGISTER
+
+//    // #ctv
+//    $updater->updPatchApply(9, function() use ($updater) {
+//    }, PATCH_PRE_CHECK);
+
+    // TODO - UNCOMMENT ON RELEASE!
+//    $updater->new_version = 45;
+//    $updater->upd_do_query('COMMIT;', true);
 }
 
 

@@ -103,12 +103,9 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     that = $(that);
     that.animate(
       {opacity: that.css('opacity') == 0 ? 1 : 0},
-      that.attr('duration')
-        ? parseInt(that.attr('duration'), 10)
-        : 1000,
-      function () {
-        sn_blink(this)
-      });
+      that.attr('duration') ? parseInt(that.attr('duration'), 10) : 1000,
+      function () {sn_blink(this)}
+    );
   }
 
   /**
@@ -216,11 +213,11 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if (input.attr('type') == 'password') {
       type = 'text';
-      button_value = L_sys_login_password_hide;
+      button_value = language['sys_login_password_hide'];
     }
     else {
       type = 'password';
-      button_value = L_sys_login_password_show;
+      button_value = language['sys_login_password_show'];
     }
 
     var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
@@ -273,10 +270,10 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   });
 
   /* CHAT_ADVANCED specific */
-  jQuery(document).on('click', '.player_nick_award', function (e) {
+  jQuery(document).on('click', '.player_nick_award', function () {
     document.location.assign("index.php?page=imperator&int_user_id=" + jQuery(this).attr('player_id'));
   });
-  jQuery(document).on('click', '.player_nick_race', function (e) {
+  jQuery(document).on('click', '.player_nick_race', function () {
     document.location.assign("index.php?page=races");
   });
 
@@ -913,15 +910,35 @@ function snConfirm(params) {
   });
 
   d.promise().then(function (result) {
-    !result ? that.removeClass('button_pseudo_pressed') : false;
+    if(result) {
+      if (that.attr('href')) {
+        sn_redirect(that.attr('href'));
+      }
 
-    if (result && that.attr('href')) {
-      sn_redirect(that.attr('href'));
+      if (that.prop('tagName') == 'FORM') {
+        that.prop('submitted', true).submit();
+      }
+
+      if(params.hasOwnProperty('confirm')) {
+        params.confirm();
+      }
+    } else {
+      that.removeClass('button_pseudo_pressed');
     }
 
-    if (result && that.prop('tagName') == 'FORM') {
-      that.prop('submitted', true).submit();
-    }
+    // !result ? that.removeClass('button_pseudo_pressed') : false;
+    //
+    // if (result && that.attr('href')) {
+    //   sn_redirect(that.attr('href'));
+    // }
+    //
+    // if (result && that.prop('tagName') == 'FORM') {
+    //   that.prop('submitted', true).submit();
+    // }
+    //
+    // if(result && params.hasOwnProperty('confirm')) {
+    //   params.confirm();
+    // }
   });
 
   return false;

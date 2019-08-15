@@ -33,7 +33,7 @@ class RecordV2 extends AccessLoggedTranslatedV2 {
    * @var StorageSqlV2|null $storage
    */
   // TODO - replace with IStorage
-  protected static $storage = null;
+  protected static $storage = 0;
 
   protected static $_tableName = '';
   protected static $_indexField = self::_INDEX_FIELD;
@@ -76,10 +76,19 @@ class RecordV2 extends AccessLoggedTranslatedV2 {
   /**
    * @param StorageSqlV2 $storage
    */
-  public function setStorage(StorageSqlV2 $storage) {
-    if (empty(static::$storage)) {
+  public static function setStorage(StorageSqlV2 $storage) {
+    if (static::$storage === 0) {
+      die('CRITICAL! No "static::$storage" property declared in "' . get_called_class() . '" class! Report to developer!');
+    } elseif (empty(static::$storage)) {
       static::$storage = $storage;
     }
+  }
+
+  /**
+   * @return StorageSqlV2|null
+   */
+  public static function getStorage() {
+    return static::$storage;
   }
 
 
@@ -245,15 +254,15 @@ class RecordV2 extends AccessLoggedTranslatedV2 {
 
 
   /**
-   * @param $promoCodeId
+   * @param $id
    *
    * @return null|static
    */
-  public static function findByIdStatic($promoCodeId) {
-    $promo = new static(SN::$gc);
-    $promo->findById($promoCodeId);
+  public static function findByIdStatic($id) {
+    $record = new static(SN::$gc);
+    $record->findById($id);
 
-    return $promo->isNew ? null : $promo;
+    return $record->isNew ? null : $record;
   }
 
 
@@ -264,6 +273,8 @@ class RecordV2 extends AccessLoggedTranslatedV2 {
    */
   public static function findAllStatic(GlobalContainer $services) {
     $result = [];
+
+    static::setStorage($services->storageSqlV2);
 
     $iter = static::$storage->findIterator(static::tableName(), []);
 

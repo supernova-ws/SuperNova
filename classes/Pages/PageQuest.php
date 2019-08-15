@@ -8,9 +8,14 @@ namespace Pages;
 use \SN;
 
 class PageQuest extends PageAjax {
-  protected $allowedActions = array(
+  /**
+   * List of allowed actions for this page
+   *
+   * @var array[] $allowedActions [(string)action] => true
+   */
+  protected $allowedActions = [
     'saveFilter' => true,
-  );
+  ];
 
   protected $filterQuestStatus = QUEST_STATUS_ALL;
 

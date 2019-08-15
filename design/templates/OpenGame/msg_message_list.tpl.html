@@ -1,7 +1,11 @@
 <script type="text/javascript">
-  function f(target_url, win_name) 
-  {
-    var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
+  $.extend(language, {
+    msg_ignore_message: '{LA_msg_ignore_message}',
+    msg_ignore_title: '{LA_msg_ignore_title}',
+  });
+
+  function f(target_url, win_name) {
+    var new_win = window.open(target_url, win_name, 'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
     new_win.focus();
   }
 
@@ -23,31 +27,93 @@
     });
     $(".js_message_delete").button(someOneChecked ? "enable" : "disable");
 
-    if(js_message_checkbox_all.attr('checked') && !someOneChecked) {
+    if (js_message_checkbox_all.attr('checked') && !someOneChecked) {
       js_message_checkbox_all.attr('checked', false);
     }
 
-    if(!js_message_checkbox_all.attr('checked') && allIsChecked) {
+    if (!js_message_checkbox_all.attr('checked') && allIsChecked) {
       js_message_checkbox_all.attr('checked', true);
     }
   });
+
+  $(document).on('click', '.js_ignore', function (e) {
+    var element = $(this);
+
+    var senderId = element.attr('sender_id');
+    var senderName = element.attr('sender_name');
+    var senderNameHTML = '<span class="notice">' + element.attr('sender_name') + '</span>';
+
+    if (!$(this).attr('disabled')) {
+      var title = language['msg_ignore_title'].replace('\[PLAYER_NAME\]', senderName);
+      var message = language['msg_ignore_message'].replace('\[PLAYER_NAME\]', senderNameHTML);
+
+      snConfirm({
+        that: $(this),
+        title: title,
+        message: message,
+        data: {id: senderId, name: senderName},
+        'confirm': function () {
+          jQuery.get(
+            SN_ROOT_VIRTUAL + "index.php?page=ajax&mode=AjaxIgnore&action=ignorePlayer&subjectId=" + senderId,
+            function (data) {
+              // Checking for correct JSON structure
+              if (
+                data.hasOwnProperty('player')
+                && data.player.hasOwnProperty('ignores')
+                && data.player.ignores.hasOwnProperty(senderId)
+                && data.player.ignores[senderId]
+              ) {
+                $("[sender_id=" + senderId + "]").parent().parent().parent().parent().hide();
+              }
+            },
+            "json"
+          );
+        }
+      });
+    }
+
+    e.preventDefault();
+    return false;
+  });
 </script>
+
+<style type="text/css">
+  .pm_subject
+  {
+    font-size: 120%;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .pm_text
+  {
+    padding: 1em 0 1em 1em;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .pm_ignore, .pm_answer
+  {
+    margin: 0.2em 0 0.2em 1em;
+  }
+</style>
 
 <h2>{L_msg_page_header}</h2>
 <h3>{MESSAGE_CLASS_TEXT}</h3>
 <form action="messages.php" method="post">
-  <input type="hidden" name="mode" value="show" />
-  <input type="hidden" name="message_class" value="{MESSAGE_CLASS}" />
-  <input type="hidden" name="message_range" value="" class="js_message_range" />
+  <input type="hidden" name="mode" value="show"/>
+  <input type="hidden" name="message_class" value="{MESSAGE_CLASS}"/>
+  <input type="hidden" name="message_range" value="" class="js_message_range"/>
 
   <table width="519">
     <!-- IF MESSAGE_CLASS != -1 -->
     <!-- INCLUDE msg_message_list_paging -->
+    <!-- DEFINE $COL_SPAN = '2' -->
+    <!-- ELSE -->
+    <!-- DEFINE $COL_SPAN = '1' -->
     <!-- ENDIF -->
 
     <!-- IF .messages && PAGER_MESSAGES -->
     <tr class="c_c">
-      <td colspan="4" class="subheader">
+      <td colspan="{$COL_SPAN}" class="subheader">
         {PAGER_MESSAGES}
       </td>
     </tr>
@@ -56,63 +122,95 @@
     <tr>
       <!-- IF MESSAGE_CLASS != -1 -->
       <th class="c_c" width="20">
-        <input type="checkbox" class="js_message_checkbox_all" />
+        <input type="checkbox" class="js_message_checkbox_all"/>
       </th>
       <!-- ENDIF -->
-      <th class="c_c" width="120">{L_msg_date}</th>
-      <th class="c_c">
-        <!-- IF MESSAGE_CLASS == -1 -->
-          {L_msg_recipient}
-        <!-- ELSE -->
-          {L_msg_from}
-        <!-- ENDIF -->
-      </th>
-      <th class="c_c">{L_msg_subject}</th>
+
+      <th class="c_c">{L_msg_message}</th>
     </tr>
-  <!-- BEGIN messages -->
-    <tr class="c_c">
+
+    <!-- BEGIN messages -->
+    <tr class="{messages.STYLE}">
       <!-- IF MESSAGE_CLASS != -1 -->
-        <td class="subheader">
-          <input name="mark[{messages.ID}]" value="{messages.ID}" type="checkbox" class="msg_checkbox" />
-        </td>
-      <!-- ENDIF -->    	
-      <td class="subheader">{messages.DATE}</td>
-      <td class="subheader">
-        <!-- IF messages.FROM_ID -->
-          <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}">
-            <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0">
-          </a>
-        <!-- ENDIF -->
-        {messages.FROM}
+      <td valign="top">
+        <input name="mark[{messages.ID}]" value="{messages.ID}" type="checkbox" class="msg_checkbox"/>
       </td>
-      <td class="subheader">
-        {messages.SUBJ}
+      <!-- ENDIF -->
+
+      <td>
+        <div class="no_border_image">
+          <div class="contFJ pm_subject">
+            {messages.SUBJ}
+          </div>
+
+          <div class="contFJ">
+            <div>
+              {messages.DATE}
+            </div>
+
+            <div class="contFS">
+              <!-- IF MESSAGE_CLASS == -1 -->
+              {L_msg_recipient}
+              <!-- ELSE -->
+              {L_msg_from}
+              <!-- ENDIF -->
+              &nbsp;
+
+              <!-- IF messages.FROM_ID -->
+              <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}"
+                 class="link">
+                <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0"> {messages.FROM}
+              </a>
+              <!-- ELSE -->
+              {messages.FROM}
+              <!-- ENDIF -->
+            </div>
+          </div>
+
+          <div class="c_l pm_text" id='mess{messages.ID}'>
+            {messages.TEXT}
+          </div>
+
+          <!-- IF MESSAGE_CLASS != -1 && messages.FROM_ID -->
+          <div class="contFE">
+            <!-- IF messages.CAN_IGNORE -->
+            <div class="js_ignore link_action pm_ignore" sender_id="{messages.FROM_ID}" sender_name="{messages.FROM}">
+              {L_msg_ignore}
+            </div>
+            <!-- ENDIF -->
+
+            <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}"
+               class="contF link pm_answer">
+              <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0"> {L_msg_answer}
+            </a>
+          </div>
+          <!-- ENDIF -->
+        </div>
       </td>
     </tr>
-    <tr id='mess{messages.ID}'>
-      <!-- IF MESSAGE_CLASS != -1 -->
-      <td class="{messages.STYLE}" class="b">
-        &nbsp;
-      </td>
-      <!-- ENDIF -->    	
-      <td class="{messages.STYLE} c_l" class="b" colspan="3">
-        {messages.TEXT}
-      </td>
-    </tr>
-  <!-- BEGINELSE messages -->
+
+    <!-- BEGINELSE messages -->
     <tr>
-      <td class="c_c notice" class="b" colspan="4">
+      <td class="c_c notice" colspan="{$COL_SPAN}">
         {L_msg_warn_no_messages}
       </td>
     </tr>
-  <!-- END messages -->
+    <!-- END messages -->
 
     <!-- IF .messages && PAGER_MESSAGES -->
     <tr class="c_c">
-      <td colspan="4" class="subheader">
+      <td colspan="{$COL_SPAN}" class="subheader">
         {PAGER_MESSAGES}
       </td>
     </tr>
+    <!-- ENDIF -->
+
+
+    <!-- IF MESSAGES_IGNORED -->
+    <tr><td colspan="{$COL_SPAN}" class="notice">
+      {MESSAGES_IGNORED} {L_msg_ignored_messages}<br/>
+      {L_msg_ignore_control}
+    </td></tr>
     <!-- ENDIF -->
 
     <!-- IF MESSAGE_CLASS != -1 -->
@@ -120,3 +218,4 @@
     <!-- ENDIF -->
   </table>
 </form>
+

@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 45a8
 *
 */
 
@@ -27,8 +27,7 @@
 
 if (!defined('INSIDE')) die();
 
-
-$a_lang_array = array(
+$a_lang_array = [
   'msg_page_header' => 'Personal messages',
   'msg_head_type' => 'Category',
   'msg_head_count' => 'Unread',
@@ -64,4 +63,11 @@ $a_lang_array = array(
       <li>Slow connection and/or large ammount of messages on one category can lead to unability to browse through messages. In such case you should clear according message category and/or clear whole messagebox</li>
     </ul>',
   'msg_header_dialog' => 'Dialog with',
-);
+
+  'msg_ignore' => 'Игнорировать',
+  'msg_ignore_title' => "Добавить игрока [PLAYER_NAME] в игнор-лист?",
+  'msg_ignore_message' => "Вы больше не увидите личных сообщений от игрока в игнор-листе.<br><br>Вы можете управлять своим игнор-листом на странице 'Настройки'.<br><br>Добавить игрока [PLAYER_NAME] в игнор-лист?",
+  'msg_message' => 'Сообщение',
+  'msg_ignored_messages' => 'сообщений от пользователей в игнор-листе не показано',
+  'msg_ignore_control' => 'Вы можете управлять игнор-листом на странице "Настройки"',
+];
