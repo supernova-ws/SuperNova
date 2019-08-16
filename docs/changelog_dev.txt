@@ -1895,6 +1895,7 @@ https://aftershock.news/?q=node/752122
     - Запуск сервера на английском
         - Перевод на Английский
 
+[*] Починить редактирование планет - модуль admin_planet_edit
 
 
 !!!!!!!!!!!!!
@@ -1922,19 +1923,10 @@ https://aftershock.news/?q=node/752122
 
 !!!!!!!! НЕ НАЧИСЛЯТЬ ТМ в ивентах тем, кто в отпуске и/или забанен и/или неактивен!
 
-!!!!!!!! Починить редактирование планет
-
-!!!!!!!! Чёрный список для игроков
-    - class RecordPlayerIgnore
-    - class PlayerIgnore
-
-!!!!!!!! require_once('includes/includes/sys_avatar.php'); - переделать!
-
 !!!!!!!! При логине/регистрации кнопка "Показать пароль" не меняет содержание на "Скрыть пароль" после нажатия и показа пароля
 
 
 !!!!!!!!!!!! Исправить - заодно переделать на <span>
-
 [15.08.2019 23:12:05]
 Sandra
 >
@@ -1953,8 +1945,26 @@ Sandra
 я не в приложении, а в браузере с телефона играю
 
 
+placeholder="Enter your user name"
+
+<input type="text" name="username" id="username"
+    class="form-control" placeholder="Enter your user name"
+    value=""
+    autocapitalize="off"
+    autocomplete="off"
+    spellcheck="false"
+    autocorrect="off"   />
+
+
 
 #ctv
+
+
+
+2019-08-16 08:06:29 45a14
+[~] ЛС
+    Добавлена иконка игнора в список сообщений
+
 
 2019-08-15 21:10:03 45a13
 [!] Админка/Редактирование планет

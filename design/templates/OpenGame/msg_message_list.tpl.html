@@ -174,14 +174,14 @@
           <!-- IF MESSAGE_CLASS != -1 && messages.FROM_ID -->
           <div class="contFE">
             <!-- IF messages.CAN_IGNORE -->
-            <div class="js_ignore link_action pm_ignore" sender_id="{messages.FROM_ID}" sender_name="{messages.FROM}">
-              {L_msg_ignore}
+            <div class="js_ignore pm_ignore link_action contF" sender_id="{messages.FROM_ID}" sender_name="{messages.FROM}">
+              <img src="design/images/icon_ignore_mail.gif" alt="{L_msg_ignore}" border="0">&nbsp;{L_msg_ignore}
             </div>
             <!-- ENDIF -->
 
             <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}"
-               class="contF link pm_answer">
-              <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0"> {L_msg_answer}
+               class="pm_answer link contF">
+              <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0">&nbsp;{L_msg_answer}
             </a>
           </div>
           <!-- ENDIF -->
