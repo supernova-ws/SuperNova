@@ -6,24 +6,22 @@
 namespace Pages\Helpers;
 
 
+use Alliance\Alliance;
 use classLocale;
-use debug;
 use mysqli_result;
+use SN;
 use template;
 
 class PageHelperAlly {
   /**
-   * @param debug       $debug
    * @param             $mode
    * @param array       $user
    * @param classLocale $lang
    */
 
-  public static function pageExternalSearch(debug $debug, $mode, array $user, classLocale $lang) {
-    global $debug;
-
+  public static function pageExternalSearch($mode, array $user, classLocale $lang) {
     if (!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
-      $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+      SN::$debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
     }
 
     $template = gettemplate('ali_search', true);
@@ -39,17 +37,7 @@ class PageHelperAlly {
       }
     }
 
-    if (empty($user['ally_id'])) {
-      $recommended = \Alliance\Alliance::recommend($user['total_points']);
-      if (db_num_rows($recommended)) {
-        $template->assign_block_vars('alliances', array(
-          'ID' => -1,
-        ));
-        PageHelperAlly::allyFetchFromResult($template, $recommended, $user['total_points']);
-      }
-    }
-
-    $template->assign_vars(['PAGE_HINT' => $lang['ali_search_result_tip']]);
+    self::externalSearchRecommend($user, $template);
 
     display($template, $lang['ali_search_title']);
   }
@@ -80,6 +68,24 @@ class PageHelperAlly {
         'RATE'        => $pointsRate,
       ));
     }
+  }
+
+  /**
+   * @param array    $user
+   * @param template $template
+   */
+  public static function externalSearchRecommend(array $user, template $template) {
+    if (empty($user['ally_id'])) {
+      $recommended = Alliance::recommend($user['total_points']);
+      if (db_num_rows($recommended)) {
+        $template->assign_block_vars('alliances', array(
+          'ID' => -1,
+        ));
+        PageHelperAlly::allyFetchFromResult($template, $recommended, $user['total_points']);
+      }
+    }
+
+    $template->assign_vars(['PAGE_HINT' => SN::$lang['ali_search_result_tip']]);
   }
 
 }

@@ -234,7 +234,7 @@ class Alliance extends RecordAlliance {
         AND ally_members > 1 
         AND total_points / ally_members >= {$points} / {$rate} 
         AND total_points / ally_members <= {$points} * {$rate} 
-      ORDER BY abs(total_points / ally_members - {$points});");
+      ORDER BY abs(total_points / ally_members - {$points}) LIMIT 10;");
 
     return $allies;
   }
