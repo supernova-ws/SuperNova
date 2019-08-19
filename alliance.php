@@ -1,5 +1,7 @@
 <?php
 
+use Pages\Helpers\PageHelperAlly;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (SN::$config->game_mode == GAME_BLITZ) {
@@ -25,7 +27,7 @@ if (!$user['ally_id']) {
   } else {
     switch ($mode) {
       case 'search':
-        require('includes/alliance/ali_external_search.inc');
+        PageHelperAlly::pageExternalSearch($debug, $mode, $user, $lang);
       break;
 
       case 'apply':

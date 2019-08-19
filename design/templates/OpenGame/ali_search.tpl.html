@@ -18,31 +18,37 @@
 <!-- IF SEARCH_TEXT -->
 <br />
 <table width=519>
-  <tr>
-    <td class=c><center>{L_ali_sys_tag}</center></td>
-    <td class=c><center>{L_ali_sys_name}</center></td>
-    <td class=c><center>{L_ali_sys_members}</center></td>
-    <td class=c><center>{L_ali_req_make}</center></td>
+  <tr class="c_c">
+    <th>{L_ali_sys_tag}</th>
+    <th>{L_ali_sys_name}</th>
+    <th>{L_ali_sys_members}</th>
+    <th>{ Разница }</th>
+    <th>{ Рейт }</th>
+    <th>{L_ali_req_make}</th>
   </tr>
 
-  <!-- BEGIN alliances -->  
-    <tr>
-      <th><a href="alliance.php?mode=ainfo&a={alliances.ID}">{alliances.TAG}</a></th>
-      <th><a href="alliance.php?mode=ainfo&a={alliances.ID}">{alliances.NAME}</a></th>
-      <th>{alliances.MEMBERS}</th>
-      <th>
+  <!-- BEGIN alliances -->
+    <tr class="c_c">
+      <!-- IF alliances.ID == -1 -->
+      <td colspan="6" class="subheader info">{L_ally_alliances_recommended}</td>
+      <!-- ELSE -->
+      <td><a href="alliance.php?mode=ainfo&a={alliances.ID}" class="link">{alliances.TAG}</a></td>
+      <td><a href="alliance.php?mode=ainfo&a={alliances.ID}" class="link">{alliances.NAME}</a></td>
+      <td class="c_r">{alliances.MEMBERS}</td>
+      <td class="c_r">{alliances.DIFF|num|format}</td>
+      <td class="c_r">{alliances.RATE}</td>
+      <td>
         <!-- IF alliances.NO_REQUESTS -->
           <font color="red">{L_ali_req_not_allowed}</font>
         <!-- ELSE -->
-          <a href="alliance.php?mode=apply&a={alliances.ID}">{L_ali_req_make}</a>
+          <a href="alliance.php?mode=apply&a={alliances.ID}" class="link">{L_ali_req_make}</a>
         <!-- ENDIF -->
-      </th>
+      </td>
+      <!-- ENDIF -->
     </tr>
-  <!-- BEGINELSE alliances -->  
-    <tr><th colspan="4">{L_ali_search_result_none}</th></tr>
-  <!-- END alliances -->  
-  
-  <tr><td class=c colspan=4>{L_ali_search_result_tip}</td></tr>
+  <!-- BEGINELSE alliances -->
+    <tr><th colspan="6">{L_ali_search_result_none}</th></tr>
+  <!-- END alliances -->
 </table>
 <!-- ENDIF -->
 

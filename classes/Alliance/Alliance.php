@@ -214,4 +214,29 @@ class Alliance extends RecordAlliance {
       ];
   }
 
+  /**
+   * Get list of recommended alliances for player with specified player points
+   *
+   * @param $points
+   *
+   * @return \mysqli_result|null
+   */
+  public static function recommend($points) {
+    $points = floatval($points);
+
+    $rate = 5;
+
+    $allies = doquery(
+      "SELECT * 
+      FROM {{alliance}} 
+      WHERE 
+        ally_request_notallow != 1 
+        AND ally_members > 1 
+        AND total_points / ally_members >= {$points} / {$rate} 
+        AND total_points / ally_members <= {$points} * {$rate} 
+      ORDER BY abs(total_points / ally_members - {$points});");
+
+    return $allies;
+  }
+
 }

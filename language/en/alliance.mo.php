@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 44a100
+* @version 45a15
 *
 */
 
@@ -29,7 +29,7 @@
 if (!defined('INSIDE')) die();
 
 
-$a_lang_array = (array(
+$a_lang_array = [
   'ali_dip_title' => 'Diplomacy',
   'ali_dip_negotiate' => 'Negotiations',
   'ali_adm_msg_subject' => 'Alliance Maillist',
@@ -60,7 +60,7 @@ $a_lang_array = (array(
   'ali_dip_relation_change_auto_accept' => 'Alliance "%1$s" changes his relations to Alliance "%2$s" to "%3$s"',
   'ali_dip_relation_change_own' => 'We accept offer of Alliance "%2$s" to change relations to "%3$s"',
   'ali_dip_relation_change_other' => 'Alliance "%1$s" accepted our offer to change relations to "%3$s"',
-  'ali_dip_relations' => array(
+  'ali_dip_relations' => [
     ALLY_DIPLOMACY_NEUTRAL => 'Neutral',
     ALLY_DIPLOMACY_WAR => 'War',
     ALLY_DIPLOMACY_PEACE => 'Peace',
@@ -69,7 +69,7 @@ $a_lang_array = (array(
     ALLY_DIPLOMACY_UNION => 'Union',
     ALLY_DIPLOMACY_MASTER => 'Master',
     ALLY_DIPLOMACY_SLAVE => 'Slave',
-  ),
+  ],
 
   'ali_lessThen15min' => '&lt; 15 min',
   'ali_confirm' => 'Confirm',
@@ -123,7 +123,6 @@ $a_lang_array = (array(
   'ali_search_action' => 'Search',
   'ali_search_tip' => 'Search can be performed on the part of the name or tag of the Alliance',
   'ali_search_result_none' => 'No items found matching your search for Alliances.',
-  'ali_search_result_tip' => 'Click on the name or tag of the Alliance that would see information about it.<br>Click "Enter" to send a request to join.',
   'ali_search_show_all' => 'List and statistics for all Alliances',
   'ali_sys_name' => 'The Name',
   'ali_sys_tag' => 'Tag',
@@ -282,4 +281,15 @@ $a_lang_array = (array(
   'ally_message_tag_exists' => 'There is already exists Alliance with tag [%1$s]',
   'ally_message_name_exists' => 'There is already exists Alliance with name "%1$s"',
 
-));
+  'ally_alliances_recommended' => 'Recommended Alliances',
+  'ally_recommended_diff' => 'Points diff',
+  'ally_recommended_rates' => 'Rate diff',
+  'ali_search_result_tip' => '
+    <li>Click on the name or tag of the Alliance that would see information about it</li>
+    <li>Click "Enter" to send a request to join</li>
+    <li>Колонка "Разница в очках" указывает на разницу между количеством очков у игрока и средним количеством очков на одного игрока в Альянсе. Если она отрицательная - средний игрок в Альянсе имеет больше очков, чем вы</li>
+    <li>Колонка "Рейт" указывает на соотношение между количеством очков у игрока и средним количеством очков на одного игрока в Альянсе. Если она меньше единицы - средний игрок в Альянсе слабее, чем вы</li>
+    <li>Рекомендуется по возможности выбирать Альянс с небольшой разницей в очках и рейте в пределах от 0,75 до 1,3. Однако, финальное решение всегда остаётся за игроком</li>
+   ',
+
+];
