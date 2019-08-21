@@ -157,6 +157,8 @@
  *
  * @property int        $upd_lock_time                 => Update lock time
  *
+ * @property string     $url_purchase_metamatter       => URL to purchase MM for servers w/o payment modules
+ *
  * @property string     $var_db_update                 => '0' - SQL_DATE_TIME
  * @property string     $var_db_update_end             => '0' - SQL_DATE_TIME
  *

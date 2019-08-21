@@ -594,11 +594,21 @@ switch ($updater->new_version) {
         );
       }
 
+    }, PATCH_REGISTER);
+
+    // 2019-08-21 20:14:18 45a19
+    $updater->updPatchApply(9, function() use ($updater) {
+//      if (! $updater->isFieldExists('payment', 'payment_method_id')) {
+        $updater->upd_alter_table('payment', [
+          'ADD COLUMN `payment_method_id` smallint DEFAULT NULL AFTER `payment_module_name`',
+          'ADD KEY `I_payment_method_id` (`payment_method_id`)',
+        ], ! $updater->isFieldExists('payment', 'payment_method_id'));
+
+//      }
     }, PATCH_PRE_CHECK);
-  // TODO - PATCH_REGISTER
 
 //    // #ctv
-//    $updater->updPatchApply(9, function() use ($updater) {
+//    $updater->updPatchApply(10, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
     // TODO - UNCOMMENT ON RELEASE!

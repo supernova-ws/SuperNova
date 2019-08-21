@@ -1456,7 +1456,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* DarkMatter/MetaMatter --------------------------------------------------------------- */
 #payment_metamatter,  #payment_metamatter_info {
-  max-width: 78em; 
+  max-width: 80em;
 }
 
 #payment_metamatter_info {

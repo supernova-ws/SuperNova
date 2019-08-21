@@ -1,21 +1,21 @@
 <?php
 
-global $debug;
-
 // Придумать какой статус должен быть у глобальных ответов, что бы не перекрывать статусы платежных систем
 // Может добавить спецстатус "Ответ системы платежа" и парсить дальше getMessage
 // см constants.php
 
-use Modules\sn_module;
+use Payment\PaymentMethods;
 
-include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
+global $debug;
+global $template_result;
+global $config;
+
+require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (!SN::$gc->modules->countModulesInGroup('payment')) {
   sys_redirect('dark_matter.php');
   die();
 }
-
-global $config;
 
 lng_include('payment');
 lng_include('infos');
@@ -28,42 +28,6 @@ $player_currency = sys_get_param_str('player_currency', $player_currency_default
 empty(SN::$lang['pay_currency_list'][$player_currency]) ? ($player_currency = $player_currency_default ? $player_currency_default : SN::$config->payment_currency_default) : false;
 // $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
 $player_currency_default != $player_currency ? SN::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
-
-//// Конвертация ММ в ТМ
-//if(sys_get_param('mm_convert_do')) {
-//  try {
-//    if(!($mm_convert = sys_get_param_id('mm_convert'))) {
-//      throw new exception($lang['pay_msg_mm_convert_wrong_amount'], ERR_ERROR);
-//    }
-//
-//    sn_db_transaction_start();
-//    $user = db_user_by_id($user['id'], true);
-//    if($mm_convert > mrc_get_level($user, null, RES_METAMATTER)) {
-//      throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);
-//    }
-//
-//    $payment_comment = sprintf("Игрок сконвертировал %d Метаматерии в Тёмную Материю", $mm_convert);
-//    if(!mm_points_change($user['id'], RPG_CONVERT_MM, -$mm_convert, $payment_comment)) {
-//      throw new exception($lang['pay_msg_mm_convert_mm_error'], ERR_ERROR);
-//    }
-//    if(!rpg_points_change($user['id'], RPG_CONVERT_MM, $mm_convert, $payment_comment)) {
-//      throw new exception($lang['pay_msg_mm_convert_dm_error'], ERR_ERROR);
-//    }
-//
-//    $template->assign_block_vars('result', array(
-//      'STATUS'  => ERR_NONE,
-//      'MESSAGE' => sprintf('Конвертация %1$s единиц Метаматерии в %1$s единиц Тёмной Материи успешно произведена', pretty_number($mm_convert)),
-//    ));
-//
-//    sn_db_transaction_commit();
-//  } catch(exception $e) {
-//    sn_db_transaction_rollback();
-//    $template->assign_block_vars('result', $response = array(
-//      'STATUS'  => $e->getCode(),
-//      'MESSAGE' => $e->getMessage(),
-//    ));
-//  }
-//}
 
 // Таблица скидок
 $prev_discount = 0;
@@ -117,112 +81,16 @@ if (!$request['metamatter']) {
   unset($_POST);
 }
 
-$payment_methods_available = array_combine(array_keys(sn_module_payment::$payment_methods), array_fill(0, count(sn_module_payment::$payment_methods), null));
-array_walk($payment_methods_available, function (&$value, $index) {
-  $value = !empty(sn_module_payment::$payment_methods[$index]) ? array_combine(array_keys(sn_module_payment::$payment_methods[$index]), array_fill(0, count(sn_module_payment::$payment_methods[$index]), null)) : $value;
-});
-
-$payment_module_valid = false;
 $payment_module_request = sys_get_param_str('payment_module');
-foreach (SN::$gc->modules->getModulesInGroup('payment', true) as $module_name => $module) {
-  /**
-   * @var sn_module $module
-   */
-
-  if (!is_object($module) || !$module->isActive()) {
-    continue;
-  }
-
-  lng_include($module_name, $module->getRootRelative());
-
-  foreach (sn_module_payment::$payment_methods as $payment_type_id => $available_methods) {
-    foreach ($available_methods as $payment_method => $payment_currency) {
-      if (isset($module->manifest['payment_method'][$payment_method])) {
-        $payment_methods_available[$payment_type_id][$payment_method][$module_name] = $module->manifest['payment_method'][$payment_method];
-      }
-    }
-  }
-
-  $payment_module_valid = $payment_module_valid || $module_name == $payment_module_request;
-}
-
-global $template_result;
-// Доступные платежные методы
-foreach ($payment_methods_available as $payment_type_id => $payment_methods) {
-  if (empty($payment_methods)) {
-    continue;
-  }
-
-  $template_result['.']['payment'][$payment_type_id] = array(
-    'ID'   => $payment_type_id,
-    'NAME' => SN::$lang['pay_methods'][$payment_type_id],
-  );
-  foreach ($payment_methods as $payment_method_id => $module_list) {
-    if (empty($module_list)) {
-      continue;
-    }
-    $template_result['.']['payment'][$payment_type_id]['.']['method'][$payment_method_id] = array(
-      'ID'         => $payment_method_id,
-      'NAME'       => SN::$lang['pay_methods'][$payment_method_id],
-      'IMAGE'      => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
-        ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
-      'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
-      'BUTTON'     => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
-    );
-    foreach ($module_list as $payment_module_name => $payment_module_method_details) {
-      $template_result['.']['payment'][$payment_type_id]['.']['method'][$payment_method_id]['.']['module'][] = array(
-        'MODULE' => $payment_module_name,
-      );
-    }
-  }
-
-  if (empty($template_result['.']['payment'][$payment_type_id]['.'])) {
-    unset($template_result['.']['payment'][$payment_type_id]);
-  }
-}
-
-$template->assign_recursive($template_result);
-
 $payment_type_selected = sys_get_param_int('payment_type');
 $payment_method_selected = sys_get_param_int('payment_method');
 
-$payment_module_valid = $payment_module_valid && (!$payment_method_selected || isset($payment_methods_available[$payment_type_selected][$payment_method_selected][$payment_module_request]));
+$payment_module_request = PaymentMethods::processInputParams($payment_module_request, $payment_type_selected, $payment_method_selected);
 
-// If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
-if ($payment_module_valid) {
-  // $payment_module = $payment_module; // Really - do nothing
-} elseif ($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
-  reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-  $payment_module_request = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-} elseif (SN::$gc->modules->countModulesInGroup('payment') == 1) {
-  $payment_module_request = $module_name;
-} else {
-  $payment_module_request = '';
-}
-
-if ($payment_type_selected && $payment_method_selected) {
-  foreach ($payment_methods_available[$payment_type_selected][$payment_method_selected] as $module_name => $temp) {
-    /**
-     * @var sn_module_payment $mod
-     */
-    $mod = SN::$gc->modules->getModule($module_name);
-
-    $aPrice = method_exists($mod, 'getPrice') ? $mod->getPrice($payment_method_selected, $player_currency, $request['metamatter']) : '';
-
-    $k = [
-      'ID'          => $module_name,
-      'NAME'        => SN::$lang["module_{$module_name}_name"],
-      'DESCRIPTION' => SN::$lang["module_{$module_name}_description"],
-    ];
-
-    if (is_array($aPrice) && !empty($aPrice)) {
-      $k['COST']     = $aPrice[$mod::FIELD_SUM];
-      $k['CURRENCY'] = $aPrice[$mod::FIELD_CURRENCY];
-    }
-
-
-    $template->assign_block_vars('payment_module', $k);
-  }
+if (!$payment_module_request && $payment_type_selected && $payment_method_selected) {
+  $template_result['.']['payment_module'] = PaymentMethods::renderModulesForMethod($payment_type_selected, $payment_method_selected, $player_currency, $request);
+} elseif(!$payment_module_request) {
+  $template_result['.']['payment'] = PaymentMethods::renderPaymentMethodList();
 }
 
 foreach (SN::$lang['pay_currency_list'] as $key => $value) {
@@ -241,7 +109,7 @@ foreach (SN::$lang['pay_currency_list'] as $key => $value) {
   ));
 }
 
-if ($request['metamatter'] && $payment_module_request) {
+if ($request['metamatter'] && $payment_module_request && $payment_type_selected && $payment_method_selected) {
   try {
     $paymentModuleReal = SN::$gc->modules->getModule($payment_module_request);
     if(!is_object($paymentModuleReal)) {
@@ -313,13 +181,13 @@ foreach ($unit_available_amount_list as $unit_amount => $discount) {
   ));
 }
 
-$currency = $payment_module_request ? sn_module_payment::$payment_methods[$payment_type_selected][$payment_method_selected]['currency'] : '';
-$bonus_percent = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
+$currency               = PaymentMethods::getCurrencyFromMethod($payment_module_request, $payment_type_selected, $payment_method_selected);
+$bonus_percent          = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
 $income_metamatter_text = prettyNumberStyledDefault(sn_module_payment::bonus_calculate($request['metamatter']));
 
 $approxCost = '';
-if(!empty($module_name) && !empty($payment_method_selected)) {
-  $mod = SN::$gc->modules->getModule($module_name);
+if(!empty($payment_module_request) && !empty($payment_method_selected)) {
+  $mod = SN::$gc->modules->getModule($payment_module_request);
 
   /**
    * @var sn_module_payment $mod
@@ -335,7 +203,7 @@ if(!empty($module_name) && !empty($payment_method_selected)) {
 }
 
 
-$template->assign_vars(array(
+$template->assign_vars([
   'PAGE_HEADER' => SN::$lang['sys_metamatter'],
 
   'URL_PURCHASE' => SN::$config->url_purchase_metamatter,
@@ -377,6 +245,8 @@ $template->assign_vars(array(
 
   'PAYMENT_AVAILABLE' => SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE'),
 
-));
+]);
+
+$template->assign_recursive($template_result);
 
 display($template, SN::$lang['sys_metamatter']);

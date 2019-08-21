@@ -698,6 +698,29 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
 
 
+  /**
+   * @param element
+   * @param jQueryQualifier
+   * @param hideOnShow
+   */
+  function sn_show_hide2(element, jQueryQualifier, hideOnShow) {
+    var element_to_hide = jQuery(jQueryQualifier);
+
+    element_to_hide.each(function () {
+      var that = $(this);
+      var tag_name = that.tagName;
+
+      that.css('display', that.css('display') === 'none' ? (tag_name === 'TR' ? 'table-row' : (tag_name === 'UL' || tag_name === 'DIV' ? 'block' : 'inline')) : 'none');
+    });
+
+    if(hideOnShow) {
+      $(element).hide();
+    } else {
+      $(element).html("[&nbsp;" + (element_to_hide.first().css('display') === 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
+    }
+  }
+
+
   function cntchar(m) {
     if (window.document.forms[0].text.value.length > m) {
       window.document.forms[0].text.value = x;

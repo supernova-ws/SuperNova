@@ -54,7 +54,7 @@ class PageAdminModules extends PageDeprecated {
       $render[] = [
         'PACKAGE'   => $module->manifest['package'],
         'NAME'      => $module->manifest['name'],
-        'VERSION'   => $module->manifest['version'],
+        'VERSION'   => $module->getVersion(),
         'ACTIVE'    => $module->isActive(),
         'INSTALLED' => $module->isInstalled(),
       ];

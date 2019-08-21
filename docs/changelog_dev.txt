@@ -1945,19 +1945,29 @@ Sandra
 я не в приложении, а в браузере с телефона играю
 
 
-placeholder="Enter your user name"
-
-<input type="text" name="username" id="username"
-    class="form-control" placeholder="Enter your user name"
-    value=""
-    autocapitalize="off"
-    autocomplete="off"
-    spellcheck="false"
-    autocorrect="off"   />
+[*] <input type="text" placeholder="Enter your user name">
 
 
 
 #ctv
+
+
+
+[*] Удалить
+    design/images/payments/generic/xsolla.png
+    design/images/payments/generic/robokassa.jpg
+
+
+2019-08-21 20:14:18 45a19
+[!] Модули
+    Изменена система версионирования модулей
+    Теперь в качестве версии модуля используется версия билда, в котором были закоммичены изменения
+
+[~] Платежи
+    Немного переверстана страница выбора способа оплаты
+
+[@] Код/Платежи
+    Рефакторинг кода платежей
 
 
 2019-08-19 17:21:50 45a16

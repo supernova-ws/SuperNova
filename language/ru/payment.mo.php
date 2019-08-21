@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 44a109
+* @version 45a19
 *
 */
 
@@ -67,7 +67,7 @@ $a_lang_array = (array(
   'pay_mm_buy_payment_selected' => 'Оплата будет произведена с использованием платёжной системы',
   'pay_mm_buy_purchase' => 'Покупка',
 
-  'pay_mm_buy_payment_method_more' => 'Нажмите "Показать", что бы увидеть больше способов оплаты',
+  'pay_mm_buy_payment_method_more' => 'Нажмите здесь, что бы увидеть больше способов оплаты',
 
   'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
   'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
@@ -172,7 +172,7 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
     PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
-    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
+//    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
   ),
 
   'pay_currency_exchange_title' => 'Внутренние курсы валют',

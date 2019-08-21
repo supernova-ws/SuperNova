@@ -133,7 +133,7 @@
   </tr>
   <tr class="c_j">
     <td>
-      <!-- IF .payment -->
+      <!-- IF PAYMENT_AVAILABLE -->
         <!-- IF ! PAY_LINK_URL -->
         <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST" id="payment_form">
         <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
@@ -196,21 +196,18 @@
           <input type="hidden" name="payment_method" id="payment_method" value="{PAYMENT_METHOD}" />
           <!-- IF ! PAYMENT_METHOD -->
             {L_pay_mm_buy_payment_method_select}
+
             <!-- BEGIN payment -->
-            <table align="left" width="100%" class="border_image_small">
-              <tr>
-                <th class="c_l">{payment.NAME}</th>
-              </tr>
-              <tr><td class="c_l">
-                <div style="width: 100%; text-align: center;" value="{payment.ID}">
+            <div style="border: 0.2em solid rgba(255,255,255,0.5); margin: 0.5em 0; text-align: center; padding-bottom: 0.5em">
+              <div style="font-size: 150%;background-color: rgba(0,0,0,0.5); padding: 0.5em;">{payment.NAME}</div>
+
+              <div style="width: 100%; text-align: center;" value="{payment.ID}">
                 <!-- BEGIN method -->
-                  <!-- IF method.S_ROW_COUNT == 6 -->
-                  <div>
-                    {L_pay_mm_buy_payment_method_more}<br />
-                    <!--<span class="link_action fr" onclick="sn_show_hide(this, 'hide_payment_id_{payment.ID}');">{L_sys_show}</span>-->
-                    <button onclick="sn_show_hide(this, 'hide_payment_id_{payment.ID}'); return false;"><span class="link_action">{L_sys_show}</span></button>
-                  </div>
-                  <div id="hide_payment_id_{payment.ID}" style="display: none; clear: both;">
+                <!-- IF method.S_ROW_COUNT == 5 -->
+                <div>
+                  <button onclick="sn_show_hide2(this, '.js_hidden_payments_{payment.ID}', 1); return false;"><span class="link_action">{L_pay_mm_buy_payment_method_more}</span></button>
+                </div>
+                <div class="js_hidden_payments_{payment.ID}" style="display: none; clear: both;">
                   <!-- ENDIF -->
                   <div class="payment_mm_method<!-- IF method.IMAGE && ! method.BUTTON--> payment_mm_method_nobutton<!-- ENDIF -->" value="{method.ID}">
                     <!-- IF method.IMAGE -->
@@ -220,16 +217,15 @@
                     <div>{method.NAME}</div>
                     <!-- ENDIF -->
                   </div>
-                  <!-- IF method.S_ROW_COUNT >= 6 && method.S_LAST_ROW -->
-                  </div>
-                  <!-- ENDIF -->
+                  <!-- IF method.S_ROW_COUNT >= 5 && method.S_LAST_ROW -->
+                </div>
+                <!-- ENDIF -->
 
                 <!-- END method -->
-                </div>
-                <div style="clear:both;"></div>
-              </td></tr>
-            </table>
+              </div>
+            </div>
             <!-- END payment -->
+
           <!-- ELSE -->
             {L_pay_mm_buy_payment_method_selected} <span class="positive">{PAYMENT_METHOD_NAME}</span><br /><br />
 
