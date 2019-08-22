@@ -3,6 +3,7 @@
 namespace Modules;
 
 use Common\Hooker\Pimp;
+use Core\Autoloader;
 use Exception;
 use SN;
 use template;
@@ -17,7 +18,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#45a19#';
+  public $versionCommitted = '#45a21#';
   /**
    * Is module currently active?
    *
@@ -37,7 +38,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #45a19# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #45a21# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -45,7 +46,7 @@ class sn_module {
     self::M_ROOT_RELATIVE => '',
 
     // 'constants' array - contents of this array would be defined in SN
-    'constants' => [
+    'constants'           => [
 //      'UNIT_STRUCTURE_NEW' => 999999,
     ],
 
@@ -156,6 +157,8 @@ class sn_module {
    * sn_module constructor.
    *
    * @param string $filename
+   *
+   * @throws Exception
    */
   public function __construct($filename = __FILE__) {
     $this->filename = $filename;
@@ -189,13 +192,14 @@ class sn_module {
     }
 
     if ($config_exists) {
+      /** @noinspection PhpIncludeInspection */
       include($config_filename);
       $module_config_array = $class_module_name . '_config';
-      $this->config = $$module_config_array;
+      $this->config        = $$module_config_array;
     }
 
     // Registering classes with autoloader
-    \Core\Autoloader::register($this->getRootRelative() . 'classes/');
+    Autoloader::register($this->getRootRelative() . 'classes/');
 
     // TODO - currently not possible because each module is not a service
     // When it's done - remove double registration from loadModulesFromDirectory()
@@ -426,7 +430,7 @@ class sn_module {
    *
    * Should stay public due using in Festivals (?)
    *
-   * @param string   $templateName
+   * @param string        $templateName
    * @param template|null $template
    *
    * @return template
@@ -435,16 +439,28 @@ class sn_module {
     return gettemplate($templateName, $template, $this->getTemplateRootRelative());
   }
 
+  /**
+   * Get module version
+   *
+   * @return string
+   */
   public function getVersion() {
-
-    if(!empty($this->versionCommitted)) {
+    if (!empty($this->versionCommitted)) {
       $version = $this->versionCommitted;
     } else {
       $version = $this->manifest['version'];
     }
 
-
     return trim($version, '#');
+  }
+
+  /**
+   * Get module full name as registered in module manager
+   *
+   * @return string
+   */
+  public function getFullName() {
+    return get_called_class();
   }
 
 }

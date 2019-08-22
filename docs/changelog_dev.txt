@@ -1953,9 +1953,43 @@ Sandra
 
 
 
-[*] Удалить
-    design/images/payments/generic/xsolla.png
-    design/images/payments/generic/robokassa.jpg
+[*] Иконки для платёжных систем
+    Картинка билайна
+    Картинка applepay
+
+[*] UnitPay
+    Добавить PayPal
+    Добавить ApplePay
+
+
+!!!!!!!!!!! Протестировать все методы прямой оплаты у агрегаторов !
+    - Интеркасса
+      + PAYMENT_METHOD_MOBILE_MTS       => 'mts_mpay_merchantContent_rub',
+      + PAYMENT_METHOD_MOBILE_MEGAPHONE => 'megafon_mpay_merchantContent_rub',
+      + PAYMENT_METHOD_MOBILE_BEELINE   => 'beeline_mpay_merchantContent_rub',
+      + PAYMENT_METHOD_EMONEY_QIWI      => 'qiwi_qiwi_wallet2wallet_rub',
+      + PAYMENT_METHOD_EMONEY_YANDEX    => 'yandexmoney_yandexmoney_merchant_rub',
+    - Остальные?
+
+Так, с валютами разобраться. Например:
+WebMoneyZ считает в WMZ
+Но юнитпей принимает только рубли
+И при этом предлагает сумму в баксах
+Но игроку надо показать сумму в WMZ
+
+
+Кэшировать реальную стоимость оплат по провайдерам или брать из таблицы payments
+
+Переделать PaymentMethods::$payment_methods - разбить и юзать?
+
+
+
+2019-08-22 02:38:16 45a21
+[%] Платежи
+    Исправлена ошибка, когда одному платёжному методу соответствует только один модуль
+
+[@] Код/Платежи
+    Рефакторинг кода платежей
 
 
 2019-08-21 20:14:18 45a19

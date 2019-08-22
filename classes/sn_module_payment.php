@@ -2,6 +2,7 @@
 
 use DBAL\db_mysql;
 use Modules\sn_module;
+use Payment\PaymentMethods;
 
 /**
  * User: Gorlum
@@ -13,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#45a19#';
+  public $versionCommitted = '#45a21#';
 
   public $active = false;
 
@@ -159,29 +160,33 @@ abstract class sn_module_payment extends sn_module {
    *
    * @throws Exception
    */
-  public function compile_request($request) {
+  public function compile_request($request, $payment_method_selected) {
     global $config, $lang, $user;
 
-    if (!(SN::$auth->account instanceof Account)) {
-      // TODO - throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
-    }
+//    if (!(SN::$auth->account instanceof Account)) {
+//      // TODO - throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
+//    }
     $this->account = SN::$auth->account;
 
     $this->db = $this->account->db;
 
-    $this->payment_provider_id = core_auth::$main_provider->provider_id;
-    $this->payment_account_id = $this->account->account_id;
+    $this->payment_provider_id  = core_auth::$main_provider->provider_id;
+    $this->payment_account_id   = $this->account->account_id;
     $this->payment_account_name = $this->account->account_name;
-    $this->payment_user_id = $user['id'];
-    $this->payment_user_name = $user['username'];
+    $this->payment_user_id      = $user['id'];
+    $this->payment_user_name    = $user['username'];
 
     // TODO - минимальное количество ММ к оплате
-    $this->payment_dark_matter_paid = $request['metamatter'];
+    $this->payment_dark_matter_paid   = $request['metamatter'];
     $this->payment_dark_matter_gained = self::bonus_calculate($this->payment_dark_matter_paid, true);
 
     $this->payment_currency = $config->payment_currency_default;
-    $this->payment_amount = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_currency);
+    $this->payment_amount   = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_currency);
 
+    $this->payment_method = $payment_method_selected;
+    if (empty($this->payment_external_currency)) {
+      $this->payment_external_currency = $this->getMethodCurrency($this->payment_method);
+    }
     if (empty($this->payment_external_currency) && !empty($this->config['currency'])) {
       $this->payment_external_currency = $this->config['currency'];
     }
@@ -210,7 +215,6 @@ abstract class sn_module_payment extends sn_module {
    * @return array
    * @throws Exception
    */
-  // OK 4.8
   protected function payment_request_process($options = array()) {
     global $lang, $config;
 
@@ -279,9 +283,9 @@ abstract class sn_module_payment extends sn_module {
       }
       empty($this->payment_dark_matter_gained) ? $this->payment_dark_matter_gained = $request_mm_amount : false;
     }
-    if (empty($this->payment_dark_matter_paid)) {
-      // TODO - обратный расчёт из gained
-    }
+//    if (empty($this->payment_dark_matter_paid)) {
+//      // TODO - обратный расчёт из gained
+//    }
 
     // Проверка наличия внешнего ИД платежа
     if (!empty($this->payment_params['payment_external_id'])) {
@@ -345,7 +349,7 @@ abstract class sn_module_payment extends sn_module {
   public function payment_request_response() {
     global $debug;
 
-    $this->db = core_auth::$main_provider->db;
+    $this->db      = core_auth::$main_provider->db;
     $this->account = new Account($this->db);
 
     // TODO - REPLACE WITH INNATE CALL!
@@ -353,7 +357,7 @@ abstract class sn_module_payment extends sn_module {
     try {
       $response = $this->payment_request_process();
     } catch (Exception $e) {
-      $response['result'] = $e->getCode();
+      $response['result']  = $e->getCode();
       $response['message'] = $e->getMessage();
 
       $this->debug([
@@ -383,8 +387,8 @@ abstract class sn_module_payment extends sn_module {
   /**
    *
    *
-   * @param string $payment_method_selected
-   * @param string $player_currency
+   * @param string  $payment_method_selected
+   * @param string  $player_currency
    * @param integer $metamatter
    *
    * @return array [self::FIELD_SUM => (float){sum_to_pay}, self::FIELD_CURRENCY => (str){currency_code}]. Currency code is optional. Empty if no data
@@ -408,7 +412,7 @@ abstract class sn_module_payment extends sn_module {
 //    global $config;
 
     $currency_from = strtolower($currency_from);
-    $currency_to = strtolower($currency_to);
+    $currency_to   = strtolower($currency_to);
 
     if ($currency_from != $currency_to) {
 //      $config_currency_from_name = 'payment_currency_exchange_' . $currency_from;
@@ -418,7 +422,7 @@ abstract class sn_module_payment extends sn_module {
 //      $exchange_to = floatval($currency_to == 'mm_' ? get_mm_cost() : $config->$config_currency_to_name);
 
       $exchange_from = get_exchange_rate($currency_from);
-      $exchange_to = get_exchange_rate($currency_to);
+      $exchange_to   = get_exchange_rate($currency_to);
 
       $value = $exchange_from ? $value / $exchange_from * $exchange_to * pow(10, $round) : 0;
       $value = ceil($value) / pow(10, $round);
@@ -439,14 +443,14 @@ abstract class sn_module_payment extends sn_module {
    * @return float|int
    */
   public static function bonus_calculate($dark_matter, $direct = true, $return_bonus = false) {
-    $bonus = 0;
+    $bonus           = 0;
     $dark_matter_new = $dark_matter;
     if (!empty(self::$bonus_table) && $dark_matter >= self::$bonus_table[0]) {
       if ($direct) {
         foreach (self::$bonus_table as $dm_for_bonus => $multiplier) {
           if ($dm_for_bonus <= $dark_matter) {
             $dark_matter_new = $dark_matter * (1 + $multiplier);
-            $bonus = $multiplier;
+            $bonus           = $multiplier;
           } else {
             break;
           }
@@ -456,7 +460,7 @@ abstract class sn_module_payment extends sn_module {
           $temp = $dm_for_bonus * (1 + $multiplier);
           if ($dark_matter >= $temp) {
             $dark_matter_new = round($dark_matter / (1 + $multiplier));
-            $bonus = $multiplier;
+            $bonus           = $multiplier;
           } else {
             break;
           }
@@ -512,12 +516,12 @@ abstract class sn_module_payment extends sn_module {
     $replace = false;
     if ($this->payment_id) {
       $payment['payment_id'] = $this->payment_id;
-      $replace = true;
+      $replace               = true;
     }
 
     $query = array();
     foreach ($payment as $key => $value) {
-      if($value === null) {
+      if ($value === null) {
         $value = 'NULL';
       } else {
         $value = is_string($value) ? '"' . db_escape($value) . '"' : $value;
@@ -530,7 +534,23 @@ abstract class sn_module_payment extends sn_module {
     return $this->db_get_by_id($this->db->db_insert_id());
   }
 
+  /**
+   * Get currency that module support for method
+   *
+   * @param $paymentMethod
+   *
+   * @return string
+   */
+  public function getMethodCurrency($paymentMethod) {
+    // Generally each module can support range of currencies and override this method
+    // This is just a plug to route requests by default
+    return PaymentMethods::getDefaultCurrency($paymentMethod);
+  }
 
+
+  /**
+   * @throws Exception
+   */
   protected function payment_adjust_mm_new() {
     if (!$this->payment_test) {
       // Not a test payment. Adding DM to account
@@ -543,7 +563,12 @@ abstract class sn_module_payment extends sn_module {
     }
   }
 
-  function payment_cancel(&$payment) {
+  /**
+   * @param $payment
+   *
+   * @throws exception
+   */
+  function payment_cancel(/** @noinspection PhpUnusedParameterInspection */ &$payment) {
     die('{НЕ РАБОТАЕТ! СООБЩИТЕ АДМИНИСТРАЦИИ!}');
     global $lang;
 
@@ -573,7 +598,7 @@ abstract class sn_module_payment extends sn_module {
 
   protected function db_get_by_id($payment_id_unsafe) {
     $payment_id_internal_safe = $this->db->db_escape($payment_id_unsafe);
-    $payment = $this->db->doQueryAndFetch(
+    $payment                  = $this->db->doQueryAndFetch(
       "SELECT * 
       FROM {{payment}} 
       WHERE 
@@ -585,6 +610,9 @@ abstract class sn_module_payment extends sn_module {
     return $this->db_assign_payment($payment);
   }
 
+  /**
+   * @throws Exception
+   */
   protected function db_complete_payment() {
     // TODO - поле payment_processed
     if ($this->payment_status == PAYMENT_STATUS_NONE) {
@@ -600,28 +628,28 @@ abstract class sn_module_payment extends sn_module {
   }
 
   protected function payment_reset() {
-    $this->payment_id = 0;
+    $this->payment_id     = 0;
     $this->payment_status = PAYMENT_STATUS_NONE;
 
-    $this->payment_provider_id = ACCOUNT_PROVIDER_NONE;
-    $this->payment_account_id = 0;
+    $this->payment_provider_id  = ACCOUNT_PROVIDER_NONE;
+    $this->payment_account_id   = 0;
     $this->payment_account_name = '';
-    $this->payment_user_id = 0;
-    $this->payment_user_name = '';
+    $this->payment_user_id      = 0;
+    $this->payment_user_name    = '';
 
-    $this->payment_amount = 0;
+    $this->payment_amount   = 0;
     $this->payment_currency = '';
 
-    $this->payment_dark_matter_paid = 0;
+    $this->payment_dark_matter_paid   = 0;
     $this->payment_dark_matter_gained = 0;
-    $this->payment_date = SN_TIME_SQL;
-    $this->payment_comment = '';
-    $this->payment_module_name = '';
+    $this->payment_date               = SN_TIME_SQL;
+    $this->payment_comment            = '';
+    $this->payment_module_name        = '';
 
-    $this->payment_external_id = '';
-    $this->payment_external_date = '';
-    $this->payment_external_lots = 0;
-    $this->payment_external_amount = 0;
+    $this->payment_external_id       = '';
+    $this->payment_external_date     = '';
+    $this->payment_external_lots     = 0;
+    $this->payment_external_amount   = 0;
     $this->payment_external_currency = '';
 
     $this->payment_test = 0;
@@ -636,29 +664,29 @@ abstract class sn_module_payment extends sn_module {
     $this->payment_reset();
 
     if (is_array($payment) && isset($payment['payment_id'])) {
-      $this->payment_id = $payment['payment_id'];
+      $this->payment_id     = $payment['payment_id'];
       $this->payment_status = $payment['payment_status'];
-      $this->payment_date = $payment['payment_date'];
+      $this->payment_date   = $payment['payment_date'];
 
-      $this->payment_provider_id = $payment['payment_provider_id'];
-      $this->payment_account_id = $payment['payment_account_id'];
+      $this->payment_provider_id  = $payment['payment_provider_id'];
+      $this->payment_account_id   = $payment['payment_account_id'];
       $this->payment_account_name = $payment['payment_account_name'];
-      $this->payment_user_id = $payment['payment_user_id'];
-      $this->payment_user_name = $payment['payment_user_name'];
+      $this->payment_user_id      = $payment['payment_user_id'];
+      $this->payment_user_name    = $payment['payment_user_name'];
 
-      $this->payment_amount = $payment['payment_amount'];
+      $this->payment_amount   = $payment['payment_amount'];
       $this->payment_currency = $payment['payment_currency'];
 
-      $this->payment_dark_matter_paid = $payment['payment_dark_matter_paid'];
+      $this->payment_dark_matter_paid   = $payment['payment_dark_matter_paid'];
       $this->payment_dark_matter_gained = $payment['payment_dark_matter_gained'];
 
-      $this->payment_comment = $payment['payment_comment'];
+      $this->payment_comment     = $payment['payment_comment'];
       $this->payment_module_name = $payment['payment_module_name'];
 
-      $this->payment_external_id = $payment['payment_external_id'];
-      $this->payment_external_date = $payment['payment_external_date'];
-      $this->payment_external_lots = $payment['payment_external_lots'];
-      $this->payment_external_amount = $payment['payment_external_amount'];
+      $this->payment_external_id       = $payment['payment_external_id'];
+      $this->payment_external_date     = $payment['payment_external_date'];
+      $this->payment_external_lots     = $payment['payment_external_lots'];
+      $this->payment_external_amount   = $payment['payment_external_amount'];
       $this->payment_external_currency = $payment['payment_external_currency'];
 
       $this->payment_test = $payment['payment_test'];
@@ -684,6 +712,40 @@ abstract class sn_module_payment extends sn_module {
         " сумма {$this->payment_amount} {$this->payment_currency} за {$this->payment_dark_matter_paid} ММ (начислено {$this->payment_dark_matter_gained} ММ)" .
         " через '{$this->manifest['name']}' сумма {$this->payment_external_amount} {$this->payment_external_currency}",
     );
+  }
+
+
+  /**
+   * Does this module support payment method?
+   *
+   * @param $payment_method
+   *
+   * @return bool
+   */
+  public function isMethodSupported($payment_method) {
+    return array_key_exists($payment_method, $this->manifest['payment_method']);
+  }
+
+  /**
+   * Get details about payment method
+   *
+   * @param int $payment_method
+   *
+   * @return mixed|null
+   */
+  public function getMethodDetails($payment_method) {
+    return $this->isMethodSupported($payment_method) ? $this->manifest['payment_method'][$payment_method] : null;
+  }
+
+  /**
+   * Get payment method external ID used by payment provider
+   *
+   * @param $payment_method
+   *
+   * @return mixed|null
+   */
+  public function getMethodExternalId($payment_method) {
+    return $this->getMethodDetails($payment_method);
   }
 
 }

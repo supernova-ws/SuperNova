@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 45a19
+* @version 45a21
 *
 */
 
@@ -149,11 +149,12 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
     PAYMENT_METHOD_MOBILE_SMS => 'SMS',
-    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
+//    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
     PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
     PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
     PAYMENT_METHOD_MOBILE_MTS => 'МТС',
     PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
+    PAYMENT_METHOD_MOBILE_BEELINE => 'Билайн',
 
     PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
     PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
@@ -171,7 +172,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
 
     PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
-    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
+//    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
 //    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
   ),
 

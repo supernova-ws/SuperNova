@@ -10,6 +10,7 @@ global $debug;
 global $template_result;
 global $config;
 
+/** @noinspection PhpIncludeInspection */
 require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (!SN::$gc->modules->countModulesInGroup('payment')) {
@@ -24,7 +25,7 @@ $template = gettemplate('metamatter', true);
 
 // $player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
 $player_currency_default = SN::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
-$player_currency = sys_get_param_str('player_currency', $player_currency_default);
+$player_currency         = sys_get_param_str('player_currency', $player_currency_default);
 empty(SN::$lang['pay_currency_list'][$player_currency]) ? ($player_currency = $player_currency_default ? $player_currency_default : SN::$config->payment_currency_default) : false;
 // $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
 $player_currency_default != $player_currency ? SN::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
@@ -47,10 +48,11 @@ if (isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus
 
 // Результат платежа
 if (
-    ($payment_id = sys_get_param_id('payment_id'))
-    ||
-    ($payment_id = sys_get_param_id('ik_pm_no'))
+  ($payment_id = sys_get_param_id('payment_id'))
+  ||
+  ($payment_id = sys_get_param_id('ik_pm_no'))
 ) {
+  /** @noinspection PhpDeprecationInspection */
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if ($payment && $payment['payment_user_id'] == $user['id']) {
     if ($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
@@ -81,15 +83,25 @@ if (!$request['metamatter']) {
   unset($_POST);
 }
 
-$payment_module_request = sys_get_param_str('payment_module');
-$payment_type_selected = sys_get_param_int('payment_type');
+$payment_module_request  = sys_get_param_str('payment_module');
+$payment_type_selected   = sys_get_param_int('payment_type');
 $payment_method_selected = sys_get_param_int('payment_method');
 
-$payment_module_request = PaymentMethods::processInputParams($payment_module_request, $payment_type_selected, $payment_method_selected);
+//pdump($payment_module_request, '$payment_module_request');
+//pdump($payment_type_selected, '$payment_type_selected');
+//pdump($payment_method_selected, '$payment_method_selected');
 
-if (!$payment_module_request && $payment_type_selected && $payment_method_selected) {
-  $template_result['.']['payment_module'] = PaymentMethods::renderModulesForMethod($payment_type_selected, $payment_method_selected, $player_currency, $request);
-} elseif(!$payment_module_request) {
+list($payment_module_request, $payment_method_selected) = PaymentMethods::getActiveMethods()->processInputParams($payment_module_request, $payment_method_selected);
+
+//pdump($payment_module_request, '$payment_module_request');
+//pdump($payment_type_selected, '$payment_type_selected');
+//pdump($payment_method_selected, '$payment_method_selected');
+
+//die();
+
+if (!$payment_module_request && $payment_method_selected) {
+  $template_result['.']['payment_module'] = PaymentMethods::renderModulesForMethod($payment_method_selected, $player_currency, $request);
+} elseif (!$payment_module_request) {
   $template_result['.']['payment'] = PaymentMethods::renderPaymentMethodList();
 }
 
@@ -109,18 +121,18 @@ foreach (SN::$lang['pay_currency_list'] as $key => $value) {
   ));
 }
 
-if ($request['metamatter'] && $payment_module_request && $payment_type_selected && $payment_method_selected) {
+if ($request['metamatter'] && $payment_module_request && $payment_method_selected) {
   try {
     $paymentModuleReal = SN::$gc->modules->getModule($payment_module_request);
-    if(!is_object($paymentModuleReal)) {
+    if (!is_object($paymentModuleReal)) {
       throw new Exception('{ Менеджер модулей вернул null вместо платёжного модуля для }' . $payment_module_request, ERR_ERROR);
     }
+
     /**
      * @var sn_module_payment $paymentModuleReal
      */
-
     // Any possible errors about generating paylink should be raised in module!
-    $pay_link = $paymentModuleReal->compile_request($request);
+    $pay_link = $paymentModuleReal->compile_request($request, $payment_method_selected);
 
     // Поддержка дополнительной информации
     if (is_array($pay_link['RENDER'])) {
@@ -181,19 +193,19 @@ foreach ($unit_available_amount_list as $unit_amount => $discount) {
   ));
 }
 
-$currency               = PaymentMethods::getCurrencyFromMethod($payment_module_request, $payment_type_selected, $payment_method_selected);
+$currency               = PaymentMethods::getCurrencyFromMethod($payment_module_request, $payment_method_selected);
 $bonus_percent          = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
 $income_metamatter_text = prettyNumberStyledDefault(sn_module_payment::bonus_calculate($request['metamatter']));
 
 $approxCost = '';
-if(!empty($payment_module_request) && !empty($payment_method_selected)) {
+if (!empty($payment_module_request) && !empty($payment_method_selected)) {
   $mod = SN::$gc->modules->getModule($payment_module_request);
 
   /**
    * @var sn_module_payment $mod
    */
-  $tPrice = method_exists($mod, 'getPrice') ? $mod->getPrice($payment_method_selected, $player_currency, $request['metamatter']) : '';
-  if(!empty($tPrice) && is_array($tPrice)) {
+  $tPrice = $mod->getPrice($payment_method_selected, $player_currency, $request['metamatter']);
+  if (!empty($tPrice) && is_array($tPrice)) {
     $approxCost = sprintf(
       SN::$lang['pay_mm_buy_approximate_cost'],
       HelperString::numberFormat($tPrice[$mod::FIELD_SUM], 2),
