@@ -22,7 +22,7 @@ class AjaxController {
     define('IN_AJAX', true);
 
     if(!is_object($template)) {
-      $template = gettemplate('_ajax', true);
+      $template = SnTemplate::gettemplate('_ajax', true);
     }
 
     $template_result = array_merge($template_result, $merge = array(

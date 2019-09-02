@@ -12,7 +12,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 global $config;
 
 nws_mark_read($user);
-$template = gettemplate('announce', true);
+$template = SnTemplate::gettemplate('announce', true);
 
 $announce_id = sys_get_param_id('id');
 $text = sys_get_param_str('text');
@@ -129,4 +129,4 @@ $template->assign_vars(array(
 
 ));
 
-display($template, $lang['news_title']);
+SnTemplate::display($template, $lang['news_title']);

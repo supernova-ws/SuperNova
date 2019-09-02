@@ -15,9 +15,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate('admin/adm_flying_fleets', true);
+$template = SnTemplate::gettemplate('admin/adm_flying_fleets', true);
 
 //$FlyingFleets = db_fleet_list_all();
 //while($CurrentFleet = db_fetch($FlyingFleets))
@@ -39,4 +39,4 @@ foreach($all_flying_fleets as $fleet_id => $CurrentFleet) {
   }
 }
 
-display($template, $lang['flt_title']);
+SnTemplate::display($template, $lang['flt_title']);

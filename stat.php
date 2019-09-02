@@ -41,7 +41,7 @@ $type = $who != 1 && !in_array($type, $sn_group_stat_common) ? 1 : $type;
 $range = sys_get_param_int('range', 1);
 $source = sys_get_param_str('source');
 
-$template = gettemplate('stat_statistics', true);
+$template = SnTemplate::gettemplate('stat_statistics', true);
 
 $subject_list = array(
   1 => array('header' => $lang['stat_player']),
@@ -166,4 +166,4 @@ $template->assign_vars(array(
   'STATS_HIDE_PM_LINK' => SN::$config->stats_hide_pm_link || $source,
 ));
 
-display($template, $lang['stat_header']);
+SnTemplate::display($template, $lang['stat_header']);

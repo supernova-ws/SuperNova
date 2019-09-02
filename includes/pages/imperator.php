@@ -48,11 +48,11 @@ function sn_imperator_view($template = null) {
 //  }
 
   if(!$user_data) {
-    messageBox($lang['imp_imperator_none'], $lang['sys_error'], 'index.php', 10);
+    SnTemplate::messageBox($lang['imp_imperator_none'], $lang['sys_error'], 'index.php', 10);
     die();
   }
 
-  $template = gettemplate('imperator', $template);
+  $template = SnTemplate::gettemplate('imperator', $template);
   $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
 
   $stat_array = array();

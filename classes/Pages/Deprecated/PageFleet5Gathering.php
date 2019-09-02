@@ -7,6 +7,7 @@ namespace Pages\Deprecated;
 
 use Planet\DBStaticPlanet;
 use \HelperString;
+use SnTemplate;
 
 class PageFleet5Gathering {
 
@@ -284,7 +285,7 @@ class PageFleet5Gathering {
 
     tpl_set_resource_info($template, $planetrow, []);
 
-    display($template, $this->lang['fl_title']);
+    SnTemplate::display($template, $this->lang['fl_title']);
   }
 
 }

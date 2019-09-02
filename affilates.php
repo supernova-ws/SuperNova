@@ -12,7 +12,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('affilates');
 
-$template = gettemplate('affilates', true);
+$template = SnTemplate::gettemplate('affilates', true);
 
 $rpg_bonus_minimum = SN::$config->rpg_bonus_minimum;
 $rpg_bonus_divisor = SN::$config->rpg_bonus_divisor ? SN::$config->rpg_bonus_divisor : 10;
@@ -47,4 +47,4 @@ $template->assign_vars(array(
   'userbarURL' => $userbarURL,
 ));
 
-display($template, $lang['aff_title']);
+SnTemplate::display($template, $lang['aff_title']);

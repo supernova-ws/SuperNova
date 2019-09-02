@@ -243,7 +243,7 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
     &&
     empty(SN::$options[PAGE_OPTION_ADMIN])
   ) {
-    messageBox($template_result[F_GAME_DISABLE_REASON], SN::$config->game_name, '', 5, false);
+    SnTemplate::messageBox($template_result[F_GAME_DISABLE_REASON], SN::$config->game_name, '', 5, false);
     ob_end_flush();
     die();
   }
@@ -259,7 +259,7 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
-  messageBox("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
+  SnTemplate::messageBox("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
 

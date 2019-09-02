@@ -2735,15 +2735,55 @@ body:not(.no_border_image) [table_title]:before {
 }
 
 /* Payment page ===================================================================================================== */
-.payment_mm_amount, .payment_mm_method, .payment_mm_module {
-  display: inline-block;
-  width: 13.63636363636em; /*150px;*/
-  margin: 0.3em;
+.payment_mm_describe
+{
+  font-size: 1.8em;
   text-align: center;
-  vertical-align: middle;
 }
 
-/* Event Halloween */
+.payment_type_block
+{
+  border: 0.2em solid rgba(255, 255, 255, 0.5);
+  margin: 0.5em 0;
+  text-align: center;
+  padding-bottom: 0.5em;
+}
+
+.payment_type_name
+{
+  font-size: 150%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5em;
+}
+
+.payment_method_block
+{
+  width: 100%;
+  text-align: center;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
+  align-items: stretch;
+}
+
+.payment_block_item.ptl_payment_method_hide {
+  display: none;
+}
+
+.payment_block_item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  align-items: center;
+  width: 14em;
+  margin: 0.3em;
+}
+
+
+/* Event Halloween ===================================================================================================== */
 .halloween {
   position: absolute;
 

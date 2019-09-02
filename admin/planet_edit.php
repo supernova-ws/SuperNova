@@ -12,13 +12,13 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 //messageBoxAdmin('Временно не работает');
 
 require("includes/admin_planet_edit.inc" . DOT_PHP_EX);
 
-$template = gettemplate('admin/admin_planet_edit', true);
+$template = SnTemplate::gettemplate('admin/admin_planet_edit', true);
 
 $mode      = admin_planet_edit_mode($template, $admin_planet_edit_mode_list);
 $planet_id = sys_get_param_id('planet_id');
@@ -47,7 +47,7 @@ $template->assign_vars(array(
   'PAGE_HINT'   => $lang['adm_planet_edit_hint'],
 ));
 
-display($template, $lang['adm_am_ttle']);
+SnTemplate::display($template, $lang['adm_am_ttle']);
 
 
 /**

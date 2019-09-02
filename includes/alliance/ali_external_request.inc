@@ -7,7 +7,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 
 if ($user['ally_id'])
 {
-  messageBox($lang['ali_req_inAlly'], $lang['ali_req_title']);
+  SnTemplate::messageBox($lang['ali_req_inAlly'], $lang['ali_req_title']);
 }
 
 if ($user_request['id_ally'])
@@ -29,8 +29,8 @@ if ($user_request['id_ally'])
     $lang['request_text'] = sprintf($lang['ali_req_waiting'], $ally['ally_tag']);
   }
 
-  $template = gettemplate('ali_request_waiting', true);
-  display($template, $lang['ali_req_title']);
+  $template = SnTemplate::gettemplate('ali_request_waiting', true);
+  SnTemplate::display($template, $lang['ali_req_title']);
 }
 
 $id_ally = sys_get_param_id('a');
@@ -45,17 +45,17 @@ $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
 
 if(!$ally)
 {
-  messageBox($lang['ali_sys_notFound'], $lang['ali_req_title']);
+  SnTemplate::messageBox($lang['ali_sys_notFound'], $lang['ali_req_title']);
 }
 
 if($ally['ally_request_notallow'])
 {
-  messageBox($lang['ali_req_not_allowed'], $lang['ali_req_title']);
+  SnTemplate::messageBox($lang['ali_req_not_allowed'], $lang['ali_req_title']);
 }
 
 $text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];
 
-$template = gettemplate('ali_request', true);
+$template = SnTemplate::gettemplate('ali_request', true);
 
 $template->assign_vars(array(
   'allyid' => $id_ally,
@@ -64,4 +64,4 @@ $template->assign_vars(array(
   'ali_req_title' => "{$lang['ali_req_title']} [{$ally['ally_tag']}]",
 ));
 
-display($template, $lang['ali_req_title']);
+SnTemplate::display($template, $lang['ali_req_title']);

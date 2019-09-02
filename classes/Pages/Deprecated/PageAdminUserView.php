@@ -8,6 +8,7 @@ namespace Pages\Deprecated;
 use Account;
 use Planet\DBStaticPlanet;
 use SN;
+use SnTemplate;
 use template;
 
 class PageAdminUserView extends PageDeprecated {
@@ -194,7 +195,7 @@ class PageAdminUserView extends PageDeprecated {
 
     define('IN_ADMIN', true);
 
-    messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+    SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
     $user_id = sys_get_param_id('uid');
     if (!($user_row = db_user_by_id($user_id))) {
@@ -202,7 +203,7 @@ class PageAdminUserView extends PageDeprecated {
     }
 
     if (empty($user['authlevel']) || $user['authlevel'] < $user_row['authlevel']) {
-      messageBoxAdmin(SN::$lang['admin_title_access_denied']);
+      SnTemplate::messageBoxAdmin(SN::$lang['admin_title_access_denied']);
     }
 
 
@@ -221,15 +222,15 @@ class PageAdminUserView extends PageDeprecated {
 
     define('IN_ADMIN', true);
 
-    messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+    SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
     $user_id = sys_get_param_id('uid');
     if (!($user_row = db_user_by_id($user_id))) {
-      messageBoxAdmin(sprintf(SN::$lang['adm_dm_user_none'], $user_id));
+      SnTemplate::messageBoxAdmin(sprintf(SN::$lang['adm_dm_user_none'], $user_id));
     }
 
     if (empty($user['authlevel']) || $user['authlevel'] <= $user_row['authlevel']) {
-      messageBoxAdmin(SN::$lang['admin_title_access_denied']);
+      SnTemplate::messageBoxAdmin(SN::$lang['admin_title_access_denied']);
     }
 
     $account = new \Account();
@@ -260,7 +261,7 @@ class PageAdminUserView extends PageDeprecated {
       }
     }
 
-    $template = gettemplate('admin/admin_user', true);
+    $template = SnTemplate::gettemplate('admin/admin_user', true);
 
     $result = [
       'PAGE_HEADER' => "[{$user_row['id']}] {$user_row['username']}",

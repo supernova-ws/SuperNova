@@ -65,5 +65,5 @@ sys_user_options_unpack($user);
 global $sn_page_name, $sn_mvc;
 if(!empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_EARLY_HEADER])) {
   $title = !empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE]) ? $sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE] : '';
-  renderHeader($page, $title, $template_result, false, $user, SN::$config, $lang, $planetrow);
+  SnTemplate::renderHeader($page, $title, $template_result, false, $user, SN::$config, $lang, $planetrow);
 }

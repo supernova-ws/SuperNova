@@ -7,7 +7,7 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
 
 $page_title .= " - {$lang['eco_mrk_info']}";
 
-$template = gettemplate('market_info', true);
+$template = SnTemplate::gettemplate('market_info', true);
 
 $template->assign_vars(array(
   'RES_DARK_MATTER' => mrc_get_level($user, null, RES_DARK_MATTER),

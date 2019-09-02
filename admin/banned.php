@@ -9,7 +9,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_MODERATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_MODERATOR);
 
 global $lang, $user;
 
@@ -45,19 +45,19 @@ if ($mode == 'banit' && $action) {
     $DoneMessage = sprintf($lang['adm_bn_errr'], $name_output);
   }
 
-  messageBoxAdmin($DoneMessage, $lang['adm_ban_title']);
+  SnTemplate::messageBoxAdmin($DoneMessage, $lang['adm_ban_title']);
 } elseif ($mode == 'unbanit' && $action) {
   sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str('why')) ? $reason : $lang['sys_unbanned']);
 
   $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name_output . " " . $lang['adm_unbn_isbn'];
-  messageBoxAdmin($DoneMessage, $lang['adm_unbn_ttle']);
+  SnTemplate::messageBoxAdmin($DoneMessage, $lang['adm_unbn_ttle']);
 };
 
-$parsetemplate = gettemplate("admin/admin_ban", true);
+$parsetemplate = SnTemplate::gettemplate("admin/admin_ban", true);
 
 $parsetemplate->assign_vars(array(
   'name' => $name_output,
   'mode' => $mode,
 ));
 
-display($parsetemplate, $lang['adm_ban_title']);
+SnTemplate::display($parsetemplate, $lang['adm_ban_title']);

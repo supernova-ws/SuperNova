@@ -6,6 +6,7 @@ use Common\Hooker\Pimp;
 use Core\Autoloader;
 use Exception;
 use SN;
+use SnTemplate;
 use template;
 
 class sn_module {
@@ -18,7 +19,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#45a21#';
+  public $versionCommitted = '#45a23#';
   /**
    * Is module currently active?
    *
@@ -38,7 +39,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #45a21# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #45a23# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -436,7 +437,7 @@ class sn_module {
    * @return template
    */
   public function addModuleTemplate($templateName, $template) {
-    return gettemplate($templateName, $template, $this->getTemplateRootRelative());
+    return SnTemplate::gettemplate($templateName, $template, $this->getTemplateRootRelative());
   }
 
   /**

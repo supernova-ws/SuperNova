@@ -1,7 +1,7 @@
 <?php
   try
   {
-    $template = gettemplate('universe_rename', true);
+    $template = SnTemplate::gettemplate('universe_rename', true);
 
     $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
     $uni_system = sys_get_param_int('system');
@@ -70,4 +70,4 @@
   ));
 
 $pageTitle = $lang['sys_universe'] . ' - ' . $lang['uni_naming'];
-display($template, $pageTitle);
+SnTemplate::display($template, $pageTitle);

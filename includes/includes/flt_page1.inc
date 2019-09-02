@@ -11,7 +11,7 @@ if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-$template = gettemplate('fleet1', true);
+$template = SnTemplate::gettemplate('fleet1', true);
 
 $ships = sys_get_param('ships', array());
 if(!is_array($ships)) {
@@ -65,7 +65,7 @@ foreach($ships as $ship_id => $ship_count) {
 }
 
 if(empty($fleet['fleetarray'])) {
-  messageBox($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
+  SnTemplate::messageBox($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
 }
 
 // Building list of shortcuts
@@ -138,4 +138,4 @@ $template->assign_vars(array(
 ));
 
 $template->assign_recursive($template_result);
-display($template, $lang['fl_title']);
+SnTemplate::display($template, $lang['fl_title']);

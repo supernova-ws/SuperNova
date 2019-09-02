@@ -21,7 +21,7 @@ if (!SN::$gc->modules->countModulesInGroup('payment')) {
 lng_include('payment');
 lng_include('infos');
 
-$template = gettemplate('metamatter', true);
+$template = SnTemplate::gettemplate('metamatter', true);
 
 // $player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
 $player_currency_default = SN::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
@@ -84,7 +84,7 @@ if (!$request['metamatter']) {
 }
 
 $payment_module_request  = sys_get_param_str('payment_module');
-$payment_type_selected   = sys_get_param_int('payment_type');
+//$payment_type_selected   = sys_get_param_int('payment_type');
 $payment_method_selected = sys_get_param_int('payment_method');
 
 //pdump($payment_module_request, '$payment_module_request');
@@ -220,7 +220,6 @@ $template->assign_vars([
 
   'URL_PURCHASE' => SN::$config->url_purchase_metamatter,
 
-  'PAYMENT_TYPE'        => $payment_type_selected,
   'PAYMENT_METHOD'      => $payment_method_selected,
   'PAYMENT_METHOD_NAME' => SN::$lang['pay_methods'][$payment_method_selected],
 
@@ -261,4 +260,4 @@ $template->assign_vars([
 
 $template->assign_recursive($template_result);
 
-display($template, SN::$lang['sys_metamatter']);
+SnTemplate::display($template, SN::$lang['sys_metamatter']);

@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #43a14.1#
+ * @version #45a23#
  **/
 
 define('INSIDE', true);
@@ -11,7 +11,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 global $user, $lang;
 
@@ -24,7 +24,7 @@ if ($delete) {
   doquery("DELETE FROM `{{chat}}`;");
 }
 
-$template = gettemplate('admin/admin_chat', true);
+$template = SnTemplate::gettemplate('admin/admin_chat', true);
 
 $query = doquery("SELECT * FROM `{{chat}}` ORDER BY `messageid` DESC LIMIT 25;");
 while ($e = db_fetch($query)) {
@@ -41,4 +41,4 @@ $template->assign_vars(array(
   'msg_num'     => SN::$gc->db->db_num_rows($query),
 ));
 
-display($template);
+SnTemplate::display($template);

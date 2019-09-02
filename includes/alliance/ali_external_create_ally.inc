@@ -16,13 +16,13 @@ if($ally_tag)
 {
   if(!$ally_name_raw || !$ally_tag_raw)
   {
-    messageBox($lang['have_not_name'], $lang['make_alliance']);
+    SnTemplate::messageBox($lang['have_not_name'], $lang['make_alliance']);
   }
 
   $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
   if($query)
   {
-    messageBox(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
+    SnTemplate::messageBox(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
   $ally = doquery("INSERT INTO {{alliance}} SET
@@ -42,8 +42,8 @@ if($ally_tag)
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
   doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 
-  messageBox(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
+  SnTemplate::messageBox(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
 }
 
-$template = gettemplate('ali_external_make', true);
-display($template, $lang['make_alliance']);
+$template = SnTemplate::gettemplate('ali_external_make', true);
+SnTemplate::display($template, $lang['make_alliance']);

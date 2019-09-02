@@ -16,7 +16,7 @@ require_once('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 if(SN_TIME_NOW >= SN::$config->pass()->var_stat_update_admin_forced && SN_TIME_NOW >= SN::$config->pass()->var_stat_update_end)
 {
@@ -36,11 +36,11 @@ if(SN_TIME_NOW >= SN::$config->pass()->var_stat_update_admin_forced && SN_TIME_N
   });
   </script>';
 
-  messageBoxAdmin("{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'], '', 0);
+  SnTemplate::messageBoxAdmin("{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'], '', 0);
 }
 else
 {
-  messageBoxAdmin($lang['adm_stat_already_started'], $lang['adm_stat_title'], 'admin/overview.php');
+  SnTemplate::messageBoxAdmin($lang['adm_stat_already_started'], $lang['adm_stat_title'], 'admin/overview.php');
 }
 
 // require_once('../scheduler.php');

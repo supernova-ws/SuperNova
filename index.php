@@ -17,7 +17,7 @@ if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_ta
       $template->assign_recursive($template_result);
     }
 
-    display($template);
+    SnTemplate::display($template);
   }
 }
 

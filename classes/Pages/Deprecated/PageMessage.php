@@ -16,6 +16,7 @@ use DBAL\DbSqlPaging;
 use Fleet\MissionEspionageReport;
 use General\Helpers\PagingRenderer;
 use Pm\DecodeEspionage;
+use SnTemplate;
 use \template;
 
 /**
@@ -180,7 +181,7 @@ class PageMessage extends PageDeprecated {
       break;
     }
 
-    display($template, $this->lang['msg_page_header']);
+    SnTemplate::display($template, $this->lang['msg_page_header']);
   }
 
   protected function modelCompose() {
@@ -213,7 +214,7 @@ class PageMessage extends PageDeprecated {
    * @return template
    */
   protected function viewCompose() {
-    $template = gettemplate('msg_message_compose', true);
+    $template = SnTemplate::gettemplate('msg_message_compose', true);
     $template->assign_vars([
       'RECIPIENT_ID'   => $this->recipient_id_unsafe,
       'RECIPIENT_NAME' => htmlspecialchars($this->recipient_name_unsafe),
@@ -342,7 +343,7 @@ class PageMessage extends PageDeprecated {
     }
 
     $wasIgnored = 0;
-    $template = gettemplate('msg_message_list', true);
+    $template = SnTemplate::gettemplate('msg_message_list', true);
     foreach ($message_query as $message_row) {
       if(
         $message_row['message_type'] == MSG_TYPE_PLAYER
@@ -430,7 +431,7 @@ class PageMessage extends PageDeprecated {
     );
     $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
 
-    $template = gettemplate('msg_message_class', true);
+    $template = SnTemplate::gettemplate('msg_message_class', true);
     foreach ($this->messageClassList as $message_class_id => $message_class) {
       $template->assign_block_vars('message_class', array(
         'ID'     => $message_class_id,

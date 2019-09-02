@@ -10,7 +10,7 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
   );
 
   if($error_message) {
-    messageBox($lang[$error_message], $lang['sys_error'], 'overview.php', 10);
+    SnTemplate::messageBox($lang[$error_message], $lang['sys_error'], 'overview.php', 10);
     die();
   }
 
@@ -176,7 +176,7 @@ pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize p
 }
 
 
-$template = gettemplate('blitz_register', true);
+$template = SnTemplate::gettemplate('blitz_register', true);
 
 $player_registered = false;
 $query = doquery(
@@ -227,4 +227,4 @@ $template->assign_vars(array(
   'BLITZ_PRIZE_PLACES' => $blitz_prize_places,
 ));
 
-display($template, $lang['sys_blitz_global_button']);
+SnTemplate::display($template, $lang['sys_blitz_global_button']);

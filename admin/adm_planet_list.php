@@ -8,7 +8,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $planet_active = sys_get_param_int('planet_active');
 if(!$planet_active) {
@@ -19,7 +19,7 @@ if(!$planet_active) {
 }
 $table_parent_columns = $planet_type == 3 || $planet_active;
 
-$template = gettemplate('admin/adm_planet_list', true);
+$template = SnTemplate::gettemplate('admin/adm_planet_list', true);
 
 $query = db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type);
 while ($planet_row = db_fetch($query)) {
@@ -50,4 +50,4 @@ $template->assign_vars(array(
   'PARENT_COLUMN' => $table_parent_columns,
 ));
 
-display($template, $page_title);
+SnTemplate::display($template, $page_title);

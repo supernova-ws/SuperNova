@@ -14,28 +14,24 @@ class PaymentsMethodsActive {
   const P_MODULES = 'modules';
 
   /**
-   * List of installed modules
+   * List of installed payment modules
    *
    * @var array $modulesInstalled
    */
   protected $modulesInstalled = [];
 
   /**
+   * Generated list of available payment methods and corresponding modules that supports this method
+   *
    * @var array $methodsAvailableV2 [
-   *                                  'payment_type' => (int),
-   *                                  'modules' => [(str)$moduleName => (sn_payment_module)$module, ...]
+   *                                  (int)$paymentMethodId => [
+   *                                    self::P_MODULES => [(str)$moduleName => (sn_payment_module)$module, ...]
+   *                                  ], ...
    *                                ]
    */
   protected $methodsAvailableV2 = [];
 
   public function __construct() {
-//    // Pre-filling self::$methodsAvailableV2 array with method placeholders to retain order
-//    foreach (PaymentMethods::$payment_methods as $paymentTypeId => $methodList) {
-//      foreach ($methodList as $methodId => $methodData) {
-//        self::$methodsAvailableV2[$methodId][self::P_PAYMENT_TYPE] = $paymentTypeId;
-//      }
-//    }
-
     // А теперь из каждого модуля вытаскиваем методы, которые он поддерживает
     $paymentModuleList = SN::$gc->modules->getModulesInGroup('payment', true);
     foreach ($paymentModuleList as $module_name => $module) {

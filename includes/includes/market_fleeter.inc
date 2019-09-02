@@ -9,7 +9,7 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) {
 
 $page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
 
-$template = gettemplate('market_fleet', true);
+$template = SnTemplate::gettemplate('market_fleet', true);
 $template->assign_vars(array(
   'PAGE_HEADER' => $page_title,
   'rpg_cost' => $rpg_cost,

@@ -6,6 +6,7 @@
 namespace Pages\Deprecated;
 
 use Fleet\DbFleetStatic;
+use SnTemplate;
 use \template;
 use \classLocale;
 use Planet\DBStaticPlanet;
@@ -66,7 +67,7 @@ class PageImperium {
     list($planets, $ques) = $this->getUpdatedUserPlanetsAndQues($user);
     $fleets = $this->fleetGetFlyingToPlanets($planets);
 
-    $template = gettemplate('imperium', $template);
+    $template = SnTemplate::gettemplate('imperium', $template);
 
     $template->assign_recursive(templateFillPercent());
 
@@ -192,8 +193,8 @@ class PageImperium {
           'LEVEL_PLUS_YELLOW'      => $levelYellow,
           'LEVEL_PLUS_GREEN'       => $levelGreen,
           'LEVEL_TEXT'             => $unitsPresentOrChanged ? HelperString::numberFloorAndFormat($unit_level_plain) : '-',
-          'LEVEL_PLUS_YELLOW_TEXT' => tplPrettyPlus($levelYellow),
-          'LEVEL_PLUS_GREEN_TEXT'  => tplPrettyPlus($levelGreen),
+          'LEVEL_PLUS_YELLOW_TEXT' => SnTemplate::tplPrettyPlus($levelYellow),
+          'LEVEL_PLUS_GREEN_TEXT'  => SnTemplate::tplPrettyPlus($levelGreen),
           'PERCENT'                => $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1,
           'FACTORY'                => $unit_is_factory,
         ];
@@ -240,8 +241,8 @@ class PageImperium {
       'LEVEL_TEXT'             => HelperString::numberFloorAndFormat($unit_count),
       'LEVEL_PLUS_YELLOW'      => $imperiumYellows[$unit_id],
       'LEVEL_PLUS_GREEN'       => $imperiumGreens[$unit_id],
-      'LEVEL_PLUS_YELLOW_TEXT' => $imperiumYellows[$unit_id] == 0 ? '' : tplPrettyPlus($imperiumYellows[$unit_id]),
-      'LEVEL_PLUS_GREEN_TEXT'  => $imperiumGreens[$unit_id] == 0 ? '' : tplPrettyPlus($imperiumGreens[$unit_id]),
+      'LEVEL_PLUS_YELLOW_TEXT' => $imperiumYellows[$unit_id] == 0 ? '' : SnTemplate::tplPrettyPlus($imperiumYellows[$unit_id]),
+      'LEVEL_PLUS_GREEN_TEXT'  => $imperiumGreens[$unit_id] == 0 ? '' : SnTemplate::tplPrettyPlus($imperiumGreens[$unit_id]),
       'PERCENT'                => $unit_is_factory ? '' : -1,
       'FACTORY'                => $unit_is_factory,
     ]);

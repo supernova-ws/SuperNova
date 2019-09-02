@@ -1,30 +1,29 @@
 <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/metamatter.js?{C_var_db_update}"></script>
 
-
-<!-- IF ! $TABLE_WIDTH -->
-  <!-- DEFINE $TABLE_WIDTH = '90%' -->
-  <h1>{PAGE_HEADER}</h1>
-<!-- ENDIF -->
-
-<!-- _INCLUDE _result_message -->
-
 <script type="text/javascript">
-  var LA_sys_show = "{LA_sys_show}";
-  var LA_sys_hide = "{LA_sys_hide}";
+  language.addLocale({sys_show: "{LA_sys_show}", sys_hide: "{LA_sys_hide}"});
+
   var exchange_mm_default = parseFloat("{PLAYER_CURRENCY_PRICE_PER_MM}");
 
   var mm_discounts = Array();
   <!-- BEGIN discount -->
-  mm_discounts.push({sum: {discount.SUM}, discount: {discount.DISCOUNT_ONE}});
+  mm_discounts.push({sum: Math.intVal('{discount.SUM}'), discount: Math.floatVal('{discount.DISCOUNT_ONE}')});
   <!-- END discount -->
 </script>
 
+<!-- IF ! $TABLE_WIDTH -->
+<!-- DEFINE $TABLE_WIDTH = '90%' -->
+<h1>{PAGE_HEADER}</h1>
+<!-- ENDIF -->
+
 <table id="payment_metamatter_info" class="border_image_small">
-  <tr class="c_j">
+  <tr class="c_c">
     <th>
       <div class="contFJ">
-      <span style="font-size: 1.8em">{L_sys_dark_matter_what_why_how}</span>
-      <button onclick="sn_show_hide(this, 'dark_matter_what_it_is');sn_show_hide(this, 'metamatter_what_description');"><span class="link_action">{L_sys_show}</span></button>
+        <div class="payment_mm_describe">{L_sys_dark_matter_what_why_how}</div>
+        <button class="js_show_dm_info">
+          <span class="link_action">{L_sys_show}</span>
+        </button>
       </div>
     </th>
   </tr>
@@ -61,31 +60,28 @@
 <table id="payment_metamatter">
   <!-- IF FALSE && (.exchange || .discount) -->
   <tr class="c_j">
-    <th>
-      <table class="markup" width="100%">
-        <tr>
-          <th class="c_l">{L_pay_mm_bonus_header}</th>
-          <th class="c_r link_action" onclick="sn_show_hide(this, 'exchange_and_bonuses');">{L_sys_show}</th>
-        </tr>
-      </table>
+    <th style="display: flex;align-items: center; justify-content: space-between;">
+      <span>{L_pay_mm_bonus_header}</span>
+      <div class="c_r" onclick="sn_show_hide2(this, '#exchange_and_bonuses');">
+        <span class="link_action">[&nbsp;{L_sys_show}&nbsp;]</span>
+      </div>
     </th>
   </tr>
+
   <tr class="c_j" id="exchange_and_bonuses" style="display: none;">
     <td>
       <!-- IF .exchange -->
       <table class="markup" width="100%">
         <tr>
           <td>{L_pay_currency_exchange_title}</td>
-          <!--<td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'currency_exchange');">{L_sys_show}</span></td>-->
         </tr>
         <tr id="currency_exchange">
-        <!--<tr id="currency_exchange" style="display: none;">-->
           <td colspan="2" class="c_j">
             <table width="100%">
               <tr class="c_c">
                 <th rowspan="2">{L_pay_currency_name}</th>
-                <th rowspan="2">{L_pay_currency_exchange_mm}</th>
                 <th colspan="2">{L_pay_currency_exchange_rate}</th>
+                <th rowspan="2">{L_pay_currency_exchange_mm}</th>
               </tr>
               <tr class="c_c">
                 <th>{L_pay_currency_exchange_direct}</th>
@@ -94,9 +90,9 @@
               <!-- BEGIN exchange -->
               <tr>
                 <td>{exchange.TEXT} ({exchange.SYMBOL})</td>
-                <td class="c_r">{exchange.MM_PER_CURRENCY}</td>
                 <td class="c_r">{exchange.COURSE_DIRECT}</td>
                 <td class="c_r">{exchange.COURSE_REVERSE}</td>
+                <td class="c_r">{exchange.MM_PER_CURRENCY} / 1 {exchange.SYMBOL}</td>
               </tr>
               <!-- END exchange -->
             </table>
@@ -111,7 +107,6 @@
       <table class="markup" width="100%">
         <tr>
           <td>{L_pay_mm_bonus}</td>
-          <!--<td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'bonuses');">{L_sys_show}</span></td>-->
         </tr>
       </table>
       <!--<ul id="bonuses" style="display: none;">-->
@@ -134,27 +129,39 @@
   <tr class="c_j">
     <td>
       <!-- IF PAYMENT_AVAILABLE -->
-        <!-- IF ! PAY_LINK_URL -->
-        <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST" id="payment_form">
-        <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
-        <form action="{PAY_LINK_URL}" method="{PAY_LINK_METHOD}" id="payment_form">
-        <!-- ELSEIF PAY_LINK_METHOD == 'LINK' -->
-        <form action="" method="" id="payment_form">
-        <!-- ENDIF -->
+
+      <!-- IF ! PAY_LINK_URL -->
+        <!-- DEFINE $PAY_ACTION = '{D_SN_ROOT_VIRTUAL}metamatter.php' -->
+        <!-- DEFINE $PAY_METHOD = 'POST' -->
+      <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+        <!-- DEFINE $PAY_ACTION = '{PAY_LINK_URL}' -->
+        <!-- DEFINE $PAY_METHOD = '{PAY_LINK_METHOD}' -->
+      <!-- ELSEIF PAY_LINK_METHOD == 'LINK' -->
+        <!-- DEFINE $PAY_ACTION = '' -->
+        <!-- DEFINE $PAY_METHOD = '' -->
+      <!-- ENDIF -->
+      <form action="{$PAY_ACTION}" method="{$PAY_METHOD}" id="payment_form">
+
+
 
         <!-- IF ! UNIT_AMOUNT -->
           {L_pay_mm_buy_text_cost} {PAYMENT_CURRENCY_EXCHANGE_DEFAULT} <span class="metamatter">{L_sys_metamatter_sh}</span>
-          {L_pay_mm_buy_text_unit}
+          <label for="player_currency">{L_pay_mm_buy_text_unit}</label>
           <select name="player_currency" id="player_currency" class="notice">
             <!-- BEGIN exchange -->
-            <option value="{exchange.SYMBOL}"<!-- IF PLAYER_CURRENCY == exchange.SYMBOL --> selected<!-- ENDIF -->>{exchange.LOT_PRICE} {exchange.SYMBOL} ({exchange.TEXT})</option>
+            <!-- IF PLAYER_CURRENCY == exchange.SYMBOL -->
+            <!-- DEFINE $SELECTED = 'selected' -->
+            <!-- ELSE -->
+            <!-- DEFINE $SELECTED = '' -->
+            <!-- ENDIF -->
+            <option value="{exchange.SYMBOL}" {$SELECTED}>{exchange.LOT_PRICE} {exchange.SYMBOL} ({exchange.TEXT})</option>
             <!-- END exchange -->
           </select>
 
           {L_pay_mm_buy_metamatter_amount}
-          <div style="width: 100%; text-align: center;">
+          <div class="payment_method_block">
             <!-- BEGIN mm_amount -->
-            <div class="payment_mm_amount" value="{mm_amount.VALUE}">
+            <div class="payment_block_item js_payment_mm_amount" value="{mm_amount.VALUE}">
               <!-- IF mm_amount.DISCOUNT -->
                 <del class="negative">{mm_amount.TEXT}</del><br />
                 <span class="positive">{mm_amount.TEXT_DISCOUNTED} {L_pay_mm_bonus_text} {mm_amount.DISCOUNT_PERCENT}%</span>
@@ -168,10 +175,9 @@
             </div>
             <!-- END mm_amount -->
           </div>
-          <div style="clear:both;"></div>
           <br />
 
-          {L_pay_mm_buy_metamatter_amount_enter} <input type="text" name="metamatter" id="metamatter" value="0" style="width: 100px;" maxlength="8" /><br />
+          <label for="metamatter">{L_pay_mm_buy_metamatter_amount_enter}</label> <input type="text" name="metamatter" id="metamatter" value="0" style="width: 100px;" maxlength="8" /><br />
           {L_pay_mm_buy_price_for} <del class="negative"><span class="hide" id="metamatter_undiscounted">0</span></del>
           <span class="positive" ><span id="metamatter_total">0</span><span class="hide" id="metamatter_bonus_percent"> ({L_pay_mm_bonus_text} <span>0</span>%)</span></span> {L_pay_mm_buy_unit}
           <span class="neutral"><span id="metamatter_price">0,00</span> {PLAYER_CURRENCY}</span>
@@ -196,32 +202,45 @@
           <!-- IF ! PAYMENT_METHOD -->
             {L_pay_mm_buy_payment_method_select}
 
+            <!-- DEFINE $MAX_PAYMENTS_IN_ROW = 5 -->
             <!-- BEGIN payment -->
-            <div style="border: 0.2em solid rgba(255,255,255,0.5); margin: 0.5em 0; text-align: center; padding-bottom: 0.5em">
-              <div style="font-size: 150%;background-color: rgba(0,0,0,0.5); padding: 0.5em;">{payment.NAME}</div>
+            <div class="payment_type_block">
+              <div class="payment_type_name">{payment.NAME}</div>
 
-              <div style="width: 100%; text-align: center;" value="{payment.ID}">
+              <div value="{payment.ID}" class="payment_method_block">
                 <!-- BEGIN method -->
-                <!-- IF method.S_ROW_COUNT == 5 -->
-                <div>
-                  <button onclick="sn_show_hide2(this, '.js_hidden_payments_{payment.ID}', 1); return false;"><span class="link_action">{L_pay_mm_buy_payment_method_more}</span></button>
-                </div>
-                <div class="js_hidden_payments_{payment.ID}" style="display: none; clear: both;">
+
+                  <!-- IF method.IMAGE && ! method.BUTTON-->
+                  <!-- DEFINE $METHOD_CLASS = 'payment_mm_method_nobutton' -->
+                  <!-- ELSE -->
+                  <!-- DEFINE $METHOD_CLASS = '' -->
                   <!-- ENDIF -->
-                  <div class="payment_mm_method<!-- IF method.IMAGE && ! method.BUTTON--> payment_mm_method_nobutton<!-- ENDIF -->" value="{method.ID}">
+
+                  <!-- IF method.S_ROW_COUNT >= $MAX_PAYMENTS_IN_ROW -->
+                  <!-- DEFINE $METHOD_HIDE = 'js_hidden_payments_{payment.ID} ptl_payment_method_hide' -->
+                  <!-- ELSE -->
+                  <!-- DEFINE $METHOD_HIDE = '' -->
+                  <!-- ENDIF -->
+
+                  <div class="payment_block_item js_payment_mm_method {$METHOD_CLASS} {$METHOD_HIDE}" value="{method.ID}" flex="1">
                     <!-- IF method.IMAGE -->
-                    <img src="{method.IMAGE}" />
+                    <img src="{method.IMAGE}"  alt="{method.NAME}" />
                     <!-- ENDIF -->
                     <!-- IF ! method.IMAGE || method.NAME_FORCE -->
                     <div>{method.NAME}</div>
                     <!-- ENDIF -->
                   </div>
-                  <!-- IF method.S_ROW_COUNT >= 5 && method.S_LAST_ROW -->
-                </div>
-                <!-- ENDIF -->
-
                 <!-- END method -->
               </div>
+
+              <!-- IF method.S_ROW_COUNT > $MAX_PAYMENTS_IN_ROW -->
+              <div>
+                <button class="js_show_hidden_methods" method_id="{payment.ID}">
+                  <span class="link_action">{L_pay_mm_buy_payment_method_more}</span>
+                </button>
+              </div>
+              <!-- ENDIF -->
+
             </div>
             <!-- END payment -->
 
@@ -231,9 +250,9 @@
             <input type="hidden" name="payment_module" id="payment_module" value="{PAYMENT_MODULE}">
             <!-- IF ! PAYMENT_MODULE -->
               {L_pay_mm_buy_select}
-              <div style="width: 100%; text-align: center;" value="{payment.ID}">
+              <div class="payment_method_block" value="{payment.ID}">
                 <!-- BEGIN payment_module -->
-                <div class="payment_mm_module" value="{payment_module.ID}">
+                <div class="payment_block_item js_payment_mm_module" value="{payment_module.ID}">
                   {payment_module.NAME}
                   <!-- IF payment_module.COST -->
                   <br />
@@ -253,12 +272,14 @@
 
               <!-- BEGIN render -->
                 <!-- IF render.TYPE == 'select' -->
+                <label>
                   <select name="{render.NAME}">
                     <!-- BEGIN value -->
                       <option value="{render.value.FIELD}">{render.value.VALUE}</option>
                     <!-- END value -->
                   </select>
-                <!-- ELSE -->
+                </label>
+              <!-- ELSE -->
                   {render.VALUE}
                 <!-- ENDIF -->
               <!-- END render -->
@@ -284,7 +305,6 @@
         <!-- IF ! PAY_LINK_URL -->
           <input class="fl" type="submit" value="{L_pay_mm_buy_confirm}">
         <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
-          <!--<input class="fl" type="submit" value="{L_pay_mm_buy_pay}">-->
           <button class="fl" type="submit">{L_pay_mm_buy_pay}</button>
         <!-- ELSEIF PAY_LINK_METHOD == 'LINK' -->
           <script type="text/javascript">
@@ -308,12 +328,11 @@
 
           <button class="fl" type="button" onclick="payment_popup.open(this);return false;">{L_pay_mm_buy_pay}</button>
         <!-- ENDIF -->
+      </form>
 
-        </form>
-
-        <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST">
-          <input class="fr" type="submit" value="{L_pay_mm_buy_reset}" onclick="jQuery('#payment_amount').val('');jQuery('#payment_module').val('');">
-        </form>
+      <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST">
+        <input class="fr" type="submit" value="{L_pay_mm_buy_reset}" onclick="jQuery('#payment_amount').val('');jQuery('#payment_module').val('');">
+      </form>
 
       <!-- ELSEIF URL_PURCHASE -->
         {L_pay_mm_buy_url_description} <a href="{URL_PURCHASE}"><span class="link">{L_pay_mm_buy_url_get}</span></a>

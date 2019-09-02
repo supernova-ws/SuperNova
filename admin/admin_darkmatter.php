@@ -17,7 +17,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 /**
  * @param $lang
@@ -79,7 +79,7 @@ function admin_dark_matter_view($template = null) {
   $points = sys_get_param_float('points');
   $reason_unsafe = sys_get_param_str_unsafe('reason');
 
-  $template = gettemplate("admin/admin_darkmatter", true);
+  $template = SnTemplate::gettemplate("admin/admin_darkmatter", true);
 
   try {
     admin_dark_matter_model($lang, $user);
@@ -99,7 +99,7 @@ function admin_dark_matter_view($template = null) {
 
   }
 
-  display($template, $lang['adm_dm_title']);
+  SnTemplate::display($template, $lang['adm_dm_title']);
 
   return $template;
 }

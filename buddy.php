@@ -173,7 +173,7 @@ $template_result += array(
 $template_result['.']['result'] = is_array($template_result['.']['result']) ? $template_result['.']['result'] : array();
 $template_result['.']['result'] += $result;
 
-$template = gettemplate('buddy', true);
+$template = SnTemplate::gettemplate('buddy', true);
 $template->assign_recursive($template_result);
 
-display($template);
+SnTemplate::display($template);

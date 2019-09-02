@@ -1,0 +1,19 @@
+Список трюков и техник, которые пользуются редко, но полезные
+
+- Объявление объекта в JS ---------------------------------------------------------------
+var TheObject = function() {
+    this.init();
+};
+TheObject.prototype = {
+    init: function() {
+        this.options = {
+            myProperty: 'value'
+        };
+    },
+    method: function(s) {
+        s = s + 1;
+
+        return s;
+    }
+};
+var myObject = new TheObject();

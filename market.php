@@ -77,7 +77,7 @@ switch($mode)
   break;
 
   default:
-    $template = gettemplate('market', true);
+    $template = SnTemplate::gettemplate('market', true);
   break;
 }
 
@@ -106,4 +106,4 @@ $template->assign_vars(array(
   'MODE' => $mode
 ));
 
-display($template, $page_title);
+SnTemplate::display($template, $page_title);

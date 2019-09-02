@@ -11,7 +11,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $constants = get_defined_constants(true);
 $rpgConstants = array();
@@ -81,7 +81,7 @@ usort($spent, function ($a, $b) {
 });
 
 
-$template = gettemplate("admin/admin_analyze_matter", true);
+$template = SnTemplate::gettemplate("admin/admin_analyze_matter", true);
 foreach ($spent as $row) {
   $template->assign_block_vars('spent', $row);
 }
@@ -89,4 +89,4 @@ $fromDate = SN::$db->doQueryAndFetch("SELECT min(log_dark_matter_timestamp) FROM
 $template->assign_var("MIN_DATE", reset($fromDate));
 
 
-display($template, '{Анализ расхода и прихода материи}');
+SnTemplate::display($template, '{Анализ расхода и прихода материи}');

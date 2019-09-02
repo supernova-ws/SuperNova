@@ -18,12 +18,12 @@ function sys_redirect($url) {
 function sys_redirect_js($url) {
   ob_end_flush();
 
-  $redirectTemplate = gettemplate('_redirect');
+  $redirectTemplate = SnTemplate::gettemplate('_redirect');
   $redirectTemplate->assign_vars(array(
     'URL' => js_safe_string($url),
   ));
 
-  display($redirectTemplate);
+  SnTemplate::display($redirectTemplate);
   die();
 }
 

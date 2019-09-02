@@ -13,7 +13,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user, $template_result;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $mode = sys_get_param_int('mode');
 
@@ -45,7 +45,7 @@ switch ($mode) {
   break;
 
   case ADM_TOOL_MD5:
-    $template = gettemplate("admin/md5enc", true);
+    $template = SnTemplate::gettemplate("admin/md5enc", true);
     $password_seed = sys_get_param_str_unsafe('seed', SN_SYS_SEC_CHARS_ALLOWED);
     $password_length = sys_get_param_int('length', 16);
     $string = ($string = sys_get_param_str_unsafe('string')) ? $string : sys_random_string($password_length, $password_seed);
@@ -56,7 +56,7 @@ switch ($mode) {
       'STRING' => htmlentities($string),
       'MD5'    => md5($string),
     ));
-    display($template, $lang['adm_tools_md5_header']);
+    SnTemplate::display($template, $lang['adm_tools_md5_header']);
   break;
 
   case ADM_TOOL_FORCE_ALL:
@@ -74,7 +74,7 @@ switch ($mode) {
   break;
 
   case ADM_TOOL_INFO_SQL:
-    $template = gettemplate("simple_table", true);
+    $template = SnTemplate::gettemplate("simple_table", true);
 
     $template->assign_block_vars('table', $lang['adm_tool_sql_table']['server']);
     $status = array(
@@ -116,11 +116,11 @@ switch ($mode) {
       'TABLE_FOOTER'  => 'test',
     ));
 
-    display($template);
+    SnTemplate::display($template);
   break;
 
   case ADM_PTL_TEST:
-    $template = gettemplate("admin/admin_ptl_test", true);
+    $template = SnTemplate::gettemplate("admin/admin_ptl_test", true);
 
     $template->assign_vars(array(
       'PAGE_TITLE' => $lang['adm_ptl_test'],
@@ -284,15 +284,15 @@ switch ($mode) {
       $template->assign_block_vars('test', $test);
     }
 
-    display($template);
+    SnTemplate::display($template);
   break;
 }
 
-$template = gettemplate("admin/admin_tools", true);
+$template = SnTemplate::gettemplate("admin/admin_tools", true);
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['adm_tools'],
 ));
 
 $template->assign_recursive($template_result);
 
-display($template);
+SnTemplate::display($template);

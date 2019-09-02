@@ -8,10 +8,10 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if(!$user_admin) {
-  messageBox($lang['Denied_access'], $lang['ally_admin']);
+  SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
 }
 
-$template = gettemplate('ali_admin', $template);
+$template = SnTemplate::gettemplate('ali_admin', $template);
 
 $text_list = array(
   1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
@@ -36,7 +36,7 @@ if(sys_get_param_str('isSaveOptions')) {
     $new_tag = db_escape($new_tag);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_tag($new_tag);
     if(!empty($isTaggedAllyExists)) {
-      messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+      SnTemplate::messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
     }
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
     db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
@@ -47,7 +47,7 @@ if(sys_get_param_str('isSaveOptions')) {
     $new_name = db_escape($new_name);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_name($new_name);
     if(!empty($isTaggedAllyExists)) {
-      messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+      SnTemplate::messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
     }
     $ally_changeset[] = "`ally_name`='{$new_name}'";
   }
@@ -85,7 +85,7 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
 {
   if(!$isAllyOwner)
   {
-    messageBox($lang['Denied_access'], $lang['ally_admin']);
+    SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
 
   $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
@@ -103,7 +103,7 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
 {
   if(!$isAllyOwner)
   {
-    messageBox($lang['Denied_access'], $lang['ally_admin']);
+    SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
   sn_db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
@@ -153,4 +153,4 @@ foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_l
   ));
 }
 
-display($template, $lang['ally_admin']);
+SnTemplate::display($template, $lang['ally_admin']);

@@ -8,16 +8,16 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 
 if (!$user_can_send_mails) {
-  messageBox($lang['Denied_access'], $lang['Send_circular_mail']);
+  SnTemplate::messageBox($lang['Denied_access'], $lang['Send_circular_mail']);
 }
 
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  messageBox($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), $lang['Circular_sended'], "alliance.php", '');
+  SnTemplate::messageBox($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), $lang['Circular_sended'], "alliance.php", '');
 }
 
-$page = gettemplate('ali_admin_mail', true);
+$page = SnTemplate::gettemplate('ali_admin_mail', true);
 
 if ($ranks) {
   foreach($ranks as $id => $array) {
@@ -32,4 +32,4 @@ $page->assign_vars(array(
   'PAGE_HEADER' => $lang['Send_circular_mail'],
 ));
 
-display($page);
+SnTemplate::display($page);

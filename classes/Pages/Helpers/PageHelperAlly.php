@@ -10,6 +10,7 @@ use Alliance\Alliance;
 use classLocale;
 use mysqli_result;
 use SN;
+use SnTemplate;
 use template;
 
 class PageHelperAlly {
@@ -24,7 +25,7 @@ class PageHelperAlly {
       SN::$debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
     }
 
-    $template = gettemplate('ali_search', true);
+    $template = SnTemplate::gettemplate('ali_search', true);
 
     $ali_search_text = sys_get_param_str('searchtext');
 
@@ -39,7 +40,7 @@ class PageHelperAlly {
 
     self::externalSearchRecommend($user, $template);
 
-    display($template, $lang['ali_search_title']);
+    SnTemplate::display($template, $lang['ali_search_title']);
   }
 
 

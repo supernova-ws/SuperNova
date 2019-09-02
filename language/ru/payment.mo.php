@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 45a21
+* @version 45a23
 *
 */
 
@@ -137,7 +137,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
     PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
     PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
-    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустр. Банк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
     PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
     PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
     PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',

@@ -6,7 +6,7 @@ use Pages\Helpers\PageHelperAlly;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (SN::$config->game_mode == GAME_BLITZ) {
-  messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  SnTemplate::messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }
 
@@ -40,9 +40,9 @@ if (!$user['ally_id']) {
       break;
 
       default:
-        $parsetemplate = gettemplate('ali_external', true);
+        $parsetemplate = SnTemplate::gettemplate('ali_external', true);
         PageHelperAlly::externalSearchRecommend($user, $parsetemplate);
-        display($parsetemplate, $lang['alliance']);
+        SnTemplate::display($parsetemplate, $lang['alliance']);
       break;
     }
   }
@@ -52,7 +52,7 @@ Alliance::sn_ali_fill_user_ally($user);
 //$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
 if (!isset($user['ally'])) {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
-  messageBox($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
+  SnTemplate::messageBox($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
 /*

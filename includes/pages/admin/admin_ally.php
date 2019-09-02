@@ -9,7 +9,7 @@ use Alliance\Alliance;
 function sn_admin_ally_model($template = null) {
   define('IN_ADMIN', true);
   lng_include('admin');
-  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+  SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
   global $template_result;
 
@@ -55,9 +55,9 @@ function sn_admin_ally_model($template = null) {
 function sn_admin_ally_view_one($template, $alliance) {
   global $template_result;
 
-  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+  SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-  $template = gettemplate('admin/admin_ally_one', $template);
+  $template = SnTemplate::gettemplate('admin/admin_ally_one', $template);
 
   $template_result['.']['members'] = $alliance->getMemberList()->asPtl();
 
@@ -72,9 +72,9 @@ function sn_admin_ally_view_one($template, $alliance) {
 }
 
 function sn_admin_ally_view_all($template = null) {
-  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+  SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-  $template = gettemplate('admin/admin_ally_all', $template);
+  $template = SnTemplate::gettemplate('admin/admin_ally_all', $template);
 
   foreach (Alliance::findAll([]) as $alliance) {
     $template->assign_block_vars('ally', $alliance->asPtl());
@@ -90,7 +90,7 @@ function sn_admin_ally_view_all($template = null) {
 function sn_admin_ally_view($template = null) {
   define('IN_ADMIN', true);
   lng_include('admin');
-  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+  SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
   $allyId = sys_get_param_id('ally_id');
   $alliance = Alliance::findById($allyId);

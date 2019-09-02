@@ -27,7 +27,7 @@ $password_repeat_raw = trim(sys_get_param('password_repeat'));
 $email = sys_get_param_str('email');
 
 
-$template = gettemplate('login_body', true);
+$template = SnTemplate::gettemplate('login_body', true);
 $template->assign_vars(array(
   'last_user'    => db_user_last_registered_username(),
   'online_users' => db_user_count(true),
@@ -48,6 +48,6 @@ $template->assign_vars(array(
   'GAME_BLITZ'   => SN::$config->game_mode == GAME_BLITZ,
 ));
 
-tpl_login_lang($template);
+SnTemplate::tpl_login_lang($template);
 
-display($template, $lang['Login']);
+SnTemplate::display($template, $lang['Login']);

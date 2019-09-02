@@ -1,3 +1,7 @@
+<!-- Preventing double include -->
+<!-- IF ! $PAGE_RESULT_INCLUDED -->
+<!-- DEFINE $PAGE_RESULT_INCLUDED = 1 -->
+
 <!-- IF ! $RESULT_TABLE_EXISTS -->
   <!-- BEGIN result -->
     <!-- IF result.MESSAGE -->
@@ -26,4 +30,6 @@
           </div>
         </div>
   <!-- ENDIF -->
+<!-- ENDIF -->
+
 <!-- ENDIF -->

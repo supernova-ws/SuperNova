@@ -46,7 +46,7 @@ function sn_chat_model()
 }
 function sn_chat_view($template = null)
 {
-  $template = gettemplate('chat_body', $template);
+  $template = SnTemplate::gettemplate('chat_body', $template);
 
   return $template;
 }
@@ -167,18 +167,18 @@ function sn_chat_msg_view($template = null)
     'HISTORY' => $history,
   );
 
-  $template = gettemplate('chat_messages', $template);
+  $template = SnTemplate::gettemplate('chat_messages', $template);
   $template->assign_recursive($template_result);
 
   if($history)
   {
     $pageTitle = "{$lang['chat_history']} - {$lang[$alliance ? 'chat_ally' : 'chat_common']}";
-    display($template, $pageTitle);
+    SnTemplate::display($template, $pageTitle);
   }
   else
   {
     $result['last_message'] = $last_message;
-    $result['html'] = templateRenderToHtml($template);
+    $result['html'] = SnTemplate::templateRenderToHtml($template);
 
     print(json_encode($result));
   }

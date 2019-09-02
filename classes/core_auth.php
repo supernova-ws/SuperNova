@@ -11,17 +11,17 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #43a15.27#
+ * version #45a23#
  */
 
 class core_auth extends sn_module {
-  public $versionCommitted = '#43a15.27#';
+  public $versionCommitted = '#45a23#';
 
   public $manifest = [
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #45a23# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
@@ -269,7 +269,7 @@ class core_auth extends sn_module {
       'LOGIN_UNDEFINED' => LOGIN_UNDEFINED,
     ));
 
-    $template = gettemplate('login_player_register', $template);
+    $template = SnTemplate::gettemplate('login_player_register', $template);
 
     return $template;
   }

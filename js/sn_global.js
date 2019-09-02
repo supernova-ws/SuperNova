@@ -7,8 +7,21 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   // Constants
   var CLASS_POSITIVE = "positive";
 
+
   // Localization class
-  var language = {};
+  var LanguageObject = function() {
+  };
+  LanguageObject.prototype = {
+    /**
+     * Add list of locale strings to current locale
+     *
+     * @param {object} strings
+     */
+    addLocale: function (strings) {
+      jQuery.extend(this, strings);
+    }
+  };
+  var language = new LanguageObject();
 
   var x = "";
   var e = null;
@@ -674,8 +687,14 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     popupIsOpen = true;
   }
 
-
-// Helper probe to use CSS-values in JS
+  //
+  /**
+   * Helper to probe element's CSS attribute
+   *
+   * @param element
+   * @param css_attribute
+   * @returns {string|boolean}
+   */
   function sn_probe_style(element, css_attribute) {
     switch (css_attribute) {
       case 'border-top-color':
@@ -689,37 +708,56 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-  function sn_show_hide(element, element_name) {
-    var element_to_hide = jQuery("#" + element_name);
-    var tag_name = element_to_hide[0].tagName;
-
-    element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
-    jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
-  }
-
-
   /**
-   * @param element
-   * @param jQueryQualifier
-   * @param hideOnShow
+   * Switch element(s) visibility basing on his/their current state
+   *
+   * @param {element} control
+   * @param {string} jQueryQualifier
+   * @param {boolean} hideControl
    */
-  function sn_show_hide2(element, jQueryQualifier, hideOnShow) {
+  function sn_show_hide2(control, jQueryQualifier, hideControl) {
     var element_to_hide = jQuery(jQueryQualifier);
 
     element_to_hide.each(function () {
       var that = $(this);
       var tag_name = that.tagName;
 
-      that.css('display', that.css('display') === 'none' ? (tag_name === 'TR' ? 'table-row' : (tag_name === 'UL' || tag_name === 'DIV' ? 'block' : 'inline')) : 'none');
+      that.css(
+        'display',
+        that.css('display') === 'none'
+          ? (
+            tag_name === 'TR'
+              ? 'table-row'
+              : (
+                // Special HTML property 'flex' used to return flex-ability on "show"
+                that.attr('flex') ?
+                  'flex'
+                  : (
+                    tag_name === 'UL' || tag_name === 'DIV'
+                      ? 'block'
+                      : 'inline'
+                  )
+              )
+          )
+          : 'none');
     });
 
-    if(hideOnShow) {
-      $(element).hide();
+    if (hideControl) {
+      $(control).hide();
     } else {
-      $(element).html("[&nbsp;" + (element_to_hide.first().css('display') === 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
+      var
+        newHtml,
+        newText = element_to_hide.first().css('display') === 'none' ? language.sys_show : language.sys_hide,
+        textToReplace = newText === language.sys_show ? language.sys_hide : language.sys_show;
+
+      if ($(control).html().search(textToReplace) === -1) {
+        newHtml = "[&nbsp;" + (newText) + "&nbsp;]";
+      } else {
+        newHtml = $(control).html().replace(textToReplace, newText);
+      }
+      $(control).html(newHtml);
     }
   }
-
 
   function cntchar(m) {
     if (window.document.forms[0].text.value.length > m) {

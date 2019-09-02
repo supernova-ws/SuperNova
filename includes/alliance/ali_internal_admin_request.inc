@@ -7,7 +7,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if (!$user_admin_applications) {
-  messageBox($lang['Denied_access'], $lang['requests_admin']);
+  SnTemplate::messageBox($lang['Denied_access'], $lang['requests_admin']);
 }
 
 $d = sys_get_param_id('d');
@@ -24,7 +24,7 @@ if($id_user) {
   doquery("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}' LIMIT 1;");
 }
 
-$template = gettemplate('ali_admin_request', true);
+$template = SnTemplate::gettemplate('ali_admin_request', true);
 
 $query = DBStaticAlly::db_ally_request_list($ally['id']);
 while ($ally_request_row = db_fetch($query)) {
@@ -41,4 +41,4 @@ $template->assign_vars(array(
   'ally_tag' => $ally['ally_tag'],
 ));
 
-display($template, $lang['requests_admin']);
+SnTemplate::display($template, $lang['requests_admin']);

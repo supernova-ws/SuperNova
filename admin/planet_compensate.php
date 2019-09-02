@@ -11,9 +11,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate('admin/planet_compensate', true);
+$template = SnTemplate::gettemplate('admin/planet_compensate', true);
 
 $galaxy_src = sys_get_param_int('galaxy_src');
 $system_src = sys_get_param_int('system_src');
@@ -119,7 +119,7 @@ $template->assign_vars(array(
   'username' => $username,
 ));
 
-display($template, $lang['adm_pl_comp_title']);
+SnTemplate::display($template, $lang['adm_pl_comp_title']);
 
 function killer_add_planet($planet) {
   global $final_cost;

@@ -7,7 +7,7 @@
 function sn_contact_view($template = null) {
   global $template_result, $lang;
 
-  $template = gettemplate('contact', $template);
+  $template = SnTemplate::gettemplate('contact', $template);
 
   $query = db_user_list("`authlevel` > 0 ORDER BY `authlevel` ASC");
 

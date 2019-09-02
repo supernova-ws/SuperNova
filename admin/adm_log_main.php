@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 if($delete = sys_get_param_id('delete'))
 {
@@ -33,7 +33,7 @@ elseif(sys_get_param_str('deleteall') == 'yes')
 
 if($detail = sys_get_param_id('detail'))
 {
-  $template = gettemplate('admin/adm_log_main_detail', true);
+  $template = SnTemplate::gettemplate('admin/adm_log_main_detail', true);
 
   $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
   $error_dump = unserialize($errorInfo['log_dump']);
@@ -53,7 +53,7 @@ if($detail = sys_get_param_id('detail'))
 }
 else
 {
-  $template = gettemplate('admin/adm_log_main', true);
+  $template = SnTemplate::gettemplate('admin/adm_log_main', true);
 
   $i = 0;
   $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
@@ -72,4 +72,4 @@ else
   $template->assign_vars($query);
 }
 
-display($template, $lang['adm_er_ttle']);
+SnTemplate::display($template, $lang['adm_er_ttle']);

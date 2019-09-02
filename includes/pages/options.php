@@ -100,7 +100,7 @@ function sn_options_view($template = null) {
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
-  $template = gettemplate('options', $template);
+  $template = SnTemplate::gettemplate('options', $template);
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while (($entry = $dir->read()) !== false) {
@@ -519,18 +519,18 @@ function sn_options_vacation($user) {
   sn_db_transaction_start();
   if ($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
     if ($user['vacation_next'] > SN_TIME_NOW) {
-      messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 
     if (DbFleetStatic::fleet_count_flying($user['id'])) {
-      messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 
     $que = que_get($user['id'], false);
     if (!empty($que)) {
-      messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 

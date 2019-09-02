@@ -21,7 +21,7 @@ if(!SN::$gc->modules->countModulesInGroup('payment')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
 }
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 /**
  * @param classLocale $lang
@@ -117,7 +117,7 @@ function admin_meta_matter_view($user, $lang) {
   $confirmed = sys_get_param('confirm_mm_change');
   $confirmed = !empty($confirmed); // can't use empty() or isset() with function result in PHP 5.3
 
-  $template = gettemplate("admin/adm_metamatter", true);
+  $template = SnTemplate::gettemplate("admin/adm_metamatter", true);
 
   try {
     admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerIdOrName_unsafe, $points, $reason_unsafe, $confirmed);
@@ -143,7 +143,7 @@ function admin_meta_matter_view($user, $lang) {
     }
   }
 
-  display($template, $lang['adm_dm_title']);
+  SnTemplate::display($template, $lang['adm_dm_title']);
 }
 
 global $user, $lang;
