@@ -43,7 +43,7 @@ if(sys_get_param('save')) {
 
   SN::$config->game_default_language   = sys_get_param_str_unsafe('game_default_language', DEFAULT_LANG);
   SN::$config->game_default_skin       = sys_get_param_str_unsafe('game_default_skin', DEFAULT_SKINPATH);
-  SN::$config->game_default_template   = sys_get_param_str_unsafe('game_default_template', TEMPLATE_NAME);
+  SN::$config->game_default_template   = sys_get_param_str_unsafe('game_default_template', SnTemplate::getServerDefaultTemplateName());
 
   SN::$config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
   SN::$config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);

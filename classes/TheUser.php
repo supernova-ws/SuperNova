@@ -54,4 +54,16 @@ class TheUser {
 
     $user['skin'] = $skinName;
   }
+
+  /**
+   * Get skin name
+   *
+   * @return string
+   */
+  public function getTemplateName() {
+    global $user;
+
+    return !empty($user['template']) ? $user['template'] : SnTemplate::getServerDefaultTemplateName();
+  }
+
 }

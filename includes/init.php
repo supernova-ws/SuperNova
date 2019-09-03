@@ -47,7 +47,7 @@ SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
 require_once(SN_ROOT_PHYSICAL . 'includes/general/general.php');
-require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
+//require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
 SN::loadFileSettings();
@@ -75,12 +75,12 @@ define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
-define('TEMPLATE_NAME', SN::$config->game_default_template ? SN::$config->game_default_template : 'OpenGame');
-define('TEMPLATE_PATH', 'design/templates/' . TEMPLATE_NAME);
-define('TEMPLATE_DIR', SN_ROOT_PHYSICAL . TEMPLATE_PATH);
-define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/EpicBlue/');
-define('DEFAULT_SKIN_NAME', substr(DEFAULT_SKINPATH, 6, -1));
+
+define('DEFAULT_SKIN_NAME', 'EpicBlue');
+define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/' . DEFAULT_SKIN_NAME . '/');
+
 define('DEFAULT_LANG', SN::$config->game_default_language ? SN::$config->game_default_language : 'ru');
+
 define('FMT_DATE', SN::$config->int_format_date ? SN::$config->int_format_date : 'd.m.Y');
 define('FMT_TIME', SN::$config->int_format_time ? SN::$config->int_format_time : 'H:i:s');
 define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);

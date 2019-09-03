@@ -19,7 +19,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#45a23#';
+  public $versionCommitted = '#45a26#';
   /**
    * Is module currently active?
    *
@@ -39,7 +39,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #45a23# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #45a26# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -424,7 +424,7 @@ class sn_module {
   }
 
   protected function getTemplateRootRelative() {
-    return $this->getRootRelative() . 'design/templates/';
+    return $this->getRootRelative() . SnTemplate::SN_TEMPLATES_PARTIAL_PATH;
   }
 
   /**
@@ -438,6 +438,27 @@ class sn_module {
    */
   public function addModuleTemplate($templateName, $template) {
     return SnTemplate::gettemplate($templateName, $template, $this->getTemplateRootRelative());
+  }
+
+  /**
+   * @param string $jsName
+   *
+   * @return array
+   */
+  protected function addModuleJavascript($jsName) {
+    global $template_result;
+
+    $fName = $this->getRootRelative() . $jsName;
+    if (file_exists($fName . '.min.js')) {
+      $fName = $fName . '.min.js';
+    } elseif (file_exists($fName . '.js')) {
+      $fName = $fName . '.js';
+    }
+
+//    $template_result['.']['js'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
+    $template_result['.']['javascript'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
+
+    return $template_result;
   }
 
   /**
