@@ -127,8 +127,9 @@ class TemplateMeta {
 
     !$template_path || !is_string($template_path) ? $template_path = SN_ROOT_PHYSICAL . SnTemplate::SN_TEMPLATES_PARTIAL_PATH : false;
 
-    if (!$this->parent || empty($fallbackName = $this->parent->getName())) {
-      $fallbackName = $this->name;
+    if (!$this->parent || empty($fallbackName = $this->parent->getName()) || !$this->isTemplateExists()) {
+      // If no parent template - then using default template as fallback one
+      $fallbackName = SnTemplate::SN_TEMPLATE_NAME_DEFAULT;
     }
 
     $template->set_custom_template($template_path . $this->name . '/', $this->name, $template_path . $fallbackName . '/');
@@ -144,11 +145,18 @@ class TemplateMeta {
   public function cssAddFileName($cssFileName, array $standard_css) {
     if ($this->parent) {
       $standard_css = $this->parent->cssAddFileName($cssFileName, $standard_css);
+    } elseif (!$this->isTemplateExists()) {
+      // If template dir does not exists - falling back to default CSS file
+      $standard_css = SnTemplate::cssAddFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . SnTemplate::SN_TEMPLATE_NAME_DEFAULT . '/' . $cssFileName, $standard_css);
     }
 
     $standard_css = SnTemplate::cssAddFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . $this->name . '/' . $cssFileName, $standard_css);
 
     return $standard_css;
+  }
+
+  public function isTemplateExists() {
+    return file_exists($this->pathFull);
   }
 
 }

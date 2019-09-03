@@ -47,7 +47,6 @@ SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
 require_once(SN_ROOT_PHYSICAL . 'includes/general/general.php');
-//require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
 SN::loadFileSettings();

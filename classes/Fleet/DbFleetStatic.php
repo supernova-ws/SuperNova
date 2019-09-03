@@ -698,4 +698,20 @@ class DbFleetStatic {
     return $isMaxSubReached;
   }
 
+  /**
+   * @param array $user
+   *
+   * @return array
+   */
+  public static function tpl_get_fleets_flying(&$user) {
+    $fleet_flying_list = array();
+
+    $fleet_flying_list[0] = DbFleetStatic::fleet_list_by_owner_id($user['id']);
+    foreach ($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
+      $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
+    }
+
+    return $fleet_flying_list;
+  }
+
 }

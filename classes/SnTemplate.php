@@ -79,9 +79,10 @@ class SnTemplate {
     }
 
     $template->assign_vars(array(
-      'SN_TIME_NOW'    => SN_TIME_NOW,
-      'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
-      'SN_GOOGLE'      => defined('SN_GOOGLE'),
+      'SN_TIME_NOW'      => SN_TIME_NOW,
+      'SN_TEMPLATE_NAME' => SnTemplate::getPlayerTemplateName(),
+      'USER_AUTHLEVEL'   => isset($user['authlevel']) ? $user['authlevel'] : -1,
+      'SN_GOOGLE'        => defined('SN_GOOGLE'),
     ));
 
     $template->parsed = true;
@@ -399,9 +400,9 @@ class SnTemplate {
   public static function renderCss($is_login) {
     global $sn_mvc, $sn_page_name, $template_result;
 
-    empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
+    empty($sn_mvc['css']) ? $sn_mvc['css'] = ['' => []] : false;
 
-    $standard_css = array();
+    $standard_css = [];
     $standard_css = self::cssAddFileName('design/css/jquery-ui', $standard_css);
     $standard_css = self::cssAddFileName('design/css/global', $standard_css);
     $is_login ? $standard_css = self::cssAddFileName('design/css/login', $standard_css) : false;
@@ -675,22 +676,6 @@ class SnTemplate {
   }
 
   /**
-   * @param array $user
-   *
-   * @return array
-   */
-  public static function tpl_get_fleets_flying(&$user) {
-    $fleet_flying_list = array();
-
-    $fleet_flying_list[0] = DbFleetStatic::fleet_list_by_owner_id($user['id']);
-    foreach ($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
-      $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
-    }
-
-    return $fleet_flying_list;
-  }
-
-  /**
    * @param template $template
    * @param string   $blockName
    * @param mixed    $values
@@ -876,7 +861,7 @@ class SnTemplate {
       ]);
     }
 
-    $fleet_flying_list = SnTemplate::tpl_get_fleets_flying($user);
+    $fleet_flying_list = DbFleetStatic::tpl_get_fleets_flying($user);
     SnTemplate::tpl_topnav_event_build($template, $fleet_flying_list[0]);
     SnTemplate::tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
@@ -1186,13 +1171,3 @@ class SnTemplate {
   }
 
 }
-
-///**
-// * @param $template_result
-// * @param $is_login
-// */
-//function tpl_global_header(&$template_result, $is_login) {
-//  renderJavaScript();
-//
-//  renderCss($is_login);
-//}
