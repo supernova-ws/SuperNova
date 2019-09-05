@@ -15,6 +15,7 @@ use template;
  */
 class TemplateMeta {
   const INI_FILE_NAME = '_template.ini';
+  const CONFIG_RENDER_WHOLE = '_renderWhole';
   /**
    * Конфигурация скина - читается из INI-файла
    *
@@ -155,8 +156,23 @@ class TemplateMeta {
     return $standard_css;
   }
 
+  /**
+   * Does template files physically exists on disk?
+   * Only full path to template checked
+   *
+   * @return bool
+   */
   public function isTemplateExists() {
     return file_exists($this->pathFull);
+  }
+
+  /**
+   * Is template rendered at once - not header/footer separately?
+   *
+   * @return bool
+   */
+  public function isRenderWhole() {
+    return !empty($this->config[self::CONFIG_RENDER_WHOLE]);
   }
 
 }

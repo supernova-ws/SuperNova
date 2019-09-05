@@ -126,8 +126,14 @@ if(window.LOADED_TIMER === undefined) {
       timer.prefixClass = '.' + timer['id'];
       timer.prefixId = '#' + timer['id'];
 
-      // Кэшируем DOM-ики
-      timer['html_main'] = $(timer.prefixId);
+      if(timer.hasOwnProperty('className')) {
+        timer.className = '.' + timer['className'];
+        timer['html_main'] = $(timer.className);
+      } else {
+        // Кэшируем DOM-ики
+        timer['html_main'] = $(timer.prefixId);
+      }
+
 
       // Если нет настроек - создаём пустой объект
       timer['options'] === undefined ? timer['options'] = {} : false;
@@ -520,8 +526,14 @@ if(window.LOADED_TIMER === undefined) {
           }
           infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
 
-          timer['html_main'].html(infoText);
           timer['current'] = new_value;
+
+          if(timer.hasOwnProperty('className')) {
+            $(timer.className).html(infoText);
+          } else {
+            timer['html_main'].html(infoText);
+          }
+
           break;
         }
 

@@ -19,14 +19,14 @@ class SnBootstrap {
 
       global $user, $locale_cache_statistic;
 
-      $now = microtime(true);
+      $now       = microtime(true);
       $totalTime = round($now - SN_TIME_MICRO, 6);
       !defined('SN_TIME_RENDER_START') ? define('SN_TIME_RENDER_START', microtime(true)) : false;
       $executionTime = round(SN_TIME_RENDER_START - SN_TIME_MICRO, 6);
-      $displayTime = round($now - SN_TIME_RENDER_START, 6);
+      $displayTime   = round($now - SN_TIME_RENDER_START, 6);
 
-      print(
-        '<div id="benchmark" class="benchmark"><hr>[' . SN_TIME_SQL . '] '
+      $benchmarkResults =
+        '[' . SN_TIME_SQL . '] '
         . 'Benchmark ' . $totalTime . 's'
         . (defined('SN_TIME_RENDER_START')
           ?
@@ -38,7 +38,33 @@ class SnBootstrap {
         )
         . ', memory: ' . number_format(memory_get_usage() - SN_MEM_START)
         . (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '')
-        . '</div>');
+        . '';
+
+      $benchPrefix = '<div id="benchmark" class="benchmark" style="flex-grow: 1;flex-shrink: 1;"><hr>';
+      $benchSuffix = '</div>';
+      if (class_exists(SN::class, false) && SN::$gSomethingWasRendered) {
+//        print "<script type='text/javascript'>document.body.innerHTML += '{$benchPrefix}" . htmlentities($benchmarkResults, ENT_QUOTES, 'UTF-8') . "{$benchSuffix}';</script>";
+//        print "<script type='text/javascript'>document.addEventListener('DOMContentLoaded', function() {document.body.innerHTML += '{$benchPrefix}" . htmlentities($benchmarkResults, ENT_QUOTES, 'UTF-8') . "{$benchSuffix}';});</script>";
+        print
+"<script type='text/javascript'>
+(function (document) {
+    var prefix = '{$benchPrefix}';
+    var suffix = '{$benchSuffix}';
+    var result = '" . htmlentities($benchmarkResults, ENT_QUOTES, 'UTF-8') . "';
+    var element = document.getElementById('debug');
+
+    if(element) {
+      element.innerHTML += prefix + result + suffix;
+    } else {
+      document.write(prefix + result + suffix);
+    }
+}(document));
+</script>";
+      } else {
+        print($benchPrefix . $benchmarkResults . $benchSuffix);
+      }
+
+
       if ($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
         echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';
       }
@@ -51,7 +77,7 @@ class SnBootstrap {
 
       $error = error_get_last();
       if ($error['type'] === E_ERROR) {
-        $fName = SN_ROOT_PHYSICAL . '_error.txt';
+        $fName  = SN_ROOT_PHYSICAL . '_error.txt';
         $output = [
           "\n\n",
           SN_TIME_SQL . " - ERROR",
@@ -61,7 +87,7 @@ class SnBootstrap {
         ];
         file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);
 
-        if(!empty($error['file']) && strpos($error['file'], 'classCache.php') !== false) {
+        if (!empty($error['file']) && strpos($error['file'], 'classCache.php') !== false) {
           print('<span style="color: red">Looks like cache clearing takes too long... Try to restart your web-server and/or cache engine</span>');
         }
       }
@@ -116,8 +142,8 @@ class SnBootstrap {
 
         require_once($update_file);
 
-        $current_time = time();
-        $config->pass()->var_db_update = $current_time;
+        $current_time                      = time();
+        $config->pass()->var_db_update     = $current_time;
         $config->pass()->var_db_update_end = $current_time;
       } elseif (filemtime($update_file) > $config->var_db_update) {
         $timeout = $config->var_db_update_end - SN_TIME_NOW;

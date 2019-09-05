@@ -50,8 +50,6 @@ body {
   flex-shrink: 1;
   flex-grow: 1;
 }
-#navbar_container {
-}
 /* #__content_wrapper = #__navbar_additions + #__content */
 #__content_wrapper {
   /* for all that matters*/
@@ -478,10 +476,6 @@ input[type=text].coordinate {
 }
 
 /* NavBar ======================================================================================================== */
-
-#navbar_container {
-  /*display: inline-block;*/
-}
 
 #navbar {
   margin: auto;
@@ -3631,6 +3625,8 @@ td.error_message {
   display: flex;
   align-items: center;
 }
+
+/* Resbar Vertical -----------------------------------------------------------------------------------------------*/
 .navbar_resources_flex.resbar_v .navbar_resources_flex_title {
   display: block;
 }
@@ -3693,37 +3689,6 @@ td.error_message {
 .navbar_resources_flex_resource > div:not(.navbar_resource_image) {
   flex-grow: 1;
 }
-
-
-
-
-
-
-#navbar_container {
-  /*border: 5px solid #5a70ff;*/
-}
-#__content_wrapper {
-  /*border: 5px solid yellow;*/
-}
-#__navbar_wrapper {
-  /*border: 5px dashed teal;*/
-}
-#__page {
-  /*border: 5px solid white;*/
-}
-#__menu {
-  /*border: 5px solid red;*/
-}
-#__navbar_additions {
-  /*border: 5px solid purple;*/
-}
-#__content {
-  /*border: 5px solid white;*/
-}
-#copyright {
-  /*border: 5px solid green;*/
-}
-
 
 
 .quest_list

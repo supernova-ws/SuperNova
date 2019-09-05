@@ -22,6 +22,7 @@ class SnTemplate {
    */
   const SN_TEMPLATES_PARTIAL_PATH = 'design/templates/';
   const SN_TEMPLATE_NAME_DEFAULT = 'OpenGame';
+  const P_CONTENT = '__RENDERED_CONTENT';
 
   /**
    * @param template|string $template
@@ -301,7 +302,7 @@ class SnTemplate {
    * @param $lang
    * @param $planetrow
    */
-  public static function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, $config, $lang, $planetrow) {
+  public static function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, $config, $lang, $planetrow, $renderedContent) {
     if (SN::$headerRendered) {
       return;
     }
@@ -338,6 +339,8 @@ class SnTemplate {
     self::renderCss($inLoginLogout);
 
     $template->assign_vars(array(
+      self::P_CONTENT => $renderedContent,
+
       'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
       'LANG_ENCODING'  => 'utf-8',
       'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
@@ -1026,6 +1029,8 @@ class SnTemplate {
    * @return mixed
    */
   public static function display($page, $title = '') {
+    SN::$gSomethingWasRendered = true;
+
     if (!defined('SN_TIME_RENDER_START')) {
       define('SN_TIME_RENDER_START', microtime(true));
     }
@@ -1053,9 +1058,13 @@ class SnTemplate {
 
     $isRenderGlobal = is_object($page) && isset($template_result['GLOBAL_DISPLAY_HEADER']) ? $template_result['GLOBAL_DISPLAY_HEADER'] : true;
 
-    // Global header
-    if ($isRenderGlobal) {
-      SnTemplate::renderHeader($page, $title, $template_result, $inLoginLogout, $user, $config, $lang, $planetrow);
+    if(self::getCurrentTemplate()->isRenderWhole()) {
+      ob_start();
+    } else {
+      // Global header
+      if ($isRenderGlobal) {
+        SnTemplate::renderHeader($page, $title, $template_result, $inLoginLogout, $user, $config, $lang, $planetrow, null);
+      }
     }
 
     // Page content
@@ -1093,6 +1102,20 @@ class SnTemplate {
         SnTemplate::displayP($extraTemplate);
       }
     }
+
+    if(self::getCurrentTemplate()->isRenderWhole()) {
+      $renderedContent = ob_get_clean();
+      // Global header
+      if ($isRenderGlobal) {
+        SnTemplate::renderHeader($page, $title, $template_result, $inLoginLogout, $user, $config, $lang, $planetrow, $renderedContent);
+      } else {
+        echo $renderedContent;
+      }
+    }
+
+    // Flushing all opened buffers
+    while (@ob_end_flush());
+
 
     // Global footer
     if ($isRenderGlobal) {
