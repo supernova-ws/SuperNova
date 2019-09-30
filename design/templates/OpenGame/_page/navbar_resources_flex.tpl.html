@@ -3,6 +3,7 @@
 <!-- DEFINE $NAVBAR_RESOURCES_HIDE_FLEETS = 1 -->
 <!-- ENDIF -->
 
+<!--suppress HtmlUnknownTarget -->
 <div id="navbar_resources_flex" class="navbar_resources_flex header no_select {$NAVBAR_RESOURCES_CLASS}">
   <div class="navbar_resources_flex_title">
     <!-- IF $NAVBAR_RESOURCES_ALLY -->
@@ -15,9 +16,9 @@
   <div class="navbar_resbar_flex_wrap2">
     <div class="navbar_resbar_flex_wrap1">
       <div class="cell navbar_resources_flex_resource" data-resource="metal">
-        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_metal.png"/></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_metal.png" alt="{L_sys_metal}"/></div>
 
-        <div>
+        <div class="navbar_resource_numbers">
           <div class="top_metal_v2">
             {PLANET_METAL_TEXT}
           </div>
@@ -38,9 +39,9 @@
       </div>
 
       <div class="cell navbar_resources_flex_resource" data-resource="crystal">
-        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_crystal.png"/></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_crystal.png" alt="{L_sys_crystal}"/></div>
 
-        <div>
+        <div class="navbar_resource_numbers">
           <div class="top_crystal_v2">
             {PLANET_CRYSTAL_TEXT}
           </div>
@@ -63,9 +64,9 @@
 
     <div class="navbar_resbar_flex_wrap1">
       <div class="cell navbar_resources_flex_resource" data-resource="deuterium">
-        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_deuterium.png"/></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_deuterium.png" alt="{L_sys_deuterium}"/></div>
 
-        <div>
+        <div class="navbar_resource_numbers">
           <div class="top_deuterium_v2">
             {PLANET_DEUTERIUM_TEXT}
           </div>
@@ -88,9 +89,9 @@
 
       <!-- IF ! $NAVBAR_RESOURCES_ALLY -->
       <div class="cell navbar_resources_flex_resource" data-resource="energy">
-        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_energy.png"/></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_energy.png" alt="{L_sys_energy}"/></div>
 
-        <div>
+        <div class="navbar_resource_numbers">
           <div>{ENERGY_BALANCE}</div>
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
@@ -105,9 +106,9 @@
       </div>
       <!-- ELSE -->
       <div class="cell navbar_resources_flex_resource">
-        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png"/></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png" alt="{L_sys_dark_matter}"/></div>
 
-        <div>
+        <div class="navbar_resource_numbers">
           <div id='top_dark_matter'>
             <!-- IF DARK_MATTER_TEXT -->{DARK_MATTER_TEXT}<!-- ELSE -->0<!-- ENDIF -->
           </div>

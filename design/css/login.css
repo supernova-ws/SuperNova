@@ -1,5 +1,5 @@
 /* OK =============================================================================================================== */
-body.blitz_body-auth {
+body.blitz.body-auth {
   background-image: none;
   /*background-color: black;*/
   background-repeat: no-repeat;
@@ -21,7 +21,7 @@ body.body-auth {
     background-image: url(../images/background_0500_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_0500.jpg);
   }
 }
@@ -31,7 +31,7 @@ body.body-auth {
     background-image: url(../images/background_0600_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_0600.jpg);
   }
 }
@@ -42,7 +42,7 @@ body.body-auth {
     background-image: url(../images/background_0800_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_0800.jpg);
   }
 }
@@ -53,7 +53,7 @@ body.body-auth {
     background-image: url(../images/background_1024_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_1024.jpg);
   }
 }
@@ -63,7 +63,7 @@ body.body-auth {
     background-image: url(../images/background_1280_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_1280.jpg);
   }
 }
@@ -74,7 +74,7 @@ body.body-auth {
     background-image: url(../images/background_1600_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_1600.jpg);
   }
 }
@@ -84,7 +84,7 @@ body.body-auth {
     background-image: url(../images/background_1920_login.jpg);
   }
 
-  body.blitz_body-auth {
+  body.blitz.body-auth {
     background-image: url(../images/background_blitz_login_1920.jpg);
   }
 }

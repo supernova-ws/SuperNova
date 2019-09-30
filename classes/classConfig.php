@@ -23,6 +23,8 @@
  * @property string     $auth_vkontakte_token
  * @property int        $auth_vkontakte_token_expire
  *
+ * @property int        $BuildLabWhileRun              => 0, // Allow to build lab/Nanolab while tech researching AND allowing research tech while lab/Nanolab
+ *
  * @property string     $COOKIE_NAME                   => 'SuperNova'
  *
  * @property int        $empire_mercenary_base_period  => PERIOD_MONTH, // Base hire period for price calculations
@@ -201,7 +203,7 @@ class classConfig extends classPersistent {
     'avatar_max_height'           => 128, // Maximum height
     'avatar_max_width'            => 128, // Maximum width
 
-    'BuildLabWhileRun'         => 0,
+    'BuildLabWhileRun'         => 0, // Allow to build lab/Nanolab while tech researching AND allowing research tech while lab/Nanolab
 
     // Chat settings
     // Nick highliting

@@ -273,12 +273,14 @@
     </div>
 
     <!-- IF $NAVBAR_RESOURCES_RENDER && ! $NAVBAR_RESOURCES_OLD -->
-      <!-- INCLUDE navbar_resources -->
+      <!-- INCLUDE _page/navbar_resources -->
     <!-- ENDIF -->
   </div>
 
   <!-- IF $NAVBAR_RESOURCES_RENDER && $NAVBAR_RESOURCES_OLD-->
-    <!-- INCLUDE navbar_resources -->
+    <!-- DEFINE $NAVBAR_OLD_OUT = 1 -->
+    <!-- INCLUDE _page/navbar_resources -->
+    <!-- DEFINE $NAVBAR_OLD_OUT = 0 -->
   <!-- ENDIF -->
 </div>
 <!-- DEFINE $IN_NAVBAR = 0 -->

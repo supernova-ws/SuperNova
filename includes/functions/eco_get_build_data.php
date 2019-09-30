@@ -172,12 +172,15 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result) {
           $result = true;
         }
       }
-      //if(!empty($global_que['ques'][QUE_RESEARCH][$user['id']][0]))
-      //{
-      //  $result = true;
-      //}
-    } elseif (($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun && $planet['que']) {
-      $result = eco_is_builds_in_que($planet['que'], array(STRUC_LABORATORY, STRUC_LABORATORY_NANO));
+    } elseif (($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun) {
+      $userId = floatval($user['id']);
+      $isLabBuilding = doquery(
+        "SELECT 1 FROM `{{que}}`
+        WHERE
+            `que_player_id` = {$userId}
+            AND `que_unit_id` IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ")", true);
+
+      $result = !empty($isLabBuilding);
     }
   }
 

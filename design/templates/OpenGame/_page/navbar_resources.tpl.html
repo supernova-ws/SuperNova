@@ -2,20 +2,18 @@
 
 <!-- IF $IN_NAVBAR -->
   <!-- IF ! $NAVBAR_RESOURCES_OLD -->
-    <!-- INCLUDE navbar_resources_flex -->
+    <!-- INCLUDE _page/navbar_resources_flex -->
   <!-- ELSE -->
     <div>
-      <table class="border_image_small" id="navbar_resources">
     <!-- IF $NAVBAR_RESOURCES_VERTICAL -->
-      <!-- INCLUDE navbar_resources_vertical -->
+      <!-- INCLUDE _page/navbar_resources_vertical -->
     <!-- ELSE -->
-      <!-- INCLUDE navbar_resources_horizontal -->
+      <!-- INCLUDE _page/navbar_resources_horizontal -->
     <!-- ENDIF -->
-      </table>
     </div>
   <!-- ENDIF -->
 <!-- ELSE -->
-  <!-- INCLUDE navbar_resources_horizontal -->
+  <!-- INCLUDE _page/navbar_resources_horizontal -->
 <!-- ENDIF -->
 
 

@@ -254,7 +254,7 @@ class SnTemplate {
    * @param array      $template_result
    */
   public static function renderFooter($page, $template_result) {
-    $templateFooter = self::gettemplate('_page_90_footer', true);
+    $templateFooter = self::gettemplate('_page/_99_footer', true);
 
     $templateFooter->assign_vars([
       'SN_TIME_NOW'      => SN_TIME_NOW,
@@ -332,7 +332,7 @@ class SnTemplate {
       $isDisplayTopNav = false;
     }
 
-    $template = self::gettemplate('_page_20_header', true);
+    $template = self::gettemplate('_page/_00_header', true);
 
     self::renderJavaScript();
 

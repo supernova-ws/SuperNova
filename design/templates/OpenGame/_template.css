@@ -464,6 +464,7 @@ input[type=text].coordinate {
 #global_status_window {
   max-width: 50em;
   margin: 0.5em;
+  display: inline-block;
 }
 
 #global_status_list {
@@ -3652,6 +3653,10 @@ td.error_message {
   justify-content: space-around;
 }
 
+.navbar_resources_flex_resource > .navbar_resource_numbers {
+  justify-content: flex-start;
+}
+
 .navbar_resources_flex_resource.cell {
   cursor: pointer;
 
@@ -3664,6 +3669,7 @@ td.error_message {
 
   display: flex;
   flex-grow: 1;
+  align-items: stretch;
 
   flex-basis: 0.1%;
 }
@@ -3686,7 +3692,7 @@ td.error_message {
   justify-content: center;
   flex-direction: column;
 }
-.navbar_resources_flex_resource > div:not(.navbar_resource_image) {
+.navbar_resources_flex_resource > div.navbar_resource_numbers {
   flex-grow: 1;
 }
 
