@@ -3964,8 +3964,7 @@ td.error_message {
 }
 
 .planet_overview #navbar_resources {
-  border: 3px solid red;
+  border: 0 solid transparent;
   width: 100%;
   margin: 0;
-
 }
