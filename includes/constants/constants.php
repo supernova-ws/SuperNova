@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '44');
 define('SN_RELEASE', '44');
-define('SN_VERSION', '45a39');
+define('SN_VERSION', '45a40');
 define('SN_RELEASE_STABLE', '44d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));

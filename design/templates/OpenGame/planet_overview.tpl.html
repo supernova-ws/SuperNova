@@ -31,9 +31,8 @@
   [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"
 </h2>
 
-<table align="center" class="markup">
-  <tr>
-    <th valign="top">
+<div style="display: flex;justify-content: center;" class="planet_overview">
+  <div>
       <table width="522">
         <tr>
           <th colspan=5 nowrap class="c_c">
@@ -167,21 +166,19 @@
           </tr>
         <!-- END ques -->
 
+        <tr><td colspan=5 class="c">{L_sys_resources}</td></tr>
         <tr><td colspan="5" align="center">
         <!-- INCLUDE _page/navbar_resources -->
         </td></tr>
       </table>
 
       <!-- INCLUDE planet_fleet_list -->
-    </th>
-
-    <th valign=top>
+  </div>
+    <div>
       <table border="0" cellspacing=0 cellpadding=0 width="200" class="markup">
         <!-- INCLUDE planet_list -->
       </table>
-    </th>
-  </tr>
-
-</table>
+    </div>
+</div>
 
 <div id="admin_message"></div>

@@ -3962,3 +3962,10 @@ td.error_message {
   text-wrap: none;
   white-space: nowrap;
 }
+
+.planet_overview #navbar_resources {
+  border: 3px solid red;
+  width: 100%;
+  margin: 0;
+
+}
