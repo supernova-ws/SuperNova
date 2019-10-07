@@ -264,31 +264,6 @@ class SnTemplate {
       'DB_PATCH_VERSION' => dbPatchGetCurrent(),
     ]);
 
-    /**
-     * @var template $page_item
-     */
-    if (
-      is_object($page[0])
-      &&
-      (
-        isset($page[0]->_tpldata['page_hint'])
-        ||
-        isset($page[0]->_rootref['PAGE_HINT'])
-        ||
-        !empty($template_result['.']['page_hint'])
-        ||
-        !empty($template_result['PAGE_HINT'])
-      )
-    ) {
-      $resultTemplate = self::gettemplate('page_hint');
-
-      $resultTemplate->_tpldata = &$page[0]->_tpldata;
-      $resultTemplate->_rootref = &$page[0]->_rootref;
-      $resultTemplate->assign_recursive($template_result);
-
-      SnTemplate::displayP($resultTemplate);
-    }
-
     SnTemplate::displayP($templateFooter);
   }
 
@@ -1101,6 +1076,35 @@ class SnTemplate {
          */
         SnTemplate::displayP($extraTemplate);
       }
+    }
+
+    if (
+      is_object($page[0])
+      &&
+      (
+        // Checking if hiding page hint flag is present
+        empty($template_result['PAGE_HINT_HIDE'])
+        &&
+        empty($page[0]->_rootref['PAGE_HINT_HIDE'])
+      )
+      &&
+      (
+        isset($page[0]->_tpldata['page_hint'])
+        ||
+        isset($page[0]->_rootref['PAGE_HINT'])
+        ||
+        !empty($template_result['.']['page_hint'])
+        ||
+        !empty($template_result['PAGE_HINT'])
+      )
+    ) {
+      $resultTemplate = self::gettemplate('page_hint');
+
+      $resultTemplate->_tpldata = &$page[0]->_tpldata;
+      $resultTemplate->_rootref = &$page[0]->_rootref;
+      $resultTemplate->assign_recursive($template_result);
+
+      SnTemplate::displayP($resultTemplate);
     }
 
     if(self::getCurrentTemplate()->isRenderWhole()) {
