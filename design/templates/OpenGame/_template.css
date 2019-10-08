@@ -2310,6 +2310,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   max-width: 20em;
   width: 100%;
   padding: 0.5em;
+  display: inline-block;
 }
 .market_services div:first-child {
   text-align: justify;
@@ -3700,6 +3701,7 @@ td.error_message {
 .quest_list
 {
   max-width: 70em;
+  display: inline-block;
 }
 
 .quest_filter_wrapper
@@ -3836,6 +3838,7 @@ td.error_message {
 .rank-table .rank, .rank-emperor {
   width: 9em;
   height: 9em;
+  display: inline-block;
 }
 .rank-selected {
   border: 0.3em solid green;
