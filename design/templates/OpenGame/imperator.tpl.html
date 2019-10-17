@@ -24,7 +24,7 @@
       <!-- ENDIF -->
     </div>
   </div>
-<!-- IF SAME_USER && NEW_MESSAGES -->
+<!-- IF 1 || (SAME_USER && NEW_MESSAGES) -->
 <div style="width: 50em; display: block; margin: 1em;" class="border_image_small">
   <a href="messages.php" class="a50 h100" style="padding: 0.5em; display: block">
     {L_ov_you_have} <!-- IF NEW_MESSAGES == 1 -->{L_ov_new_message}<!-- ELSE -->{NEW_MESSAGES} {L_ov_new_messages}

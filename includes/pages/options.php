@@ -272,6 +272,9 @@ function sn_options_view($template = null) {
     }
   }
 
+//  var_dump($template_result['.']['result']);
+//  var_dump($template->_tpldata);
+//
   return $template;
 }
 

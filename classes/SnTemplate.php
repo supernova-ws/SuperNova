@@ -308,6 +308,13 @@ class SnTemplate {
     }
 
     $template = self::gettemplate('_page/_00_header', true);
+    $template->assign_vars([
+      'SN_TIME_NOW'      => SN_TIME_NOW,
+      'SN_VERSION'       => SN_VERSION,
+      'ADMIN_EMAIL'      => SN::$config->game_adminEmail,
+      'CURRENT_YEAR'     => date('Y', SN_TIME_NOW),
+      'DB_PATCH_VERSION' => dbPatchGetCurrent(),
+    ]);
 
     self::renderJavaScript();
 
@@ -1061,7 +1068,30 @@ class SnTemplate {
         $resultTemplate = SnTemplate::gettemplate('_result_message');
 
         $resultTemplate->_tpldata = $page_item->_tpldata;
-        $resultTemplate->assign_recursive($template_result);
+
+        // Checking that no duplicates would be merged from template_result to template itself
+        $filtered = [];
+        if(!empty($template_result['.']['result']) && is_array($template_result['.']['result'])) {
+          foreach($template_result['.']['result'] as $message) {
+            if(empty($message['MESSAGE'])) {
+              continue;
+            }
+
+            foreach($resultTemplate->_tpldata['result'] as $tplData) {
+              if(empty($tplData['MESSAGE'])) {
+                continue;
+              }
+
+              if($tplData['MESSAGE'] == $message['MESSAGE']) {
+                continue 2;
+              }
+            }
+
+            $filtered['.']['result'][] = $message;
+          }
+        }
+        $resultTemplate->assign_recursive($filtered);
+
         SnTemplate::displayP($resultTemplate);
         $result_added = true;
       }

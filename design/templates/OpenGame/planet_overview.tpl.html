@@ -31,8 +31,7 @@
   [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"
 </h2>
 
-<div style="display: flex;justify-content: center;" class="planet_overview">
-  <div>
+<div style="display: flex;flex-wrap: wrap;justify-content:center;align-items: flex-start;" class="planet_overview">
       <table width="522">
         <tr>
           <th colspan=5 nowrap class="c_c">
@@ -172,13 +171,11 @@
         </td></tr>
       </table>
 
-      <!-- INCLUDE planet_fleet_list -->
-  </div>
-    <div>
       <table border="0" cellspacing=0 cellpadding=0 width="200" class="markup">
         <!-- INCLUDE planet_list -->
       </table>
-    </div>
+
+  <!-- INCLUDE planet_fleet_list -->
 </div>
 
 <div id="admin_message"></div>
