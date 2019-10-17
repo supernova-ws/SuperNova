@@ -464,7 +464,7 @@ input[type=text].coordinate {
 #global_status_window {
   max-width: 50em;
   margin: 0.5em;
-  display: inline-block;
+  display: block;
 }
 
 #global_status_list {
