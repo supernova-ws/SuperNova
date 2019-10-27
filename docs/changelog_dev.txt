@@ -2016,6 +2016,28 @@ https://ourcodeworld.com/articles/read/674/top-7-best-php-http-client-libraries
 
 [*] Интересный факт : если выбрать какую-то постройку, исследование или юнита, а затем навести мышь на другого и не выбирать его, а просто кликнуть "+", то в очередь попадет та, которая была выбрана, а не та, на которую был клик
 
+В чате на тесте писали по поводу прыгающего чата на телефоне. Так вот это происходит если после нажатия на строку ввода (и появления клавиатуры) начать листать страницу чата. Каждые 2-3 секунды экран перекидывает на строку ввода.
+ Телефон, браузер хром.
+
+ (Chaka[NewSTAR])Ну, оно так и было раньше вообще-то. Список планет на экране был. Другой вопрос, что надо подумать - может добавить в "Настройках" отключение списка планет для мобильщиков
+
+
+<VirtualHost *:80>
+    ServerName c7.local
+    DocumentRoot /var/www/c7.local
+
+    <IfModule mpm_event_module>
+        ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/var/www/c7.local/$1
+    </IfModule>
+
+    <Directory "/var/www/c7.local/">
+        DirectoryIndex index.php index.html index.htm
+    </Directory>
+
+    ErrorLog /var/log/httpd/error.log
+    TransferLog /var/log/httpd/access.log
+</VirtualHost>
+
 
 
 2019-10-17 09:28:49 45a45
