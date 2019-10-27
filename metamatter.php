@@ -159,7 +159,11 @@ if ($request['metamatter'] && $payment_module_request && $payment_method_selecte
       }
     }
 
-    if (is_array($pay_link) && in_array($pay_link['PAY_LINK_METHOD'], array('POST', 'GET', 'LINK', 'STEP'))) {
+    if (is_array($pay_link) && in_array($pay_link['PAY_LINK_METHOD'], array('POST', 'GET', 'LINK', 'STEP', 'REDIRECT'))) {
+      if($pay_link['PAY_LINK_METHOD'] == 'REDIRECT') {
+        sys_redirect($pay_link['PAY_LINK_URL']);
+      }
+
       // TODO Переделать это под assign_vars_recursive и возвращать пустые строки если нет платежного метода - для унификации формы в темплейте
       $template->assign_vars(array(
         'PAY_LINK_METHOD' => $pay_link['PAY_LINK_METHOD'],

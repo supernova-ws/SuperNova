@@ -327,6 +327,7 @@ class classConfig extends classPersistent {
     'payment_currency_exchange_wmr' => 60,
     'payment_currency_exchange_wmu' => 30,
     'payment_currency_exchange_wmz' => 1,
+    'payment_currency_exchange_pln' => 3.86,
 
     'payment_lot_price' => 1,     // Lot price in default currency
     'payment_lot_size'  => 2500,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction

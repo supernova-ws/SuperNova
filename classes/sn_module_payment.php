@@ -14,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#45a21#';
+  public $versionCommitted = '#45a49#';
 
   public $active = false;
 
@@ -215,7 +215,7 @@ abstract class sn_module_payment extends sn_module {
    * @return array
    * @throws Exception
    */
-  protected function payment_request_process($options = array()) {
+  protected function payment_request_process($options = []) {
     global $lang, $config;
 
     if (!$this->active) {
@@ -289,7 +289,7 @@ abstract class sn_module_payment extends sn_module {
 
     // Проверка наличия внешнего ИД платежа
     if (!empty($this->payment_params['payment_external_id'])) {
-      $request_payment_external_id = sys_get_param_id($this->payment_params['payment_external_id']);
+      $request_payment_external_id = sys_get_param_str($this->payment_params['payment_external_id']);
       if (empty($request_payment_external_id)) {
         throw new exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
       } elseif (!empty($this->payment_external_id) && $this->payment_external_id != $request_payment_external_id) {
@@ -332,11 +332,6 @@ abstract class sn_module_payment extends sn_module {
     }
 
     $this->generate_description();
-
-//    // TODO - REMOVE
-//    return array(
-//      'payer' => $this->account,
-//    );
   }
 
   /**
@@ -703,13 +698,20 @@ abstract class sn_module_payment extends sn_module {
   }
 
   protected function generate_description() {
+    $mmShort = SN::$lang['sys_metamatter_sh'];
     // TODO - системная локализация
     $this->description_generated = array(
-      PAYMENT_DESCRIPTION_100 => substr("{$this->payment_dark_matter_gained} ММ аккаунт [{$this->account->account_name}] ID {$this->account->account_id} на " . SN_ROOT_VIRTUAL, 0, 100),
-      PAYMENT_DESCRIPTION_250 => substr("Оплата {$this->payment_dark_matter_gained} ММ для аккаунта [{$this->payment_user_name}] ID {$this->payment_user_id} на сервере " . SN_ROOT_VIRTUAL, 0, 250),
+      PAYMENT_DESCRIPTION_50 => substr(
+        ($this->payment_test ? "T!" : '') .
+        "{$this->payment_dark_matter_gained} {$mmShort} {$this->account->account_name}",
+        0,
+        PAYMENT_DESCRIPTION_50
+      ),
+      PAYMENT_DESCRIPTION_100 => substr("{$this->payment_dark_matter_gained} {$mmShort} аккаунт [{$this->account->account_name}] ID {$this->account->account_id} на " . SN_ROOT_VIRTUAL, 0, PAYMENT_DESCRIPTION_100),
+      PAYMENT_DESCRIPTION_250 => substr("Оплата {$this->payment_dark_matter_gained} {$mmShort} для аккаунта [{$this->payment_user_name}] ID {$this->payment_user_id} на сервере " . SN_ROOT_VIRTUAL, 0, PAYMENT_DESCRIPTION_250),
       PAYMENT_DESCRIPTION_MAX => ($this->payment_test ? "ТЕСТОВЫЙ ПЛАТЕЖ! " : '') .
         "Платеж от аккаунта '{$this->payment_account_name}' ID {$this->payment_account_id} игрока '{$this->payment_user_name}' ID {$this->payment_user_id} на сервере " . SN_ROOT_VIRTUAL .
-        " сумма {$this->payment_amount} {$this->payment_currency} за {$this->payment_dark_matter_paid} ММ (начислено {$this->payment_dark_matter_gained} ММ)" .
+        " сумма {$this->payment_amount} {$this->payment_currency} за {$this->payment_dark_matter_paid} {$mmShort} (начислено {$this->payment_dark_matter_gained} {$mmShort})" .
         " через '{$this->manifest['name']}' сумма {$this->payment_external_amount} {$this->payment_external_currency}",
     );
   }
