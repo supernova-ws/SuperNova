@@ -101,7 +101,7 @@ list($payment_module_request, $payment_method_selected) = PaymentMethods::getAct
 
 if (!$payment_module_request && $payment_method_selected) {
   $template_result['.']['payment_module'] = PaymentMethods::renderModulesForMethod($payment_method_selected, $player_currency, $request);
-} elseif (!$payment_module_request) {
+} elseif (!$payment_module_request || !$payment_method_selected) {
   $template_result['.']['payment'] = PaymentMethods::renderPaymentMethodList();
 }
 

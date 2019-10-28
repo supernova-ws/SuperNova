@@ -14,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#45a49#';
+  public $versionCommitted = '#45a50#';
 
   public $active = false;
 
@@ -737,6 +737,10 @@ abstract class sn_module_payment extends sn_module {
    */
   public function getMethodDetails($payment_method) {
     return $this->isMethodSupported($payment_method) ? $this->manifest['payment_method'][$payment_method] : null;
+  }
+
+  public function getMethodList() {
+    return $this->manifest['payment_method'];
   }
 
   /**

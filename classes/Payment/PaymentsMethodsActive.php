@@ -16,14 +16,14 @@ class PaymentsMethodsActive {
   /**
    * List of installed payment modules
    *
-   * @var array $modulesInstalled
+   * @var sn_module_payment[] $modulesInstalled
    */
   protected $modulesInstalled = [];
 
   /**
    * Generated list of available payment methods and corresponding modules that supports this method
    *
-   * @var array $methodsAvailableV2 [
+   * @var sn_module_payment[][][] $methodsAvailableV2 [
    *                                  (int)$paymentMethodId => [
    *                                    self::P_MODULES => [(str)$moduleName => (sn_payment_module)$module, ...]
    *                                  ], ...
@@ -100,7 +100,6 @@ class PaymentsMethodsActive {
     return HelperArray::array_key_first($this->methodsAvailableV2[$paymentMethodId][self::P_MODULES]);
   }
 
-
   /**
    * @param $moduleName
    *
@@ -159,6 +158,14 @@ class PaymentsMethodsActive {
       // И если этот модуль не поддерживает выбранный метод платежа - значит метод платежа никуда не годится
       if (!$this->isModuleSupportMethod($moduleName, $paymentMethodId)) {
         $paymentMethodId = 0;
+      }
+
+      if(!$paymentMethodId) {
+        $module = $this->modulesInstalled[$moduleName];
+        $methodsOnModule = $module->getMethodList();
+        if(count($methodsOnModule) == 1) {
+          $paymentMethodId = HelperArray::array_key_first($methodsOnModule);
+        }
       }
     } elseif (!$paymentMethodId) {
       // Если метод платежа не указан - то и модуль под него выбрать нельзя

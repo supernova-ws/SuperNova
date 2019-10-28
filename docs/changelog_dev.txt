@@ -2039,6 +2039,11 @@ https://ourcodeworld.com/articles/read/674/top-7-best-php-http-client-libraries
 </VirtualHost>
 
 
+2019-10-28 09:31:45 45a50
+[%] Платежи
+    Исправлена ошибка, когда установлен только один модуль платежей с одним методом платежа типа Generic
+
+
 2019-10-27 15:37:15 45a49
 [@] Код
     Поддержка модуля `payment_payu_rest`
