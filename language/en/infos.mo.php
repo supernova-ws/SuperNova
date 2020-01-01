@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 44a84
+* @version 45a54
 *
 */
 
@@ -705,7 +705,7 @@ $a_lang_array = array(
         <li><span class="warning">Плохая</span> - не меньше 40%, но менее 80% </li>
         <li><span class="notice">Неплохая</span> - не меньше 80%, меньше 100% </li>
         <li>Неплохая - 100% базовой добычи</li>
-        <li><span class="ok">Хорошая/span> - больше 100%, но меньше 300%</li>
+        <li><span class="ok">Хорошая</span> - больше 100%, но меньше 300%</li>
         <li><span class="ok">Очень хорошая</span> - больше 300%, но меньше 400%</li>
         <li><span class="ok">Отличная</span> - больше 400%</li>
       </ul><br/>

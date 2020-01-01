@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 44a84
+* @version 45a54
 *
 */
 
@@ -703,7 +703,7 @@ $a_lang_array = array(
         <li><span class="warning">Плохая</span> - не меньше 40%, но менее 80% </li>
         <li><span class="notice">Неплохая</span> - не меньше 80%, меньше 100% </li>
         <li>Неплохая - 100% базовой добычи</li>
-        <li><span class="ok">Хорошая/span> - больше 100%, но меньше 300%</li>
+        <li><span class="ok">Хорошая</span> - больше 100%, но меньше 300%</li>
         <li><span class="ok">Очень хорошая</span> - больше 300%, но меньше 400%</li>
         <li><span class="ok">Отличная</span> - больше 400%</li>
       </ul><br/>
@@ -775,11 +775,11 @@ $a_lang_array = array(
           Есть и обратная сторона - из-за маленького количества более плотного вещества <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча металла</span>. Ледяные планеты встречаются <span class="error">очень редко</span>.
         </li>
         <li>
-          <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них 
+          <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них
           <span class="error">очень низкая добыча металлов</span>, <span class="ok">очень высокая добыча кристаллов</span> и чуть более низкая, чем обычно, но всё еще <span class="zero">хорошая добыча дейтерия</span>.
         </li>
         <li>
-          <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них 
+          <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них
           слегка пониженная, но <span class="zero">хорошая добыча металлов</span>, <span class="ok">высокая добыча кристаллов</span> и <span class="warning">пониженная добыча дейтерия</span>.
         </li>
         <li>
