@@ -2,6 +2,13 @@
 config.php
 *config.php
 
+# Ignore Yandex and Google placeholders
+/yandex_*.txt
+/google*.txt
+
+# Ignore skin xNova
+/skins/xnova/
+
 # Ignore forums
 /phpBB3/
 /forum/
