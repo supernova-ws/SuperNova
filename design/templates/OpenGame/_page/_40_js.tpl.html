@@ -91,3 +91,24 @@
     sys_confirm_action_title: '{LA_sys_confirm_action_title}',
   });
 </script>
+
+<script type="text/javascript">
+  var WEBP_SUPPORTED = Math.intVal('{WEBP_SUPPORTED}');
+  var WEBP_SUPPORT_NEED_CHECK = Math.intVal('{WEBP_SUPPORT_NEED_CHECK}');
+  // WEBP_SUPPORT_NEED_CHECK = 1;
+
+  // console.log('WEBP_SUPPORT_NEED_CHECK ' + WEBP_SUPPORT_NEED_CHECK);
+
+  if(WEBP_SUPPORT_NEED_CHECK) {
+    hasWebP().then(function() {
+      // add("Basic WebP available");
+      jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 1,});
+      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+    }, function() {
+      jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 0,});
+      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+    });
+  }
+
+  // console.log('PRE WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+</script>

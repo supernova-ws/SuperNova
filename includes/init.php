@@ -74,6 +74,7 @@ define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
+define('SN_COOKIE_WEBP', SN_COOKIE . '_WEBP'); // WebP support cookie
 
 define('DEFAULT_SKIN_NAME', 'EpicBlue');
 define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/' . DEFAULT_SKIN_NAME . '/');

@@ -2041,8 +2041,16 @@ https://ourcodeworld.com/articles/read/674/top-7-best-php-http-client-libraries
 https://phpdelusions.net/pdo/fetch_modes#FETCH_LAZY
 
 
+#ctv
+
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Сделать ежедневное обновление времени просчёта для игроков, которые давно оффлайн
+
+
+2020-01-15 08:50:14 45a61
+[+] Код/Скины
+    Добавлена поддержка формата изображений WebP
 
 
 2020-01-12 09:43:34 45a56

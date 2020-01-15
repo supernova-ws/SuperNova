@@ -1205,3 +1205,46 @@ $(document).on('change', '#filterQuestStatus', function () {
     "json"
   );
 });
+
+function canIUseWebp() {
+  var elem = document.createElement('canvas');
+  ctx = elem.getContext('2d');
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, 8, 8);
+
+  // console.log(elem);
+  // console.log(elem.getContext);
+  // console.log(elem.getContext('2d'));
+  console.log(elem.toDataURL('image/webp'));
+
+  if (!!(elem.getContext && elem.getContext('2d'))) {
+    // was able or not to get WebP representation
+    return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+  }
+
+  // very old browser like IE 8, canvas not supported
+  return false;
+}
+
+var hasWebP = (function() {
+  var images = {
+    basic: "data:image/webp;base64,UklGRjIAAABXRUJQVlA4ICYAAACyAgCdASoCAAEALmk0mk0iIiIiIgBoSygABc6zbAAA/v56QAAAAA==",
+    lossless: "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAQAAAAfQ//73v/+BiOh/AAA="
+  };
+
+  return function(feature) {
+    var deferred = $.Deferred();
+
+    $("<img>").on("load", function() {
+      if(this.width === 2 && this.height === 1) {
+        deferred.resolve();
+      } else {
+        deferred.reject();
+      }
+    }).on("error", function() {
+      deferred.reject();
+    }).attr("src", images[feature || "basic"]);
+
+    return deferred.promise();
+  }
+})();

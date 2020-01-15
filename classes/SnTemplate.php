@@ -360,6 +360,9 @@ class SnTemplate {
 
       'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
       'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => SN::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
+
+      'WEBP_SUPPORT_NEED_CHECK' => ($webpSupported = SN::$gc->theUser->isWebpSupported()) === null ? 1 : 0,
+      'WEBP_SUPPORTED'          => $webpSupported ? 1 : 0,
     ));
     $template->assign_recursive($template_result);
 
@@ -1040,7 +1043,7 @@ class SnTemplate {
 
     $isRenderGlobal = is_object($page) && isset($template_result['GLOBAL_DISPLAY_HEADER']) ? $template_result['GLOBAL_DISPLAY_HEADER'] : true;
 
-    if(self::getCurrentTemplate()->isRenderWhole()) {
+    if (self::getCurrentTemplate()->isRenderWhole()) {
       ob_start();
     } else {
       // Global header
@@ -1071,18 +1074,18 @@ class SnTemplate {
 
         // Checking that no duplicates would be merged from template_result to template itself
         $filtered = [];
-        if(!empty($template_result['.']['result']) && is_array($template_result['.']['result'])) {
-          foreach($template_result['.']['result'] as $message) {
-            if(empty($message['MESSAGE'])) {
+        if (!empty($template_result['.']['result']) && is_array($template_result['.']['result'])) {
+          foreach ($template_result['.']['result'] as $message) {
+            if (empty($message['MESSAGE'])) {
               continue;
             }
 
-            foreach($resultTemplate->_tpldata['result'] as $tplData) {
-              if(empty($tplData['MESSAGE'])) {
+            foreach ($resultTemplate->_tpldata['result'] as $tplData) {
+              if (empty($tplData['MESSAGE'])) {
                 continue;
               }
 
-              if($tplData['MESSAGE'] == $message['MESSAGE']) {
+              if ($tplData['MESSAGE'] == $message['MESSAGE']) {
                 continue 2;
               }
             }
@@ -1137,7 +1140,7 @@ class SnTemplate {
       SnTemplate::displayP($resultTemplate);
     }
 
-    if(self::getCurrentTemplate()->isRenderWhole()) {
+    if (self::getCurrentTemplate()->isRenderWhole()) {
       $renderedContent = ob_get_clean();
       // Global header
       if ($isRenderGlobal) {
@@ -1148,7 +1151,9 @@ class SnTemplate {
     }
 
     // Flushing all opened buffers
-    while (@ob_end_flush());
+    while (@ob_end_flush()) {
+      ;
+    }
 
 
     // Global footer

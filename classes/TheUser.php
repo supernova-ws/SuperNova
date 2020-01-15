@@ -66,4 +66,15 @@ class TheUser {
     return !empty($user['template']) ? $user['template'] : SnTemplate::getServerDefaultTemplateName();
   }
 
+  /**
+   * @return bool|null null - not set, true|false - WebP supported or not
+   */
+  public function isWebpSupported() {
+    return !isset($_COOKIE[SN_COOKIE_WEBP]) ? null : !empty($_COOKIE[SN_COOKIE_WEBP]);
+  }
+
+  public function setWebpSupport($isSupported) {
+    sn_setcookie(SN_COOKIE_WEBP, empty($isSupported) ? 0 : 1);
+  }
+
 }
