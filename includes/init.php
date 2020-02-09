@@ -3,6 +3,7 @@
 use Common\Tools\VersionCheckerDeprecated;
 use Core\Autoloader;
 use \Core\SnBootstrap;
+use Fleet\TaskDispatchFleets;
 use Player\playerTimeDiff;
 
 // Защита от двойного инита
@@ -285,13 +286,16 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
-SN::$gc->watchdog->checkConfigTimeDiff(
-  'fleet_update_last',
-  SN::$config->fleet_update_interval,
-  // Promise
-  function () {SN::$gc->fleetDispatcher->dispatch();},
-  WATCHDOG_TIME_SQL,
-  false
-);
+SN::$gc->watchdog->register(new TaskDispatchFleets(SN::$gc));
+SN::$gc->watchdog->execute();
+
+//SN::$gc->watchdog->checkConfigTimeDiff(
+//  'fleet_update_last',
+//  SN::$config->fleet_update_interval,
+//  // Promise
+//  function () {SN::$gc->fleetDispatcher->dispatch();},
+//  classConfig::DATE_TYPE_SQL_STRING,
+//  false
+//);
 
 StatUpdateLauncher::scheduler_process();

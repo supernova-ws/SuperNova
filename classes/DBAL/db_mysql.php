@@ -546,4 +546,20 @@ class db_mysql {
   public function transactionCheck() {
     return $this->inTransaction;
   }
+
+  /**
+   * Wrap callback in transaction
+   *
+   * @param callable $callback
+   * @param string   $level
+   *
+   * @return mixed
+   */
+  public function transactionWrap($callback, $level = '') {
+    $this->transactionStart($level);
+    $result = $callback();
+    $this->transactionCommit();
+
+    return $result;
+  }
 }

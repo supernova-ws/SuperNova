@@ -5,11 +5,13 @@
 
 namespace Fleet;
 
-use classConfig;
+use Core\Scheduler\Lock;
+use SN;
 use debug;
+use classConfig;
+use Core\GlobalContainer;
 use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
-use SN;
 
 /**
  * Class Fleet\FleetDispatcher
@@ -17,7 +19,7 @@ use SN;
  */
 class FleetDispatcher {
   /**
-   * @var \Core\GlobalContainer $gc
+   * @var GlobalContainer $gc
    */
   protected $gc;
 
@@ -44,13 +46,16 @@ class FleetDispatcher {
   protected $timers;
 
 
-  public function __construct(\Core\GlobalContainer $gc) {
+  public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
 
     $this->gameConfig = $gc->config;
     $this->debug = $gc->debug;
   }
 
+  /**
+   * @deprecated
+   */
   public function dispatch() {
     if (
       SN::$options[PAGE_OPTION_FLEET_UPDATE_SKIP]
@@ -72,6 +77,7 @@ class FleetDispatcher {
 
   /**
    * @return bool
+   * @deprecated
    */
   protected function getLock() {
     sn_db_transaction_start();
@@ -97,6 +103,9 @@ class FleetDispatcher {
     return true;
   }
 
+  /**
+   * @deprecated
+   */
   protected function releaseLock() {
     sn_db_transaction_start();
     $this->gameConfig->db_saveItem('fleet_update_lock', '');
@@ -122,7 +131,7 @@ class FleetDispatcher {
 
 
   // ------------------------------------------------------------------
-  protected function flt_flying_fleet_handler() {
+  public function flt_flying_fleet_handler() {
     /*
 
     [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
@@ -151,6 +160,8 @@ class FleetDispatcher {
 
     */
     global $config, $debug, $lang;
+
+//    $runLock = new Lock(SN::$gc, 'fleet_update_run_lock', PERIOD_MINUTE, 10, classConfig::DATE_TYPE_UNIX);
 
     $workBegin = microtime(true);
 //log_file('Начинаем обсчёт флотов');

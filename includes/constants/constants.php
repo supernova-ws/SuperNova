@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '44');
 define('SN_RELEASE', '44');
-define('SN_VERSION', '45a68');
+define('SN_VERSION', '45a70');
 define('SN_RELEASE_STABLE', '44d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -31,7 +31,7 @@ define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
 
 // Getting relative HTTP root to game resources
 // I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
-// It needed to make game work on subfolders and do not mess with cookies
+// It needed to make game work on sub-folders and do not mess with cookies
 // Not very accurate - heavily relies on filesystem paths and may fail on complicate web server setups
 $sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
 $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
@@ -110,7 +110,7 @@ define('FONT_SIZE_PIXELS_DEFAULT_STRING', FONT_SIZE_PIXELS_DEFAULT . 'px');
 
 define('DEFAULT_PICTURE_EXTENSION_DOTTED', '.jpg');
 
-// Operation error status HARDCODE!
+// Operation error status HARDCODED!
 define('ERR_NONE'               , 0); // No error
 define('ERR_WARNING'            , 1); // There is warning - something altering normal operation process
 define('ERR_ERROR'              , 2); // There is error - something permits operation from process
@@ -1013,12 +1013,9 @@ define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
 
 define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
 
-define('WATCHDOG_TIME_UNIX', 0);
-define('WATCHDOG_TIME_SQL', 1);
-
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
 const PLAYER_INACTIVE_TIMEOUT = PERIOD_WEEK; // Player inactivity timeout to become 'i'-marked player
-const PLAYER_INACTIVE_TIMEOUT_LONG = PERIOD_WEEK_4; // Player inactivity to becone 'I'-marked player
+const PLAYER_INACTIVE_TIMEOUT_LONG = PERIOD_WEEK_4; // Player inactivity to become 'I'-marked player
 
 
 
@@ -1068,10 +1065,10 @@ const MODULE_LOAD_ORDER_AUTH_LOCAL            = 2;
 const MODULE_LOAD_ORDER_AUTH_VKONTAKTE        = 3;
 const MODULE_LOAD_ORDER_PAYMENT_SECONDARY     = 90000;
 const MODULE_LOAD_ORDER_UNIT_RES_METAMATTER   = 99999;
-const MODULE_LOAD_ORDER_DEFAULT               = 100000;     // HARDCODE
+const MODULE_LOAD_ORDER_DEFAULT               = 100000;     // HARDCODED
 const MODULE_LOAD_ORDER_CORE_SHIP_CONSTRUCTOR = 999999;     // RESERVED
 const MODULE_LOAD_ORDER_MENU_CUSTOMIZE        = 200000000;
-const MODULE_LOAD_ORDER_LATEST                = 2000000000; // HARDCODE
+const MODULE_LOAD_ORDER_LATEST                = 2000000000; // HARDCODED
 const MODULE_LOAD_ORDER_GAME_SKIRMISH         = 2000100000;
 
 // Template block names

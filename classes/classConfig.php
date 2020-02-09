@@ -61,7 +61,7 @@
  * @property int        $game_news_overview_show       How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  *
  * @property int        $game_noob_factor              => 5    // Multiplier to divide "stronger" and "weaker" users
- * @property int        $game_noob_points              => 5000 // Below this point user threated as noob. 0 to disable
+ * @property int        $game_noob_points              => 5000 // Below this point user treated as noob. 0 to disable
  *
  * @property string     $int_format_date               => 'd.m.Y' // Date default format
  * @property string     $int_format_time               => 'H:i:s' // Time default format
@@ -172,6 +172,8 @@
  *
  */
 class classConfig extends classPersistent {
+  const DATE_TYPE_UNIX = 0;
+  const DATE_TYPE_SQL_STRING = 1;
   protected $defaults = array(
     // SEO meta
     'adv_conversion_code_payment'  => '',
@@ -461,4 +463,52 @@ class classConfig extends classPersistent {
 
     return self::$cacheObject;
   }
+
+  /**
+   * @param int|string $date Date ether as Unix timestamp or mySQL timestamp
+   * @param int        $as   Output format WATCHDOG_TIME_UNIX | WATCHDOG_TIME_SQL
+   *
+   * @return false|int|string Will return 0 on invalid string with WATCHDOG_TIME_UNIX and FALSE on invalid value with WATCHDOG_TIME_UNIX
+   * @see FMT_DATE_TIME_SQL
+   */
+  public function dateConvert($date, $as) {
+    if ($as === self::DATE_TYPE_UNIX && !is_numeric($date)) {
+      // It is not a TIMESTAMP - may be it's SQL timestamp or other date-related string? Trying to convert to UNIX
+      $date = intval(strtotime($date, SN_TIME_NOW));
+    } elseif ($as === self::DATE_TYPE_SQL_STRING && (!is_string($date) || is_numeric($date))) {
+      $date = date(FMT_DATE_TIME_SQL, $date);
+    }
+
+    return $date;
+  }
+
+  /**
+   * Will write to DB date as specified format
+   *
+   * @param string     $name Config field name
+   * @param int|string $date Date ether as Unix timestamp or mySQL timestamp
+   * @param int        $as   Format of field in config table WATCHDOG_TIME_UNIX | WATCHDOG_TIME_SQL
+   *
+   * @return classConfig
+   * @see dateConvert()
+   */
+  public function dateWrite($name, $date, $as = self::DATE_TYPE_SQL_STRING) {
+    $this->pass()[$name] = $this->dateConvert($date, $as);
+
+    return $this;
+  }
+
+  /**
+   * Will read from DB date and convert it to specified format
+   *
+   * @param string $name Config field name
+   * @param int    $as   Output format WATCHDOG_TIME_UNIX | WATCHDOG_TIME_SQL
+   *
+   * @return false|int|string
+   * @see dateConvert()
+   */
+  public function dateRead($name, $as) {
+    return $this->dateConvert($date = $this->pass()[$name], $as);
+  }
+
 }

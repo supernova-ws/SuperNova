@@ -8,6 +8,7 @@ use Bonus\ValueStorage;
 use classCache;
 use classConfig;
 use Common\ContainerPlus;
+use Core\Scheduler\Watchdog;
 use DBAL\db_mysql;
 use DBAL\StorageSqlV2;
 use debug;
