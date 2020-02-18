@@ -154,8 +154,8 @@ class Lock {
       $lockTimeLeft < 0
       &&
       (
-//        !is_callable($callable)
-//        ||
+        is_callable($callable)
+        &&
         (($q = $callable()) === self::LOCK_EXPIRED_SKIP_TASK)
       )
     ) {
