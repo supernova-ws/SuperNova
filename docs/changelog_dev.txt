@@ -2066,6 +2066,11 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 // TODO Check URL timestamp when checking signature
 if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
 
+2020-02-18 22:15:57 45a73
+[%] Флоты
+    Исправлена ошибка
+
+
 2020-02-18 22:07:00 45a72
 [%] Флоты
     Исправлена ошибка

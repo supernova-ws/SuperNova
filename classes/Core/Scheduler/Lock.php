@@ -133,7 +133,7 @@ class Lock {
   /**
    * Attempt to acquire lock
    *
-   * @param callable|null $callable External function to determine how to react on lock expiration
+   * @param callable|null $callable External function to determine how to react on lock expiration. On `null` - task is always unlocked on lock expired
    *
    * @return bool TRUE if lock was placed FALSE if lock was already enabled
    */
@@ -154,8 +154,8 @@ class Lock {
       $lockTimeLeft < 0
       &&
       (
-        !is_callable($callable)
-        ||
+//        !is_callable($callable)
+//        ||
         (($q = $callable()) === self::LOCK_EXPIRED_SKIP_TASK)
       )
     ) {
