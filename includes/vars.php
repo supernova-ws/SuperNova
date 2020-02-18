@@ -7,6 +7,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use Alliance\Alliance;
 use Pages\Deprecated\PageAdminMining;
 use Pages\Deprecated\PageAdminModules;
 use Pages\Deprecated\PageAdminPayment;
@@ -25,7 +26,7 @@ $sn_menu_admin_extra = array();
 global $sn_mvc;
 $sn_mvc = [
   FIELD_MODEL => [
-    'ajax' => ['AjaxController::controller'],
+    'ajax' => [AjaxController::class . '::controller'],
 
     'options'  => ['sn_options_model'],
     'chat'     => ['sn_chat_model'],
@@ -37,7 +38,7 @@ $sn_mvc = [
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
-    'ajax' => ['AjaxController::view'],
+    'ajax' => [AjaxController::class . '::view'],
 
     'options'       => ['sn_options_view'],
     'chat'          => ['sn_chat_view'],
@@ -238,7 +239,7 @@ $tableList = array('aks', 'alliance', 'alliance_requests', 'announce', 'annonce'
 $sn_image_allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 
 global $ally_rights;
-$ally_rights = \Alliance\Alliance::RIGHTS_ALL;
+$ally_rights = Alliance::RIGHTS_ALL;
 
 $functions = array(//    'test' => 'sn_test',
 );

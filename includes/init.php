@@ -88,9 +88,9 @@ define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
 
 
 /**
- * @var classCache $sn_cache
+ * @var classCache  $sn_cache
  * @var classConfig $config
- * @var debug $debug
+ * @var debug       $debug
  */
 global $sn_cache, $config, $auth, $debug, $lang;
 
@@ -98,7 +98,7 @@ global $sn_cache, $config, $auth, $debug, $lang;
 global $sn_page_name;
 $sn_page_name = INITIAL_PAGE;
 global $template_result;
-$template_result = array('.' => array('result' => array()));
+$template_result = ['.' => ['result' => []]];
 
 SN::$lang = $lang = new classLocale(SN::$config->server_locale_log_usage);
 
@@ -120,12 +120,11 @@ SN::$gc->modules->loadModules(SN_ROOT_MODULES);
 SN::$gc->modules->initModules();
 
 
-
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
-$sn_page_data = $sn_mvc['pages'][$sn_page_name];
+$sn_page_data      = $sn_mvc['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name) {
   // Merging page options to global option pull
@@ -157,6 +156,30 @@ $lang->lng_switch(sys_get_param_str('lang'));
 
 if(SN::$config->server_updater_check_auto && SN::$config->server_updater_check_last + SN::$config->server_updater_check_period <= SN_TIME_NOW) {
   VersionCheckerDeprecated::performCheckVersion();
+}
+
+SN::$gc->watchdog->register(new TaskDispatchFleets(), TaskDispatchFleets::class);
+SN::$gc->worker->registerWorker('dispatchFleets', function () {
+  \Core\Worker::detachIncomingRequest();
+
+  $result = SN::$gc->fleetDispatcher->flt_flying_fleet_handler();
+
+  return ['message' => 'Fleets dispatched', 'code' => $result];
+});
+
+// TODO Check URL timestamp when checking signature
+if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
+  if (!defined('IN_AJAX')) {
+    define('IN_AJAX', true);
+  }
+
+  $result = [];
+
+  if (!empty($mode = sys_get_param_str('mode'))) {
+    $result = SN::$gc->worker->$mode();
+  }
+
+  die(json_encode($result));
 }
 
 if(SN::$config->user_birthday_gift && SN_TIME_NOW - SN::$config->user_birthday_celebrate > PERIOD_DAY) {
@@ -225,6 +248,7 @@ SN::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
   : false;
 
+// TODO - to scheduler
 StatUpdateLauncher::unlock();
 
 if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
@@ -277,7 +301,7 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
 
 playerTimeDiff::defineTimeDiff();
 
-// ...to controller
+// TODO: ...to controller
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 !empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;
 
@@ -286,8 +310,9 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
-SN::$gc->watchdog->register(new TaskDispatchFleets(SN::$gc));
 SN::$gc->watchdog->execute();
+
+//ini_set('error_reporting', E_ALL);
 
 //SN::$gc->watchdog->checkConfigTimeDiff(
 //  'fleet_update_last',

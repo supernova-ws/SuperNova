@@ -8,7 +8,7 @@ namespace Core\Scheduler;
 use DBAL\db_mysql;
 use Core\GlobalContainer;
 use classConfig;
-//use Timer;
+use SN;
 
 /**
  * Scheduled task is something that need to be done withing certain schedule
@@ -59,12 +59,16 @@ class TaskConditional {
   /**
    * TaskConditional constructor.
    *
-   * @param GlobalContainer $gc
+   * @param GlobalContainer|null $gc
    */
-  public function __construct($gc) {
-    $this->gc     = $gc;
-    $this->db     = $gc->db;
-    $this->config = $gc->config;
+  public function __construct($gc = null) {
+    if (!is_object($gc)) {
+      $this->gc = SN::$gc;
+    } else {
+      $this->gc = $gc;
+    }
+    $this->db     = $this->gc->db;
+    $this->config = $this->gc->config;
   }
 
   /**
@@ -77,50 +81,31 @@ class TaskConditional {
   public function __invoke() {
     if (!$this->isTaskAllowed()) {
       // If no interval specified or no config field specified - nothing to do
-
-//var_dump('TASK: missconfigured');
       return false;
     }
-//Timer::mark('start');
+
     // Checking task lock
     if (is_object($this->lock) && !$this->lock->attemptLock(function () {
         return $this->proceedLockExpiration();
       }, SN_TIME_NOW)) {
 
-//var_dump('TASK: Task still locked');
       return false;
     }
-//Timer::mark('lock processed');
 
     if ($this->condition()) {
       $this->updateTaskLastRunTime(SN_TIME_NOW);
-//Timer::mark('Time updated');
       // Performing task
       $result = $this->task();
 
-//var_dump('TASK: performing task');
-//if (isset($_GET['test'])) {
-//  var_dump('TASK: Holding task...');
-//  sleep(20);
-//}
-
       $this->updateTaskLastRunTime(time());
-//Timer::mark('Time updated-2');
     } else {
-//var_dump('TASK: condition not met - Nothing to do');
-
       $result = false;
     }
 
-
     // Unlocking task if any
     if (is_object($this->lock)) {
-//var_dump('TASK: unlocking');
       $this->lock->unLock(true);
     }
-//Timer::mark('Unlocked');
-
-//var_dump(Timer::getLog());
 
     return $result;
   }

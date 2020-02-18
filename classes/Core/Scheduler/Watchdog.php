@@ -36,9 +36,23 @@ class Watchdog {
 
   /**
    * @param TaskConditional $task
+   * @param string          $name Optional. Task name
    */
-  public function register(TaskConditional $task) {
-    $this->taskList[] = $task;
+  public function register(TaskConditional $task, $name = '') {
+    if (empty($name)) {
+      $this->taskList[] = $task;
+    } else {
+      $this->taskList[$name] = $task;
+    }
+  }
+
+  /**
+   * @param $name
+   *
+   * @return TaskConditional|null
+   */
+  public function getTask($name) {
+    return !empty($this->taskList[$name]) ? $this->taskList[$name] : null;
   }
 
   public function execute() {

@@ -36,10 +36,12 @@ use TheUser;
  * @property string            $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
+ * @property HttpRequest       $request
  * @property debug             $debug
  * @property db_mysql          $db
  * @property classCache        $cache
  * @property classConfig       $config
+ * @property Crypto            $crypto
  * @property Repository        $repository
  * @property Storage           $storage
  * @property RepoV2            $repoV2
@@ -58,6 +60,8 @@ use TheUser;
  *
  * @property PlayerLevelHelper $playerLevelHelper
  * @property SnPimp            $pimp
+ *
+ * @property Worker            $worker
  *
  * @property ModulesManager         $modules
  *
@@ -106,6 +110,13 @@ class GlobalContainer extends ContainerPlus {
 
     // Services --------------------------------------------------------------------------------------------------------
     // Default db
+    $gc->request = function (GlobalContainer $c) {
+      $httpRequest = new HttpRequest($c);
+      $httpRequest->fillCurrent();
+
+      return $httpRequest;
+    };
+
     $gc->db = function (GlobalContainer $c) {
       SN::$db = new db_mysql($c);
 
@@ -125,6 +136,13 @@ class GlobalContainer extends ContainerPlus {
       return new classConfig($gc->cachePrefix);
     };
 
+    $gc->crypto = function (GlobalContainer $gc) {
+      return new Crypto($gc);
+    };
+
+    $gc->worker = function (GlobalContainer $gc) {
+      return new Worker($gc);
+    };
 
     $gc->repository = function (GlobalContainer $gc) {
       /** @noinspection PhpDeprecationInspection */

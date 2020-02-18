@@ -18,6 +18,9 @@ use Planet\DBStaticPlanet;
  *
  */
 class FleetDispatcher {
+  const TASK_ALREADY_LOCKED = -1;
+  const TASK_COMPLETE = 0;
+  const TASK_TERMINATED = 1;
   /**
    * @var GlobalContainer $gc
    */
@@ -50,7 +53,7 @@ class FleetDispatcher {
     $this->gc = $gc;
 
     $this->gameConfig = $gc->config;
-    $this->debug = $gc->debug;
+    $this->debug      = $gc->debug;
   }
 
   /**
@@ -159,9 +162,23 @@ class FleetDispatcher {
     [*] Но не раньше, чем переписать все миссии
 
     */
-    global $config, $debug, $lang;
 
-//    $runLock = new Lock(SN::$gc, 'fleet_update_run_lock', PERIOD_MINUTE, 10, classConfig::DATE_TYPE_UNIX);
+    // Trying to acquire lock for current task
+    $runLock = new Lock($this->gc, classConfig::FLEET_UPDATE_RUN_LOCK, SN::$gc->config->fleet_update_max_run_time, 1, classConfig::DATE_TYPE_UNIX);
+    if (!$runLock->attemptLock()) {
+      return self::TASK_ALREADY_LOCKED;
+    }
+    register_shutdown_function(function () use ($runLock) {
+      if ($runLock->isLocked()) {
+        $runLock->unLock(true);
+        $this->logTermination(0, 0, 0, 0, 0);
+//        print'lock released ' . microtime(true);
+      }
+    });
+
+    $result = self::TASK_COMPLETE;
+
+    set_time_limit(max(2, SN::$gc->config->fleet_update_max_run_time - 2));
 
     $workBegin = microtime(true);
 //log_file('Начинаем обсчёт флотов');
@@ -171,15 +188,16 @@ class FleetDispatcher {
     coe_o_missile_calculate();
     sn_db_transaction_commit();
 
-    $fleet_list = array();
+    $fleet_list       = array();
     $fleet_event_list = array();
-    $missions_used = array();
+    $missions_used    = array();
 
     $fleet_list_current_tick = $this->fleet_list_current_tick();
     foreach ($fleet_list_current_tick as $fleet_row) {
-      set_time_limit(15);
+//      set_time_limit(15);
+
       // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
-      $fleet_list[$fleet_row['fleet_id']] = $fleet_row;
+      $fleet_list[$fleet_row['fleet_id']]         = $fleet_row;
       $missions_used[$fleet_row['fleet_mission']] = 1;
       if ($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
         $fleet_event_list[] = array(
@@ -206,7 +224,8 @@ class FleetDispatcher {
       }
     }
 
-    set_time_limit(5);
+//    set_time_limit(5);
+
 //log_file('Сортировка и подгрузка модулей');
     uasort($fleet_event_list, array($this, 'flt_flyingFleetsSort'));
 //  unset($fleets_query);
@@ -235,12 +254,11 @@ class FleetDispatcher {
       require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
     }
 
-
 //log_file('Обработка миссий');
-    $lastEventBegin = microtime(true);
-    $lastMission = MT_NONE;
+    $lastEventBegin  = microtime(true);
+    $lastMission     = MT_NONE;
     $eventsProcessed = 0;
-    $lastEvent = EVENT_FLEET_NONE;
+    $lastEvent       = EVENT_FLEET_NONE;
 
     $sn_groups_mission = sn_get_groups('missions');
     foreach ($fleet_event_list as $fleet_event) {
@@ -250,18 +268,9 @@ class FleetDispatcher {
       // Let next run handle rest of fleets
       $workTime = microtime(true) - $workBegin;
       if ($workTime > GAME_FLEET_HANDLER_MAX_TIME) {
-        $debug->warning(sprintf(
-          'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events. Last event: mission %4$s event %6$s (%5$ss)',
-          number_format($workTime, 4),
-          GAME_FLEET_HANDLER_MAX_TIME,
-          $eventsProcessed,
-          $lang['type_mission'][$lastMission],
-          number_format($lastEventEnd - $lastEventBegin, 4),
-          $lang['fleet_events'][$lastEvent]
-        ),
-          'FFH Warning',
-          504
-        );
+        $this->logTermination($workTime, $eventsProcessed, $lastMission, $lastEvent, $lastEventEnd - $lastEventBegin);
+
+        $result = self::TASK_TERMINATED;
         break;
       }
 
@@ -274,15 +283,15 @@ class FleetDispatcher {
       }
 
       $lastEventBegin = microtime(true);
-      $lastMission = $fleet_row['fleet_mission'];
-      $lastEvent = $fleet_event['fleet_event'];
+      $lastMission    = $fleet_row['fleet_mission'];
+      $lastEvent      = $fleet_event['fleet_event'];
       $eventsProcessed++;
 
 //log_file('Миссия');
       // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
       sn_db_transaction_start();
       // а текущее время
-      $config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
+      SN::$gc->config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
 
       $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
       // Формируем запрос, блокирующий сразу все нужные записи
@@ -332,7 +341,7 @@ class FleetDispatcher {
         if ($mission_data['dst_planet']['id_owner']) {
           $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
         }
-        $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
+        $mission_data['dst_user']   = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
         $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
       }
 
@@ -341,7 +350,7 @@ class FleetDispatcher {
         case MT_AKS:
         case MT_ATTACK:
         case MT_DESTROY:
-          $attack_result = flt_mission_attack($mission_data);
+          $attack_result  = flt_mission_attack($mission_data);
           $mission_result = CACHE_COMBAT;
         break;
 
@@ -383,7 +392,7 @@ class FleetDispatcher {
         case MT_SPY:
           require_once(SN_ROOT_PHYSICAL . 'includes/includes/coe_simulator_helpers.php');
 
-          $theMission = \Fleet\MissionEspionage::buildFromArray($mission_data);
+          $theMission = MissionEspionage::buildFromArray($mission_data);
           $theMission->flt_mission_spy();
 
           unset($theMission);
@@ -399,7 +408,11 @@ class FleetDispatcher {
       sn_db_transaction_commit();
     }
 
-    set_time_limit(30); // TODO - Optimize
+//    set_time_limit(30); // TODO - Optimize
+
+    $runLock->unLock(true);
+
+    return $result;
 
 //  log_file('Закончили обсчёт флотов');
   }
@@ -485,6 +498,28 @@ class FleetDispatcher {
     $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
     return $result;
+  }
+
+  /**
+   * @param $workTime
+   * @param $eventsProcessed
+   * @param $lastMissionId
+   * @param $lastEventId
+   * @param $lastEventLength
+   */
+  public function logTermination($workTime, $eventsProcessed, $lastMissionId, $lastEventId, $lastEventLength) {
+    SN::$debug->warning(sprintf(
+      'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events. Last event: mission %4$s event %6$s (%5$ss)',
+      number_format($workTime, 4),
+      GAME_FLEET_HANDLER_MAX_TIME,
+      $eventsProcessed,
+      $lastMissionId ? SN::$lang['type_mission'][$lastMissionId] : '!TERMINATED BY TIMEOUT!',
+      number_format($lastEventLength, 4),
+      $lastEventId ? SN::$lang['fleet_events'][$lastEventId] : '!TERMINATED BY TIMEOUT!'
+    ),
+      'FFH Warning',
+      504
+    );
   }
 
 

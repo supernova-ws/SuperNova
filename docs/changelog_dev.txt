@@ -2054,6 +2054,27 @@ https://phpdelusions.net/pdo/fetch_modes#FETCH_LAZY
 
 see .___logs.txt
 
+https://stackoverflow.com/questions/14359926/send-http-request-from-php-without-waiting-for-response
+https://stackoverflow.com/questions/124462/how-to-make-asynchronous-http-requests-in-php?noredirect=1&lq=1
+    In my testing, using exec("curl $url > /dev/null 2>&1 &"); is one of the fastest solutions here. It's immensely faster (1.9s for 100 iterations) than the post_without_wait() function (14.8s) in the "accepted" answer above. AND it's a one-liner... – rinogo Jan 28 '16 at 20:29
+https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-without-waiting-for-the-command-to-complete?noredirect=1&lq=1
+
+
+
+
+
+// TODO Check URL timestamp when checking signature
+if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
+
+2020-02-18 21:00:19 45a71
+[!] Код
+    Новая система рабочих процессов Worker
+
+[!] Флоты
+    Диспетчер флотов теперь использует системы Task+Worker и является неблокирующим
+    Таким образом, теперь нет визуальных задержек на обсчёт флотов (кому-то из игроков раньше не везло каждые 4 секунды)
+    Так же флоты обсчитываются не кусками по 3 секунды, а в пределах, заданным параметром `fleet_update_max_run_time` (30 секунд по умолчанию)
+
 
 2020-02-09 21:08:55 45a70
 [!] Код

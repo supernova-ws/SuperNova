@@ -5,6 +5,8 @@
 
 namespace Fleet;
 
+use Core\GlobalContainer;
+use Core\HttpUrl;
 use SN;
 use classConfig;
 use Core\Scheduler\TaskPeriodic;
@@ -18,12 +20,26 @@ class TaskDispatchFleets extends TaskPeriodic {
    */
   protected $configName = 'fleet_update_last';
 
-  public function __construct($gc) {
+  /**
+   * @param GlobalContainer $gc
+   *
+   * @return Lock
+   */
+  public static function getLock($gc) {
+    return new Lock($gc, 'fleet_update_lock', PERIOD_MINUTE, 10, classConfig::DATE_TYPE_UNIX);
+//    return new Lock($gc, 'fleet_update_lock', 10, 0, classConfig::DATE_TYPE_UNIX);
+  }
+
+  /**
+   * TaskDispatchFleets constructor.
+   *
+   * @param GlobalContainer|null $gc
+   */
+  public function __construct($gc = null) {
     parent::__construct($gc);
 
     $this->interval = $this->config->fleet_update_interval;
-    $this->lock     = new Lock($gc, 'fleet_update_lock', PERIOD_MINUTE, 10, classConfig::DATE_TYPE_UNIX);
-//    $this->lock     = new Lock($gc, 'fleet_update_lock', 10, 0, classConfig::DATE_TYPE_UNIX);
+    $this->lock     = $this::getLock($this->gc);
   }
 
   protected function isTaskAllowed() {
@@ -44,7 +60,14 @@ class TaskDispatchFleets extends TaskPeriodic {
 
 
   protected function task() {
-    $this->gc->fleetDispatcher->flt_flying_fleet_handler();
+    $url = HttpUrl::spawn($this->gc)
+      ->parseUrl(SN_ROOT_VIRTUAL)
+      ->addPath('index.php')
+      ->addParams(['page' => 'worker', 'mode' => 'dispatchFleets',]);
+
+    sn_get_url_contents($url->urlSigned());
+
+//    invokeUrl($url);
 
     return true;
   }

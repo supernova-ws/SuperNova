@@ -30,9 +30,10 @@
  * @property int        $empire_mercenary_base_period  => PERIOD_MONTH, // Base hire period for price calculations
  * @property int        $empire_mercenary_temporary    => 0, // Temporary empire-wide mercenaries
  *
- * @property int        $fleet_update_interval         => 4 second  // how often fleets should be updated
+ * @property int        $fleet_update_max_run_time     => 30,         // Maximum length in seconds for single fleet dispatch run. Should be 1 second or more
+ * @property int        $fleet_update_interval         => 4 second    // how often fleets should be updated
  * @property int        $fleet_update_last             => SN_TIME_NOW // unixtime - when fleet was updated last
- * @property int        $fleet_update_lock             => ''  // SQL time when lock was acquired
+ * @property int        $fleet_update_lock             => ''          // SQL time when lock was acquired
  *
  * @property string     $game_adminEmail               => 'root@localhost',    // Admin's email to show to users
  *
@@ -159,21 +160,34 @@
  *
  * @property int        $upd_lock_time                 => Update lock time
  *
- * @property string     $url_purchase_metamatter       => URL to purchase MM for servers w/o payment modules
+ * @property string     $server_cypher                 => Internally generated cypher for in-server communications
  *
- * @property string     $var_db_update                 => '0' - SQL_DATE_TIME
- * @property string     $var_db_update_end             => '0' - SQL_DATE_TIME
+ * @property string            $url_purchase_metamatter       => URL to purchase MM for servers w/o payment modules
  *
- * @property string     $var_stat_update               => '0' - SQL_DATE_TIME - when stat update was started
- * @property string     $var_stat_update_end           => '0' - SQL_DATE_TIME - ?????????
- * @property string     $var_stat_update_admin_forced  => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
- * @property string     $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
- * @property string     $var_stat_update_msg           => 'Update never started' - Last stat update message
+ * @property string            $var_db_update                 => '0' - SQL_DATE_TIME
+ * @property string            $var_db_update_end             => '0' - SQL_DATE_TIME
+ *
+ * @property string            $var_stat_update               => '0' - SQL_DATE_TIME - when stat update was started
+ * @property string            $var_stat_update_end           => '0' - SQL_DATE_TIME - ?????????
+ * @property string            $var_stat_update_admin_forced  => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
+ * @property string            $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
+ * @property string            $var_stat_update_msg           => 'Update never started' - Last stat update message
  *
  */
 class classConfig extends classPersistent {
   const DATE_TYPE_UNIX = 0;
   const DATE_TYPE_SQL_STRING = 1;
+
+  const FLEET_UPDATE_RUN_LOCK = 'fleet_update_run_lock';
+  const FLEET_UPDATE_MAX_RUN_TIME = 'fleet_update_max_run_time';
+
+  /**
+   * Internal cypher string for server/server communication
+   *
+   * @var string $cypher
+   */
+  protected $cypher = '';
+
   protected $defaults = array(
     // SEO meta
     'adv_conversion_code_payment'  => '',
@@ -208,7 +222,7 @@ class classConfig extends classPersistent {
     'BuildLabWhileRun'         => 0, // Allow to build lab/Nanolab while tech researching AND allowing research tech while lab/Nanolab
 
     // Chat settings
-    // Nick highliting
+    // Nick highlighting
     'chat_highlight_developer' => '<span class=\"nick_developer\">$1</span>', // Developer nick
     'chat_highlight_admin'     => '<span class=\"nick_admin\">$1</span>', // Admin nick
     'chat_highlight_moderator' => '<span class=\"nick_moderator\">$1</span>', // Moderator nick
@@ -251,8 +265,9 @@ class classConfig extends classPersistent {
     'Fleet_Cdr'   => 30,
     'fleet_speed' => 1,
 
-    'fleet_update_interval' => 4,
-    'fleet_update_lock'     => '', // SQL time when lock was acquired
+    self::FLEET_UPDATE_MAX_RUN_TIME => 30,     // Maximum length in seconds for single fleet dispatch run
+    'fleet_update_interval'         => 4,
+    'fleet_update_lock'             => '', // SQL time when lock was acquired
 
     'game_adminEmail'       => 'root@localhost',    // Admin's email to show to users
     'game_counter'          => 0,  // Does built-in page hit counter is on?
@@ -277,7 +292,7 @@ class classConfig extends classPersistent {
     'game_news_overview_show' => PERIOD_WEEK_2,    // How long news will be shown in Overview page in seconds. Default - 2 weeks
     // Noob protection
     'game_noob_factor'        => 5,    // Multiplier to divide "stronger" and "weaker" users
-    'game_noob_points'        => 5000, // Below this point user threated as noob. 0 to disable
+    'game_noob_points'        => 5000, // Below this point user treated as noob. 0 to disable
 
     'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccounts)
 
@@ -509,6 +524,27 @@ class classConfig extends classPersistent {
    */
   public function dateRead($name, $as) {
     return $this->dateConvert($date = $this->pass()[$name], $as);
+  }
+
+  public function getCypher() {
+    $db = SN::$gc->db;
+
+    if (empty($this->cypher)) {
+      $db->transactionStart();
+      $cypher = $this->pass()->server_cypher;
+      if (empty($cypher)) {
+        $cypher = md5(sys_random_string(32));
+
+        $this->pass()->server_cypher = $cypher;
+
+        $db->transactionCommit();
+      } else {
+        $db->transactionRollback();
+      }
+      $this->cypher = $cypher;
+    }
+
+    return $this->cypher;
   }
 
 }

@@ -83,6 +83,9 @@ function sn_post_url_contents($url, $data) {
   return $return;
 }
 
+function invokeUrl($url) {
+  exec("curl $url > /dev/null 2>&1 &");
+}
 
 // ----------------------------------------------------------------------------------------------------------------
 function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {

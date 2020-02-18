@@ -328,7 +328,7 @@ switch ($updater->new_version) {
             ) . "' WHERE `messageid` = " . floatval($row['messageid'])
           );
         } catch (Exception $e) {
-        };
+        }
       }
     });
 
@@ -513,7 +513,7 @@ switch ($updater->new_version) {
         // Adding unique index for all significant fields
         $updater->upd_alter_table('security_player_entry', [
           "ADD UNIQUE KEY `I_player_entry_unique` (`device_id`, `browser_id`, `user_ip`, `user_proxy`)",
-        ], ! $updater->isIndexExists('security_player_entry', 'I_player_entry_unique'));
+        ], !$updater->isIndexExists('security_player_entry', 'I_player_entry_unique'));
         // Filling `security_player_entry` from temp table
         $updater->upd_do_query(
           "INSERT IGNORE INTO `{{security_player_entry}}` (`device_id`, `browser_id`, `user_ip`, `user_proxy`, `first_visit`)
@@ -569,7 +569,6 @@ switch ($updater->new_version) {
     $updater->new_version = 44;
     $updater->upd_do_query('COMMIT;', true);
 
-  /** @noinspection PhpMissingBreakStatementInspection */
   case 44:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
     $updater->upd_log_version_update();
@@ -593,30 +592,32 @@ switch ($updater->new_version) {
           'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
       }
-
     }, PATCH_REGISTER);
 
     // 2019-08-21 20:14:18 45a19
-    $updater->updPatchApply(9, function() use ($updater) {
-//      if (! $updater->isFieldExists('payment', 'payment_method_id')) {
-        $updater->upd_alter_table('payment', [
-          'ADD COLUMN `payment_method_id` smallint DEFAULT NULL AFTER `payment_module_name`',
-          'ADD KEY `I_payment_method_id` (`payment_method_id`)',
-        ], ! $updater->isFieldExists('payment', 'payment_method_id'));
+    $updater->updPatchApply(9, function () use ($updater) {
+      $updater->upd_alter_table('payment', [
+        'ADD COLUMN `payment_method_id` smallint DEFAULT NULL AFTER `payment_module_name`',
+        'ADD KEY `I_payment_method_id` (`payment_method_id`)',
+      ], !$updater->isFieldExists('payment', 'payment_method_id'));
+    }, PATCH_REGISTER);
 
-//      }
+    // 2020-02-18 21:00:19 45a71
+    $updater->updPatchApply(10, function () use ($updater) {
+      $name = classConfig::FLEET_UPDATE_RUN_LOCK;
+      if (!SN::$gc->config->pass()->$name) {
+        SN::$gc->config->pass()->$name = 30;
+      }
     }, PATCH_PRE_CHECK);
 
 //    // #ctv
 //    $updater->updPatchApply(10, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
-    // TODO - UNCOMMENT ON RELEASE!
+  // TODO - UNCOMMENT ON RELEASE!
 //    $updater->new_version = 45;
 //    $updater->upd_do_query('COMMIT;', true);
 }
-
-
 
 $updater->successTermination = true;
 // DO NOT DELETE ! This will invoke destructor !
