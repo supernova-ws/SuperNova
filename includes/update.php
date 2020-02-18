@@ -604,7 +604,7 @@ switch ($updater->new_version) {
 
     // 2020-02-18 21:00:19 45a71
     $updater->updPatchApply(10, function () use ($updater) {
-      $name = classConfig::FLEET_UPDATE_RUN_LOCK;
+      $name = classConfig::FLEET_UPDATE_MAX_RUN_TIME;
       if (!SN::$gc->config->pass()->$name) {
         SN::$gc->config->pass()->$name = 30;
       }

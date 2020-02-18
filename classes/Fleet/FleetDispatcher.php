@@ -556,7 +556,7 @@ class FleetDispatcher {
   /**
    * @param string $msg
    */
-  protected function log_file($msg) {
+  public function log_file($msg) {
     static $handler;
 
     if (!$handler) {
