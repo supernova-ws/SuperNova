@@ -929,11 +929,8 @@ function snConfirm(params) {
     title: params.title ? params.title : (that.attr('title') ? that.attr('title') : language.sys_confirm_action_title),
     open: function () {
       var element = $(this).parent();
-      //var selected_planet = $('#navbar_planet_select').find('option:selected');
       element.find('.ui-dialog-titlebar').css('display', 'block');
       element.find('.ui-dialog-buttonpane button:last').focus();
-      //element.find('input[name=cp]').val(selected_planet.val());
-      //$('#dialog-sector-buy-planet-name').text(selected_planet.text());
     },
     buttons: {
       ok: {

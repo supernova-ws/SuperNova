@@ -2060,7 +2060,14 @@ https://stackoverflow.com/questions/124462/how-to-make-asynchronous-http-request
 https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-without-waiting-for-the-command-to-complete?noredirect=1&lq=1
 
 
+Карты на конкретные ауткомы в Экспедициях
 
+https://stackoverflow.com/questions/32378953/keep-the-middle-item-centered-when-side-items-have-different-widths
+        https://jsfiddle.net/wqLezyfe/2/
+
+https://myip.ms/info/whois/<IP ADDRESS>#w
+
+[09.04.2020 19:29:25] HARLOK[Феникс]> (Сингулярность[БАС]) ну вот есть на карте кнопка ракетного залпа.а рядом кнопку Добавить в закладки. и что бы появлялись там координаты и имя игрока. при нажатии автоматом.
 
 
 // TODO Check URL timestamp when checking signature
@@ -2069,6 +2076,13 @@ if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
 
 
 #ctv
+
+2020-04-18 15:36:05 45a77
+[@] Темплейты
+    Вынесены кнопки навбара в отдельный файл
+[@] Код
+    Поддержка Хайспотов Фестиваля ЧЛ/ОвК
+
 
 2020-02-18 22:18:16 45a74
 [%] Флоты

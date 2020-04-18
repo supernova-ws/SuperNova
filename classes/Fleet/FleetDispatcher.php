@@ -18,9 +18,9 @@ use Planet\DBStaticPlanet;
  *
  */
 class FleetDispatcher {
-  const TASK_ALREADY_LOCKED = -1;
   const TASK_COMPLETE = 0;
   const TASK_TERMINATED = 1;
+  const TASK_ALREADY_LOCKED = -1;
   /**
    * @var GlobalContainer $gc
    */
@@ -65,7 +65,7 @@ class FleetDispatcher {
       ||
       SN::gameIsDisabled()
       ||
-      !$this->getLock()
+      !$this->getLockOld()
     ) {
       return;
     }
@@ -82,7 +82,7 @@ class FleetDispatcher {
    * @return bool
    * @deprecated
    */
-  protected function getLock() {
+  protected function getLockOld() {
     sn_db_transaction_start();
 
     // Watchdog timer
@@ -164,7 +164,7 @@ class FleetDispatcher {
     */
 
     // Trying to acquire lock for current task
-    $runLock = new Lock($this->gc, classConfig::FLEET_UPDATE_RUN_LOCK, SN::$gc->config->fleet_update_max_run_time, 1, classConfig::DATE_TYPE_UNIX);
+    $runLock = $this->buildLock();
     if (!$runLock->attemptLock()) {
       return self::TASK_ALREADY_LOCKED;
     }
@@ -520,6 +520,15 @@ class FleetDispatcher {
       'FFH Warning',
       504
     );
+  }
+
+  /**
+   * @return Lock
+   */
+  public function buildLock() {
+    $runLock = new Lock($this->gc, classConfig::FLEET_UPDATE_RUN_LOCK, SN::$gc->config->fleet_update_max_run_time, 1, classConfig::DATE_TYPE_UNIX);
+
+    return $runLock;
   }
 
 
