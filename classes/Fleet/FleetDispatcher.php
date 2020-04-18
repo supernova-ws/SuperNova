@@ -162,23 +162,30 @@ class FleetDispatcher {
     [*] Но не раньше, чем переписать все миссии
 
     */
+//    $this->log_file('Dispatch started');
 
     // Trying to acquire lock for current task
     $runLock = $this->buildLock();
     if (!$runLock->attemptLock()) {
+//      $this->log_file('Dispatch stopped: lock ' . $runLock->isLocked() .'s' );
       return self::TASK_ALREADY_LOCKED;
     }
     register_shutdown_function(function () use ($runLock) {
-      if ($runLock->isLocked()) {
+//      $this->log_file('Shutting down');
+      $timeLock = $runLock->isLocked();
+      if ($timeLock > 0 || $timeLock === 0) {
         $runLock->unLock(true);
         $this->logTermination(0, 0, 0, 0, 0);
-//        print'lock released ' . microtime(true);
+//        $this->log_file('UNLOCKING');
       }
+
+//      $this->log_file(SN::$gc->config->pass()->fleet_update_run_lock);
+//      $this->log_file('ALL RELEASED');
     });
 
     $result = self::TASK_COMPLETE;
 
-    set_time_limit(max(2, SN::$gc->config->fleet_update_max_run_time - 2));
+    set_time_limit(max(3, SN::$gc->config->fleet_update_max_run_time - 3));
 
     $workBegin = microtime(true);
 //log_file('Начинаем обсчёт флотов');
@@ -411,6 +418,8 @@ class FleetDispatcher {
 //    set_time_limit(30); // TODO - Optimize
 
     $runLock->unLock(true);
+
+//    $that->log_file('Dispatch finished - NORMAL SHUTDOWN');
 
     return $result;
 
