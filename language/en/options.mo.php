@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 45a8
+* @version 45a86
 *
 */
 
@@ -77,7 +77,7 @@ $a_lang_array = [
   ],
 
   'opt_navbar_title' => 'Navigation Panel',
-  'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
+  'opt_navbar_description' => 'The navigation bar (or simply "navbar") is located at the very top of the screen. This section allows you to customize the look of the navbar.',
   'opt_navbar_resourcebar_description' => 'Resourcebar - resource panel',
   'opt_navbar_buttons_title' => 'Setup navbar buttons',
   'opt_player_options' => [
@@ -94,8 +94,8 @@ $a_lang_array = [
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Disable Quest button',
     PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER    => 'Disable MetaMatter button',
 
-    PLAYER_OPTION_UNIVERSE_OLD                  => 'Использовать старый вид "Обзора Вселенной"',
-    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE     => 'Отключить кнопку колонизации',
+    PLAYER_OPTION_UNIVERSE_OLD                  => 'Use the old view of the "Survey of the Universe"',
+    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE     => 'Disable Colonization Button',
     PLAYER_OPTION_DESIGN_DISABLE_BORDERS        => 'Disable table borders (if any)',
     PLAYER_OPTION_TECH_TREE_TABLE               => 'View Technology Tree as table (old view)',
     PLAYER_OPTION_FLEET_SHIP_SELECT_OLD         => 'Use old fleet selection view',
