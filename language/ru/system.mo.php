@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #44a109#
+* @version #45a87#
 *
 */
 
@@ -150,8 +150,8 @@ $a_lang_array = [
   'sys_fleet_arrived'   => "Флот прибыл",
 
   'sys_planet_type' => [
-    PT_PLANET => 'Планета', 
-    PT_DEBRIS => 'Поле обломков', 
+    PT_PLANET => 'Планета',
+    PT_DEBRIS => 'Поле обломков',
     PT_MOON   => 'Луна',
   ],
 
@@ -251,6 +251,8 @@ $a_lang_array = [
   'navbar_button_expeditions_short' => 'Экспа',
   'navbar_button_fleets' => 'Флоты',
   'navbar_button_quests' => 'Квесты',
+  'navbar_font' => 'Шрифт',
+  'navbar_font_normal' => 'Норма',
   'sys_que_structures' => 'Здания',
   'sys_que_hangar' => 'Верфь',
   'sys_que_research' => 'Исследования',
@@ -506,7 +508,7 @@ $a_lang_array = [
   'mip_sender_amd'			=> 'Ракетно-космические войска',
   'mip_subject_amd'			=> 'Ракетная атака',
   'mip_body_attack'			=> 'Атака межпланетными ракетами (%1$s шт.) с планеты %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> на планету %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
-  
+
   // Misc
   'sys_game_rules' => 'Правила игры',
   'sys_game_documentation' => 'Описание игры',
