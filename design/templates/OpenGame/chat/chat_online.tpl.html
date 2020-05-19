@@ -1,0 +1,29 @@
+<!-- BEGIN online_player -->
+  <tr>
+    <!-- IF USER_AUTHLEVEL -->
+    <td>{{online_player.ID}}</td>
+    <td player_id="{online_player.ID}">
+      <!-- IF online_player.ID != USER_ID && USER_AUTHLEVEL > online_player.AUTH_LEVEL -->
+        <!-- IF USER_CAN_UNMUTE && online_player.MUTED -->
+          <img src='design/images/icon_muted.png' class="chat_unmute" />
+        <!-- ELSEIF USER_CAN_MUTE && ! online_player.MUTED -->
+          <img src='design/images/icon_muted.png' class="chat_mute" />
+        <!-- ENDIF -->
+
+        <!-- IF USER_CAN_BAN -->
+          <img src='design/images/icon_deny.png' class="chat_ban" />
+        <!-- ENDIF -->
+      <!-- ENDIF -->
+    </td>
+    <!-- ENDIF -->
+    <td>{online_player.NAME}</td>
+    <td>
+      <!-- IF online_player.MUTED -->
+        <img src='design/images/icon_muted.png' chat_muted="{online_player.MUTED}" chat_mute_reason="{online_player.MUTE_REASON}" />
+      <!-- ENDIF -->
+      <!-- IF USER_AUTHLEVEL && online_player.INVISIBLE -->
+        <img src='design/images/icon_invisible.png' />
+      <!-- ENDIF -->
+    </td>
+  </tr>
+<!-- END online_player -->

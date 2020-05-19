@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <style type="text/css">
+    body, html
+    {
+      border: 0;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow:hidden;
+      font-size: 10px;
+    }
+    iFrame { border-width: 0; }
+    head {height: 0}
+/*
+    body
+    {
+      overflow-y: hidden;
+    }
+*/
+    </style>
+  </head>
+
+  <body>
+    <script type="text/javascript" src="js/lib/jquery.js?{C_var_db_update}"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui.js?{C_var_db_update}"></script>
+    <script type="text/javascript" src="js/sn_global.js?{C_var_db_update}"></script>
+    <iframe id="main_frame" name="sn_frame_main" style="height: 100%; width: 100%; margin: 0 0 0 0" src="overview.php" seamless="seamless" frameborder = 0 ></iframe>
+    <?php
+      $mode = sys_get_param_int('mode', CHAT_MODE_COMMON);
+      $mode = $mode == CHAT_MODE_ALLY ? CHAT_MODE_ALLY : CHAT_MODE_COMMON;
+    ?>
+    <iframe id="chat_resize_frame" style="height: 10px; width: 100%; overflow: hidden; margin: 0 0 0 0" src="about:blank" seamless="seamless" frameborder = 0></iframe>
+    <iframe id="chat_frame" name="sn_frame_chat" style="height: 0; width: 100%; overflow: hidden; margin: 0 0 0 0" seamless="seamless" frameborder = "0" src="index.php?page=chat&mode=<?php echo $mode; ?>&iframe=1"></iframe>
+
+    <script type="text/javascript">
+      var resize_frame = document.getElementById('chat_resize_frame').contentWindow.document;
+      resize_frame.open('text/html', 'replace');
+      resize_frame.write('<!DOCTYPE html><html><body><style>html,body,iframe,center{-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;padding: 0;margin: 0;border: 0;overflow: hidden;font-size: 10px;height: 10px;}</style><center unselectable="on"># # #</center></body></html>');
+      resize_frame.close();
+
+      var chatResizeY;
+      var chatFrameMainMinHeight = 200;
+      var chatFrameChatMinHeight = 140;
+
+      function setHeightToParent(element) {
+        element.height(element.parent().height());
+      }
+
+      jQuery("#chat_frame").load(function() {
+        jQuery("#chat_frame").contents().find('#copyright').remove();
+
+        jQuery("#chat_resize_frame").mouseenter(function(e){
+          jQuery("#chat_resize_frame").contents().find('body,html').css('cursor','row-resize');
+        });
+        jQuery("#chat_resize_frame").contents().mouseleave(function(e){
+          jQuery("#chat_resize_frame").contents().find('body,html').css('cursor','default');
+        });
+
+        jQuery("#chat_resize_frame").contents().mousedown(function(e){
+          jQuery("#chat_resize_frame").contents().find('body,html').css('cursor','row-resize');
+
+          chatResizeY = e.screenY;
+        });
+
+        jQuery("#chat_resize_frame").contents().mouseup(function(e) {
+          jQuery("#chat_resize_frame").contents().find('body,html').css('cursor','default');
+
+          chatFrame = jQuery("#chat_frame").contents();
+          chatResizeY = e.screenY - chatResizeY;
+          if(!isNaN(chatResizeY)) {
+            if(chatResizeY < (minResize = chatFrameMainMinHeight - jQuery("#main_frame").height())) {
+              chatResizeY = minResize;
+            }
+
+            if((minResize = jQuery('body').height() - jQuery("#main_frame").height() - jQuery("#chat_resize_frame").height() - chatFrameChatMinHeight) < chatResizeY) {
+              chatResizeY = minResize;
+            }
+
+            jQuery("#main_frame").height(jQuery("#main_frame").height() + chatResizeY);
+            jQuery("#chat_frame").height(jQuery('body').height() - jQuery("#main_frame").height() - jQuery("#chat_resize_frame").height());
+          } else{
+            jQuery("#main_frame").height(jQuery("#main_frame").height() - chatFrameChatMinHeight - 10);
+            jQuery("#chat_frame").height(chatFrameChatMinHeight);
+            setHeightToParent(chatFrame.find('html'));
+          }
+
+          chatFrame.find('#chat_online_div').height(0);
+          chatFrame.find('#online_table').height(0);
+          chatFrame.find('#shoutbox').height(0);
+          chatFrame.find('#chat_box').height(0);
+          chatFrame.find('#main_content_center').height(0);
+          chatFrame.find('body > .markup').height(0);
+
+          setHeightToParent(chatFrame.find('body'));
+//          !isNaN(chatResizeY) ? setHeightToParent(chatFrame.find('body > .markup')) : chatFrame.find('#global_page_markup').height(140);
+          setHeightToParent(chatFrame.find('body > .markup'));
+
+          setHeightToParent(chatFrame.find('#main_content_center'));
+          setHeightToParent(chatFrame.find('#chat_box'));
+          setHeightToParent(chatFrame.find('#shoutbox'));
+          setHeightToParent(chatFrame.find('#online_table'));
+          setHeightToParent(chatFrame.find('#chat_online_div'));
+          if(isNaN(chatResizeY)) {
+            chatFrame.find('#global_page_markup').height(140);
+          }
+        });
+        jQuery("#chat_resize_frame").contents().mouseup();
+      });
+    </script>
+  </body>
+</html>
