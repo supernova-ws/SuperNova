@@ -8,6 +8,7 @@
  */
 
 use Alliance\Alliance;
+use Chat\Chat;
 use Pages\Deprecated\PageAdminMining;
 use Pages\Deprecated\PageAdminModules;
 use Pages\Deprecated\PageAdminPayment;
@@ -29,8 +30,11 @@ $sn_mvc = [
     'ajax' => [AjaxController::class . '::controller'],
 
     'options'  => ['sn_options_model'],
-    'chat'     => ['sn_chat_model'],
-    'chat_add' => ['sn_chat_add_model'],
+
+//    'chat'     => ['sn_chat_model'],
+//    'chat_add' => ['sn_chat_add_model'],
+    'chat'     => [Chat::class  . '::' . 'chatModel'],
+    'chat_add' => [Chat::class  . '::' . 'chatAddModel'],
 
     'imperium' => [PageImperium::class . '::' . 'modelStatic'],
 
@@ -41,8 +45,13 @@ $sn_mvc = [
     'ajax' => [AjaxController::class . '::view'],
 
     'options'       => ['sn_options_view'],
-    'chat'          => ['sn_chat_view'],
-    'chat_msg'      => ['sn_chat_msg_view'],
+
+//    'chat'          => ['sn_chat_view'],
+//    'chat_msg'      => ['sn_chat_msg_view'],
+    'chat'          => [Chat::class  . '::' . 'chatView'],
+    'chat_msg'      => [Chat::class  . '::' . 'chatMsgView'],
+    'chat_frame'      => [Chat::class  . '::' . 'chatFrameView'],
+
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
@@ -75,6 +84,35 @@ $sn_mvc = [
     'admin/user_view'     => [
       'admin' => 'admin',
     ],
+
+    'chat' => [
+      'chat_advanced' => [
+        'file' => 'chat_advanced',
+        'path' => '',
+      ],
+    ],
+    'chat_add' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+    'chat_msg' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+    'chat_frame' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+
   ],
 
   'pages' => [
@@ -123,6 +161,12 @@ $sn_mvc = [
       ],
     ],
     'chat_msg' => [
+      'filename' => 'chat',
+      'options'  => [
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
+      ],
+    ],
+    'chat_frame' => [
       'filename' => 'chat',
       'options'  => [
         PAGE_OPTION_FLEET_UPDATE_SKIP => true,

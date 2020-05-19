@@ -1,0 +1,127 @@
+<!-- INCLUDE chat/chat_header -->
+
+<!--[if IE]><style type="text/css">#chat_box1 {width: 80%;}</style><![endif]-->
+
+<!-- IF CHAT_IFRAME -->
+<style type="text/css">
+  body, html, center {
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow-y: hidden;
+  }
+</style>
+<!-- ELSE -->
+<h2>{PAGE_HEADER} - <a class="link_external" onClick="window.open('index.php?page=chat_msg&history=history&ally={ALLY}');">{L_chat_history}</a></h2>
+
+<div style="min-height: 35em">
+<!-- ENDIF -->
+
+<table id="chat_box" cellpadding="0" width="100%" height="100%">
+  <tr>
+    <th id="shoutbox_cell" valign="top">
+      <div id="shoutbox"></div>
+    </th>
+
+    <th rowspan="2" id="chat_online_dragger">&lt;&lt;</th>
+
+    <th width="100px" align="left" valign="top" id="chat_online_wrapper" class="js_chat_side_panel">
+      <table id="online_table" class="noborder" width="100%" cellspacing="0" border="0" style="height: 100%;">
+        <tr height="0px">
+          <td nowrap class="noborder">
+            <div class="contFS">
+              {L_chat_advanced_online_players}&nbsp;<span id="online_players"></span>&nbsp;(<img src='design/images/icon_invisible.png' /> <span id="online_invisibles"></span>)
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="noborder" height="100%" id="chat_online_cell">
+            <div style="vertical-align: text-top; overflow: auto;" class="chat_online" id="chat_online_div">
+              <table id="onlinebox" width="100%" class="markup"></table>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="c_l noborder" nowrap>
+            <label for="chat_player_invisible">{L_chat_advanced_invisibility}</label> <input type="checkbox" id="chat_player_invisible" />
+          </td>
+        </tr>
+      </table>
+    </th>
+  </tr>
+
+
+  <tr id="chat_message_inputs">
+    <th nowrap height="2px">
+      <form action="index.php?page=chat_add" name="chat_form">
+        <input type="hidden" name="color" id="chat_color" />
+
+        <span id="chat_color_button"><div>A</div><div>B</div><div>C</div><div>D</div><div>E</div><div>F</div><div>G</div></span>
+        <img id="chat_smile_point" src="design/images/smileys/smile.gif" alt="{L_chat_advanced_smile_tooltip}" title="{L_chat_advanced_smile_tooltip}" />
+        <input type="button" name="send" value="{L_chat_send}" id="send" onClick="addMessage();event.returnValue = false;return false;"  />
+        <span id="chat_msg_wrapper">
+        <!-- IF USER_AUTHLEVEL > 2 -->
+          <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autosuggest="off" name="msg" id="msg" onKeyPress="if(event.keyCode == 13 && event.ctrlKey){document.chat_form.send.click();event.returnValue = false;return false;}"></textarea>
+        <!-- ELSE -->
+          <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autosuggest="off" type="text" name="msg" id="msg" onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}" />
+        <!-- ENDIF -->
+        </span>
+      </form>
+    </th>
+    <th nowrap height="2px" id="chat_aux_panel" class="js_chat_side_panel">
+<!--      <a class="fl link" id="make_frame" href="index.php?page=chat_frame&mode={CHAT_MODE}">{L_chat_advanced_frame_on}</a>-->
+      <a class="fr link_external" onClick="window.open('index.php?page=chat_msg&history=history&ally={ALLY}', 'ChatHistory', '');">{L_chat_history}</a>
+    </th>
+  </tr>
+
+  <tr id="chat_message_refresh" nowrap height="2px" style="display: none;">
+    <td class="c_c" onclick="location.reload();" colspan="2">
+      <span class="link_action">{L_chat_timeout}</span>
+    </td>
+  </tr>
+
+  <script type="text/javascript">
+    if(sn_inframe) {
+      $('#make_frame').html('{L_chat_advanced_frame_off}').attr('href', '').click(function () {
+        // window.parent.window.document.location = 'index.php?page=chat&mode={CHAT_MODE}';
+        top.location.href = SN_ROOT_VIRTUAL + 'index.php?page=chat&mode={CHAT_MODE}';
+      });
+    }
+  </script>
+</table>
+
+<div id="chat_message_smiles2">
+  <!-- BEGIN smiles -->
+    <div smile="{smiles.BBCODE}"><img src="design/images/smileys/{smiles.FILENAME}.gif" /></div>
+  <!-- END smiles -->
+</div>
+
+
+<div id="chat_color_select">
+  <div color="cyan">AAAAAAAA</div>
+  <div color="yellow">AAAAAAAA</div>
+  <div color="green">AAAAAAAA</div>
+  <div color="pink">AAAAAAAA</div>
+  <div color="maroon">AAAAAAAA</div>
+  <div color="orange">AAAAAAAA</div>
+  <div color="white">AAAAAAAA</div>
+</div>
+
+
+<div id="chat_muted_tooltip"></div>
+<!-- IF AUTH_LEVEL -->
+<div id="chat_command_menu">
+  <div id="chat_command"></div>
+  <!-- BEGIN chat_advanced_command_interval -->
+  <div interval="{chat_advanced_command_interval.INTERVAL}">{chat_advanced_command_interval.NAME}</div>
+  <!-- END smiles -->
+  <div>
+    <label for="chat_command_reason">{L_chat_advanced_command_reason2}</label> <input type="text" id="chat_command_reason" />
+    <span><input type="checkbox" id="chat_command_vacancy" checked="checked" /> <label for="chat_command_vacancy">{L_chat_advanced_ban_vacancy}</label></span>
+  </div>
+</div>
+<!-- ENDIF -->

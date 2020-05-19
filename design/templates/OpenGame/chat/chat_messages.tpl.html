@@ -1,0 +1,54 @@
+<!-- IF HISTORY -->
+<!-- INCLUDE chat/chat_header -->
+<h2>{L_chat_history}&nbsp;-&nbsp;<!-- IF ALLY -->{L_chat_ally}<!-- ELSE --> {L_chat_common}<!-- ENDIF --></h2>
+<!-- IF .page -->
+<h3>
+  <input type="button" chat_history_go="1" value="&lt;&lt;"<!-- IF PAGE <= 1 --> disabled<!-- ENDIF --> />
+  <input type="button" chat_history_go="{PAGE_PREV}" value="&lt;"<!-- IF PAGE <= 1 --> disabled<!-- ENDIF --> />
+  <label for="sheet">{L_chat_page}:</label>
+  <select id="sheet" name='sheet' chat_history_go="-1">
+    <!-- BEGIN page -->
+    <option value="{page.NUMBER}"<!-- IF PAGE == page.NUMBER --> selected<!-- ENDIF --> >{page.NUMBER}</option>
+    <!-- END page -->
+  </select> / {PAGES_TOTAL}
+  <input type="button" chat_history_go="{PAGE_NEXT}" value="&gt;"<!-- IF PAGE >= PAGES_TOTAL --> disabled<!-- ENDIF -->
+  />
+  <input type="button" chat_history_go="{PAGES_TOTAL}" value="&gt;&gt;"<!-- IF PAGE >= PAGES_TOTAL --> disabled
+  <!-- ENDIF --> />
+</h3>
+<!-- ENDIF -->
+<!-- ENDIF -->
+
+<!-- IF HISTORY -->
+<div id="shoutbox" style="height: auto;">
+<!-- ENDIF -->
+
+  <!-- BEGIN chat -->
+  <!-- IF chat.SENDER_ID && chat.RECIPIENT_ID --><!-- DEFINE $PRIVATE_CLASS = 'chat_private' --><!-- ELSE -->
+  <!-- DEFINE $PRIVATE_CLASS = '' --><!-- ENDIF -->
+  <div class="{$PRIVATE_CLASS} contFS chat_a">
+    <!-- IF chat.TIME --><div class="chat_a_time">[{chat.TIME}]&nbsp;</div><!-- ENDIF -->
+
+    <!-- IF chat.SENDER_ID && chat.RECIPIENT_ID -->
+    <div class="chat_a_private">
+      {L_chat_advanced_whisper_sender_prefix}
+      <!-- IF chat.SENDER_ID == USER_ID -->
+      <b>{chat.SENDER_NAME}</b>{L_chat_advanced_whisper_sender_midfix}<span
+            safe_name="{online_player.chat.RECIPIENT_NAME_SAFE}">{chat.RECIPIENT_NAME}</span>
+      <!-- ELSE -->
+      <span safe_name="{chat.SENDER_NAME_SAFE}">{chat.SENDER_NAME}</span>{L_chat_advanced_whisper_recipient_midfix}<b>{chat.RECIPIENT_NAME}</b>
+      <!-- ENDIF -->
+      {L_chat_advanced_whisper_recipient_suffix}
+    </div>
+    <!-- ELSEIF chat.NICK -->
+    <div js_chat_nick_stripped="{chat.NICK_STRIPPED}">{chat.NICK}&gt;</div><!-- ENDIF -->
+    <!-- IF chat.TEXT -->
+    <div class="chat_a_text">{chat.TEXT}</div><!-- ENDIF -->
+    <!-- IF chat.DISABLE -->
+    <div class="warning"><b>{L_chat_timeout}</b></div><!-- ENDIF -->
+  </div>
+  <!-- END chat -->
+
+  <!-- IF HISTORY -->
+</div>
+<!-- ENDIF -->
