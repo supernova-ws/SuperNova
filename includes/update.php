@@ -608,7 +608,7 @@ switch ($updater->new_version) {
       if (!SN::$gc->config->pass()->$name) {
         SN::$gc->config->pass()->$name = 30;
       }
-    }, PATCH_PRE_CHECK);
+    }, PATCH_REGISTER);
 
 //    // #ctv
 //    $updater->updPatchApply(10, function() use ($updater) {
