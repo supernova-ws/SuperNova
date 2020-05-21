@@ -1,0 +1,26 @@
+<!-- DEFINE $CELL_CLASS = 'tr' -->
+
+<!-- IF .planet > 5 -->
+  <!-- DEFINE $COLUMN_COUNT = 2 -->
+<!-- ENDIF -->
+
+<!-- BEGIN planet -->
+  <!-- DEFINE $PLANET_PLANET_ID = '{planet.ID}' -->
+
+  <!-- IF ! LIST_COLUMN_COUNT || planet.S_ROW_COUNT % LIST_COLUMN_COUNT == 0  -->
+  <!-- ENDIF -->
+<!-- IF planet.ID -->
+
+<!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
+  <!-- DEFINE $PLANET_SELECTOR = 'green' -->
+<!-- ELSE -->
+  <!-- DEFINE $PLANET_SELECTOR = 'transparent' -->
+<!-- ENDIF -->
+
+  <div style="border: 0.2em dashed {$PLANET_SELECTOR}; margin: 0; padding: 1.0em; border-radius: 1em;" class="planet_info_overview">
+    <!-- INCLUDE planet_list_info -->
+  </div>
+<!-- ENDIF -->
+  <!-- IF (! LIST_COLUMN_COUNT || (planet.S_ROW_COUNT + 1) % LIST_COLUMN_COUNT == 0 || planet.S_LAST_ROW)  -->
+  <!-- ENDIF -->
+<!-- END planet -->

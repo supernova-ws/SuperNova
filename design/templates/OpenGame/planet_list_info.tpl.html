@@ -8,7 +8,10 @@
   <!-- DEFINE $PLANET_IMG_SIZE_PREFIX = 's_' -->
 <!-- ENDIF -->
 
-<div class="{$FRAME_WIDTH}">
+<!-- DEFINE $FRAME_WIDTH = 'planet_list_top_medium' -->
+<!-- DEFINE $PLANET_IMG_SIZE_PREFIX = 's_' -->
+
+<div class="{$FRAME_WIDTH} planet_list_item">
   <div class="planet_list_wrap">
     <div class="left_top images" planet_id="{$PLANET_PLANET_ID}">
       <img src="{I_[$PLANET_IMG_SIZE_PREFIX][planet.IMAGE]}" class="element_fill_wrap" go="" />
@@ -105,6 +108,10 @@
     <div class="numbers">{planet.FIELDS_CUR}&nbsp;/&nbsp;{planet.FIELDS_MAX}</div>
   </div>
 
+  <!-- IF $OVERVIEW -->
+  <div class="bg_header"><!-- IF planet.IS_CAPITAL -->&#9813; <!-- ENDIF --><!-- IF planet.MOON_ID == PLANET_ID -->&#9789; {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --><br />[{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]</div>
+  <!-- ENDIF -->
+
   <div class="ov_struc_timer" id="ov_building{$PLANET_PLANET_ID}">{L_sys_no_task}</div>
   <!-- IF .planet.building_que -->
   <div id="ov_building{$PLANET_PLANET_ID}_timer" style="color: darkgrey;"></div>
@@ -114,10 +121,6 @@
           <!-- BEGIN building_que -->['{building_que.ID}', '{building_que.NAME} ({building_que.LEVEL})', {building_que.TIME}, '{building_que.AMOUNT}'],<!-- END building_que -->
         ]}});
   </script>
-  <!-- ENDIF -->
-
-  <!-- IF $OVERVIEW -->
-  <div class="subheader"><!-- IF planet.IS_CAPITAL -->&#9813; <!-- ENDIF --><!-- IF planet.MOON_ID == PLANET_ID -->&#9789; {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --><br />[{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]</div>
   <!-- ENDIF -->
 
 </div>

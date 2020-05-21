@@ -2836,6 +2836,95 @@ body:not(.no_border_image) [table_title]:before {
   margin-bottom: 1em;
 }
 
+.planet_overview {
+  display: flex;
+  /*border: 1px solid green;*/
+  align-items: flex-start;
+}
+
+#planet_overview_double {
+  display: flex;
+  align-content: flex-start;
+  align-items: flex-start;
+  /*border: 1px solid blue;*/
+}
+
+.planet_overview #planet_info_table {
+  margin: 0;
+  width: 522px;
+}
+.planet_overview_list {
+  max-height: 87em;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  /*border: 1px solid black;*/
+
+  justify-content: space-around;
+}
+.planet_info_overview {
+}
+
+.planet_overview #fleet_list_table {
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 116em) {
+  div.planet_overview_list
+  {
+    /*border: 1px solid white;*/
+  }
+
+  .planet_overview #fleet_list_table {
+  }
+}
+@media only screen and (max-width: 111em) {
+  div.planet_overview_list
+  {
+    /*border: 1px solid red;*/
+  }
+  #planet_overview_double {
+    flex-wrap: wrap;
+  }
+  .planet_overview #planet_info_table {
+    margin: auto;
+    margin-bottom: 2em;
+  }
+}
+@media only screen and (max-width: 59em) {
+  .planet_overview {
+    flex-wrap: wrap-reverse;
+  }
+  .planet_overview_list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    max-height: 19em;
+    max-width: 65em;
+
+    width: 100%;
+
+    /*border: 1px solid orange;*/
+  }
+  .planet_info_overview {
+    display: inline-block;
+  }
+  .planet_list_item {
+    /*display: inline-block;*/
+  }
+  .planet_overview #planet_info_table {
+    margin-top: 2em;
+  }
+}
+
+
 /* Planet manage */
 .planet-manage-governor-hire-container {
   width: 30%;
