@@ -834,13 +834,18 @@ class SnTemplate {
       }
 
       $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
+      if($CurPlanet['planet_type'] == PT_MOON) {
+        $parentPlanet = DBStaticPlanet::db_planet_by_id($CurPlanet['parent_planet']);
+      } else {
+        $parentPlanet = $CurPlanet;
+      }
 
       $template->assign_block_vars('topnav_planets', [
         'ID'          => $CurPlanet['id'],
         'NAME'        => $CurPlanet['name'],
         'TYPE'        => $CurPlanet['planet_type'],
         'TYPE_TEXT'   => $lang['sys_planet_type_sh'][$CurPlanet['planet_type']],
-        'IS_CAPITAL'  => $CurPlanet['planet_type'] == PT_PLANET && $CurPlanet['id'] == $user['id_planet'],
+        'IS_CAPITAL'  => $parentPlanet['id'] == $user['id_planet'],
         'IS_MOON'     => $CurPlanet['planet_type'] == PT_MOON,
         'PLIMAGE'     => $CurPlanet['image'],
         'FLEET_ENEMY' => $fleet_listx['enemy']['count'],

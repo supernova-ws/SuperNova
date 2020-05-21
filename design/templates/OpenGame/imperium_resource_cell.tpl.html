@@ -1,0 +1,18 @@
+<!-- IF planet.ID --><!-- DEFINE $RES_ATTR = 'go="res" planet_id="{planet.ID}"' --><!-- ELSE --><!-- DEFINE $RES_ATTR = '' --><!-- ENDIF -->
+<td {$RES_ATTR}>
+  {$RESOURCE_AMOUNT}<br />
+  <!-- IF $RESOURCE_INCOMING > 0 -->
+  <span class="neutral">+{$RESOURCE_INCOMING}</span><br />
+  <!-- ENDIF -->
+
+  <!-- IF $RESOURCE_PRODUCTION_PERCENT < 50 -->
+    <!-- DEFINE $FIELD_COLOR = 'negative' -->
+  <!-- ELSEIF $RESOURCE_PRODUCTION_PERCENT < 80 -->
+    <!-- DEFINE $FIELD_COLOR = 'warning' -->
+  <!-- ELSEIF $RESOURCE_PRODUCTION_PERCENT < 100 -->
+    <!-- DEFINE $FIELD_COLOR = 'neutral' -->
+  <!-- ELSE -->
+    <!-- DEFINE $FIELD_COLOR = 'positive' -->
+  <!-- ENDIF -->
+  <span class="{$FIELD_COLOR}">{$RESOURCE_PRODUCTION}</span>
+</td>

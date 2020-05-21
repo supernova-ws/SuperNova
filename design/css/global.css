@@ -199,9 +199,17 @@ textarea {
   width: 33%;
   height: 33%;
 }
+.percent50 {
+  width: 50%;
+  height: 50%;
+}
 .percent66 {
   width: 66%;
   height: 66%;
+}
+.percent75 {
+  width: 75%;
+  height: 75%;
 }
 .percent100 {
   width: 100%;

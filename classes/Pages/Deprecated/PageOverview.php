@@ -205,7 +205,7 @@ class PageOverview extends PageDeprecated {
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
       'PLANET_GOVERNOR_NAME'       => $this->lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
-      'IS_CAPITAL' => $planetrow['planet_type'] == PT_PLANET && $planetrow['id'] == $user['id_planet'],
+      'IS_CAPITAL' => $planetrow['id'] == $user['id_planet'],
       'IS_MOON'    => $planetrow['planet_type'] == PT_MOON,
 
       'DARK_MATTER' => $user_dark_matter,

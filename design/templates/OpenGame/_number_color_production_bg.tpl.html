@@ -1,0 +1,11 @@
+<!-- IF $PRODUCTION_PERCENT <= 0 -->
+  <!-- DEFINE $PRODUCTION_PERCENT_STYLE_BG = 'negative_bg' -->
+<!-- ELSEIF $PRODUCTION_PERCENT < 50 -->
+  <!-- DEFINE $PRODUCTION_PERCENT_STYLE_BG = 'warning_bg' -->
+<!-- ELSEIF $PRODUCTION_PERCENT < 80 -->
+  <!-- DEFINE $PRODUCTION_PERCENT_STYLE_BG = 'neutral_bg' -->
+<!-- ELSEIF $PRODUCTION_PERCENT < 100 -->
+  <!-- DEFINE $PRODUCTION_PERCENT_STYLE_BG = 'positive_bg' -->
+<!-- ELSE -->
+  <!-- DEFINE $PRODUCTION_PERCENT_STYLE_BG = 'info_bg' -->
+<!-- ENDIF -->

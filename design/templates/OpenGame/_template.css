@@ -19,6 +19,23 @@
 @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {  }
 
 
+.c_c, th.c_c, td.c_c, tr.c_c td, tr.c_c th, .cell_center, tr.cell_center td, tr.cell_center th, table.c_c tr,
+table > tbody > tr > th.c_c, table > tbody > tr > td.c_c
+{
+  text-align: center;
+}
+
+.c_l, th.c_l, td.c_l, tr.c_l td, tr.c_l th, .cell_left, tr.cell_left td, tr.cell_left th, td.c, table.c_l tr,
+table > tbody > tr > th.c_l, table > tbody > tr > td.c_l
+{
+  text-align: left;
+}
+
+.c_r, th.c_r, td.c_r, tr.c_r td, tr.c_r th, .cell_right, tr.cell_right td, tr.cell_right th, table.c_r tr,
+table > tbody > tr > th.c_r, table > tbody > tr > td.c_r
+{
+  text-align: right;
+}
 
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
 html {
@@ -1399,6 +1416,10 @@ input[type=text].coordinate {
 
 
 /* Empire overview -------------------------------------------------------------- */
+#empire_overview .prod_header {
+  display: flex;justify-content: space-between;align-items: center;
+}
+
 [go] {
   cursor: pointer;
 }
@@ -2419,26 +2440,26 @@ body:not(.no_border_image) [table_title]:before {
   height: 100%;
 }
 
-.planet_list_top87 {
+.planet_list_top_small {
   width: 7.75em;  /* 87/11 = 7,909090909091 */
 }
-.planet_list_top87 > .planet_list_wrap {
+.planet_list_top_small > .planet_list_wrap {
   height: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .images {
+.planet_list_top_small > .planet_list_wrap > .images {
   height: 100%;
   width: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .metal_bar {
+.planet_list_top_small > .planet_list_wrap > .metal_bar {
   left: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .crystal_bar {
+.planet_list_top_small > .planet_list_wrap > .crystal_bar {
   left: 7.25em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .deuterium_bar {
+.planet_list_top_small > .planet_list_wrap > .deuterium_bar {
   left: 7.50em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .images > .icon-gather-wrapper {
+.planet_list_top_small > .planet_list_wrap > .images > .icon-gather-wrapper {
   height: 25%;
   width: 25%;
   bottom: 0;
@@ -2446,26 +2467,26 @@ body:not(.no_border_image) [table_title]:before {
   position: absolute;
 }
 
-.planet_list_top112 {
+.planet_list_top_medium {
   width: 9.75em;
 }
-.planet_list_top112 > .planet_list_wrap {
+.planet_list_top_medium > .planet_list_wrap {
   height: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .images {
+.planet_list_top_medium > .planet_list_wrap > .images {
   height: 100%;
   width: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .metal_bar {
+.planet_list_top_medium > .planet_list_wrap > .metal_bar {
   left: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .crystal_bar {
+.planet_list_top_medium > .planet_list_wrap > .crystal_bar {
   left: 9.25em;
 }
-.planet_list_top112 > .planet_list_wrap > .deuterium_bar {
+.planet_list_top_medium > .planet_list_wrap > .deuterium_bar {
   left: 9.50em;
 }
-.planet_list_top112 > .planet_list_wrap > .images > .icon-gather-wrapper {
+.planet_list_top_medium > .planet_list_wrap > .images > .icon-gather-wrapper {
   height: 2.25em;
   width: 2.25em;
   bottom: 0;
@@ -2804,6 +2825,12 @@ body:not(.no_border_image) [table_title]:before {
 }
 
 /* Planet overview */
+.planet_overview #navbar_resources {
+  border: 0 solid transparent;
+  width: 100%;
+  margin: 0;
+}
+
 .planet_overview-info {
   width: 100%;
   margin-bottom: 1em;
@@ -3964,10 +3991,4 @@ td.error_message {
 {
   text-wrap: none;
   white-space: nowrap;
-}
-
-.planet_overview #navbar_resources {
-  border: 0 solid transparent;
-  width: 100%;
-  margin: 0;
 }
