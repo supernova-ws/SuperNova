@@ -20,6 +20,8 @@ jQuery(document).ready(function () {
     $('#chat_online_div').css('height', $('#chat_online_cell').css('height'));
 
     showMessage(true);
+
+    $('#msg').focus();
   }
 });
 
@@ -247,7 +249,6 @@ function addMessage(message) {
   }
 
   // jQuery("#msg").focus().val(''); // focus
-  jQuery("#msg").val('');
 
   jQuery
     .post(
@@ -257,6 +258,8 @@ function addMessage(message) {
     .always(function () {
       showMessage();
     });
+
+  jQuery("#msg").val('').focus();
 }
 
 function showMessage(initial) {
@@ -270,12 +273,16 @@ function showMessage(initial) {
       'ally': ally_id,
       'last_message': chat_last_message
     }, function (data) {
+      var focused_element = $("*:focus").get(0);
+
       // var return_focus = $("#msg:focus").length; // focus
       if (data.html) {
-        var shoutbox = document.getElementById('shoutbox');
+        // var shoutbox = document.getElementById('shoutbox');
         chat_last_message = data.last_message;
-        shoutbox.innerHTML += data.html;
-        jQuery('#shoutbox').animate({scrollTop: jQuery('#shoutbox').prop('scrollHeight')}, 2000);
+        // shoutbox.innerHTML += data.html;
+        var shoutbox = jQuery('#shoutbox');
+        shoutbox.html(shoutbox.html() + data.html);
+        shoutbox.animate({scrollTop: shoutbox.prop('scrollHeight')}, 2000);
         if (initial !== true) {
           sn_sound_play("chat_message");
         }
@@ -310,10 +317,14 @@ function showMessage(initial) {
         chat_disabled = true;
       } else {
         jQuery('#msg,#send,#chat_color').removeAttr('disabled');
-        chat_refreshing = false;
+
         // if(return_focus) {
         //   $('#msg').focus();
         // }
+        if(focused_element) {
+          focused_element.focus();
+        }
+        chat_refreshing = false;
         window.setTimeout(showMessage, chat_refresh_rate);
       }
     },
