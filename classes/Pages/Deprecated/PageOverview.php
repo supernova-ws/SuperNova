@@ -87,8 +87,6 @@ class PageOverview extends PageDeprecated {
    * @param $user_option_list
    */
   public function overview($user, &$planetrow, $que, $user_option_list) {
-//    $this->setPlanetById($planetrow['id']);
-
     $this->planet->sn_sys_sector_buy();
 
     rpg_level_up($user, RPG_STRUCTURE);

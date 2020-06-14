@@ -43,7 +43,7 @@ use SN;
  * property int $solar_satelit_porcent
  * property int $last_update
  * property int $que_processed
- * property string $image
+ * @property string $image
  * property int|float $points
  * property int|float $ranks
  * property int $id_level
@@ -316,6 +316,7 @@ class Planet extends EntityDb {
       'PLANET_TYPE'      => $this->planet_type,
       'PLANET_TYPE_TEXT' => SN::$lang['sys_planet_type'][$this->planet_type],
       'PLANET_DEBRIS'    => $this->debris_metal + $this->debris_crystal,
+      'PLANET_IMAGE'     => $this->image,
 
       'PLANET_GOVERNOR_ID'         => $governor_id,
       'PLANET_GOVERNOR_NAME'       => SN::$lang['tech'][$governor_id],

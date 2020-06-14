@@ -1212,7 +1212,7 @@ function canIUseWebp() {
   // console.log(elem);
   // console.log(elem.getContext);
   // console.log(elem.getContext('2d'));
-  console.log(elem.toDataURL('image/webp'));
+  // console.log(elem.toDataURL('image/webp'));
 
   if (!!(elem.getContext && elem.getContext('2d'))) {
     // was able or not to get WebP representation
