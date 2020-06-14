@@ -328,6 +328,15 @@ const UNIT_AWARD_MEMORY_NEW_YEAR_2020_BEST_1ST = 2369; // Лучший Гост�
 const UNIT_AWARD_MEMORY_NEW_YEAR_2020_BEST_2ND = 2370; // Лучший Гость - СуперНовый Год - 2020
 const UNIT_AWARD_MEMORY_NEW_YEAR_2020_BEST_3RD = 2371; // Лучший Гость - СуперНовый Год - 2020
 
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_SIMPLE   = 2380; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BRONZE   = 2381; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_SILVER   = 2382; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_GOLD     = 2383; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_PLATINUM = 2384; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_DIAMOND  = 2385; // День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_1ST = 2386; // Лучший Гость - День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_2ND = 2387; // Лучший Гость - День Рождения СН - 2020
+const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_3RD = 2388; // Лучший Гость - День Рождения СН - 2020
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
