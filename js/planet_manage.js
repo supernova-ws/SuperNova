@@ -14,7 +14,7 @@ $(function () {
         text: language['ov_rename'],
         click: function () {
           var element = $(this).parent();
-          element.find('input[name=cp]').val($('#navbar_planet_select').find('option:selected').val());
+          element.find('input[name=cp]').val($('.js_navbar_planet_select').find('option:selected').val());
           element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
           jQuery('#dialog-rename-planet-form').submit();
         }

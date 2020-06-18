@@ -524,6 +524,7 @@ input[type=text].coordinate {
   margin: 0.5em 0.5em;
   flex-grow: 10;
   font-size: 125%;
+  max-width: 20em;
 }
 
 #navbar_player_count {
