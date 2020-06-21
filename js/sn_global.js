@@ -157,13 +157,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
    * Skins input elements
    */
   function skinInputs() {
-    var inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
+    var inputs = jQuery("input:not(.do-not-skin):not(.do-not-skin-child *),button:not(.do-not-skin *):not(.do-not-skin-child *)");
     inputs.filter(':button, :submit, :reset').button(); // .addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text').off('keydown');
     // inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
     inputs.filter(':radio').addClass("ui-corner-all ui-state-default ui-textfield");
-    jQuery("button:not(.do-not-skin)").button().addClass('ui-textfield');
-    jQuery('textarea:not(#ally_text):not(.do-not-skin)').button().addClass('ui-textfield ui-input-text').off('keydown');
+    jQuery("button:not(.do-not-skin):not(.do-not-skin-child *)").button().addClass('ui-textfield');
+    jQuery('textarea:not(#ally_text):not(.do-not-skin):not(.do-not-skin-child *)').button().addClass('ui-textfield ui-input-text').off('keydown');
 
     //inputs.filter(':checkbox, :radio').checkator();
   }
@@ -886,6 +886,30 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     strTime += (tmp <= 9 ? '0' : '') + tmp + ':';
 
     strTime += (timestamp <= 9 ? '0' : '') + timestamp;
+
+    return strTime;
+  }
+
+  function sn_timestampToStringHuman(timestamp, useDays) {
+    var strTime = '', tmp;
+
+    !(timestamp = parseInt(timestamp)) ? timestamp = 0 : false;
+    tmp = Math.floor(timestamp / (60 * 60 * 24));
+    if(tmp >= 3) {
+      strTime = tmp + 'd';
+    } else {
+      tmp = Math.floor(timestamp / (60 * 60));
+      if(tmp >= 3) {
+        strTime = tmp + 'h';
+      } else {
+        tmp = Math.floor(timestamp / 60);
+        if(tmp >= 3) {
+          strTime = tmp + 'm';
+        } else {
+          strTime = timestamp + 's';
+        }
+      }
+    }
 
     return strTime;
   }

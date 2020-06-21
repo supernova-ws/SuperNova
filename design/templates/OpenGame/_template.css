@@ -340,6 +340,9 @@ input[type=text].coordinate {
 #left_menu.MENU_START_HIDDEN {
   display: none;
 }
+#left_menu.MENU_WHITE_BUTTONS td a {
+  color: white !important;
+}
 
 #left_menu td, #left_menu th {
   min-height: 1.5em;
@@ -3806,7 +3809,7 @@ td.error_message {
 
 .navbar_resources_flex_resource > div {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end !important;
   justify-content: center;
   flex-direction: column;
 }
