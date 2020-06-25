@@ -438,7 +438,7 @@ if(window.LOADED_TIMER === undefined) {
           }
 
           // Вывод строковых значений
-          let barWidth = Math.round((timeLeft % 60 + 1) / 60 * 100);
+          var barWidth = Math.round((timeLeft % 60 + 1) / 60 * 100);
           barWidth > 100 ? barWidth = 100 : false;
           timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(barWidth + '%') : false;
           if (timer['html_total_js'].length) {

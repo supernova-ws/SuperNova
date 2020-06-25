@@ -2083,6 +2083,10 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 
 #ctv
 
+2020-06-25 10:30:33 45a113
+[@] Код
+    sn_timer.js: исправлена несовместимость со старыми версиями JS
+
 
 2020-06-21 10:40:09 45a109
 [@] Код
