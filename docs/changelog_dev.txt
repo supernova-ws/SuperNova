@@ -2081,6 +2081,14 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
     Отцентрировать горизонтальный список для Оперы
 
 
+template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
+template->_tpl_load_file(): File modules/player_login_token/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
+template->_tpl_load_file(): File modules/interface_batch_operations/design/templates/OpenGame/fleet_javascript.tpl.html does not exist or is empty
+template->_tpl_load_file(): File modules/interface_batch_operations/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
+template->_tpl_load_file(): File modules/player_premium/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
+SET SESSION MAX_EXECUTION_TIME=2000;
+
+
 #ctv
 
 2020-06-25 10:30:33 45a113
