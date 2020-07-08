@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 45a8
+* @version 45a118
 *
 */
 
@@ -87,6 +87,7 @@ $a_lang_array = [
     PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH       => 'Отключить кнопку исследований',
     PLAYER_OPTION_NAVBAR_DISABLE_PLANET         => 'Отключить кнопку планеты',
     PLAYER_OPTION_NAVBAR_DISABLE_HANGAR         => 'Отключить кнопку верфи',
+    PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE        => 'Отключить кнопку обороны',
     PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS    => 'Отключить кнопку экспедиций',
     PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS  => 'Отключить кнопку летящих флотов',
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Отключить кнопку квестов',

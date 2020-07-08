@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #45a87#
+* @version #45a118#
 *
 */
 
@@ -255,6 +255,7 @@ $a_lang_array = [
   'navbar_font_normal' => 'Норма',
   'sys_que_structures' => 'Здания',
   'sys_que_hangar' => 'Верфь',
+  'sys_que_defense' => 'Оборона',
   'sys_que_research' => 'Исследования',
   'sys_que_research_short' => 'Наука',
 

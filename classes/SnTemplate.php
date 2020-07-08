@@ -861,6 +861,7 @@ class SnTemplate {
     que_tpl_parse($template, QUE_STRUCTURES, $user, $planetrow, null, true);
     que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !SN::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
     que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
+    que_tpl_parse($template, SUBQUE_DEFENSE, $user, $planetrow, null, true);
 
     SnTemplate::tpl_navbar_extra_buttons($sn_mvc, $template);
     SnTemplate::tpl_navbar_render_news($template, $user, $config);
@@ -947,6 +948,7 @@ class SnTemplate {
       'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'       => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
       'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
       'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+      'PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE'        => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE],
       'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS'  => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
       'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'    => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
       'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'         => SN::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
@@ -957,6 +959,7 @@ class SnTemplate {
 
       'PT_MOON'        => PT_MOON,
       'SUBQUE_FLEET'   => SUBQUE_FLEET,
+      'SUBQUE_DEFENSE' => SUBQUE_DEFENSE,
       'QUE_RESEARCH'   => QUE_RESEARCH,
       'QUE_STRUCTURES' => QUE_STRUCTURES,
     ));

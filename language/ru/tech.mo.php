@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 44a83
+* @version 45a118
 *
 */
 
@@ -257,17 +257,17 @@ $a_lang_array = (array(
     SHIP_HUGE_SUPERNOVA      => 'СН',
 
     UNIT_DEFENCE                 => 'Оборона',
-    UNIT_DEF_TURRET_MISSILE      => 'Ракет',
-    UNIT_DEF_TURRET_LASER_SMALL  => 'ЛеЛар',
-    UNIT_DEF_TURRET_LASER_BIG    => 'ТяЛа',
+    UNIT_DEF_TURRET_MISSILE      => 'Ракеты',
+    UNIT_DEF_TURRET_LASER_SMALL  => 'ЛеЛаз',
+    UNIT_DEF_TURRET_LASER_BIG    => 'ТяЛаз',
     UNIT_DEF_TURRET_GAUSS        => 'Гаусс',
     UNIT_DEF_TURRET_ION          => 'Ионка',
     UNIT_DEF_TURRET_PLASMA       => 'Плазма',
     UNIT_DEF_SHIELD_SMALL        => 'МЩК',
     UNIT_DEF_SHIELD_BIG          => 'БЩК',
-    UNIT_DEF_SHIELD_PLANET       => 'ПлаЗа',
-    UNIT_DEF_MISSILE_INTERCEPTOR => 'Перех',
-    UNIT_DEF_MISSILE_INTERPLANET => 'Межпла',
+    UNIT_DEF_SHIELD_PLANET       => 'ПланЗащ',
+    UNIT_DEF_MISSILE_INTERCEPTOR => 'Перехв',
+    UNIT_DEF_MISSILE_INTERPLANET => 'МПР',
 
 //    UNIT_MERCENARIES => 'Наемники',
 //    MRC_STOCKMAN => 'Карго-мастер',

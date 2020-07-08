@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 45a86
+* @version 45a118
 *
 */
 
@@ -89,6 +89,7 @@ $a_lang_array = [
     PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH       => 'Disable Research button',
     PLAYER_OPTION_NAVBAR_DISABLE_PLANET         => 'Disable Planet button',
     PLAYER_OPTION_NAVBAR_DISABLE_HANGAR         => 'Disable Hangar button',
+    PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE        => 'Disable Defense button',
     PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS    => 'Disable Expeditions button',
     PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS  => 'Disable Flying Fleets button',
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Disable Quest button',

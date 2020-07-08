@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '44');
 define('SN_RELEASE', '44');
-define('SN_VERSION', '45a116');
+define('SN_VERSION', '45a118');
 define('SN_RELEASE_STABLE', '44d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -891,6 +891,7 @@ define('PLAYER_OPTION_QUEST_LIST_FILTER', 55);
 define('PLAYER_OPTION_LOGIN_REWARDED_LAST', 56);
 define('PLAYER_OPTION_LOGIN_REWARDED_LAST_VIEWED', 57);
 define('PLAYER_OPTION_LOGIN_REWARD_STREAK_BEGAN', 58);
+define('PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE', 59);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 45a87
+* @version 45a118
 *
 */
 
@@ -251,6 +251,7 @@ $a_lang_array = (array(
   'navbar_font_normal' => 'Normal',
   'sys_que_structures' => 'Buildings',
   'sys_que_hangar' => 'Hangar',
+  'sys_que_defense' => 'Defense',
   'sys_que_research' => 'Research',
   'sys_que_research_short' => 'Science',
 
