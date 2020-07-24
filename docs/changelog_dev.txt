@@ -2066,28 +2066,16 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
         https://jsfiddle.net/wqLezyfe/2/
 
 [*] https://myip.ms/info/whois/<IP ADDRESS>#w
-
 [*] ну вот есть на карте кнопка ракетного залпа.а рядом кнопку Добавить в закладки. и что бы появлялись там координаты и имя игрока. при нажатии автоматом.
-
-
 [*] // TODO Check URL timestamp when checking signature
     if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
-
-
 [*] НАСТРОЙКА - покзаывать в списке планет Обзора луны отдельно от планет
 [*] В блоке планеты - передвинуть значок входящего флота вниз. Продублировать значок опасности внизу
 [*] $FIELD_COLOR
 [*] Опция "Всегда показывать горизонтальный список планет
     Отцентрировать горизонтальный список для Оперы
-
-
-template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
-template->_tpl_load_file(): File modules/player_login_token/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
-template->_tpl_load_file(): File modules/interface_batch_operations/design/templates/OpenGame/fleet_javascript.tpl.html does not exist or is empty
-template->_tpl_load_file(): File modules/interface_batch_operations/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
-template->_tpl_load_file(): File modules/player_premium/design/templates/OpenGame/page_hint.tpl.html does not exist or is empty
-SET SESSION MAX_EXECUTION_TIME=2000;
-
+[*] SQL limit execution time: SET SESSION MAX_EXECUTION_TIME=2000;
+[*] template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
 
 #ctv
 
