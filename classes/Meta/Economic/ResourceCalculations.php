@@ -40,9 +40,9 @@ class ResourceCalculations {
       return;
     }
 
-    static::$mineSpeedNormal = game_resource_multiplier(true);
+    static::$mineSpeedNormal  = game_resource_multiplier(true);
     static::$mineSpeedCurrent = game_resource_multiplier();
-    static::$storageScaling = SN::$config->eco_scale_storage ? static::$mineSpeedNormal : 1;
+    static::$storageScaling   = SN::$config->eco_scale_storage ? static::$mineSpeedNormal : 1;
 
     static::$groupFactories = sn_get_groups('factories');
 
@@ -53,21 +53,21 @@ class ResourceCalculations {
       }
     }
 
-    static::$basicPlanetIncomeTable[RES_METAL][0] = floatval(SN::$config->metal_basic_income);
-    static::$basicPlanetIncomeTable[RES_CRYSTAL][0] = floatval(SN::$config->crystal_basic_income);
+    static::$basicPlanetIncomeTable[RES_METAL][0]     = floatval(SN::$config->metal_basic_income);
+    static::$basicPlanetIncomeTable[RES_CRYSTAL][0]   = floatval(SN::$config->crystal_basic_income);
     static::$basicPlanetIncomeTable[RES_DEUTERIUM][0] = floatval(SN::$config->deuterium_basic_income);
-    static::$basicPlanetIncomeTable[RES_ENERGY][0] = floatval(SN::$config->energy_basic_income);
+    static::$basicPlanetIncomeTable[RES_ENERGY][0]    = floatval(SN::$config->energy_basic_income);
 
-    static::$basicPlanetStorageTable[RES_METAL][0] = floatval(SN::$config->eco_planet_storage_metal);
-    static::$basicPlanetStorageTable[RES_CRYSTAL][0] = floatval(SN::$config->eco_planet_storage_crystal);
+    static::$basicPlanetStorageTable[RES_METAL][0]     = floatval(SN::$config->eco_planet_storage_metal);
+    static::$basicPlanetStorageTable[RES_CRYSTAL][0]   = floatval(SN::$config->eco_planet_storage_crystal);
     static::$basicPlanetStorageTable[RES_DEUTERIUM][0] = floatval(SN::$config->eco_planet_storage_deuterium);
-    static::$basicPlanetStorageTable[RES_ENERGY][0] = 0;
+    static::$basicPlanetStorageTable[RES_ENERGY][0]    = 0;
   }
 
   public function __construct() {
     static::initStatic();
 
-    $this->groupModifiers = sn_get_groups(GROUP_MODIFIERS_NAME);
+    $this->groupModifiers       = sn_get_groups(GROUP_MODIFIERS_NAME);
     $this->groupPlanetDensities = sn_get_groups('planet_density');
   }
 
@@ -82,16 +82,16 @@ class ResourceCalculations {
       }
     }
 
-    $planet_row['metal_max'] = $this->getStorage(RES_METAL);
-    $planet_row['crystal_max'] = $this->getStorage(RES_CRYSTAL);
+    $planet_row['metal_max']     = $this->getStorage(RES_METAL);
+    $planet_row['crystal_max']   = $this->getStorage(RES_CRYSTAL);
     $planet_row['deuterium_max'] = $this->getStorage(RES_DEUTERIUM);
 
     if ($planet_row['planet_type'] == PT_MOON) {
-      $planet_row['metal_perhour'] = 0;
-      $planet_row['crystal_perhour'] = 0;
+      $planet_row['metal_perhour']     = 0;
+      $planet_row['crystal_perhour']   = 0;
       $planet_row['deuterium_perhour'] = 0;
-      $planet_row['energy_used'] = 0;
-      $planet_row['energy_max'] = 0;
+      $planet_row['energy_used']       = 0;
+      $planet_row['energy_max']        = 0;
 
       return $this;
     }
@@ -107,11 +107,11 @@ class ResourceCalculations {
     $this->calculateEnergyBalance();
     $this->applyEfficiency();
 
-    $planet_row['metal_perhour'] = $this->getProduction(RES_METAL);
-    $planet_row['crystal_perhour'] = $this->getProduction(RES_CRYSTAL);
+    $planet_row['metal_perhour']     = $this->getProduction(RES_METAL);
+    $planet_row['crystal_perhour']   = $this->getProduction(RES_CRYSTAL);
     $planet_row['deuterium_perhour'] = $this->getProduction(RES_DEUTERIUM);
 
-    $planet_row['energy_max'] = $this->energy[BUILD_CREATE];
+    $planet_row['energy_max']  = $this->energy[BUILD_CREATE];
     $planet_row['energy_used'] = $this->energy[BUILD_DESTROY];
 
     return $this;
@@ -207,7 +207,7 @@ class ResourceCalculations {
   protected function calculateEnergyBalance() {
     if ($this->productionCurrentMatrix[RES_ENERGY][STRUC_MINE_FUSION]) {
       $deuterium_balance = array_sum($this->productionCurrentMatrix[RES_DEUTERIUM]);
-      $energy_balance = array_sum($this->productionCurrentMatrix[RES_ENERGY]);
+      $energy_balance    = array_sum($this->productionCurrentMatrix[RES_ENERGY]);
       if ($deuterium_balance < 0 || $energy_balance < 0) {
         $this->productionCurrentMatrix[RES_DEUTERIUM][STRUC_MINE_FUSION] = $this->productionCurrentMatrix[RES_ENERGY][STRUC_MINE_FUSION] = 0;
       }
@@ -251,8 +251,8 @@ class ResourceCalculations {
     $this->productionFullMatrix = static::$basicPlanetIncomeTable;
     foreach (static::$groupFactories as $unit_id) {
       $unit_data_production = get_unit_param($unit_id, P_UNIT_PRODUCTION);
-      $unit_level = mrc_get_level($user, $planet_row, $unit_id);
-      $unit_load = $planet_row[pname_factory_production_field_name($unit_id)];
+      $unit_level           = mrc_get_level($user, $planet_row, $unit_id);
+      $unit_load            = $planet_row[pname_factory_production_field_name($unit_id)];
 
       foreach ($unit_data_production as $resource_id => $function) {
         $this->productionFullMatrix[$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row);
