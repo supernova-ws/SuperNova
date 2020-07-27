@@ -1,0 +1,63 @@
+<!-- navbar_resources BOF -->
+
+<!-- IF $IN_NAVBAR -->
+  <!-- IF ! $NAVBAR_RESOURCES_OLD -->
+    <!-- INCLUDE _page/navbar_resources_flex -->
+  <!-- ELSE -->
+    <div>
+    <!-- IF $NAVBAR_RESOURCES_VERTICAL -->
+      <!-- INCLUDE _page/navbar_resources_vertical -->
+    <!-- ELSE -->
+      <!-- INCLUDE _page/navbar_resources_horizontal -->
+    <!-- ENDIF -->
+    </div>
+  <!-- ENDIF -->
+<!-- ELSE -->
+  <!-- INCLUDE _page/navbar_resources_horizontal -->
+<!-- ENDIF -->
+
+
+<script type="text/javascript">
+  $.extend(language, {
+    sys_metal: '{LA_sys_metal}',
+    sys_crystal: '{LA_sys_crystal}',
+    sys_deuterium: '{LA_sys_deuterium}',
+    sys_energy: '{LA_sys_energy}'
+  });
+
+  navbarResources = {
+    "metal": {
+      start_value: Math.floatVal('{PLANET_METAL}'),
+      per_second: Math.floatVal('{PLANET_METAL_PERHOUR}' / 3600),
+      max_value: Math.floatVal('{PLANET_METAL_MAX}'),
+      round: Math.intVal('{RESOURCE_ROUNDING}'),
+      resourceNameLongId: 'sys_metal'
+    },
+    "crystal": {
+      start_value: Math.floatVal('{PLANET_CRYSTAL}'),
+      per_second: Math.floatVal('{PLANET_CRYSTAL_PERHOUR}' / 3600),
+      max_value: Math.floatVal('{PLANET_CRYSTAL_MAX}'),
+      round: Math.intVal('{RESOURCE_ROUNDING}'),
+      resourceNameLongId: 'sys_crystal'
+    },
+    "deuterium": {
+      start_value: Math.floatVal('{PLANET_DEUTERIUM}'),
+      per_second: Math.floatVal('{PLANET_DEUTERIUM_PERHOUR}' / 3600),
+      max_value: Math.floatVal('{PLANET_DEUTERIUM_MAX}'),
+      round: Math.intVal('{RESOURCE_ROUNDING}'),
+      resourceNameLongId: 'sys_deuterium'
+    },
+    "energy": {
+      used_value: Math.floatVal('{PLANET_ENERGY}'),
+      start_value: Math.floatVal('{ENERGY_BALANCE_NUMBER}'),
+      max_value: Math.floatVal('{ENERGY_MAX_NUMBER}'),
+      resourceNameLongId: 'sys_energy'
+    }
+  };
+
+  sn_timers.unshift({className: 'top_metal_v2', type: TIMER_COUNTER, options: navbarResources.metal});
+  sn_timers.unshift({className: 'top_crystal_v2', type: TIMER_COUNTER, options: navbarResources.crystal});
+  sn_timers.unshift({className: 'top_deuterium_v2', type: TIMER_COUNTER, options: navbarResources.deuterium});
+</script>
+
+<!-- navbar_resources EOF -->

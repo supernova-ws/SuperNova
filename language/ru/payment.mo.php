@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 44a109
+* @version 45d0
 *
 */
 
@@ -67,7 +67,7 @@ $a_lang_array = (array(
   'pay_mm_buy_payment_selected' => 'Оплата будет произведена с использованием платёжной системы',
   'pay_mm_buy_purchase' => 'Покупка',
 
-  'pay_mm_buy_payment_method_more' => 'Нажмите "Показать", что бы увидеть больше способов оплаты',
+  'pay_mm_buy_payment_method_more' => 'Нажмите здесь, что бы увидеть больше способов оплаты',
 
   'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
   'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
@@ -137,7 +137,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
     PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
     PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
-    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустр. Банк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
     PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
     PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
     PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
@@ -149,11 +149,12 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
     PAYMENT_METHOD_MOBILE_SMS => 'SMS',
-    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
+//    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
     PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
     PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
     PAYMENT_METHOD_MOBILE_MTS => 'МТС',
     PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
+    PAYMENT_METHOD_MOBILE_BEELINE => 'Билайн',
 
     PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
     PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
@@ -171,8 +172,8 @@ $a_lang_array = (array(
     PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
 
     PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
-    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
-    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
+//    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
+//    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
   ),
 
   'pay_currency_exchange_title' => 'Внутренние курсы валют',

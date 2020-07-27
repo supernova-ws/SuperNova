@@ -7,6 +7,7 @@ namespace Pm;
 
 use \Fleet\MissionEspionageReport;
 use \HelperString;
+use SnTemplate;
 
 class DecodeEspionage {
   const ALLOWED_UNITS = [UNIT_RESOURCES, UNIT_SHIPS, UNIT_DEFENCE, UNIT_STRUCTURES, UNIT_TECHNOLOGIES];
@@ -18,7 +19,7 @@ class DecodeEspionage {
     $lang = \SN::$lang;
     $general = \SN::$gc->general;
 
-    $template = gettemplate('msg_message_spy');
+    $template = SnTemplate::gettemplate('msg_message_spy');
 
     $groups = [];
     foreach ($missionReport->spiedUnits as $unitId => $unitAmount) {

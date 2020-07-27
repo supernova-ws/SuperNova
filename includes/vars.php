@@ -7,6 +7,8 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use Alliance\Alliance;
+use Chat\Chat;
 use Pages\Deprecated\PageAdminMining;
 use Pages\Deprecated\PageAdminModules;
 use Pages\Deprecated\PageAdminPayment;
@@ -25,11 +27,14 @@ $sn_menu_admin_extra = array();
 global $sn_mvc;
 $sn_mvc = [
   FIELD_MODEL => [
-    'ajax' => ['AjaxController::controller'],
+    'ajax' => [AjaxController::class . '::controller'],
 
     'options'  => ['sn_options_model'],
-    'chat'     => ['sn_chat_model'],
-    'chat_add' => ['sn_chat_add_model'],
+
+//    'chat'     => ['sn_chat_model'],
+//    'chat_add' => ['sn_chat_add_model'],
+    'chat'     => [Chat::class  . '::' . 'chatModel'],
+    'chat_add' => [Chat::class  . '::' . 'chatAddModel'],
 
     'imperium' => [PageImperium::class . '::' . 'modelStatic'],
 
@@ -37,11 +42,16 @@ $sn_mvc = [
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
-    'ajax' => ['AjaxController::view'],
+    'ajax' => [AjaxController::class . '::view'],
 
     'options'       => ['sn_options_view'],
-    'chat'          => ['sn_chat_view'],
-    'chat_msg'      => ['sn_chat_msg_view'],
+
+//    'chat'          => ['sn_chat_view'],
+//    'chat_msg'      => ['sn_chat_msg_view'],
+    'chat'          => [Chat::class  . '::' . 'chatView'],
+    'chat_msg'      => [Chat::class  . '::' . 'chatMsgView'],
+    'chat_frame'      => [Chat::class  . '::' . 'chatFrameView'],
+
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
@@ -74,6 +84,35 @@ $sn_mvc = [
     'admin/user_view'     => [
       'admin' => 'admin',
     ],
+
+    'chat' => [
+      'chat_advanced' => [
+        'file' => 'chat_advanced',
+        'path' => '',
+      ],
+    ],
+    'chat_add' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+    'chat_msg' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+    'chat_frame' => [
+      'chat_advanced' => 'chat_advanced',
+//      'chat_advanced' => [
+//        'file' => 'chat_advanced',
+//        'path' => '',
+//      ],
+    ],
+
   ],
 
   'pages' => [
@@ -122,6 +161,12 @@ $sn_mvc = [
       ],
     ],
     'chat_msg' => [
+      'filename' => 'chat',
+      'options'  => [
+        PAGE_OPTION_FLEET_UPDATE_SKIP => true,
+      ],
+    ],
+    'chat_frame' => [
       'filename' => 'chat',
       'options'  => [
         PAGE_OPTION_FLEET_UPDATE_SKIP => true,
@@ -238,7 +283,7 @@ $tableList = array('aks', 'alliance', 'alliance_requests', 'announce', 'annonce'
 $sn_image_allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 
 global $ally_rights;
-$ally_rights = \Alliance\Alliance::RIGHTS_ALL;
+$ally_rights = Alliance::RIGHTS_ALL;
 
 $functions = array(//    'test' => 'sn_test',
 );
@@ -1112,7 +1157,7 @@ $sn_data += [
     ],
 
     // Planet structures list
-    'structures'         => [
+    UNIT_STRUCTURES_STR  => [
       STRUC_MINE_METAL    => STRUC_MINE_METAL, STRUC_MINE_CRYSTAL => STRUC_MINE_CRYSTAL, STRUC_MINE_DEUTERIUM => STRUC_MINE_DEUTERIUM,
       STRUC_MINE_SOLAR    => STRUC_MINE_SOLAR, STRUC_MINE_FUSION => STRUC_MINE_FUSION,
       STRUC_FACTORY_ROBOT => STRUC_FACTORY_ROBOT, STRUC_FACTORY_HANGAR => STRUC_FACTORY_HANGAR, STRUC_FACTORY_NANO => STRUC_FACTORY_NANO,

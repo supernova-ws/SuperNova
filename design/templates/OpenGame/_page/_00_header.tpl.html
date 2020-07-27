@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{LANG_DIRECTION}" lang="{LANG_LANGUAGE}" xml:lang="{LANG_LANGUAGE}">
+  <head>
+    <base href="{D_SN_ROOT_VIRTUAL}" />
+
+    <title>{title}</title>
+
+    <!-- INCLUDE _page/_01_head -->
+  </head>
+
+  <!-- IF PLAYER_OPTION_DESIGN_DISABLE_BORDERS -->
+    <!-- DEFINE $PLAYER_OPTION_DESIGN_DISABLE_BORDERS = 'no_border_image' -->
+  <!-- ENDIF -->
+
+  <!-- IF LOGIN_LOGOUT -->
+    <!-- DEFINE $BODY_CLASS_AUTH = 'body-auth' -->
+  <!-- ENDIF -->
+
+  <body class="style {$PLAYER_OPTION_DESIGN_DISABLE_BORDERS} {GAME_MODE_CSS_PREFIX} {$BODY_CLASS_AUTH} {SN_TEMPLATE_NAME}">
+    <!-- INCLUDE _page/_40_js -->
+
+    <!-- IF IMPERSONATING -->
+      <div style="text-align: center" class="warning">{IMPERSONATING}</div>
+    <!-- ENDIF -->
+
+    <div id="__page">
+      <table class="markup" width="100%">
+        <tr>
+          <!-- IF .menu && GLOBAL_DISPLAY_MENU -->
+            <td align="left" valign="top">
+              <!-- INCLUDE menu -->
+            </td>
+          <!-- ENDIF -->
+        <td align="center" valign="top" width="100%" id="__content_cell">
+
+          <!-- DEFINE $NAVBAR_VERTICAL = 0 -->
+
+          <!-- IF $NAVBAR_VERTICAL -->
+            <!-- DEFINE $NAVBAR_VERTICAL_CLASS = 'navbar_v' -->
+          <!-- ENDIF -->
+
+          <!-- IF GLOBAL_DISPLAY_NAVBAR -->
+          <div id="__navbar_wrapper" class="{$NAVBAR_VERTICAL_CLASS}">
+            <!-- INCLUDE _page/navbar -->
+          </div>
+          <!-- ENDIF -->
+
+          <!-- INCLUDE _page/navbar_additions -->
+
+          <div id="__content">
+            {__RENDERED_CONTENT}
+          </div> <!-- __content -->
+
+          <div id="copyright">
+            Project &quot;<a href="http://supernova.ws"><span id="supernova_ws">Sup<span>erNo</span>va<span>.W</span>S</span></a>&quot; Rel<span>ease {D_SN_RELEASE} V</span>{D_SN_VERSION}-{DB_PATCH_VERSION} &copy; 20<span>09-{CURRENT_YEAR} Go</span>rlum<br>
+            In<span>spired by X</span>Nova Ra<span>geRe<span>pac</span>k v2</span>26
+          </div>
+        </td></tr></table> <!-- <table class="markup" width="100%"> -->
+    </div><!-- __page -->
+
+    <div id="debug" style="text-align: left"></div>
+    <script type="text/javascript">
+      document_ready();
+      jQuery(document).ready(function () {
+        jQuery('.benchmark').append(', JS run: ' + ((new Date().valueOf() - timeBrowser.valueOf()) / 1000) + 's');
+      });
+    </script>
+  </body>
+</html>

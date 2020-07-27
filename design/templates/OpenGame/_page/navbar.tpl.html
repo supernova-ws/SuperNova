@@ -1,0 +1,185 @@
+<!-- NAVBAR START -->
+
+<!-- DEFINE $NAVBAR_RESOURCES_RENDER = '{SN_RENDER_NAVBAR_PLANET}' -->
+<!-- DEFINE $NAVBAR_RESOURCES_OLD = '{PLAYER_OPTION_NAVBAR_PLANET_OLD}' -->
+<!-- DEFINE $NAVBAR_RESOURCES_VERTICAL = '{PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}' -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_FLEETS = '{SN_NAVBAR_HIDE_FLEETS}' -->
+<!-- DEFINE $NAVBAR_RESOURCES_ALLY = '{SN_IN_ALLY}' -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_STORAGE = '{PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE}' -->
+
+<!-- IF $NAVBAR_VERTICAL -->
+  <!--DEFINE $NAVBAR_VERTICAL_CLASS = 'navbar_v' -->
+  <!-- DEFINE $NAVBAR_RESOURCES_VERTICAL = 1 -->
+  <!-- DEFINE $NAVBAR_RESOURCES_OLD = 0 -->
+<!-- ENDIF -->
+
+<!-- IF $NAVBAR_RESOURCES_VERTICAL -->
+  <!-- DEFINE $NAVBAR_RESOURCES_CLASS = 'resbar_v' -->
+<!-- ELSE -->
+  <!-- DEFINE $NAVBAR_RESOURCES_CLASS = '' -->
+<!-- ENDIF -->
+
+<!-- IF TUTORIAL_ENABLED -->
+  <!-- INCLUDE tutorial -->
+<!-- ENDIF -->
+
+
+<script type="text/javascript">
+  PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = Math.intVal('{PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}');
+</script>
+
+<div id="navbar_resource_flex_tooltip_pattern">
+  <table class="no_border_image">
+    <tr class="c_c no_select">
+      <th colspan="2">&#123;0&#125;</th>
+    </tr>
+    <tr>
+      <td>{L_tech_storage}</td>
+      <td class="c_r">&#123;1&#125;</td>
+    </tr>
+    <tr>
+      <td>{L_tech_storage_max}</td>
+      <td class="c_r">&#123;2&#125;</td>
+    </tr>
+    <tr>
+      <td>{L_tech_fullness}</td>
+      <td class="c_r">&#123;3&#125;%</td>
+    </tr>
+  </table>
+</div>
+
+<div id="navbar_resource_flex_tooltip_pattern_energy">
+  <table class="no_border_image">
+    <tr class="c_c no_select">
+      <th colspan="2">&#123;0&#125;</th>
+    </tr>
+    <tr>
+      <td>{L_tech_storage_energy}</td>
+      <td class="c_r">&#123;1&#125;</td>
+    </tr>
+    <tr>
+      <td>{L_tech_storage_energy_max}</td>
+      <td class="c_r">&#123;2&#125;</td>
+    </tr>
+    <tr>
+      <td>{L_tech_storage_energy_fullness}</td>
+      <td class="c_r">&#123;3&#125;%</td>
+    </tr>
+  </table>
+</div>
+
+<!-- DEFINE $IN_NAVBAR = 1 -->
+<div id="navbar_container" class="{$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}">
+  <div class="header c_c border_image_small {$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}" id="navbar">
+    <div id="navbar_main">
+      <!-- IF .navbar_prefix_button -->
+      <div class="contF a50 flexW cell">
+        <!-- BEGIN navbar_prefix_button -->
+        <div class="navbar-festival_button">
+          <a class="w100 h100" href="{navbar_prefix_button.URL_RELATIVE}" >
+            <img class="w100 h100" src="{navbar_prefix_button.IMAGE}" />
+          </a>
+        </div>
+        <!-- END navbar_prefix_button -->
+      </div>
+      <!-- ENDIF -->
+
+      <!-- IF GAME_BLITZ_REGISTER && ! GAME_BLITZ -->
+      <div>
+        <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}blitz_register.php');" id="navbar-blitz-button">
+          {L_sys_blitz_global_button}:
+            <span class="<!-- IF BLITZ_REGISTER_OPEN -->positive<!-- ELSEIF BLITZ_REGISTER_CLOSED -->negative<!-- ELSEIF BLITZ_REGISTER_SHOW_LOGIN -->zero<!-- ELSEIF BLITZ_REGISTER_DISCLOSURE_NAMES --><!-- ENDIF -->">
+              {GAME_BLITZ_REGISTER_TEXT} ({C_game_blitz_register_users})
+            </span>
+        </button>
+      </div>
+      <!-- ENDIF -->
+
+      <div id="navbar_planet_and_time">
+        <div class="contF flexW header" id="navbar_planet_wrapper">
+          <!-- INCLUDE _page/navbar_planet_select -->
+
+          <div id="navbar_player_count">{L_top_online}&nbsp;[<span class="js_global_users_online">{USERS_ONLINE}</span>/<span class="js_global_users_total">{USERS_TOTAL}</span>]</div>
+        </div>
+
+      <div class="contF flexW cell" id="navbar-container-time">
+        <div class="navbar-container-time-item c_c">
+          <div class="ok"><span id="navbar_time_local_title">{L_time_local}: </span><span id="top_time">{TIME_TEXT_LOCAL}</span></div>
+          <div id="navbar_time_server"><span id="navbar_time_server_title">{L_time_server}: </span><span id="top_time_server">{TIME_TEXT}</span></div>
+        </div>
+
+        <div class="contF" id="navbar_font_wrapper">
+          <button id="font_minus">{L_navbar_font} -</button>
+          <button id="font_normal">{L_navbar_font_normal}</button>
+          <button id="font_plus">{L_navbar_font} +</button>
+        </div>
+      </div>
+      </div>
+
+      <div class="header" id="navbar-container-button">
+        <!-- INCLUDE _page/navbar_buttons -->
+      </div>
+    </div>
+
+    <!-- IF $NAVBAR_RESOURCES_RENDER && ! $NAVBAR_RESOURCES_OLD -->
+      <!-- INCLUDE _page/navbar_resources -->
+    <!-- ENDIF -->
+  </div>
+
+  <!-- IF $NAVBAR_RESOURCES_RENDER && $NAVBAR_RESOURCES_OLD-->
+    <!-- DEFINE $NAVBAR_OLD_OUT = 1 -->
+    <!-- INCLUDE _page/navbar_resources -->
+    <!-- DEFINE $NAVBAR_OLD_OUT = 0 -->
+  <!-- ENDIF -->
+</div>
+<!-- DEFINE $IN_NAVBAR = 0 -->
+
+<script type="text/javascript">
+  NAVBAR_MODE = Math.intVal('{NAVBAR_MODE}');
+
+  sn_timers.unshift({
+    'id': 'top_time_server',
+    'type': TIMER_CLOCK_REALTIME,
+    'options': {
+      'format': 3,
+      'delta': -timeDiff
+    }
+  });
+
+  sn_timers.unshift({
+    'id': 'top_time',
+    'type': TIMER_CLOCK_REALTIME,
+    'options': {
+      'format': 3,
+      'delta': 0
+    }
+  });
+
+  <!-- IF .flying_fleets -->
+  sn_timers.unshift({
+    'id': 'topnav_fleet_counter',
+    'type': TIMER_EVENT_QUE,
+    'options': {
+      'msg_done': '0',
+      'changed': true,
+      'que': [<!-- BEGIN flying_fleets -->
+        [parseInt('{flying_fleets.TIME}'), '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
+      <!-- END flying_fleets -->]
+    }
+  });
+  <!-- ENDIF -->
+
+  <!-- IF .flying_expeditions -->
+  sn_timers.unshift({
+    'id': 'topnav_expedition_counter',
+    'type': TIMER_EVENT_QUE,
+    'options': {
+      'msg_done': '0',
+      'changed': true,
+      'que': [<!-- BEGIN flying_expeditions -->
+        [parseInt('{flying_expeditions.TIME}'), '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
+      <!-- END flying_expeditions -->]
+    }
+  });
+  <!-- ENDIF -->
+</script>

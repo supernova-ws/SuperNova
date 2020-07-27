@@ -13,6 +13,6 @@ define('IN_ADMIN'  , true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_OPERATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_OPERATOR);
 
 roughQuestRenderWrapper();

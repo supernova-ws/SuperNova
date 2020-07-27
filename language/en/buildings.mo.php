@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 45d0
 *
 */
 
@@ -98,7 +98,7 @@ $a_lang_array = array(
   'eco_bld_msg_err_research_in_progress' => 'Scientists of empire already researching other technology',
   'eco_bld_msg_err_not_research' => 'Can not research in laboratory other than technology',
   'eco_bld_msg_err_requirements_not_meet' => 'Requirements for technology research not met',
-  'eco_bld_msg_err_laboratory_upgrading' => 'Laboratories currently upgrading and can not research anything',
+  'eco_bld_msg_err_laboratory_upgrading' => 'Laboratories currently upgrading and can not research anything<br><br>When you build/upgrade Laboratory or Nanolaboratory (even if they currently just in building que) on any of your planet you can not research Tech',
 
   'eco_bld_unit_info_extra_show' => 'Показать дополнительную информацию',
   'eco_bld_unit_info_extra_hide' => 'Спрятать дополнительную информацию',

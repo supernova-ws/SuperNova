@@ -14,7 +14,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $script = '
 <script type="text/javascript">
@@ -25,4 +25,4 @@ $(document).ready(function() {
 });
 </script>';
 
-messageBoxAdmin($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);
+SnTemplate::messageBoxAdmin($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);

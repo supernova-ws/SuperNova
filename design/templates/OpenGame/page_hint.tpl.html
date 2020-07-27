@@ -1,16 +1,22 @@
-<!-- IF PAGE_HINT -->
-  <!-- DEFINE $PAGE_HINT = '{PAGE_HINT}' -->
-<!-- ELSEIF L_PAGE_HINT -->
-  <!-- DEFINE $PAGE_HINT = '{L_PAGE_HINT}' -->
-<!-- ENDIF -->
+<!-- Preventing double include -->
+<!-- IF ! $PAGE_HINT_INCLUDED -->
+  <!-- DEFINE $PAGE_HINT_INCLUDED = 1 -->
 
-<!-- IF $PAGE_HINT -->
-<br>
-<!--<div style="width: &lt;!&ndash; IF PAGE_HINT_WIDTH &ndash;&gt;{PAGE_HINT_WIDTH}&lt;!&ndash; ELSE &ndash;&gt;47rem&lt;!&ndash; ENDIF &ndash;&gt;;">-->
-<div style="max-width: 50em; min-width: 20em;">
-  <table width="100%" border="0" cellpadding="0" cellspacing="1">
-    <tr><th class="c_c  neutral">{L_sys_hint}</th></tr>
-    <tr><td><div class="hint warning">{$PAGE_HINT}</div></td></tr>
-  </table>
+  <!-- IF PAGE_HINT -->
+    <!-- DEFINE $PAGE_HINT = '{PAGE_HINT}' -->
+  <!-- ELSEIF L_PAGE_HINT -->
+    <!-- DEFINE $PAGE_HINT = '{L_PAGE_HINT}' -->
+  <!-- ENDIF -->
+
+  <!-- IF $PAGE_HINT && ! PAGE_HINT_HIDE -->
+<div style="text-align: center;">
+  <br />
+  <div style="max-width: 50em; min-width: 15em; display: inline-block;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="border_image_small">
+      <tr><th class="c_c  neutral">{L_sys_hint}</th></tr>
+      <tr><td><div class="hint warning">{$PAGE_HINT}</div></td></tr>
+    </table>
+  </div>
 </div>
+  <!-- ENDIF -->
 <!-- ENDIF -->

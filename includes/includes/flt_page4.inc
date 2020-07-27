@@ -15,16 +15,16 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
 
 $fleet = DbFleetStatic::db_fleet_get($fleetid);
 if(!$fleet) {
-  messageBox($lang['fl_fleet_not_exists'], $lang['fl_error']);
+  SnTemplate::messageBox($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 
 if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1) {
-  messageBox($lang['fl_isback'], $lang['fl_error']);
+  SnTemplate::messageBox($lang['fl_isback'], $lang['fl_error']);
 }
 
 if($fleet['fleet_owner'] != $user['id']) {
   $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
-  messageBox($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
+  SnTemplate::messageBox($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }
 
 // If we got a message to add some1 to attack (MadnessRed code)
@@ -41,16 +41,16 @@ if (!empty($userNameToAdd_unsafe)) {
     msg_send_simple_message($userToAddRecord['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
       SN::$lang['fl_aks_invite_message_header'], sprintf(SN::$lang['fl_aks_invite_message'], $user['username']));
 
-    tplAddResult(sprintf($lang['fl_aks_player_invited'], $userNameToAdd_unsafe), ERR_NONE);
+    SnTemplate::tplAddResult(sprintf($lang['fl_aks_player_invited'], $userNameToAdd_unsafe), ERR_NONE);
   } catch (Exception $e) {
-    tplAddResult(sprintf($e->getMessage(), $userNameToAdd_unsafe), ERR_ERROR);
+    SnTemplate::tplAddResult(sprintf($e->getMessage(), $userNameToAdd_unsafe), ERR_ERROR);
   }
 }
 
 $fleet = DbFleetStatic::db_fleet_get($fleetid);
 $aks = DbFleetStatic::dbAcsGetByFleet($fleetid);
 
-$template = gettemplate('fleet_aks_invite', true);
+$template = SnTemplate::gettemplate('fleet_aks_invite', true);
 $template->assign_vars(array(
   'FLEET_ID' => $fleetid,
   'PAGE_HEADER' => "{$lang['fl_associate']} '{$aks['name']}'",
@@ -81,4 +81,4 @@ foreach($fleet_data['ships'] as $ship_data) {
 }
 }
 
-display($template, $lang['fl_title']);
+SnTemplate::display($template, $lang['fl_title']);

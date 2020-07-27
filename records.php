@@ -16,7 +16,7 @@ if(HIDE_BUILDING_RECORDS)
   return;
 }
 
-$template = gettemplate('records', true);
+$template = SnTemplate::gettemplate('records', true);
 
 $user_skip_list_data = sys_stat_get_user_skip_list();
 $user_skip_list = empty($user_skip_list_data) ? '' : (' AND p.id_owner NOT IN (' . implode(',', $user_skip_list_data) . ')');
@@ -63,4 +63,4 @@ foreach($show_groups as $unit_group_id => $mode)
   }
 }
 
-display($template, $lang['rec_title']);
+SnTemplate::display($template, $lang['rec_title']);

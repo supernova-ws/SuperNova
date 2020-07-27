@@ -5,7 +5,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('admin');
 
-$template = gettemplate('server_info', true);
+$template = SnTemplate::gettemplate('server_info', true);
 
 $template->assign_vars(array(
   'game_build_and_research' => SN::$config->BuildLabWhileRun,
@@ -33,4 +33,4 @@ $template->assign_vars(array(
   'DB_PATCH_VERSION' => dbPatchGetCurrent(),
 ));
 
-display($template);
+SnTemplate::display($template);

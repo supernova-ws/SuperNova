@@ -87,6 +87,8 @@ if(window.LOADED_TIMER === undefined) {
   var UNIT_LEVEL = 4;
   var UNIT_TIME_FULL = 5;
   var UNIT_IMAGE = 6;
+  var UNIT_TIME_DISPLAY_OPTION = 'displayType';
+  var UNIT_TIME_DISPLAY_OPTION_HUMAN = 'human'; // Human-readable display type
 
   var EVENT_TIME = 0;
   var EVENT_STRING = 1;
@@ -126,8 +128,14 @@ if(window.LOADED_TIMER === undefined) {
       timer.prefixClass = '.' + timer['id'];
       timer.prefixId = '#' + timer['id'];
 
-      // Кэшируем DOM-ики
-      timer['html_main'] = $(timer.prefixId);
+      if(timer.hasOwnProperty('className')) {
+        timer.className = '.' + timer['className'];
+        timer['html_main'] = $(timer.className);
+      } else {
+        // Кэшируем DOM-ики
+        timer['html_main'] = $(timer.prefixId);
+      }
+
 
       // Если нет настроек - создаём пустой объект
       timer['options'] === undefined ? timer['options'] = {} : false;
@@ -390,8 +398,13 @@ if(window.LOADED_TIMER === undefined) {
             // infoText = que[0][UNIT_NAME] + '<br />(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
             infoText = que[0][UNIT_NAME];
             textUnitsLeft = '(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
-            timeLeftText = sn_timestampToString(timeLeft);
-            timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
+            if(timer.hasOwnProperty('options') && timer.options.hasOwnProperty(UNIT_TIME_DISPLAY_OPTION) && timer.options[UNIT_TIME_DISPLAY_OPTION] === UNIT_TIME_DISPLAY_OPTION_HUMAN) {
+              timeLeftText = sn_timestampToStringHuman(timeLeft);
+              timeLeftTotalText = sn_timestampToStringHuman(timeLeft + timer_options['total']);
+            } else {
+              timeLeftText = sn_timestampToString(timeLeft);
+              timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
+            }
 
             if(!timer['html_finish'].already_tagged && timer['html_finish'].length) {
               // Дата окончания постройки текущего юнита
@@ -425,7 +438,9 @@ if(window.LOADED_TIMER === undefined) {
           }
 
           // Вывод строковых значений
-          timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%') : false;
+          var barWidth = Math.round((timeLeft % 60 + 1) / 60 * 100);
+          barWidth > 100 ? barWidth = 100 : false;
+          timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(barWidth + '%') : false;
           if (timer['html_total_js'].length) {
             timer['html_total_js'].html(timeLeftTotalText);
           } else {
@@ -520,8 +535,14 @@ if(window.LOADED_TIMER === undefined) {
           }
           infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
 
-          timer['html_main'].html(infoText);
           timer['current'] = new_value;
+
+          if(timer.hasOwnProperty('className')) {
+            $(timer.className).html(infoText);
+          } else {
+            timer['html_main'].html(infoText);
+          }
+
           break;
         }
 

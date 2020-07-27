@@ -8,7 +8,7 @@ function sn_fleet_page2() {
   global $TargetPlanet, $consumption, $template_result;
   global $user, $config, $is_transport_missions;
 
-  $template = gettemplate('fleet2', true);
+  $template = SnTemplate::gettemplate('fleet2', true);
 
   foreach ($missiontype as $key => $value) {
     $template->assign_block_vars('missions', array(
@@ -126,5 +126,5 @@ function sn_fleet_page2() {
   ));
 
   $template->assign_recursive($template_result);
-  display($template, $lang['fl_title']);
+  SnTemplate::display($template, $lang['fl_title']);
 }

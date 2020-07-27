@@ -16,10 +16,10 @@ global $lang, $user;
 
 $userId = sys_get_param_id('id');
 
-$template = gettemplate('admin/admin_user_activity');
+$template = SnTemplate::gettemplate('admin/admin_user_activity');
 visualize($userId);
 $template->assign_recursive($template_result);
-display($template, "Активность игрока [{$userId}] {$template_result['USER_NAME']}");
+SnTemplate::display($template, "Активность игрока [{$userId}] {$template_result['USER_NAME']}");
 
 function visualize($userId) {
   global $template_result;

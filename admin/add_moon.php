@@ -18,9 +18,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate("admin/add_moon", true);
+$template = SnTemplate::gettemplate("admin/add_moon", true);
 
 if(sys_get_param_str('mode') == 'addit')
 {
@@ -32,7 +32,7 @@ if(sys_get_param_str('mode') == 'addit')
   uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], Universe::moonSizeRandom(), false, ['name' => $MoonName]);
   sn_db_transaction_commit();
 
-  messageBoxAdmin($lang['addm_done'], $lang['addm_title']);
+  SnTemplate::messageBoxAdmin($lang['addm_done'], $lang['addm_title']);
 }
 
-display($template, $lang['addm_title']);
+SnTemplate::display($template, $lang['addm_title']);

@@ -1,0 +1,10 @@
+  <select size="1" onchange="changePlanet(this);" id="navbar_planet_select" class="js_navbar_planet_select">
+    <!-- BEGIN topnav_planets -->
+    <option {topnav_planets.SELECTED} value="{topnav_planets.ID}">
+      <!-- IF topnav_planets.IS_CAPITAL -->&#9813;<!-- ENDIF -->
+      <!-- IF topnav_planets.IS_MOON -->&#9789;<!-- ENDIF -->
+      {topnav_planets.COORDS}&nbsp;{topnav_planets.TYPE_TEXT}&nbsp;{topnav_planets.NAME}
+    </option>
+    <!-- END topnav_planets -->
+  </select>
+

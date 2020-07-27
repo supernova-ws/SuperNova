@@ -24,7 +24,7 @@ function sys_user_vacation($user) {
     // sn_sys_logout(false, true);
     // core_auth::logout(false, true);
 
-    $template = gettemplate('vacation', true);
+    $template = SnTemplate::gettemplate('vacation', true);
 
     $template->assign_vars(array(
       'MENU' => false,
@@ -36,7 +36,7 @@ function sys_user_vacation($user) {
       'RANDOM' => mt_rand(1, 2),
     ));
 
-    display($template);
+    SnTemplate::display($template);
   }
 
   return false;

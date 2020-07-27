@@ -44,10 +44,10 @@ function flyingFleetsModel($userId, $debug) {
 flyingFleetsModel($user['id'], $debug);
 
 if (!$planetrow) {
-  messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
+  SnTemplate::messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
-$template = gettemplate('flying_fleets', true);
+$template = SnTemplate::gettemplate('flying_fleets', true);
 
 $i = 0;
 $fleet_list = DbFleetStatic::fleet_list_by_owner_id($user['id']);
@@ -73,4 +73,4 @@ $template->assign_vars(array(
   'EXPEDITIONS_MAX'    => $MaxExpeditions,
 ));
 
-display($template, $lang['fl_title']);
+SnTemplate::display($template, $lang['fl_title']);

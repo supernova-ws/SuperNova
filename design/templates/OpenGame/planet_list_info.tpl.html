@@ -1,0 +1,127 @@
+<!-- BEGIN !planet --><!-- IF $PLANET_PLANET_ID == planet.ID -->
+
+<!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
+  <!-- DEFINE $FRAME_WIDTH = 'planet_list_top_medium' -->
+  <!-- DEFINE $PLANET_IMG_SIZE_PREFIX = '' -->
+<!-- ELSE -->
+  <!-- DEFINE $FRAME_WIDTH = 'planet_list_top_small' -->
+  <!-- DEFINE $PLANET_IMG_SIZE_PREFIX = 's_' -->
+<!-- ENDIF -->
+
+<!-- DEFINE $FRAME_WIDTH = 'planet_list_top_medium' -->
+<!-- DEFINE $PLANET_IMG_SIZE_PREFIX = 's_' -->
+
+<div class="{$FRAME_WIDTH} planet_list_item">
+  <div class="planet_list_wrap">
+    <div class="left_top images" planet_id="{$PLANET_PLANET_ID}">
+      <img src="{I_[$PLANET_IMG_SIZE_PREFIX][planet.IMAGE]}" class="element_fill_wrap" go="" />
+
+
+      <div class="icon_25per_left_1" title="{planet.STRUCTURE}" go="build">
+        <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="icon_fill <!-- IF planet.STRUCTURE_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+        <!-- IF planet.STRUCTURE_SLOTS -->
+        <span class="a75 left_top">{planet.STRUCTURE_SLOTS}</span>
+        <!-- ENDIF -->
+      </div>
+      <div class="icon_25per_left_2" title="{planet.HANGAR}" go="build" mode="fleet" >
+        <img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="icon_fill <!-- IF planet.HANGAR_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+        <!-- IF planet.HANGAR_SLOTS -->
+        <span class="a75 left_top">{planet.HANGAR_SLOTS}</span>
+        <!-- ENDIF -->
+      </div>
+      <div class="icon_25per_left_3" title="{planet.DEFENSE}" go="build" mode="defense">
+        <img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="icon_fill <!-- IF planet.DEFENSE_SLOTS -->a75<!-- ELSE -->a50 o50<!-- ENDIF -->" />
+        <!-- IF planet.DEFENSE_SLOTS -->
+        <span class="a75 left_top">{planet.DEFENSE_SLOTS}</span>
+        <!-- ENDIF -->
+      </div>
+
+      <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
+      <span class="a75 icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" go="" mode="manage">
+            <img src="{I_[planet.PLANET_GOVERNOR_ID]}" class="icon_fill o75">
+            <span class="a75 left_bottom">{planet.PLANET_GOVERNOR_LEVEL}</span>
+          </span>
+      <!-- ENDIF -->
+
+      <span title="{L_flt_gather_all}" class="a75 icon-gather-wrapper icon_gather" go="fleet" mode="5"></span>
+
+      <!-- IF planet.FLEET_OWN -->
+      <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" class="a75 icon_25per_top_2" go="flying" onmouseover="fleet_dialog_show(this, '{planet.PLANET_FLEET_ID}')" />
+      <!-- ENDIF -->
+
+      <!-- IF planet.FLEET_ENEMY -->
+      <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_warning.png" class="planet_list_moon_attack" go="" />
+      <!-- ENDIF -->
+
+      <!-- IF planet.MOON_ID -->
+        <!-- IF planet.MOON_ID == PLANET_ID -->
+          <!-- DEFINE $MOON_IMG_SIZE = '66' -->
+          <!-- DEFINE $MOON_SIZE = 1 -->
+        <!-- ELSE -->
+          <!-- DEFINE $MOON_IMG_SIZE = '33' -->
+          <!-- DEFINE $MOON_SIZE = 0 -->
+        <!-- ENDIF -->
+
+        <div class="right_top percent{$MOON_IMG_SIZE}" planet_id="{planet.MOON_ID}">
+          <img src="{I_s_[planet.MOON_IMG]}" class="icon_fill" go="" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]" />
+
+          <!-- IF planet.MOON_ID == PLANET_ID -->
+          <span title="{L_flt_gather_all}" class="a75 icon_25per_right_4" go="fleet" mode="5"><div class="icons icon-gather"></div></span>
+          <!-- ENDIF -->
+
+          <!-- IF planet.MOON_FILL >= 100 -->
+            <!-- DEFINE $MOON_FILL_BG_STYLE = 'negative_bg' -->
+          <!-- ELSEIF planet.MOON_FILL > 80 -->
+            <!-- DEFINE $MOON_FILL_BG_STYLE = 'neutral_bg' -->
+          <!-- ELSE -->
+            <!-- DEFINE $MOON_FILL_BG_STYLE = 'positive_bg' -->
+          <!-- ENDIF -->
+          <span class="planet_list_submoon_fields"><div class="fl planet_list_submoon_filler {$MOON_FILL_BG_STYLE}" style="width: {planet.MOON_FILL}%;"></div></span>
+
+          <!-- IF planet.MOON_ENEMY != 0 -->
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_warning.png" class="planet_list_moon_attack" go="">
+          <!-- ENDIF -->
+        </div>
+      <!-- ENDIF -->
+    </div>
+
+    <!-- DEFINE $PRODUCTION_PERCENT = '{planet.METAL_PERCENT}' -->
+    <!-- INCLUDE _number_color_production_bg -->
+    <div class="{$PRODUCTION_PERCENT_STYLE_BG} res_bar metal_bar">
+      <div class="planet_list_bar metal_bg" style="height: {planet.METAL_PERCENT}%"></div>
+    </div>
+    <!-- DEFINE $PRODUCTION_PERCENT = '{planet.CRYSTAL_PERCENT}' -->
+    <!-- INCLUDE _number_color_production_bg -->
+    <div class="{$PRODUCTION_PERCENT_STYLE_BG} res_bar crystal_bar">
+      <div class="planet_list_bar crystal_bg" style="height: {planet.CRYSTAL_PERCENT}%"></div>
+    </div>
+    <!-- DEFINE $PRODUCTION_PERCENT = '{planet.DEUTERIUM_PERCENT}' -->
+    <!-- INCLUDE _number_color_production_bg -->
+    <div class="{$PRODUCTION_PERCENT_STYLE_BG} res_bar deuterium_bar">
+      <div class="planet_list_bar deuterium_bg" style="height: {planet.DEUTERIUM_PERCENT}%"></div>
+    </div>
+  </div>
+
+  <div class="planet_list_fields">
+    <!-- DEFINE $PLANET_FILL_PERCENT = '{planet.FILL}' --><!-- INCLUDE _number_color_planet_fill_bg -->
+    <div style="width: {planet.FILL}%;" class="{$PLANET_FILL_STYLE_BG} bar"></div>
+    <div class="numbers">{planet.FIELDS_CUR}&nbsp;/&nbsp;{planet.FIELDS_MAX}</div>
+  </div>
+
+  <!-- IF $OVERVIEW -->
+  <div class="bg_header"><!-- IF planet.IS_CAPITAL -->&#9813; <!-- ENDIF --><!-- IF planet.MOON_ID == PLANET_ID -->&#9789; {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --><br />[{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]</div>
+  <!-- ENDIF -->
+
+  <div class="ov_struc_timer" id="ov_building{$PLANET_PLANET_ID}">{L_sys_no_task}</div>
+  <!-- IF .planet.building_que -->
+  <div id="ov_building{$PLANET_PLANET_ID}_timer" style="color: darkgrey;"></div>
+
+  <script type='text/javascript'>
+    sn_timers.unshift({id: 'ov_building{$PLANET_PLANET_ID}', type: TIMER_BUILD_QUE_V1, options: { msg_done: '{L_sys_no_task}', que: [
+          <!-- BEGIN building_que -->['{building_que.ID}', '{building_que.NAME} ({building_que.LEVEL})', {building_que.TIME}, '{building_que.AMOUNT}'],<!-- END building_que -->
+        ]}});
+  </script>
+  <!-- ENDIF -->
+
+</div>
+<!-- ENDIF --><!-- END planet -->

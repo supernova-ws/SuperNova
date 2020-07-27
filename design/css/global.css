@@ -199,9 +199,17 @@ textarea {
   width: 33%;
   height: 33%;
 }
+.percent50 {
+  width: 50%;
+  height: 50%;
+}
 .percent66 {
   width: 66%;
   height: 66%;
+}
+.percent75 {
+  width: 75%;
+  height: 75%;
 }
 .percent100 {
   width: 100%;
@@ -282,7 +290,7 @@ textarea {
 /* Containers ======================================================================================================= */
 /* Container Flex - Base Flex Container */
 /* One-line vertically centered, space distributed non-wrapping  */
-.contF, .contFJ, .contFS, .contFC {
+.contF, .contFJ, .contFS, .contFC, .contFE {
   display: flex;
 
   justify-content: space-around;
@@ -392,7 +400,6 @@ body.blitz_ {
 .no_select {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */

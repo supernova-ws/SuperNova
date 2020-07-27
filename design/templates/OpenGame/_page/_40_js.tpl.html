@@ -1,0 +1,114 @@
+<script type="text/javascript">
+  // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
+  var timeBrowser = new Date();
+</script>
+
+<!-- IF ADV_SEO_JAVASCRIPT -->
+  {ADV_SEO_JAVASCRIPT}
+<!-- ENDIF -->
+
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/js.cookie.min.js?{C_var_db_update}"></script>
+<script type="text/javascript">
+  var SN_SOUND_ENABLED = parseInt('{SOUND_ENABLED}') ? parseInt('{SOUND_ENABLED}') : 0;
+  var PLAYER_OPTION_ANIMATION_DISABLED = parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') ? parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') : 0;
+  var PLAYER_OPTION_PROGRESS_BARS_DISABLED = parseInt('{PLAYER_OPTION_PROGRESS_BARS_DISABLED}') ? parseInt('{PLAYER_OPTION_PROGRESS_BARS_DISABLED}') : 0;
+  var SN_ROOT_VIRTUAL = '{D_SN_ROOT_VIRTUAL}';
+  var sn_path_prefix = '{D_SN_ROOT_VIRTUAL}';
+
+  jQuery.fx.off = PLAYER_OPTION_ANIMATION_DISABLED;
+
+  // Корректировка по времени запроса - если доступно
+  // var timeBrowser = window.performance ? timeBrowser = new Date(window.performance.timing.requestStart) : new Date();
+  // var timeBrowser = window.performance ? timeBrowser = new Date(window.performance.timing.responseStart) : new Date();
+
+  // С сервера ВСЕГДА должна передаваться РАЗНИЦА во времени - что бы корректно работали скрипты при навигации вперед-назад по страницам в браузерах!
+  var timeDiff = parseInt('{D_SN_CLIENT_TIME_DIFF}') ? parseInt('{D_SN_CLIENT_TIME_DIFF}') : false;
+
+  /*global SN_TIME_NOW:true*/
+  /*eslint no-undef: "error"*/
+  var SN_TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(timeBrowser.valueOf() / 1000));
+
+  var timeTimerStart = timeBrowser;
+
+  if(parseInt('{TIME_DIFF_MEASURE}') || timeDiff === false) {
+    timeDiff = 0;
+    jQuery.post("time_probe.php", {'timeBrowser': timeBrowser.valueOf(), 'utc_offset': -timeBrowser.getTimezoneOffset() * 60, 'client_gmt': timeBrowser.toUTCString()}, function(data) {
+      timeDiff = parseInt(data);
+    });
+  }
+
+  var SN_GOOGLE = parseInt('{SN_GOOGLE}') ? 1 : 0;
+</script>
+
+<!-- IF HALLOWEEN_CODE -->
+  <script type="text/javascript">
+    var HALLOWEEN_CODE = "{HALLOWEEN_CODE}";
+    var HALLOWEEN_IMAGE = "{HALLOWEEN_IMAGE}";
+  </script>
+  <span class="halloween"></span>
+<!-- ENDIF -->
+
+<script type="text/javascript">
+  var HIGHSPOT_GATHER = "{HIGHSPOT_GATHER}";
+</script>
+
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.ui.touch-punch.min.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/ion.sound.min.js?{C_var_db_update}"></script>
+
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.min.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_sound.min.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_timer.min.js?{C_var_db_update}"></script>
+
+<!-- BEGIN js -->
+  <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>
+<!-- END js -->
+
+<!-- BEGIN javascript -->
+  <!-- IF javascript.CONTENT -->
+    <script type="text/javascript">{javascript.CONTENT}</script>
+  <!-- ELSEIF javascript.FILE -->
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{javascript.FILE}?{C_var_db_update}"></script>
+  <!-- ENDIF -->
+<!-- END javascript -->
+
+<script type="text/javascript">
+  /*global snFont:true*/
+  /*eslint no-undef: "error"*/
+  var snFont = {
+    min: Math.floatVal('{D_FONT_SIZE_PERCENT_MIN}'),
+    max: Math.floatVal('{D_FONT_SIZE_PERCENT_MAX}'),
+    step: Math.floatVal('{D_FONT_SIZE_PERCENT_STEP}'),
+    sizeDefaultPercent: Math.floatVal('{D_FONT_SIZE_PERCENT_DEFAULT}'),
+    size: Math.floatVal('{FONT_SIZE}')
+  };
+
+  $.extend(language, {
+    sys_confirm: '{LA_sys_confirm}',
+    sys_cancel: '{LA_sys_cancel}',
+    sys_confirm_action: '{LA_sys_confirm_action}',
+    sys_confirm_action_title: '{LA_sys_confirm_action_title}',
+  });
+</script>
+
+<script type="text/javascript">
+  var WEBP_SUPPORTED = Math.intVal('{WEBP_SUPPORTED}');
+  var WEBP_SUPPORT_NEED_CHECK = Math.intVal('{WEBP_SUPPORT_NEED_CHECK}');
+  // WEBP_SUPPORT_NEED_CHECK = 1;
+
+  // console.log('WEBP_SUPPORT_NEED_CHECK ' + WEBP_SUPPORT_NEED_CHECK);
+
+  if(WEBP_SUPPORT_NEED_CHECK) {
+    hasWebP().then(function() {
+      // add("Basic WebP available");
+      jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 1,});
+      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+    }, function() {
+      jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 0,});
+      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+    });
+  }
+
+  // console.log('PRE WEBP_SUPPORTED ' + WEBP_SUPPORTED);
+</script>

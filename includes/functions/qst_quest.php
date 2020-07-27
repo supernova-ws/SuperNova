@@ -7,10 +7,10 @@ function roughQuestRenderWrapper() {
   global $lang, $user;
   lng_include('quest');
 
-  $template = gettemplate('quest', true);
+  $template = SnTemplate::gettemplate('quest', true);
   qst_render_page($lang, $user, $template);
 
-  display($template, $lang['qst_quests']);
+  SnTemplate::display($template, $lang['qst_quests']);
 }
 
 /**
@@ -115,7 +115,7 @@ function questPageModelManage(classLocale $lang, template $template, &$mode) {
       }
       */
     } catch (Exception $e) {
-      messageBox($e->getMessage(), $lang['sys_error']);
+      SnTemplate::messageBox($e->getMessage(), $lang['sys_error']);
     }
 
     $mode = '';

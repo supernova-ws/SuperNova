@@ -3,6 +3,10 @@
  * Created by Gorlum 04.12.2017 4:13
  */
 
+function isParamExists($paramName) {
+  return array_key_exists($paramName, $_GET) || array_key_exists($paramName, $_POST);
+}
+
 /**
  * @param string $param_name
  * @param string $default

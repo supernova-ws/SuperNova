@@ -6,7 +6,7 @@ if(SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE')) {
   sys_redirect('metamatter.php');
 }
 
-$template = gettemplate('dark_matter', true);
+$template = SnTemplate::gettemplate('dark_matter', true);
 
 lng_include('infos');
 $template->assign_vars(array(
@@ -18,4 +18,4 @@ $template->assign_vars(array(
   'PAGE_HEADER' =>$lang['sys_dark_matter'],
 ));
 
-display($template, $lang['sys_dark_matter']);
+SnTemplate::display($template, $lang['sys_dark_matter']);

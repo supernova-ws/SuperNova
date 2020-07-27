@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.33
+* @version 45d0
 *
 */
 
@@ -147,14 +147,14 @@ $a_lang_array = (array(
   'sys_fleet_arrived'   => "Fleet arrived",
 
   'sys_planet_type' => array(
-    PT_PLANET => 'Planet', 
-    PT_DEBRIS => 'Debris Field', 
+    PT_PLANET => 'Planet',
+    PT_DEBRIS => 'Debris Field',
     PT_MOON   => 'Moon',
   ),
 
   'sys_planet_type_sh' => array(
-    PT_PLANET => '(P)', 
-    PT_DEBRIS => '(D)', 
+    PT_PLANET => '(P)',
+    PT_DEBRIS => '(D)',
     PT_MOON   => '(M)',
   ),
 
@@ -233,7 +233,7 @@ $a_lang_array = (array(
 // top bar
   'top_of_year' => 'Year',
   'top_online'			=> 'Players online',
-  
+
   'sys_first_round_crash_1'	=> 'Contact with the affected fleet lost.',
   'sys_first_round_crash_2'	=> 'This means that it was destroyed in the first round of the battle.',
 
@@ -244,11 +244,24 @@ $a_lang_array = (array(
     QUE_RESEARCH   => 'Research',
   ),
 
+  'navbar_button_expeditions_short' => 'Exp',
+  'navbar_button_fleets' => 'Fleets',
+  'navbar_button_quests' => 'Quests',
+  'navbar_font' => 'Font',
+  'navbar_font_normal' => 'Normal',
+  'sys_que_structures' => 'Buildings',
+  'sys_que_hangar' => 'Hangar',
+  'sys_que_defense' => 'Defense',
+  'sys_que_research' => 'Research',
+  'sys_que_research_short' => 'Science',
+
   'eco_que'          => 'Queue',
   'eco_que_empty'    => 'Queue is empty',
   'eco_que_clear'    => 'Clear queue',
   'eco_que_trim'     => 'Undo last queue',
   'eco_que_artifact' => 'Use Artifact',
+
+  'sys_cancel' => 'Cancel',
 
   'sys_overview'			=> 'Overview',
   'mod_marchand'			=> 'Trader',
@@ -490,7 +503,7 @@ $a_lang_array = (array(
   'mip_sender_amd'			=> 'Rocket and space forces',
   'mip_subject_amd'			=> 'Missile attack',
   'mip_body_attack'			=> 'Attack of the interplanetary missiles (%1$s PCs.) with the planet %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> on the planet %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
-  
+
   // Misc
   'sys_game_rules' => 'Rules of the game',
   'sys_game_documentation' => 'Documentation',
@@ -511,7 +524,7 @@ $a_lang_array = (array(
 
   // Fleet
   'flt_gather_all'    => 'Gather resources',
-  
+
   // Ban system
   'ban_title'      => 'Black list',
   'ban_name'       => 'Name',

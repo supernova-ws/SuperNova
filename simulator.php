@@ -49,7 +49,7 @@ if ($_POST['submit'] || $execute) {
 
   $template_result['MICROTIME'] = $combat_data[UBE_TIME_SPENT];
 
-  $template = gettemplate('ube_combat_report', true);
+  $template = SnTemplate::gettemplate('ube_combat_report', true);
   $template->assign_recursive($template_result);
 
   $template->assign_vars(array(
@@ -57,9 +57,9 @@ if ($_POST['submit'] || $execute) {
     'NAVBAR' => false,
   ));
 
-  display($template);
+  SnTemplate::display($template);
 } else {
-  $template = gettemplate('simulator', true);
+  $template = SnTemplate::gettemplate('simulator', true);
   $techs_and_officers = array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR, MRC_ADMIRAL);
 
   foreach ($techs_and_officers as $tech_id) {
@@ -108,5 +108,5 @@ if ($_POST['submit'] || $execute) {
   $template->assign_vars(array(
     'NAVBAR' => false,
   ));
-  display($template, $lang['coe_combatSimulator']);
+  SnTemplate::display($template, $lang['coe_combatSimulator']);
 }

@@ -1,6 +1,9 @@
 <script type="text/javascript">
-  var L_sys_login_password_show = '{LA_sys_login_password_show}';
-  var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
+  $.extend(language, {
+    sys_login_password_show: '{LA_sys_login_password_show}' + 1,
+    sys_login_password_hide: '{LA_sys_login_password_hide}' + 2,
+  });
+
   var C_player_vacation_time = '{C_player_vacation_time}';
   var C_player_delete_time = '{C_player_delete_time}';
   var JS_FMT_DATE = '{JS_FMT_DATE}';
@@ -30,6 +33,36 @@
   $(document).ready(function () {
     $(".tabs").tabs();
     $("#tab_container").show();
+
+    // var index = $('.tabs a[href="#tab_ignores"]').parent().index();
+    // $(".tabs").tabs("option", "active", index);
+    // $(".tabs").tabs("option", "active", 3);
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).on('click', '.js_unignore', function (e) {
+    var element = $(this);
+
+    var senderId = element.attr('sender_id');
+
+    jQuery.get(
+      SN_ROOT_VIRTUAL + "index.php?page=ajax&mode=AjaxIgnore&action=unIgnorePlayer&subjectId=" + senderId,
+      function (data) {
+        // Checking for correct JSON structure
+        if (
+          data.hasOwnProperty('player')
+          && data.player.hasOwnProperty('ignores')
+          && data.player.ignores.hasOwnProperty(senderId)
+        ) {
+          $("[sender_id=" + senderId + "]").parent().parent().hide();
+        }
+      },
+      "json"
+    );
+
+    e.preventDefault();
+    return false;
   });
 </script>
 
@@ -44,7 +77,7 @@
   <!-- ENDIF -->
 <!-- ENDIF -->
 
-<form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
+<form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data" style="display: inline-block;">
   <input type="hidden" name="refresh" value="1" />
 
   <div id="tab_container" style="font-size: 1em; width: 50em; display: none;" class="tabs">
@@ -52,6 +85,7 @@
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
       <li><a href="#tab_alerts">{L_opt_alerts}</a></li>
+      <li><a href="#tab_ignores">{L_opt_ignores}</a></li>
     </ul>
 
     <div id="tab_account">
@@ -422,7 +456,6 @@
       </div>
     </div>
 
-
     <div id="tab_alerts">
       <table class="no_border_image">
         <!-- IF .options_1 -->
@@ -454,6 +487,34 @@
         <!-- ENDIF -->
       </table>
     </div>
+
+    <div id="tab_ignores">
+      <table class="no_border_image">
+        <tr class="c_c">
+          <th colspan="2">{L_opt_ignores}</th>
+        </tr>
+
+        <!-- BEGIN ignores -->
+        <tr>
+          <td colspan="1">
+            {ignores.NAME}
+          </td>
+          <td colspan="1">
+            <div class="js_unignore link_action" sender_id="{ignores.ID}" sender_name="{ignores.NAME}">
+              {L_opt_unignore_do}
+            </div>
+          </td>
+        </tr>
+        <!-- BEGINELSE ignores -->
+        <tr>
+          <td colspan="2" class="notice" style="padding: 0.5em 1em;">
+            {L_opt_ignore_list_empty}
+          </td>
+        </tr>
+        <!-- END ignores -->
+      </table>
+    </div>
+
   </div>
 
   <br/>

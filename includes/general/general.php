@@ -83,7 +83,7 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
 /**
  * Adding one handler for specific function name
  *
- * @param callable[][]   $functions
+ * @param callable[][] $functions
  * @param string       $function_name
  * @param string|array $function_data
  * @param string       $class_module_name
@@ -97,7 +97,7 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
   }
 
   $overwrite = $override_with[0] == '*';
-  $prepend = $override_with[0] == '+';
+  $prepend   = $override_with[0] == '+';
   if ($overwrite || $prepend) {
     $override_with = substr($override_with, 1);
   }
@@ -114,14 +114,14 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
     $functions[$function_name] = array();
   } elseif (!isset($functions[$function_name])) {
     $functions[$function_name] = array();
-    $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
+    $sn_function_name          = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
     //if(is_callable($sn_function_name))
     {
       $functions[$function_name][] = $sn_function_name;
     }
   }
 
-  if($prepend) {
+  if ($prepend) {
     array_unshift($functions[$function_name], $function_data);
   } else {
     $functions[$function_name][] = $function_data;
@@ -164,7 +164,7 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php') {
       }
 
       $full_filename = $dir_name . $file;
-      $extension = substr($full_filename, -strlen($load_extension));
+      $extension     = substr($full_filename, -strlen($load_extension));
       if ($extension == $load_extension) {
         require_once($full_filename);
       }
@@ -248,7 +248,7 @@ function sn_get_mm_cost($plain = false, &$result) {
  */
 function get_exchange_rate($currency_symbol) {
   $currency_symbol = strtolower($currency_symbol);
-  $config_field = 'payment_currency_exchange_' . $currency_symbol;
+  $config_field    = 'payment_currency_exchange_' . $currency_symbol;
 
   // Заворачиваем получение стоимости ММ через перекрываемую процедуру
   $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : SN::$config->$config_field);
@@ -275,7 +275,7 @@ function sys_stat_get_user_skip_list() {
   }
 
   if (!empty($user_skip_list)) {
-    $user_skip_list = implode(' OR ', $user_skip_list);
+    $user_skip_list  = implode(' OR ', $user_skip_list);
     $user_skip_query = db_user_list($user_skip_list);
     if (!empty($user_skip_query)) {
       foreach ($user_skip_query as $user_skip_row) {
@@ -303,34 +303,34 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
   $result = array();
 
   $powerup_data = get_unit_param($powerup_id);
-  $is_upgrade = !empty($powerup_unit) && $powerup_unit;
+  $is_upgrade   = !empty($powerup_unit) && $powerup_unit;
 
   $level_current = $term_original = $time_left = 0;
   if ($is_upgrade) {
     $time_finish = strtotime($powerup_unit['unit_time_finish']);
-    $time_left = max(0, $time_finish - SN_TIME_NOW);
+    $time_left   = max(0, $time_finish - SN_TIME_NOW);
     if ($time_left > 0) {
       $term_original = $time_finish - strtotime($powerup_unit['unit_time_start']);
       $level_current = $powerup_unit['unit_level'];
     }
   }
 
-  $level_max = $level_max > $powerup_data[P_MAX_STACK] ? $level_max : $powerup_data[P_MAX_STACK];
+  $level_max     = $level_max > $powerup_data[P_MAX_STACK] ? $level_max : $powerup_data[P_MAX_STACK];
   $original_cost = 0;
   for ($i = 1; $i <= $level_max; $i++) {
     $base_cost = eco_get_total_cost($powerup_id, $i);
     $base_cost = $base_cost[BUILD_CREATE][RES_DARK_MATTER];
     foreach ($sn_powerup_buy_discounts as $period => $discount) {
-      $upgrade_price = floor($base_cost * $discount * $period / PERIOD_MONTH);
+      $upgrade_price       = floor($base_cost * $discount * $period / PERIOD_MONTH);
       $result[$i][$period] = $upgrade_price;
-      $original_cost = $is_upgrade && $i == $level_current && $period <= $term_original ? $upgrade_price : $original_cost;
+      $original_cost       = $is_upgrade && $i == $level_current && $period <= $term_original ? $upgrade_price : $original_cost;
     }
   }
 
   if ($is_upgrade && $time_left) {
     $term_original = round($term_original / PERIOD_DAY);
-    $time_left = min(floor($time_left / PERIOD_DAY), $term_original);
-    $cost_left = $term_original > 0 ? ceil($time_left / $term_original * $original_cost) : 0;
+    $time_left     = min(floor($time_left / PERIOD_DAY), $term_original);
+    $cost_left     = $term_original > 0 ? ceil($time_left / $term_original * $original_cost) : 0;
 
     array_walk_recursive($result, function (&$value) use ($cost_left) {
       $value -= $cost_left;

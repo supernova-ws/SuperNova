@@ -118,7 +118,7 @@ class BuildDataStatic {
     static $groupResourcesLoot;
     empty($groupResourcesLoot) ? $groupResourcesLoot = sn_get_groups('resources_loot') : false;
 
-    $cost_in_metal = 0;
+    $cost_in_metal          = 0;
     $planetResourcesInMetal = 0;
     foreach ($groupResourcesLoot as $resource_id) {
       $planetResourcesInMetal += floor(get_unit_cost_in([$resource_id => mrc_get_level($user, $planet, $resource_id)]));
@@ -148,12 +148,12 @@ class BuildDataStatic {
       ],
     ];
 
-    $unit_factor = !empty($unit_data[P_COST][P_FACTOR]) ? $unit_data[P_COST][P_FACTOR] : 1;
+    $unit_factor      = !empty($unit_data[P_COST][P_FACTOR]) ? $unit_data[P_COST][P_FACTOR] : 1;
     $levelPriceFactor = pow($unit_factor, $unit_level);
 
     $only_dark_matter = 0;
     $canDestroyAmount = 1000000000000;
-    $canBuildAmount = !empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 1000000000000;
+    $canBuildAmount   = !empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 1000000000000;
     foreach ($unit_data[P_COST] as $resourceId => $costResource) {
       if ($resourceId === P_FACTOR || !($levelPrice = ceil($costResource * $levelPriceFactor))) {
         continue;
@@ -161,7 +161,7 @@ class BuildDataStatic {
 
       $only_dark_matter = $only_dark_matter ? $only_dark_matter : $resourceId;
 
-      $cost[BUILD_CREATE][$resourceId] = $levelPrice;
+      $cost[BUILD_CREATE][$resourceId]  = $levelPrice;
       $cost[BUILD_DESTROY][$resourceId] = ceil($levelPrice / 2);
 
       if (in_array($resourceId, $groupResourcesLoot)) {
@@ -172,11 +172,11 @@ class BuildDataStatic {
         ? BuildDataStatic::eco_get_resource_on_location($user, $planet, $resourceId, $groupResourcesLoot)
         : 0;
 
-      $canBuildAmount = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resourceId]));
+      $canBuildAmount   = min($canBuildAmount, floor($resource_got / $cost[BUILD_CREATE][$resourceId]));
       $canDestroyAmount = min($canDestroyAmount, floor($resource_got / $cost[BUILD_DESTROY][$resourceId]));
     }
-    $cost['CAN'][BUILD_CREATE] = $canBuildAmount > 0 ? floor($canBuildAmount) : 0;
-    $cost['CAN'][BUILD_DESTROY] = $canDestroyAmount > 0 ? floor($canDestroyAmount) : 0;
+    $cost['CAN'][BUILD_CREATE]           = $canBuildAmount > 0 ? floor($canBuildAmount) : 0;
+    $cost['CAN'][BUILD_DESTROY]          = $canDestroyAmount > 0 ? floor($canDestroyAmount) : 0;
     $cost[P_OPTIONS][P_ONLY_DARK_MATTER] = $only_dark_matter == RES_DARK_MATTER;
 
     return $cost;

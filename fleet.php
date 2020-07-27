@@ -65,7 +65,7 @@ $MaxFleets = GetMaxFleets($user);
 //$FlyingFleets = $FlyingFleets['Number'];
 $FlyingFleets = DbFleetStatic::fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
-  messageBox($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
+  SnTemplate::messageBox($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
@@ -117,7 +117,7 @@ switch ($fleet_page) {
           $target_mission = MT_COLONIZE;
           $planet_type = PT_PLANET;
         } else {
-          messageBox ("<font color=\"red\"><b>". $lang['fl_no_planet_type'] ."</b></font>", $lang['fl_error']);
+          SnTemplate::messageBox("<font color=\"red\"><b>" . $lang['fl_no_planet_type'] . "</b></font>", $lang['fl_error']);
         }
       } else {
         $recyclers = 0;
@@ -233,7 +233,7 @@ switch($fleet_page) {
   break;
 
   case 5:
-    $template = gettemplate('fleet5', true);
+    $template = SnTemplate::gettemplate('fleet5', true);
     $pageFleet5Gathering = new \Pages\Deprecated\PageFleet5Gathering();
     $pageFleet5Gathering->modelFleet5Gathering($user, $planetrow, $template);
     // Building list of own planets & moons

@@ -1,7 +1,6 @@
 jQuery(document).ready(function() {
   // Натягиваем скины на элементы ввода
-  // jQuery('.payment_mm_amount, .payment_mm_module').button().addClass('ui-textfield');
-  jQuery('.payment_mm_amount, .payment_mm_method:not(.payment_mm_method_nobutton), .payment_mm_module').button().addClass('ui-textfield');
+  jQuery('.payment_block_item:not(.payment_mm_method_nobutton)').button().addClass('ui-textfield');
 
   jQuery(document)
     .on('keyup change', "#metamatter", function(event, ui) {
@@ -38,18 +37,26 @@ jQuery(document).ready(function() {
       sn_redirect('metamatter.php?player_currency=' + $(this).val());
     })
 
-    .on("click", ".payment_mm_amount", function(){
+    .on("click", ".js_payment_mm_amount", function(){
       jQuery("#metamatter").val(jQuery(this).attr("value")).change();
       jQuery("#payment_form").submit();
     })
-    .on("click", '.payment_mm_method', function(){
+    .on("click", '.js_payment_mm_method', function(){
       jQuery("#payment_method").val(jQuery(this).attr("value"));
-      jQuery("#payment_type").val(jQuery(this).parent().attr("value"));
       jQuery("#payment_form").submit();
     })
-    .on("click", '.payment_mm_module', function(){
+    .on("click", '.js_payment_mm_module', function(){
       jQuery("#payment_module").val(jQuery(this).attr("value"));
       jQuery("#payment_form").submit();
+    })
+
+    .on('click', '.js_show_hidden_methods', function () {
+      sn_show_hide2(this, '.js_hidden_payments_' + $(this).attr('method_id'), 1);
+      return false;
+    })
+    .on('click', '.js_show_dm_info', function () {
+      sn_show_hide2(this, '#dark_matter_what_it_is, #metamatter_what_description');
+      return false;
     })
   ;
 });

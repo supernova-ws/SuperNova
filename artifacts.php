@@ -79,18 +79,18 @@ if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param
       sys_redirect("artifacts.php#{$unit_id}");
     break;
   }
-  messageBox($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
+  SnTemplate::messageBox($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
 }
 
 $user = db_user_by_id($user['id'], true);
 
-$template = gettemplate('artifacts', true);
+$template = SnTemplate::gettemplate('artifacts', true);
 
 foreach ($sn_group_artifacts as $artifact_id) {
   $artifact_level = mrc_get_level($user, [], $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   $artifact_data = get_unit_param($artifact_id);
-  $artifact_data_bonus = tpl_render_unit_bonus_data($artifact_data);
+  $artifact_data_bonus = SnTemplate::tpl_render_unit_bonus_data($artifact_data);
 
   $template->assign_block_vars('artifact', array(
     'ID'          => $artifact_id,
@@ -111,4 +111,4 @@ $template->assign_vars(array(
   'PAGE_HINT'   => $lang['art_page_hint'],
 ));
 
-display($template, $lang['tech'][UNIT_ARTIFACTS]);
+SnTemplate::display($template, $lang['tech'][UNIT_ARTIFACTS]);

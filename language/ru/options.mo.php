@@ -1,4 +1,5 @@
 <?php
+/** @noinspection HtmlUnknownTarget */
 
 /*
 #############################################################################
@@ -15,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a16.13
+* @version 45d0
 *
 */
 
@@ -25,7 +26,7 @@
 
 if (!defined('INSIDE')) die();
 
-$a_lang_array = (array(
+$a_lang_array = [
   'opt_account' => 'Профиль',
   'opt_int_options' => 'Интерфейс',
   'opt_settings_statistics' => 'Статистика игрока',
@@ -62,16 +63,16 @@ $a_lang_array = (array(
   'emaildir_tip' => 'Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.',
   'permanentemaildir' => 'Основной адрес e-mail',
   'opt_planet_sort_title' => 'Сортировать планеты по',
-  'opt_planet_sort_options' => array(
+  'opt_planet_sort_options' => [
     SORT_ID       => 'Времени колонизации',
     SORT_LOCATION => 'Координатам',
     SORT_NAME     => 'Алфавиту',
     SORT_SIZE     => 'Количеству полей',
-  ),
-  'opt_planet_sort_ascending' => array(
+  ],
+  'opt_planet_sort_ascending' => [
     SORT_ASCENDING  => 'Возрастанию',
     SORT_DESCENDING => 'Убыванию',
-  ),
+  ],
 
   'opt_navbar_title' => 'Панель навигации',
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
@@ -86,6 +87,7 @@ $a_lang_array = (array(
     PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH       => 'Отключить кнопку исследований',
     PLAYER_OPTION_NAVBAR_DISABLE_PLANET         => 'Отключить кнопку планеты',
     PLAYER_OPTION_NAVBAR_DISABLE_HANGAR         => 'Отключить кнопку верфи',
+    PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE        => 'Отключить кнопку обороны',
     PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS    => 'Отключить кнопку экспедиций',
     PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS  => 'Отключить кнопку летящих флотов',
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Отключить кнопку квестов',
@@ -182,7 +184,7 @@ $a_lang_array = (array(
   Обычно игра сама автоматически устанавливает правильную разницу во времени. Однако при неправильной установке часового пояса на устройстве игрока, при игре с нескольких устройств, а так же
   при очень медленном интернете иногда нужно установить разницу во времени вручную',
 
-  'opt_custom' => array(
+  'opt_custom' => [
     'opt_uni_avatar_user' => 'Показывать аватар пользователя',
     'opt_uni_avatar_ally' => 'Показывать логотип Альянса',
     'opt_int_struc_vertical' => 'Вертикальная очередь построек',
@@ -191,7 +193,7 @@ $a_lang_array = (array(
     'opt_int_overview_planet_columns_hint' => '0 - рассчитать по максимальному количество рядов',
     'opt_int_overview_planet_rows' => 'Максимальное количество рядов в списке планет',
     'opt_int_overview_planet_rows_hint' => 'Игнорируется, если указано количество колонок',
-  ),
+  ],
 
   'opt_mail_optional_description' => 'На этот почтовый адрес отправляются личные сообщения от других игроков и уведомления о внутриигровых событиях (например, отчеты об экспедициях и отчеты шпионажа)',
   'opt_mail_permanent_description' => 'К этому почтовому адресу привязывается игровой аккаунт. Ввести его можно только один раз. Все системные уведомления (например, о смене пароля) отправляются именно на этот адрес',
@@ -206,4 +208,8 @@ $a_lang_array = (array(
 
   'option_change_nick_disabled' => 'Смена ника запрещена настройками сервера',
 
-));
+  'opt_ignores' => 'Игнор-лист',
+  'opt_unignore_do' => 'Удалить из игнор-листа',
+  'opt_ignore_list_empty' => 'Ваш игнор-лист пуст',
+
+];

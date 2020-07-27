@@ -53,7 +53,7 @@ function int_calc_storage_bar($resource_id, $capsObj)
 };
 
 $ValidList['percent'] = array (  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100 );
-$template = gettemplate('resources', true);
+$template = SnTemplate::gettemplate('resources', true);
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $planet = SN::$gc->repoV2->getPlanet($planetrow['id']);
@@ -188,4 +188,4 @@ $template->assign_vars(array(
  'PAGE_HINT'            => $lang['res_hint'],
 ));
 
-display($template, $lang['res_planet_production']);
+SnTemplate::display($template, $lang['res_planet_production']);

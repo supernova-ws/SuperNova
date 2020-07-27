@@ -17,9 +17,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate('admin/settings', true);
+$template = SnTemplate::gettemplate('admin/settings', true);
 
 if(sys_get_param('save')) {
   SN::$config->game_name               = sys_get_param_str_unsafe('game_name');
@@ -43,7 +43,7 @@ if(sys_get_param('save')) {
 
   SN::$config->game_default_language   = sys_get_param_str_unsafe('game_default_language', DEFAULT_LANG);
   SN::$config->game_default_skin       = sys_get_param_str_unsafe('game_default_skin', DEFAULT_SKINPATH);
-  SN::$config->game_default_template   = sys_get_param_str_unsafe('game_default_template', TEMPLATE_NAME);
+  SN::$config->game_default_template   = sys_get_param_str_unsafe('game_default_template', SnTemplate::getServerDefaultTemplateName());
 
   SN::$config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
   SN::$config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);
@@ -146,10 +146,10 @@ $template->assign_vars([
   'GAME_CHANGE_NAME_COST' => SN::$config->game_user_changename_cost,
 ]);
 
-tpl_assign_select($template, 'change_name_options', SN::$lang['adm_opt_player_change_name_options']);
-tpl_assign_select($template, 'sys_game_disable_reason', SN::$lang['sys_game_disable_reason'], 'ID', 'NAME');
-tpl_assign_select($template, 'game_modes', SN::$lang['sys_game_mode'], 'ID', 'NAME');
-tpl_assign_select($template, 'ver_response', SN::$lang['adm_opt_ver_response'], 'ID', 'NAME');
+SnTemplate::tpl_assign_select($template, 'change_name_options', SN::$lang['adm_opt_player_change_name_options']);
+SnTemplate::tpl_assign_select($template, 'sys_game_disable_reason', SN::$lang['sys_game_disable_reason'], 'ID', 'NAME');
+SnTemplate::tpl_assign_select($template, 'game_modes', SN::$lang['sys_game_mode'], 'ID', 'NAME');
+SnTemplate::tpl_assign_select($template, 'ver_response', SN::$lang['adm_opt_ver_response'], 'ID', 'NAME');
 
 $lang_list = lng_get_list();
 foreach($lang_list as $lang_id => $lang_data) {
@@ -159,4 +159,4 @@ foreach($lang_list as $lang_id => $lang_data) {
   ));
 }
 
-display($template, $lang['adm_opt_title']);
+SnTemplate::display($template, $lang['adm_opt_title']);

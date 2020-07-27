@@ -8,6 +8,7 @@ namespace Pages\Deprecated;
 use SN;
 use DBAL\DbSqlPaging;
 use General\Helpers\PagingRenderer;
+use SnTemplate;
 
 class PageAdminMining extends PageDeprecated {
   const PAGE_SORT_BY_PRODUCTION = 0;
@@ -121,7 +122,7 @@ GROUP BY
       ];
     }
 
-    $template = gettemplate('admin/admin_mining');
+    $template = SnTemplate::gettemplate('admin/admin_mining');
 
     $sorting[$sortBy]['CHECKED'] = true;
     $template->assign_recursive(['.' => ['sorting' => $sorting]]);
@@ -142,7 +143,7 @@ GROUP BY
 
       '.' => ['production' => $render],
     ]);
-    display($template, SN::$lang['menu_admin_mining']);
+    SnTemplate::display($template, SN::$lang['menu_admin_mining']);
   }
 
 }

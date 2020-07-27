@@ -30,7 +30,9 @@
 
 //define('SN_RENDER_NAVBAR_PLANET', false);
 
+use Pages\Deprecated\PageOverview;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$pageOverview = new \Pages\Deprecated\PageOverview();
+$pageOverview = new PageOverview();
 $pageOverview->route();

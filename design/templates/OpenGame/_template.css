@@ -19,6 +19,23 @@
 @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {  }
 
 
+.c_c, th.c_c, td.c_c, tr.c_c td, tr.c_c th, .cell_center, tr.cell_center td, tr.cell_center th, table.c_c tr,
+table > tbody > tr > th.c_c, table > tbody > tr > td.c_c
+{
+  text-align: center;
+}
+
+.c_l, th.c_l, td.c_l, tr.c_l td, tr.c_l th, .cell_left, tr.cell_left td, tr.cell_left th, td.c, table.c_l tr,
+table > tbody > tr > th.c_l, table > tbody > tr > td.c_l
+{
+  text-align: left;
+}
+
+.c_r, th.c_r, td.c_r, tr.c_r td, tr.c_r th, .cell_right, tr.cell_right td, tr.cell_right th, table.c_r tr,
+table > tbody > tr > th.c_r, table > tbody > tr > td.c_r
+{
+  text-align: right;
+}
 
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
 html {
@@ -49,8 +66,6 @@ body {
   flex-basis: 100%;
   flex-shrink: 1;
   flex-grow: 1;
-}
-#navbar_container {
 }
 /* #__content_wrapper = #__navbar_additions + #__content */
 #__content_wrapper {
@@ -325,6 +340,9 @@ input[type=text].coordinate {
 #left_menu.MENU_START_HIDDEN {
   display: none;
 }
+#left_menu.MENU_WHITE_BUTTONS td a {
+  color: white !important;
+}
 
 #left_menu td, #left_menu th {
   min-height: 1.5em;
@@ -466,6 +484,7 @@ input[type=text].coordinate {
 #global_status_window {
   max-width: 50em;
   margin: 0.5em;
+  display: block;
 }
 
 #global_status_list {
@@ -478,10 +497,6 @@ input[type=text].coordinate {
 }
 
 /* NavBar ======================================================================================================== */
-
-#navbar_container {
-  /*display: inline-block;*/
-}
 
 #navbar {
   margin: auto;
@@ -512,6 +527,7 @@ input[type=text].coordinate {
   margin: 0.5em 0.5em;
   flex-grow: 10;
   font-size: 125%;
+  max-width: 20em;
 }
 
 #navbar_player_count {
@@ -1404,6 +1420,10 @@ input[type=text].coordinate {
 
 
 /* Empire overview -------------------------------------------------------------- */
+#empire_overview .prod_header {
+  display: flex;justify-content: space-between;align-items: center;
+}
+
 [go] {
   cursor: pointer;
 }
@@ -1456,7 +1476,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* DarkMatter/MetaMatter --------------------------------------------------------------- */
 #payment_metamatter,  #payment_metamatter_info {
-  max-width: 78em; 
+  max-width: 80em;
 }
 
 #payment_metamatter_info {
@@ -2315,6 +2335,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   max-width: 20em;
   width: 100%;
   padding: 0.5em;
+  display: inline-block;
 }
 .market_services div:first-child {
   text-align: justify;
@@ -2423,26 +2444,26 @@ body:not(.no_border_image) [table_title]:before {
   height: 100%;
 }
 
-.planet_list_top87 {
+.planet_list_top_small {
   width: 7.75em;  /* 87/11 = 7,909090909091 */
 }
-.planet_list_top87 > .planet_list_wrap {
+.planet_list_top_small > .planet_list_wrap {
   height: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .images {
+.planet_list_top_small > .planet_list_wrap > .images {
   height: 100%;
   width: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .metal_bar {
+.planet_list_top_small > .planet_list_wrap > .metal_bar {
   left: 7em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .crystal_bar {
+.planet_list_top_small > .planet_list_wrap > .crystal_bar {
   left: 7.25em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .deuterium_bar {
+.planet_list_top_small > .planet_list_wrap > .deuterium_bar {
   left: 7.50em; /* 75/11 = 6,818181818182 */
 }
-.planet_list_top87 > .planet_list_wrap > .images > .icon-gather-wrapper {
+.planet_list_top_small > .planet_list_wrap > .images > .icon-gather-wrapper {
   height: 25%;
   width: 25%;
   bottom: 0;
@@ -2450,26 +2471,26 @@ body:not(.no_border_image) [table_title]:before {
   position: absolute;
 }
 
-.planet_list_top112 {
+.planet_list_top_medium {
   width: 9.75em;
 }
-.planet_list_top112 > .planet_list_wrap {
+.planet_list_top_medium > .planet_list_wrap {
   height: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .images {
+.planet_list_top_medium > .planet_list_wrap > .images {
   height: 100%;
   width: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .metal_bar {
+.planet_list_top_medium > .planet_list_wrap > .metal_bar {
   left: 9em;
 }
-.planet_list_top112 > .planet_list_wrap > .crystal_bar {
+.planet_list_top_medium > .planet_list_wrap > .crystal_bar {
   left: 9.25em;
 }
-.planet_list_top112 > .planet_list_wrap > .deuterium_bar {
+.planet_list_top_medium > .planet_list_wrap > .deuterium_bar {
   left: 9.50em;
 }
-.planet_list_top112 > .planet_list_wrap > .images > .icon-gather-wrapper {
+.planet_list_top_medium > .planet_list_wrap > .images > .icon-gather-wrapper {
   height: 2.25em;
   width: 2.25em;
   bottom: 0;
@@ -2735,15 +2756,55 @@ body:not(.no_border_image) [table_title]:before {
 }
 
 /* Payment page ===================================================================================================== */
-.payment_mm_amount, .payment_mm_method, .payment_mm_module {
-  display: inline-block;
-  width: 13.63636363636em; /*150px;*/
-  margin: 0.3em;
+.payment_mm_describe
+{
+  font-size: 1.8em;
   text-align: center;
-  vertical-align: middle;
 }
 
-/* Event Halloween */
+.payment_type_block
+{
+  border: 0.2em solid rgba(255, 255, 255, 0.5);
+  margin: 0.5em 0;
+  text-align: center;
+  padding-bottom: 0.5em;
+}
+
+.payment_type_name
+{
+  font-size: 150%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5em;
+}
+
+.payment_method_block
+{
+  width: 100%;
+  text-align: center;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
+  align-items: stretch;
+}
+
+.payment_block_item.ptl_payment_method_hide {
+  display: none;
+}
+
+.payment_block_item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  align-items: center;
+  width: 14em;
+  margin: 0.3em;
+}
+
+
+/* Event Halloween ===================================================================================================== */
 .halloween {
   position: absolute;
 
@@ -2768,10 +2829,105 @@ body:not(.no_border_image) [table_title]:before {
 }
 
 /* Planet overview */
+.planet_overview #navbar_resources {
+  border: 0 solid transparent;
+  width: 100%;
+  margin: 0;
+}
+
 .planet_overview-info {
   width: 100%;
   margin-bottom: 1em;
 }
+
+.planet_overview {
+  display: flex;
+  /*border: 1px solid green;*/
+  align-items: flex-start;
+}
+
+#planet_overview_double {
+  display: flex;
+  align-content: flex-start;
+  align-items: flex-start;
+  /*border: 1px solid blue;*/
+}
+
+.planet_overview #planet_info_table {
+  margin: 0;
+  width: 522px;
+}
+.planet_overview_list {
+  max-height: 87em;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  /*border: 1px solid black;*/
+
+  justify-content: space-around;
+}
+.planet_info_overview {
+}
+
+.planet_overview #fleet_list_table {
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 116em) {
+  div.planet_overview_list
+  {
+    /*border: 1px solid white;*/
+  }
+
+  .planet_overview #fleet_list_table {
+  }
+}
+@media only screen and (max-width: 111em) {
+  div.planet_overview_list
+  {
+    /*border: 1px solid red;*/
+  }
+  #planet_overview_double {
+    flex-wrap: wrap;
+  }
+  .planet_overview #planet_info_table {
+    margin: auto;
+    margin-bottom: 2em;
+  }
+}
+@media only screen and (max-width: 59em) {
+  .planet_overview {
+    flex-wrap: wrap-reverse;
+  }
+  .planet_overview_list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    max-height: 19em;
+    max-width: 65em;
+
+    width: 100%;
+
+    /*border: 1px solid orange;*/
+  }
+  .planet_info_overview {
+    display: inline-block;
+  }
+  .planet_list_item {
+    /*display: inline-block;*/
+  }
+  .planet_overview #planet_info_table {
+    margin-top: 2em;
+  }
+}
+
 
 /* Planet manage */
 .planet-manage-governor-hire-container {
@@ -3591,6 +3747,8 @@ td.error_message {
   display: flex;
   align-items: center;
 }
+
+/* Resbar Vertical -----------------------------------------------------------------------------------------------*/
 .navbar_resources_flex.resbar_v .navbar_resources_flex_title {
   display: block;
 }
@@ -3616,6 +3774,10 @@ td.error_message {
   justify-content: space-around;
 }
 
+.navbar_resources_flex_resource > .navbar_resource_numbers {
+  justify-content: flex-start;
+}
+
 .navbar_resources_flex_resource.cell {
   cursor: pointer;
 
@@ -3628,6 +3790,7 @@ td.error_message {
 
   display: flex;
   flex-grow: 1;
+  align-items: stretch;
 
   flex-basis: 0.1%;
 }
@@ -3646,49 +3809,19 @@ td.error_message {
 
 .navbar_resources_flex_resource > div {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end !important;
   justify-content: center;
   flex-direction: column;
 }
-.navbar_resources_flex_resource > div:not(.navbar_resource_image) {
+.navbar_resources_flex_resource > div.navbar_resource_numbers {
   flex-grow: 1;
 }
-
-
-
-
-
-
-#navbar_container {
-  /*border: 5px solid #5a70ff;*/
-}
-#__content_wrapper {
-  /*border: 5px solid yellow;*/
-}
-#__navbar_wrapper {
-  /*border: 5px dashed teal;*/
-}
-#__page {
-  /*border: 5px solid white;*/
-}
-#__menu {
-  /*border: 5px solid red;*/
-}
-#__navbar_additions {
-  /*border: 5px solid purple;*/
-}
-#__content {
-  /*border: 5px solid white;*/
-}
-#copyright {
-  /*border: 5px solid green;*/
-}
-
 
 
 .quest_list
 {
   max-width: 70em;
+  display: inline-block;
 }
 
 .quest_filter_wrapper
@@ -3825,6 +3958,7 @@ td.error_message {
 .rank-table .rank, .rank-emperor {
   width: 9em;
   height: 9em;
+  display: inline-block;
 }
 .rank-selected {
   border: 0.3em solid green;

@@ -5,7 +5,7 @@
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$template = gettemplate('rank_list', true);
+$template = SnTemplate::gettemplate('rank_list', true);
 
 for ($i = 0; $i <= 20; $i++) {
   $template->assign_block_vars('player_rank', [
@@ -19,4 +19,4 @@ $template->assign_vars([
   'PAGE_HEADER' => $lang['rank_page_title'],
 ]);
 
-display($template, $lang['rank_page_title']);
+SnTemplate::display($template, $lang['rank_page_title']);

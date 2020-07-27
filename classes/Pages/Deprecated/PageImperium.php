@@ -6,6 +6,7 @@
 namespace Pages\Deprecated;
 
 use Fleet\DbFleetStatic;
+use SnTemplate;
 use \template;
 use \classLocale;
 use Planet\DBStaticPlanet;
@@ -66,7 +67,7 @@ class PageImperium {
     list($planets, $ques) = $this->getUpdatedUserPlanetsAndQues($user);
     $fleets = $this->fleetGetFlyingToPlanets($planets);
 
-    $template = gettemplate('imperium', $template);
+    $template = SnTemplate::gettemplate('imperium', $template);
 
     $template->assign_recursive(templateFillPercent());
 
@@ -192,8 +193,8 @@ class PageImperium {
           'LEVEL_PLUS_YELLOW'      => $levelYellow,
           'LEVEL_PLUS_GREEN'       => $levelGreen,
           'LEVEL_TEXT'             => $unitsPresentOrChanged ? HelperString::numberFloorAndFormat($unit_level_plain) : '-',
-          'LEVEL_PLUS_YELLOW_TEXT' => tplPrettyPlus($levelYellow),
-          'LEVEL_PLUS_GREEN_TEXT'  => tplPrettyPlus($levelGreen),
+          'LEVEL_PLUS_YELLOW_TEXT' => SnTemplate::tplPrettyPlus($levelYellow),
+          'LEVEL_PLUS_GREEN_TEXT'  => SnTemplate::tplPrettyPlus($levelGreen),
           'PERCENT'                => $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1,
           'FACTORY'                => $unit_is_factory,
         ];
@@ -240,8 +241,8 @@ class PageImperium {
       'LEVEL_TEXT'             => HelperString::numberFloorAndFormat($unit_count),
       'LEVEL_PLUS_YELLOW'      => $imperiumYellows[$unit_id],
       'LEVEL_PLUS_GREEN'       => $imperiumGreens[$unit_id],
-      'LEVEL_PLUS_YELLOW_TEXT' => $imperiumYellows[$unit_id] == 0 ? '' : tplPrettyPlus($imperiumYellows[$unit_id]),
-      'LEVEL_PLUS_GREEN_TEXT'  => $imperiumGreens[$unit_id] == 0 ? '' : tplPrettyPlus($imperiumGreens[$unit_id]),
+      'LEVEL_PLUS_YELLOW_TEXT' => $imperiumYellows[$unit_id] == 0 ? '' : SnTemplate::tplPrettyPlus($imperiumYellows[$unit_id]),
+      'LEVEL_PLUS_GREEN_TEXT'  => $imperiumGreens[$unit_id] == 0 ? '' : SnTemplate::tplPrettyPlus($imperiumGreens[$unit_id]),
       'PERCENT'                => $unit_is_factory ? '' : -1,
       'FACTORY'                => $unit_is_factory,
     ]);
@@ -261,6 +262,12 @@ class PageImperium {
     foreach ($planets as $planetId => $planet) {
       $templatizedPlanet = tpl_parse_planet($user, $planet);
 
+      if($planet['planet_type'] == PT_MOON) {
+        $parentPlanet = DBStaticPlanet::db_planet_by_id($planet['parent_planet']);
+      } else {
+        $parentPlanet = $planet;
+      }
+
       $fleet_list = $fleets[$planetId];
       foreach ([RES_METAL, RES_CRYSTAL, RES_DEUTERIUM] as $resourceId) {
         if (empty($fleet_list['own']['total'][$resourceId])) {
@@ -274,13 +281,13 @@ class PageImperium {
 
       $templatizedPlanet += [
         'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['metal_max']),
-        'METAL_PROD' => $planet['metal_perhour'],
+        'METAL_PROD_TEXT' => HelperString::numberFloorAndFormat($planet['metal_perhour']),
 
         'CRYSTAL_CUR'  => prettyNumberStyledCompare($planet['crystal'], $planet['crystal_max']),
-        'CRYSTAL_PROD' => $planet['crystal_perhour'],
+        'CRYSTAL_PROD_TEXT' => HelperString::numberFloorAndFormat($planet['crystal_perhour']),
 
         'DEUTERIUM_CUR'  => prettyNumberStyledCompare($planet['deuterium'], $planet['deuterium_max']),
-        'DEUTERIUM_PROD' => $planet['deuterium_perhour'],
+        'DEUTERIUM_PROD_TEXT' => HelperString::numberFloorAndFormat($planet['deuterium_perhour']),
 
         'ENERGY_CUR' => $planet['energy_max'] - $planet['energy_used'],
         'ENERGY_MAX' => $planet['energy_max'],
@@ -291,7 +298,11 @@ class PageImperium {
         'DENSITY_CLASS'      => $planet['density_index'],
         'DENSITY_RICHNESS'   => $planet_density[$planet['density_index']][UNIT_PLANET_DENSITY_RICHNESS],
         'DENSITY_CLASS_TEXT' => $this->lang['uni_planet_density_types'][$planet['density_index']],
+
+        '_PARENT_PLANET' => &$parentPlanet,
       ];
+
+      $templatizedPlanet['IS_CAPITAL'] = $parentPlanet['id'] == $user['id_planet'];
 
       $result[] = $templatizedPlanet;
     }
@@ -369,13 +380,13 @@ class PageImperium {
       'FIELDS_MAX' => $imperiumStats['fields_max'],
 
       'METAL_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['metal']),
-      'METAL_PROD' => $imperiumStats['metal_perhour'],
+      'METAL_PROD_TEXT' => HelperString::numberFloorAndFormat($imperiumStats['metal_perhour']),
 
       'CRYSTAL_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['crystal']),
-      'CRYSTAL_PROD' => $imperiumStats['crystal_perhour'],
+      'CRYSTAL_PROD_TEXT' => HelperString::numberFloorAndFormat($imperiumStats['crystal_perhour']),
 
       'DEUTERIUM_CUR'  => HelperString::numberFloorAndFormat($imperiumStats['deuterium']),
-      'DEUTERIUM_PROD' => $imperiumStats['deuterium_perhour'],
+      'DEUTERIUM_PROD_TEXT' => HelperString::numberFloorAndFormat($imperiumStats['deuterium_perhour']),
 
       'ENERGY_CUR' => $imperiumStats['energy'],
       'ENERGY_MAX' => $imperiumStats['energy_max'],

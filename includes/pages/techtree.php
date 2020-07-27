@@ -39,7 +39,7 @@ function sn_techtree_view($template = null)
     }
   }
 
-  $template = gettemplate('techtree', $template);
+  $template = SnTemplate::gettemplate('techtree', $template);
   $template_result['.']['techtree'] = $tech_tree;
   $template->assign_recursive($template_result);
 

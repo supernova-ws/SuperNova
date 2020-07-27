@@ -41,7 +41,7 @@ switch ($action) {
     </table>
     </HTML>';
 
-    display($page);
+    SnTemplate::display($page);
   break;
 
   case 2:// On vient d'envoyer une annonce, on l'enregistre et on affiche un message comme quoi on l'a bien fait
@@ -54,15 +54,15 @@ switch ($action) {
 
     if (($metalvendre != 0 && $metalsouhait == 0) || ($cristalvendre != 0 && $cristalsouhait == 0) || ($deutvendre != 0 && $deutsouhait == 0)) {
       doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
-      messageBox($lang['Your_announce_was_recorded'], $lang['announce_status'], "annonce.php");
+      SnTemplate::messageBox($lang['Your_announce_was_recorded'], $lang['announce_status'], "annonce.php");
     } else {
-      messageBox($lang['Your_announce_not_recorded'], $lang['announce_status'], "annonce.php?action=1");
+      SnTemplate::messageBox($lang['Your_announce_not_recorded'], $lang['announce_status'], "annonce.php?action=1");
     }
   break;
 
   case 3://Suppression d'annonce
     doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
-    messageBox($lang['Your_announce_was_deleted'], $lang['announce_status'], "annonce.php");
+    SnTemplate::messageBox($lang['Your_announce_was_deleted'], $lang['announce_status'], "annonce.php");
   break;
 
   default://Sinon on affiche la liste des annonces
@@ -87,7 +87,7 @@ switch ($action) {
 
     $page2 .= "<tr><th colspan=\"10\" align=\"center\"><a href=\"annonce.php?action=1\">{$lang['add_announce']}</a></th></tr></td></table></HTML>";
 
-    display($page2);
+    SnTemplate::display($page2);
   break;
 }
 

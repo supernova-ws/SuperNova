@@ -9,7 +9,7 @@ function eco_mrk_trader($user, $planetrow = null) {
   // global $lang;
 
   // $page_title = " - {$lang['eco_mrk_trader']}";
-  $template = gettemplate('market_trader', true);
+  $template = SnTemplate::gettemplate('market_trader', true);
 
   $intError = MARKET_DEAL;
   $planetrow = isset($planetrow) ? $planetrow : $user;
@@ -132,5 +132,5 @@ function eco_mrk_trader($user, $planetrow = null) {
     'MODE' => $mode,
   ));
 
-  display($template, $page_title);
+  SnTemplate::display($template, $page_title);
 }

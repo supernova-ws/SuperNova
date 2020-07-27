@@ -16,7 +16,7 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$template = gettemplate('banned_body', true);
+$template = SnTemplate::gettemplate('banned_body', true);
 
 $query = doquery("SELECT * FROM {{banned}} ORDER BY `ban_id` DESC;");
 $i=0;
@@ -33,4 +33,4 @@ while($ban_row = db_fetch($query))
 }
 
 $template->assign_var('BANNED_COUNT', $i);
-display($template);
+SnTemplate::display($template);

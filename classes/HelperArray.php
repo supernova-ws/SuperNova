@@ -295,4 +295,21 @@ class HelperArray {
     return array_uintersect_assoc($array1, $array2, function ($a, $b) {return 0;});
   }
 
+  /**
+   * Get first key of array
+   * Polyfill until PHP 7.3
+   *
+   * @param array $array
+   *
+   * @return mixed|null
+   */
+  public static function array_key_first(&$array) {
+    if (!is_array($array)) {
+      return null;
+    }
+    reset($array);
+
+    return key($array);
+  }
+
 }

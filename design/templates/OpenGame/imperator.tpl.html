@@ -1,5 +1,4 @@
-<div>
-  <div class="border_image_small" style="display: inline-block; margin: 0.5em; ">
+  <div class="border_image_small" style="display: inline-flex; flex-direction: column; margin: 0.5em;">
     <div class="a50" style="padding: 1em;">
       <h2>{L_imp_imperator} {user_username}</h2>
 
@@ -16,8 +15,8 @@
       </h2>
 
       <a class="link" href="ranks.php">
-      <h3>{L_rank}: [{PLAYER_RANK_NUMBER}] {PLAYER_RANK_NAME}</h3>
-      <div class="rank rank-emperor rank-{PLAYER_RANK_NUMBER}"></div>
+        <h3>{L_rank}: [{PLAYER_RANK_NUMBER}] {PLAYER_RANK_NAME}</h3>
+        <div class="rank rank-emperor rank-{PLAYER_RANK_NUMBER}"></div>
       </a>
       <h3>{L_sys_gender} {GENDER_TEXT}</h3>
       <!-- IF VACATION -->
@@ -25,8 +24,7 @@
       <!-- ENDIF -->
     </div>
   </div>
-</div>
-<!-- IF SAME_USER && NEW_MESSAGES -->
+<!-- IF 1 || (SAME_USER && NEW_MESSAGES) -->
 <div style="width: 50em; display: block; margin: 1em;" class="border_image_small">
   <a href="messages.php" class="a50 h100" style="padding: 0.5em; display: block">
     {L_ov_you_have} <!-- IF NEW_MESSAGES == 1 -->{L_ov_new_message}<!-- ELSE -->{NEW_MESSAGES} {L_ov_new_messages}

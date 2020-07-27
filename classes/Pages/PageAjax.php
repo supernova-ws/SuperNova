@@ -7,16 +7,24 @@ namespace Pages;
 
 use Player\userOptions;
 
+/**
+ * Class PageAjax
+ *
+ *
+ *
+ * @package Pages
+ */
 class PageAjax implements IPage {
   /**
    * List of allowed actions on page to prevent unauthorized user's access to methods
+   * Also index of array is the name of the class method called
    *
-   * @var array $allowedActions
+   * @var array[] $allowedActions [(string)action] => {true|any data}
    */
-  protected $allowedActions = array();
+  protected $allowedActions = [];
 
   /**
-   * @var \Player\userOptions $userOptions
+   * @var userOptions $userOptions
    */
   protected $userOptions;
 

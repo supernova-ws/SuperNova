@@ -101,7 +101,8 @@ class RequestInfo {
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
     if ($this->device_cypher) {
       $cypher_safe = db_escape($this->device_cypher);
-      $device_id   = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+      /** @noinspection SqlResolve */
+      $device_id = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       if (!empty($device_id['device_id'])) {
         $this->device_id = $device_id['device_id'];
       }
@@ -111,7 +112,8 @@ class RequestInfo {
       do {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
 
-        $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+        /** @noinspection SqlResolve */
+        $row = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
       doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = db_insert_id();

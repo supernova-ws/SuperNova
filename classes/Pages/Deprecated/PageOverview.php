@@ -11,6 +11,7 @@ use SN;
 use HelperString;
 use Exception;
 use Planet\Planet;
+use SnTemplate;
 use template;
 
 class PageOverview extends PageDeprecated {
@@ -81,13 +82,11 @@ class PageOverview extends PageDeprecated {
 
   /**
    * @param $user
-   * @param $planetrow
+   * @param &$planetrow
    * @param $que
    * @param $user_option_list
    */
-  public function overview($user, $planetrow, $que, $user_option_list) {
-//    $this->setPlanetById($planetrow['id']);
-
+  public function overview($user, &$planetrow, $que, $user_option_list) {
     $this->planet->sn_sys_sector_buy();
 
     rpg_level_up($user, RPG_STRUCTURE);
@@ -99,13 +98,15 @@ class PageOverview extends PageDeprecated {
       $planetrow['name'] = $new_name;
       $new_name_safe = db_escape($new_name);
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
+      $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+      $this->planet->reload();
     }
 
     if (!empty($theResult = $this->planet->sn_sys_planet_core_transmute($user))) {
       $this->resultMessageList->add($theResult['MESSAGE'], $theResult['STATUS']);
     }
 
-    $template = gettemplate('planet_overview', true);
+    $template = SnTemplate::gettemplate('planet_overview', true);
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     $template->assign_recursive($this->planet->tpl_planet_density_info($user_dark_matter));
@@ -202,7 +203,7 @@ class PageOverview extends PageDeprecated {
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
       'PLANET_GOVERNOR_NAME'       => $this->lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
-      'IS_CAPITAL' => $planetrow['planet_type'] == PT_PLANET && $planetrow['id'] == $user['id_planet'],
+      'IS_CAPITAL' => $planetrow['id'] == $user['id_planet'],
       'IS_MOON'    => $planetrow['planet_type'] == PT_MOON,
 
       'DARK_MATTER' => $user_dark_matter,
@@ -213,16 +214,14 @@ class PageOverview extends PageDeprecated {
 
     $this->resultMessageList->templateAdd($template);
 
-    display($template);
+    SnTemplate::display($template);
   }
 
   /**
    * @param $user
-   * @param $planetrow
+   * @param &$planetrow
    */
-  public function manage($user, $planetrow) {
-//    $this->setPlanetById($planetrow['id']);
-
+  public function manage($user, &$planetrow) {
     $this->planet->sn_sys_sector_buy('overview.php?mode=manage');
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
@@ -230,7 +229,7 @@ class PageOverview extends PageDeprecated {
       $this->resultMessageList->add($theResult['MESSAGE'], $theResult['STATUS']);
     }
 
-    $template = gettemplate('planet_manage', true);
+    $template = SnTemplate::gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
 
     if (sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
@@ -315,12 +314,12 @@ class PageOverview extends PageDeprecated {
           DBStaticPlanet::db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           DBStaticPlanet::db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
-          messageBox($this->lang['ov_delete_ok'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
+          SnTemplate::messageBox($this->lang['ov_delete_ok'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
-          messageBox($this->lang['ov_delete_wrong_planet'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
+          SnTemplate::messageBox($this->lang['ov_delete_wrong_planet'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
         }
       } else {
-        messageBox($this->lang['ov_delete_wrong_pass'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
+        SnTemplate::messageBox($this->lang['ov_delete_wrong_pass'], $this->lang['colony_abandon'], 'overview.php?mode=manage');
       }
     } elseif (($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))) {
       $this->planet->governorHire($hire);
@@ -373,7 +372,7 @@ class PageOverview extends PageDeprecated {
 
     $this->resultMessageList->templateAdd($template);
 
-    display($template, $this->lang['rename_and_abandon_planet']);
+    SnTemplate::display($template, $this->lang['rename_and_abandon_planet']);
   }
 
   /**

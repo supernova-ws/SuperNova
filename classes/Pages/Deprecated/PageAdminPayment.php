@@ -8,6 +8,7 @@ namespace Pages\Deprecated;
 use SN;
 use DBAL\DbSqlPaging;
 use General\Helpers\PagingRenderer;
+use SnTemplate;
 
 class PageAdminPayment extends PageDeprecated {
 
@@ -18,9 +19,9 @@ class PageAdminPayment extends PageDeprecated {
 
     global $lang;
 
-    messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+    SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-    $template = gettemplate('admin/admin_payment', true);
+    $template = SnTemplate::gettemplate('admin/admin_payment', true);
 
 
     $flt_payer = sys_get_param_int('flt_payer', -1);
@@ -167,12 +168,12 @@ class PageAdminPayment extends PageDeprecated {
       $template->assign_block_vars('payment', $row2);
     }
 
-    tpl_assign_select($template, 'payer', self::getPayers());
-    tpl_assign_select($template, 'module', self::getUsedModules());
-    tpl_assign_select($template, 'status', SN::$lang['adm_pay_filter_status']);
-    tpl_assign_select($template, 'test', SN::$lang['adm_pay_filter_test']);
-    tpl_assign_select($template, 'flt_stat', SN::$lang['adm_pay_filter_stat']);
-    tpl_assign_select($template, 'flt_currency', self::getCurrencies());
+    SnTemplate::tpl_assign_select($template, 'payer', self::getPayers());
+    SnTemplate::tpl_assign_select($template, 'module', self::getUsedModules());
+    SnTemplate::tpl_assign_select($template, 'status', SN::$lang['adm_pay_filter_status']);
+    SnTemplate::tpl_assign_select($template, 'test', SN::$lang['adm_pay_filter_test']);
+    SnTemplate::tpl_assign_select($template, 'flt_stat', SN::$lang['adm_pay_filter_stat']);
+    SnTemplate::tpl_assign_select($template, 'flt_currency', self::getCurrencies());
 
     $template->assign_vars(array(
       'FLT_PAYER'    => $flt_payer,
@@ -185,7 +186,7 @@ class PageAdminPayment extends PageDeprecated {
       'PAGER_PAYMENTS' => $pager->render(),
     ));
 
-    display($template, $lang['adm_pay_stats']);
+    SnTemplate::display($template, $lang['adm_pay_stats']);
   }
 
   /**

@@ -23,10 +23,10 @@ if(SN_IN_FLEET !== true) {
 lng_include('overview');
 
 if(!$planetrow) {
-  messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
+  SnTemplate::messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
-$template = gettemplate('fleet0', true);
+$template = SnTemplate::gettemplate('fleet0', true);
 
 $record_index = 0;
 $ship_list = array();
@@ -111,4 +111,4 @@ $template->assign_vars(array(
 ));
 
 $template->assign_recursive($template_result);
-display($template, $lang['fl_title']);
+SnTemplate::display($template, $lang['fl_title']);

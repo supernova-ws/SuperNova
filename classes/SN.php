@@ -14,6 +14,12 @@ class SN {
   const DB_TRANSACTION_SHOULD_NOT_BE = null;
   const DB_TRANSACTION_SHOULD_BE = true;
   const DB_TRANSACTION_WHATEVER = false;
+  /**
+   * Flag that something was rendered
+   *
+   * @var bool
+   */
+  public static $gSomethingWasRendered = false;
 
   /**
    * @var SN $_sn

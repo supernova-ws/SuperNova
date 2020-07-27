@@ -1,0 +1,144 @@
+<!-- IF ! GAME_RESEARCH_DISABLED && ! PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH -->
+<!-- DEFINE $QUE_ID = '{QUE_RESEARCH}' -->
+
+<!-- IF PLAYER_OPTION_NAVBAR_RESEARCH_WIDE -->
+<!-- DEFINE $NAVBAR_QUE_CLASS = 'wide' -->
+<!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_research}' -->
+<!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_research_wide}' -->
+<!-- ELSE -->
+<!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
+<!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_research_short}' -->
+<!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_research}' -->
+<!-- ENDIF -->
+<!-- DEFINE $NAVBAR_QUE_HINT = '{L_Research}' -->
+<!-- DEFINE $NAVBAR_QUE_URL = 'buildings.php?mode={D_QUE_RESEARCH}' -->
+
+<!-- INCLUDE navbar_button_queued -->
+<!-- ENDIF -->
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_PLANET -->
+<!-- DEFINE $QUE_ID = '{QUE_STRUCTURES}' -->
+
+<!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
+<!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_structures}' -->
+<!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_[TOPNAV_CURRENT_PLANET_IMAGE]}' -->
+<!-- DEFINE $NAVBAR_QUE_HINT = '{TOPNAV_CURRENT_PLANET_NAME}' -->
+<!-- DEFINE $NAVBAR_QUE_URL = 'overview.php' -->
+
+<!-- INCLUDE navbar_button_queued -->
+<!-- ENDIF -->
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_HANGAR && ! GAME_HANGAR_DISABLED -->
+<!-- DEFINE $QUE_ID = '{SUBQUE_FLEET}' -->
+
+<!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
+<!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_hangar}' -->
+<!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_hangar}' -->
+<!-- DEFINE $NAVBAR_QUE_HINT = '{L_Shipyard}' -->
+<!-- DEFINE $NAVBAR_QUE_URL = 'buildings.php?mode={D_SUBQUE_FLEET}' -->
+
+<!-- INCLUDE navbar_button_queued -->
+<!-- ENDIF -->
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS -->
+<div class="navbar_button">
+  <a href="fleet.php">
+    <img class="navbar_button_image" src="{I_navbar_expedition}" alt="{L_sys_expeditions}" title="{L_sys_expeditions}">
+    <span id="topnav_expedition_counter_total" class="a50 posRB w100">
+              <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
+            </span>
+    <span class="posLT w100 a50">
+              {L_navbar_button_expeditions_short}
+            </span>
+  </a>
+</div>
+<!-- ENDIF -->
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS -->
+<div class="navbar_button">
+  <a href="flying_fleets.php">
+    <img class="navbar_button_image" src="{I_navbar_fleet_own}" alt="{L_sys_fleets}" title="{L_sys_fleets}">
+    <span id="topnav_fleet_counter_total" class="a50 posRB w100">
+              <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
+            </span>
+
+    <span class="posLT w100 a50">
+              {L_navbar_button_fleets}
+            </span>
+  </a>
+</div>
+<!-- ENDIF -->
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_QUESTS && ! GAME_QUESTS_DISABLED -->
+<div class="navbar_button">
+  <a href="quest.php">
+    <img class="navbar_button_image" src="{I_navbar_quest}" alt="{L_qst_quests}" title="{L_qst_quests}">
+    <span class="a50 posRB w100">
+              <span class="notice">{TOPNAV_QUEST_IN_PROGRESS}</span>/<span class="success">{TOPNAV_QUEST_COMPLETE}</span>/{C_quest_total}
+            </span>
+    <span class="posLT w100 a50">
+              {L_navbar_button_quests}
+            </span>
+  </a>
+</div>
+<!-- ENDIF -->
+
+<div class="navbar_button">
+  <a href="messages.php">
+    <img class="navbar_button_image" src="{I_navbar_mail}" alt="{L_Message}" title="{L_Message}">
+    <div class="posRB">
+      <!-- IF TOPNAV_MESSAGES_ALL --><span class="blink" duration="2000">[&nbsp;{TOPNAV_MESSAGES_ALL}&nbsp;]</span><!-- ELSE -->0<!-- ENDIF -->
+    </div>
+  </a>
+  <!-- IF TOPNAV_MESSAGES_PLAYER -->
+  <a href="messages.php?mode=show&message_class={D_MSG_TYPE_PLAYER}">
+    <span class="posLT"><span class="mnl_joueur">[&nbsp;{TOPNAV_MESSAGES_PLAYER}&nbsp;]</span></span>
+  </a>
+  <!-- ENDIF -->
+  <!-- IF TOPNAV_MESSAGES_ADMIN -->
+  <a href="messages.php?mode=show&message_class={D_MSG_TYPE_ADMIN}">
+    <span class="posLB"><span class="msg_admin">[&nbsp;{TOPNAV_MESSAGES_ADMIN}&nbsp;]</span></span>
+  </a>
+  <!-- ENDIF -->
+  <!-- IF TOPNAV_MESSAGES_ALLIANCE && ! TOPNAV_ALLY -->
+  <a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}">
+    <span class="posRT"><span class="mnl_alliance">[&nbsp;{TOPNAV_MESSAGES_ALLIANCE}&nbsp;]</span></span>
+  </a>
+  <!-- ENDIF -->
+</div>
+
+<div class="navbar_button">
+  <a href="dark_matter.php">
+    <img class="navbar_button_image" src="{I_navbar_dark_matter}" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
+    <!-- IF TOPNAV_METAMATTER -->
+    <span id="navbar_button_dm_mm" class="a50 metamatter posRB">{TOPNAV_METAMATTER_TEXT}</span>
+    <span id="navbar_button_dm_dm" class="a50 dark_matter posRB js_dark_matter_plain">{TOPNAV_DARK_MATTER_PLAIN_TEXT}</span>
+    <span id="navbar_button_dm_plus" class="a50 ok posLB">+</span>
+    <!-- DEFINE $NAVBAR_DEBIT_LINE_CLASS = 'navbar_button_dm_debit_line' -->
+    <!-- ENDIF -->
+    <span class="a50 ok posRB {$NAVBAR_DEBIT_LINE_CLASS} js_dark_matter_full">{TOPNAV_DARK_MATTER_TEXT}</span>
+    <span class="posLT w100 a50">
+              {L_sys_dark_matter_sh}
+            </span>
+  </a>
+</div>
+
+<!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER && TOPNAV_PAYMENT -->
+<div class="navbar_button">
+  <a href="metamatter.php">
+    <img class="navbar_button_image" src="{I_navbar_metamatter}" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
+    <span class="a50 posRB metamatter">{TOPNAV_METAMATTER_TEXT}</span>
+    <span class="posLT w100 a50">
+              {L_sys_metamatter_sh}
+            </span>
+  </a>
+</div>
+<!-- ENDIF -->
+
+<!-- BEGIN navbar_main_button -->
+<div class="navbar-festival_button">
+  <a class="w100 h100" href="{navbar_main_button.URL_RELATIVE}" >
+    <img class="w100 h100" src="{navbar_main_button.IMAGE}" />
+  </a>
+</div>
+<!-- END navbar_main_button -->

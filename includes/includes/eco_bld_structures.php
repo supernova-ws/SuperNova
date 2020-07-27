@@ -59,11 +59,11 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $page_header = $lang['tech'][UNIT_STRUCTURES];
   } elseif($que_type == QUE_RESEARCH) {
     if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
-      messageBox($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
+      SnTemplate::messageBox($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
     }
 
     if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
-      messageBox($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
+      SnTemplate::messageBox($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
     }
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
@@ -81,7 +81,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $page_header = $lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } else {
     if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
-      messageBox($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
+      SnTemplate::messageBox($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
     }
 
     $build_unit_list = sn_get_groups($page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense');
@@ -105,7 +105,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
   */
 
-  $template = gettemplate('buildings_builds', true);
+  $template = SnTemplate::gettemplate('buildings_builds', true);
   if(!empty($operation_result)) {
     $template_result['.']['result'][] = $operation_result;
   }
@@ -417,5 +417,5 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $template->assign_recursive($template_result);
 
-  display($template);
+  SnTemplate::display($template);
 }

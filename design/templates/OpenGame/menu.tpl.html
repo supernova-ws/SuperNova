@@ -20,9 +20,6 @@
   var LA_menu_customize_show_items = "{LA_menu_customize_show_items}";
   var LA_menu_customize_hide_items = "{LA_menu_customize_hide_items}";
   <!-- ENDIF -->
-
-  var LEFT_MENU_SHOW_BUTTON_TOP = 7;
-  var LEFT_MENU_SHOW_BUTTON_LEFT = 10;
 </script>
 
 <!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS -->
@@ -38,11 +35,9 @@
     <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' -->
     <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' -->
     <!-- DEFINE $MENU_START_HIDDEN = 'MENU_START_HIDDEN' -->
-    <!-- DEFINE $MENU_START_HIDDEN_STYLE = "display:none;" -->
   <!-- ELSE -->
     <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
     <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
-    <!-- DEFINE $MENU_START_HIDDEN_STYLE = '' -->
   <!-- ENDIF -->
 
   <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
@@ -56,8 +51,16 @@
   <!-- ENDIF -->
 <!-- ENDIF -->
 
-<div id="__menu">
-  <table cellspacing="0" cellpadding="0" id="left_menu" class="{$MENU_BIG_BUTTONS} {$MENU_NARROW_CELLS} {$MENU_START_HIDDEN} {$MENU_ABSOLUTE} border_image_small" style="{$MENU_START_HIDDEN_STYLE}"><!-- BEGIN menu -->
+<!-- IF PLAYER_OPTION_MENU_WHITE_TEXT == 1 -->
+  <!-- DEFINE $MENU_WHITE_BUTTONS = 'MENU_WHITE_BUTTONS' -->
+<!-- ENDIF -->
+
+<!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS == 1 -->
+  <!-- DEFINE $MENU_ITEMS_BUTTONS = 'do-not-skin-child' -->
+<!-- ENDIF -->
+
+<div id="__menu" class="js___menu">
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="js_left_menu {$MENU_WHITE_BUTTONS} {$MENU_ITEMS_BUTTONS} {$MENU_BIG_BUTTONS} {$MENU_NARROW_CELLS} {$MENU_START_HIDDEN} {$MENU_ABSOLUTE} border_image_small"><!-- BEGIN menu -->
   <!-- IF (! menu.AUTH_LEVEL || menu.AUTH_LEVEL <= AUTH_LEVEL) && ! menu.DISABLED -->
 
     <!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
@@ -130,27 +133,16 @@
     </tr>
   <!-- ENDIF -->
   <!-- END menu --></table>
-
-  <!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS -->
-  <script type="text/javascript">
-    jQuery("#left_menu input, #left_menu button").addClass('do-not-skin');
-  </script>
-  <!-- ENDIF -->
-
-  <!-- IF PLAYER_OPTION_MENU_WHITE_TEXT -->
-  <script type="text/javascript">
-    jQuery("#left_menu td a").css('color', 'white');
-  </script>
-  <!-- ENDIF -->
 </div>
 
 <!-- IF MENU_CUSTOMIZE -->
-<input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" class="{$MENU_SHOW_HIDE_CLASS}"/>
+<input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" class="{$MENU_SHOW_HIDE_CLASS} js_left_menu_show"/>
 <script type="text/javascript">
   jQuery(document).ready(function(){
-    MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
-        jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
-      );
+    MENU_HIDDEN ? jQuery('.js___menu').attr('menu_hidden', '1') : function (){
+        menuHideButtonPositionShow(true);
+        jQuery('.js_left_menu_show').css('visibility', 'visible');
+      }();
   });
 </script>
 <!-- ENDIF -->

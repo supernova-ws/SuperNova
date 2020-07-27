@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 function adm_lng_assign_string($lang_id, $locale_string_name, $value) {
   global $locale_string_template, $languages_info, $languages, $domain;
@@ -133,7 +133,7 @@ function adm_lng_write_string($string_name, $string_value, $ident = '  ', $strin
   fwrite($file_handler, "\r\n");
 }
 
-$template = gettemplate('admin/admin_locale', true);
+$template = SnTemplate::gettemplate('admin/admin_locale', true);
 
 lng_include('system');
 lng_include('tech');
@@ -233,4 +233,4 @@ if($domain) {
   }
 }
 
-display($template, $lang['adm_lng_title']);
+SnTemplate::display($template, $lang['adm_lng_title']);

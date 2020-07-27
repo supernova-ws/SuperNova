@@ -75,7 +75,7 @@ $CurrentRC = $planetrow['recycler'];
 $cached = array('users' => array(), 'allies' => array());
 
 
-$template = gettemplate('universe', true);
+$template = SnTemplate::gettemplate('universe', true);
 
 $CurrentPoints = $user['total_points'];
 
@@ -391,4 +391,4 @@ if ($scan) {
   ));
 }
 
-display($template, $lang['sys_universe']);
+SnTemplate::display($template, $lang['sys_universe']);

@@ -1,0 +1,45 @@
+<table class="border_image_small" id="navbar_resources">
+<tr class="c_l">
+  <th nowrap><!-- IF $NAVBAR_RESOURCES_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></th>
+  <th data-resource="metal">{L_sys_metal}</th>
+  <th data-resource="crystal">{L_sys_crystal}</th>
+  <th data-resource="deuterium">{L_sys_deuterium}</th>
+  <!-- IF $NAVBAR_RESOURCES_ALLY -->
+  <th>{L_sys_dark_matter}</th>
+  <!-- ELSE -->
+  <th data-resource="energy">{L_sys_energy}</th>
+  <!-- ENDIF -->
+</tr>
+
+<tr class="c_r">
+  <th class="c_l" nowrap>{L_tech_storage}</th>
+  <td class='top_metal_v2' data-resource="metal">{PLANET_METAL_TEXT}</td>
+  <td class='top_crystal_v2' data-resource="crystal">{PLANET_CRYSTAL_TEXT}</td>
+  <td class='top_deuterium_v2' data-resource="deuterium">{PLANET_DEUTERIUM_TEXT}</td>
+  <!-- IF $NAVBAR_RESOURCES_ALLY -->
+  <td id='top_dark_matter'>{DARK_MATTER_TEXT}</td>
+  <!-- ELSE -->
+  <td data-resource="energy">{ENERGY_BALANCE}</td>
+  <!-- ENDIF -->
+</tr>
+
+<!-- IF ! $NAVBAR_RESOURCES_ALLY && (! $NAVBAR_RESOURCES_HIDE_STORAGE || ! $IN_NAVBAR) -->
+<tr class="c_r">
+  <th class="c_l" nowrap>{L_tech_storage_max}</th>
+  <td data-resource="metal">{PLANET_METAL_MAX_TEXT}</td>
+  <td data-resource="crystal">{PLANET_CRYSTAL_MAX_TEXT}</td>
+  <td data-resource="deuterium">{PLANET_DEUTERIUM_MAX_TEXT}</td>
+  <td data-resource="energy">{ENERGY_MAX}</td>
+</tr>
+<!-- ENDIF -->
+
+<!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+<tr class="c_r">
+  <th class="c_l" nowrap>{L_sys_fleet_and}</th>
+  <td data-resource="metal">{PLANET_METAL_FLEET_TEXT}</td>
+  <td data-resource="crystal">{PLANET_CRYSTAL_FLEET_TEXT}</td>
+  <td data-resource="deuterium">{PLANET_DEUTERIUM_FLEET_TEXT}</td>
+  <td>-</td>
+</tr>
+<!-- ENDIF -->
+</table>

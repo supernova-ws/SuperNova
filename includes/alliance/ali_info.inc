@@ -8,13 +8,13 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-$template = gettemplate('ali_info', true);
+$template = SnTemplate::gettemplate('ali_info', true);
 
 if($mode == 'exit')
 {
   if ($ally['ally_owner'] == $user['id'])
   {
-    messageBox($lang['Owner_cant_go_out'], $lang['Alliance']);
+    SnTemplate::messageBox($lang['Owner_cant_go_out'], $lang['Alliance']);
   }
 
   if (sys_get_param_int('ali_info_leave_confirm'))
@@ -24,7 +24,7 @@ if($mode == 'exit')
     DBStaticAlly::db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
-    messageBox(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
+    SnTemplate::messageBox(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
   }
 }
 elseif($mode == 'ainfo')
@@ -42,7 +42,7 @@ elseif($mode == 'ainfo')
 
   if(!$ally)
   {
-    messageBox($lang['ali_sys_notFound'], $lang['Ally_info_1']);
+    SnTemplate::messageBox($lang['ali_sys_notFound'], $lang['Ally_info_1']);
   }
 
   if(!$ally['ally_description'])
@@ -113,4 +113,4 @@ foreach($relations as $relation)
 
 SN::$gc->pimp->allyInfoView();
 
-display($template, "{$lang['alliance']} [{$ally['ally_name']}]");
+SnTemplate::display($template, "{$lang['alliance']} [{$ally['ally_name']}]");

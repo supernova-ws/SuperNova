@@ -106,13 +106,13 @@ function sn_fleet_page3() {
 
   if ($errorlist) {
     sn_db_transaction_rollback();
-    messageBox ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
+    SnTemplate::messageBox("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      messageBox ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      SnTemplate::messageBox("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -153,12 +153,12 @@ function sn_fleet_page3() {
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED) {
-    messageBox("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
+    SnTemplate::messageBox("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    messageBox ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    SnTemplate::messageBox("<span class='error'><b>" . $lang['fl_cheat_speed'] . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + SN_TIME_NOW;
@@ -181,7 +181,7 @@ function sn_fleet_page3() {
 
   if($aks && $target_mission == MT_AKS) {
     if ($fleet['start_time']>$aks['ankunft']) {
-      messageBox ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+      SnTemplate::messageBox($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $fleet['start_time']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), $lang['fl_error']);
     }
     $fleet['start_time'] = $aks['ankunft'];
     $fleet['end_time'] = $aks['ankunft'] + $duration;
@@ -199,13 +199,13 @@ function sn_fleet_page3() {
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage) {
-    messageBox ("<span class='error'><b>". $lang['fl_nostoragespa'] . HelperString::numberFloorAndFormat($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    SnTemplate::messageBox("<span class='error'><b>" . $lang['fl_nostoragespa'] . HelperString::numberFloorAndFormat($StorageNeeded - $FleetStorage) . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    messageBox ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . HelperString::numberFloorAndFormat($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    SnTemplate::messageBox("<font color=\"red\"><b>" . $lang['fl_no_deuterium'] . HelperString::numberFloorAndFormat($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
-    messageBox ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    SnTemplate::messageBox("<font color=\"red\"><b>" . $lang['fl_no_resources'] . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet_set = array(
@@ -238,7 +238,7 @@ function sn_fleet_page3() {
   DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   OldDbChangeSet::db_changeset_apply($db_changeset);
 
-  $template = gettemplate('fleet3', true);
+  $template = SnTemplate::gettemplate('fleet3', true);
 
 //  foreach($fleetarray as $Ship => $Count) {
 //    $template->assign_block_vars('ships', array(
@@ -303,5 +303,5 @@ function sn_fleet_page3() {
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);
-  display($template, $lang['fl_title']);
+  SnTemplate::display($template, $lang['fl_title']);
 }

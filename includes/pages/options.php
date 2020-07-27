@@ -1,6 +1,8 @@
 <?php
 
+use DBAL\DbQuery;
 use Fleet\DbFleetStatic;
+use Old\Avatar;
 use Planet\DBStaticPlanet;
 use Player\playerTimeDiff;
 
@@ -41,14 +43,13 @@ function sn_options_model() {
     list($user, $usernameResult) = sn_options_change_username($user);
     $template_result['.']['result'] = array_merge($template_result['.']['result'], $usernameResult);
 
-    sn_options_timediff(
+    playerTimeDiff::sn_options_timediff(
       sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
       sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
       sys_get_param_int('opt_time_diff_clear')
     );
 
-    require_once('includes/includes/sys_avatar.php');
-    $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
+    $avatar_upload_result = Avatar::sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
     $user['email'] = sys_get_param_str('db_email');
@@ -58,7 +59,7 @@ function sn_options_model() {
     $user['noipcheck'] = sys_get_param_int('noipcheck');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + SN::$config->player_delete_time);
 
-    \DBAL\DbQuery::build(SN::$db)
+    DbQuery::build(SN::$db)
       ->setTable('users')
       ->setValues([
         'email'                    => $user['email'],
@@ -99,7 +100,7 @@ function sn_options_view($template = null) {
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
-  $template = gettemplate('options', $template);
+  $template = SnTemplate::gettemplate('options', $template);
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while (($entry = $dir->read()) !== false) {
@@ -112,6 +113,9 @@ function sn_options_view($template = null) {
     }
   }
   $dir->close();
+
+  $ignores = SN::$gc->ignores->getIgnores($user['id'], true);
+  $template_result['.']['ignores'] = $ignores;
 
   foreach ($lang['opt_planet_sort_options'] as $key => &$value) {
     $template_result['.']['planet_sort_options'][] = array(
@@ -150,9 +154,6 @@ function sn_options_view($template = null) {
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($user['deltime']);
-
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-
 
   sn_options_add_standard($template);
 
@@ -202,7 +203,7 @@ function sn_options_view($template = null) {
     'user_settings_info'       => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
     'user_settings_bud'        => SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
 
-    'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
+    'user_time_diff_forced' => playerTimeDiff::getTimeDiffForced(),
 
     'adm_pl_prot' => $user['admin_protection'],
 
@@ -271,6 +272,9 @@ function sn_options_view($template = null) {
     }
   }
 
+//  var_dump($template_result['.']['result']);
+//  var_dump($template->_tpldata);
+//
   return $template;
 }
 
@@ -289,33 +293,8 @@ function sn_options_gender($user) {
   return $user;
 }
 
-function sn_options_timediff($timeDiff, $force, $clear) {
-//  $timeDiff = sys_get_param_int('PLAYER_OPTION_TIME_DIFF');
-//  $force = sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED');
-//  $clear = sys_get_param_int('opt_time_diff_clear');
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-  if ($force) {
-    playerTimeDiff::user_time_diff_set(array(
-      PLAYER_OPTION_TIME_DIFF              => $timeDiff,
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => 1,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-    ));
-  } elseif ($clear || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-    playerTimeDiff::user_time_diff_set(array(
-      PLAYER_OPTION_TIME_DIFF              => '',
-      PLAYER_OPTION_TIME_DIFF_UTC_OFFSET   => 0,
-      PLAYER_OPTION_TIME_DIFF_FORCED       => 0,
-      PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-    ));
-  }
-}
-
 /**
- * @param $user
- * @param $FMT_DATE
- * @param $pos
- * @param $match
+ * @param array $user
  *
  * @return array
  */
@@ -438,6 +417,7 @@ function sn_options_change_username($user) {
   // проверка на корректность
   sn_db_transaction_start();
   $username_safe = db_escape($username);
+  /** @noinspection SqlResolve */
   $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
   if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
     $user = db_user_by_id($user['id'], true);
@@ -460,7 +440,8 @@ function sn_options_change_username($user) {
 
       case SERVER_PLAYER_NAME_CHANGE_FREE:
         db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-        doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+        /** @noinspection SqlResolve */
+        doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
         // TODO: Change cookie to not force user relogin
         // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
         $result[] = [
@@ -541,18 +522,18 @@ function sn_options_vacation($user) {
   sn_db_transaction_start();
   if ($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
     if ($user['vacation_next'] > SN_TIME_NOW) {
-      messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 
     if (DbFleetStatic::fleet_count_flying($user['id'])) {
-      messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 
     $que = que_get($user['id'], false);
     if (!empty($que)) {
-      messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
+      SnTemplate::messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
       die();
     }
 
@@ -642,6 +623,7 @@ function sn_options_add_standard($template) {
     PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH,
     PLAYER_OPTION_NAVBAR_DISABLE_PLANET,
     PLAYER_OPTION_NAVBAR_DISABLE_HANGAR,
+    PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE,
     PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS,
     PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS,
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS,

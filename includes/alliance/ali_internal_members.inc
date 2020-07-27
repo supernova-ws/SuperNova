@@ -52,7 +52,7 @@ $sort1s = array(
   5 => '`onlinetime` %1$s;'
 );
 
-$template = gettemplate('ali_members', true);
+$template = SnTemplate::gettemplate('ali_members', true);
 
 $userList = db_user_list("`ally_id`= {$user['ally_id']} ORDER BY " . sprintf($sort1s[$sort1], $sort2s), false,
   'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points');
@@ -180,4 +180,4 @@ $template->assign_vars(array(
   's' => $sort2,
 ));
 
-display($template, $lang['members_admin']);
+SnTemplate::display($template, $lang['members_admin']);

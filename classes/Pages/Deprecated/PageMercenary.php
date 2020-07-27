@@ -7,6 +7,7 @@ namespace Pages\Deprecated;
 
 use \Exception;
 use \SN;
+use SnTemplate;
 use Unit\DBStaticUnit;
 use \template;
 
@@ -72,7 +73,7 @@ class PageMercenary {
    * @param array $user
    */
   public function mrc_mercenary_render($user) {
-    $template = gettemplate('mrc_mercenary_hire');
+    $template = SnTemplate::gettemplate('mrc_mercenary_hire');
 
     $operation_result = $this->modelMercenaryHire($user);
     if (!empty($operation_result)) {
@@ -110,7 +111,7 @@ class PageMercenary {
         'LEVEL'             => $mercenary_level,
         'LEVEL_BONUS'       => $mercenary_level_bonus,
         'LEVEL_MAX'         => $mercenary['max'],
-        'BONUS'             => tpl_render_unit_bonus_data($mercenary),
+        'BONUS'             => SnTemplate::tpl_render_unit_bonus_data($mercenary),
         'BONUS_TYPE'        => $mercenary[P_BONUS_TYPE],
         'HIRE_END'          => $unitIsOutdated ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
         'HIRE_LEFT_PERCENT' => $unitIsOutdated ? round(($mercenary_time_finish - SN_TIME_NOW) / ($mercenary_time_finish - $mercenary_time_start) * 100, 1) : 0,
@@ -130,7 +131,7 @@ class PageMercenary {
       'DARK_MATTER'                => $user_dark_matter,
     ));
 
-    display($template, $this->lang['tech'][$this->mode]);
+    SnTemplate::display($template, $this->lang['tech'][$this->mode]);
   }
 
   protected function mrc_mercenary_hire($user, $mercenary_id) {

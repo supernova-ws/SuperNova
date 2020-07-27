@@ -6,6 +6,7 @@
 namespace General\Helpers;
 
 use DBAL\DbSqlPaging;
+use SnTemplate;
 
 class PagingRenderer {
   const KEYWORD = 'sheet';
@@ -115,7 +116,7 @@ class PagingRenderer {
     }
 
     if(!empty($this->result)) {
-      $template = gettemplate('_paging');
+      $template = SnTemplate::gettemplate('_paging');
       $template->assign_recursive([
         'PAGING_ROOT' => $this->rootUrl,
         '.'           => ['paging' => $this->result]

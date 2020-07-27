@@ -1,16 +1,17 @@
 <?php
 
 use Alliance\DBStaticAlly;
+use Old\Avatar;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
 if(!$user_admin) {
-  messageBox($lang['Denied_access'], $lang['ally_admin']);
+  SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
 }
 
-$template = gettemplate('ali_admin', $template);
+$template = SnTemplate::gettemplate('ali_admin', $template);
 
 $text_list = array(
   1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
@@ -22,15 +23,12 @@ $allyTextID = sys_get_param_int('t', 1);
 $allyTextID = ($allyTextID<1 || $allyTextID>3) ? 1 : $allyTextID;
 
 if(sys_get_param_str('isSaveOptions')) {
-  require_once('includes/includes/sys_avatar.php');
-
   $new_image = $ally['ally_image'];
-  $avatar_upload_result = sys_avatar_upload($ally['id'], $new_image, 'ally');
-  $template->assign_vars(array(
+  $avatar_upload_result = Avatar::sys_avatar_upload($ally['id'], $new_image, 'ally');
+  $template->assign_vars([
     'AVATAR_UPLOAD_STATUS' => $avatar_upload_result['STATUS'],
     'AVATAR_UPLOAD_MESSAGE' => $avatar_upload_result['MESSAGE'],
-  ));
-//  $template->assign_block_vars('result', $avatar_upload_result);
+  ]);
 
   $ally_changeset = array();
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
@@ -38,7 +36,7 @@ if(sys_get_param_str('isSaveOptions')) {
     $new_tag = db_escape($new_tag);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_tag($new_tag);
     if(!empty($isTaggedAllyExists)) {
-      messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+      SnTemplate::messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
     }
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
     db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
@@ -49,7 +47,7 @@ if(sys_get_param_str('isSaveOptions')) {
     $new_name = db_escape($new_name);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_name($new_name);
     if(!empty($isTaggedAllyExists)) {
-      messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+      SnTemplate::messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
     }
     $ally_changeset[] = "`ally_name`='{$new_name}'";
   }
@@ -87,7 +85,7 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
 {
   if(!$isAllyOwner)
   {
-    messageBox($lang['Denied_access'], $lang['ally_admin']);
+    SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
 
   $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
@@ -105,7 +103,7 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
 {
   if(!$isAllyOwner)
   {
-    messageBox($lang['Denied_access'], $lang['ally_admin']);
+    SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
   sn_db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
@@ -155,4 +153,4 @@ foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_l
   ));
 }
 
-display($template, $lang['ally_admin']);
+SnTemplate::display($template, $lang['ally_admin']);

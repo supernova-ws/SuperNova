@@ -7,8 +7,21 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   // Constants
   var CLASS_POSITIVE = "positive";
 
+
   // Localization class
-  var language = {};
+  var LanguageObject = function() {
+  };
+  LanguageObject.prototype = {
+    /**
+     * Add list of locale strings to current locale
+     *
+     * @param {object} strings
+     */
+    addLocale: function (strings) {
+      jQuery.extend(this, strings);
+    }
+  };
+  var language = new LanguageObject();
 
   var x = "";
   var e = null;
@@ -103,12 +116,9 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     that = $(that);
     that.animate(
       {opacity: that.css('opacity') == 0 ? 1 : 0},
-      that.attr('duration')
-        ? parseInt(that.attr('duration'), 10)
-        : 1000,
-      function () {
-        sn_blink(this)
-      });
+      that.attr('duration') ? parseInt(that.attr('duration'), 10) : 1000,
+      function () {sn_blink(this)}
+    );
   }
 
   /**
@@ -147,13 +157,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
    * Skins input elements
    */
   function skinInputs() {
-    var inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
+    var inputs = jQuery("input:not(.do-not-skin):not(.do-not-skin-child *),button:not(.do-not-skin *):not(.do-not-skin-child *)");
     inputs.filter(':button, :submit, :reset').button(); // .addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text').off('keydown');
     // inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
     inputs.filter(':radio').addClass("ui-corner-all ui-state-default ui-textfield");
-    jQuery("button:not(.do-not-skin)").button().addClass('ui-textfield');
-    jQuery('textarea:not(#ally_text):not(.do-not-skin)').button().addClass('ui-textfield ui-input-text').off('keydown');
+    jQuery("button:not(.do-not-skin):not(.do-not-skin-child *)").button().addClass('ui-textfield');
+    jQuery('textarea:not(#ally_text):not(.do-not-skin):not(.do-not-skin-child *)').button().addClass('ui-textfield ui-input-text').off('keydown');
 
     //inputs.filter(':checkbox, :radio').checkator();
   }
@@ -216,11 +226,11 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if (input.attr('type') == 'password') {
       type = 'text';
-      button_value = L_sys_login_password_hide;
+      button_value = language['sys_login_password_hide'];
     }
     else {
       type = 'password';
-      button_value = L_sys_login_password_show;
+      button_value = language['sys_login_password_show'];
     }
 
     var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
@@ -273,10 +283,10 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   });
 
   /* CHAT_ADVANCED specific */
-  jQuery(document).on('click', '.player_nick_award', function (e) {
+  jQuery(document).on('click', '.player_nick_award', function () {
     document.location.assign("index.php?page=imperator&int_user_id=" + jQuery(this).attr('player_id'));
   });
-  jQuery(document).on('click', '.player_nick_race', function (e) {
+  jQuery(document).on('click', '.player_nick_race', function () {
     document.location.assign("index.php?page=races");
   });
 
@@ -677,8 +687,14 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     popupIsOpen = true;
   }
 
-
-// Helper probe to use CSS-values in JS
+  //
+  /**
+   * Helper to probe element's CSS attribute
+   *
+   * @param element
+   * @param css_attribute
+   * @returns {string|boolean}
+   */
   function sn_probe_style(element, css_attribute) {
     switch (css_attribute) {
       case 'border-top-color':
@@ -692,14 +708,56 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-  function sn_show_hide(element, element_name) {
-    var element_to_hide = jQuery("#" + element_name);
-    var tag_name = element_to_hide[0].tagName;
+  /**
+   * Switch element(s) visibility basing on his/their current state
+   *
+   * @param {element} control
+   * @param {string} jQueryQualifier
+   * @param {boolean} hideControl
+   */
+  function sn_show_hide2(control, jQueryQualifier, hideControl) {
+    var element_to_hide = jQuery(jQueryQualifier);
 
-    element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
-    jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
+    element_to_hide.each(function () {
+      var that = $(this);
+      var tag_name = that.tagName;
+
+      that.css(
+        'display',
+        that.css('display') === 'none'
+          ? (
+            tag_name === 'TR'
+              ? 'table-row'
+              : (
+                // Special HTML property 'flex' used to return flex-ability on "show"
+                that.attr('flex') ?
+                  'flex'
+                  : (
+                    tag_name === 'UL' || tag_name === 'DIV'
+                      ? 'block'
+                      : 'inline'
+                  )
+              )
+          )
+          : 'none');
+    });
+
+    if (hideControl) {
+      $(control).hide();
+    } else {
+      var
+        newHtml,
+        newText = element_to_hide.first().css('display') === 'none' ? language.sys_show : language.sys_hide,
+        textToReplace = newText === language.sys_show ? language.sys_hide : language.sys_show;
+
+      if ($(control).html().search(textToReplace) === -1) {
+        newHtml = "[&nbsp;" + (newText) + "&nbsp;]";
+      } else {
+        newHtml = $(control).html().replace(textToReplace, newText);
+      }
+      $(control).html(newHtml);
+    }
   }
-
 
   function cntchar(m) {
     if (window.document.forms[0].text.value.length > m) {
@@ -832,6 +890,30 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     return strTime;
   }
 
+  function sn_timestampToStringHuman(timestamp, useDays) {
+    var strTime = '', tmp;
+
+    !(timestamp = parseInt(timestamp)) ? timestamp = 0 : false;
+    tmp = Math.floor(timestamp / (60 * 60 * 24));
+    if(tmp >= 3) {
+      strTime = tmp + 'd';
+    } else {
+      tmp = Math.floor(timestamp / (60 * 60));
+      if(tmp >= 3) {
+        strTime = tmp + 'h';
+      } else {
+        tmp = Math.floor(timestamp / 60);
+        if(tmp >= 3) {
+          strTime = tmp + 'm';
+        } else {
+          strTime = timestamp + 's';
+        }
+      }
+    }
+
+    return strTime;
+  }
+
   /**
    *
    *
@@ -871,11 +953,8 @@ function snConfirm(params) {
     title: params.title ? params.title : (that.attr('title') ? that.attr('title') : language.sys_confirm_action_title),
     open: function () {
       var element = $(this).parent();
-      //var selected_planet = $('#navbar_planet_select').find('option:selected');
       element.find('.ui-dialog-titlebar').css('display', 'block');
       element.find('.ui-dialog-buttonpane button:last').focus();
-      //element.find('input[name=cp]').val(selected_planet.val());
-      //$('#dialog-sector-buy-planet-name').text(selected_planet.text());
     },
     buttons: {
       ok: {
@@ -913,15 +992,35 @@ function snConfirm(params) {
   });
 
   d.promise().then(function (result) {
-    !result ? that.removeClass('button_pseudo_pressed') : false;
+    if(result) {
+      if (that.attr('href')) {
+        sn_redirect(that.attr('href'));
+      }
 
-    if (result && that.attr('href')) {
-      sn_redirect(that.attr('href'));
+      if (that.prop('tagName') == 'FORM') {
+        that.prop('submitted', true).submit();
+      }
+
+      if(params.hasOwnProperty('confirm')) {
+        params.confirm();
+      }
+    } else {
+      that.removeClass('button_pseudo_pressed');
     }
 
-    if (result && that.prop('tagName') == 'FORM') {
-      that.prop('submitted', true).submit();
-    }
+    // !result ? that.removeClass('button_pseudo_pressed') : false;
+    //
+    // if (result && that.attr('href')) {
+    //   sn_redirect(that.attr('href'));
+    // }
+    //
+    // if (result && that.prop('tagName') == 'FORM') {
+    //   that.prop('submitted', true).submit();
+    // }
+    //
+    // if(result && params.hasOwnProperty('confirm')) {
+    //   params.confirm();
+    // }
   });
 
   return false;
@@ -1127,3 +1226,46 @@ $(document).on('change', '#filterQuestStatus', function () {
     "json"
   );
 });
+
+function canIUseWebp() {
+  var elem = document.createElement('canvas');
+  ctx = elem.getContext('2d');
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, 8, 8);
+
+  // console.log(elem);
+  // console.log(elem.getContext);
+  // console.log(elem.getContext('2d'));
+  // console.log(elem.toDataURL('image/webp'));
+
+  if (!!(elem.getContext && elem.getContext('2d'))) {
+    // was able or not to get WebP representation
+    return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+  }
+
+  // very old browser like IE 8, canvas not supported
+  return false;
+}
+
+var hasWebP = (function() {
+  var images = {
+    basic: "data:image/webp;base64,UklGRjIAAABXRUJQVlA4ICYAAACyAgCdASoCAAEALmk0mk0iIiIiIgBoSygABc6zbAAA/v56QAAAAA==",
+    lossless: "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAQAAAAfQ//73v/+BiOh/AAA="
+  };
+
+  return function(feature) {
+    var deferred = $.Deferred();
+
+    $("<img>").on("load", function() {
+      if(this.width === 2 && this.height === 1) {
+        deferred.resolve();
+      } else {
+        deferred.reject();
+      }
+    }).on("error", function() {
+      deferred.reject();
+    }).attr("src", images[feature || "basic"]);
+
+    return deferred.promise();
+  }
+})();

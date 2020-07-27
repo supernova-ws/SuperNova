@@ -7,6 +7,7 @@ namespace Pages\Deprecated;
 
 use Modules\sn_module;
 use SN;
+use SnTemplate;
 
 class PageAdminModules extends PageDeprecated {
   const SORT_BY_PACKAGE = 0;
@@ -54,7 +55,7 @@ class PageAdminModules extends PageDeprecated {
       $render[] = [
         'PACKAGE'   => $module->manifest['package'],
         'NAME'      => $module->manifest['name'],
-        'VERSION'   => $module->manifest['version'],
+        'VERSION'   => $module->getVersion(),
         'ACTIVE'    => $module->isActive(),
         'INSTALLED' => $module->isInstalled(),
       ];
@@ -65,14 +66,14 @@ class PageAdminModules extends PageDeprecated {
     static::$sortFields = static::$sorting[$sortBy];
     usort($render, [static::class, 'sortBy']);
 
-    $template = gettemplate('admin/admin_modules');
+    $template = SnTemplate::gettemplate('admin/admin_modules');
     $template->assign_recursive([
       '.'         => ['modules' => $render],
       'SORT_BY'   => $sortBy,
       'PAGE_NAME' => SN::$lang['menu_admin_modules'],
     ]);
 
-    display($template, SN::$lang['menu_admin_modules']);
+    SnTemplate::display($template, SN::$lang['menu_admin_modules']);
   }
 
 }

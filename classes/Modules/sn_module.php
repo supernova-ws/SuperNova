@@ -3,8 +3,10 @@
 namespace Modules;
 
 use Common\Hooker\Pimp;
+use Core\Autoloader;
 use Exception;
 use SN;
+use SnTemplate;
 use template;
 
 class sn_module {
@@ -17,7 +19,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a16.27#';
+  public $versionCommitted = '#45d0#';
   /**
    * Is module currently active?
    *
@@ -37,7 +39,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a16.27# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #45d0# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -45,7 +47,7 @@ class sn_module {
     self::M_ROOT_RELATIVE => '',
 
     // 'constants' array - contents of this array would be defined in SN
-    'constants' => [
+    'constants'           => [
 //      'UNIT_STRUCTURE_NEW' => 999999,
     ],
 
@@ -156,6 +158,8 @@ class sn_module {
    * sn_module constructor.
    *
    * @param string $filename
+   *
+   * @throws Exception
    */
   public function __construct($filename = __FILE__) {
     $this->filename = $filename;
@@ -189,13 +193,14 @@ class sn_module {
     }
 
     if ($config_exists) {
+      /** @noinspection PhpIncludeInspection */
       include($config_filename);
       $module_config_array = $class_module_name . '_config';
-      $this->config = $$module_config_array;
+      $this->config        = $$module_config_array;
     }
 
     // Registering classes with autoloader
-    \Core\Autoloader::register($this->getRootRelative() . 'classes/');
+    Autoloader::register($this->getRootRelative() . 'classes/');
 
     // TODO - currently not possible because each module is not a service
     // When it's done - remove double registration from loadModulesFromDirectory()
@@ -419,20 +424,65 @@ class sn_module {
   }
 
   protected function getTemplateRootRelative() {
-    return $this->getRootRelative() . 'design/templates/';
+    return $this->getRootRelative() . SnTemplate::SN_TEMPLATES_PARTIAL_PATH;
   }
 
   /**
    *
    * Should stay public due using in Festivals (?)
    *
-   * @param string   $templateName
+   * @param string        $templateName
    * @param template|null $template
    *
    * @return template
    */
   public function addModuleTemplate($templateName, $template) {
-    return gettemplate($templateName, $template, $this->getTemplateRootRelative());
+    return SnTemplate::gettemplate($templateName, $template, $this->getTemplateRootRelative());
+  }
+
+  /**
+   * @param string $jsName
+   *
+   * @return array
+   */
+  protected function addModuleJavascript($jsName) {
+    global $template_result;
+
+    $fName = $this->getRootRelative() . $jsName;
+    if (file_exists($fName . '.min.js')) {
+      $fName = $fName . '.min.js';
+    } elseif (file_exists($fName . '.js')) {
+      $fName = $fName . '.js';
+    }
+
+//    $template_result['.']['js'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
+    $template_result['.']['javascript'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
+
+    return $template_result;
+  }
+
+  /**
+   * Get module version
+   *
+   * @return string
+   */
+  public function getVersion() {
+    if (!empty($this->versionCommitted)) {
+      $version = $this->versionCommitted;
+    } else {
+      $version = $this->manifest['version'];
+    }
+
+    return trim($version, '#');
+  }
+
+  /**
+   * Get module full name as registered in module manager
+   *
+   * @return string
+   */
+  public function getFullName() {
+    return get_called_class();
   }
 
 }

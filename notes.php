@@ -12,7 +12,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('notes');
 
-$template = gettemplate('notes', true);
+$template = SnTemplate::gettemplate('notes', true);
 
 $result = array();
 if(($result_message = sys_get_param_str('MESSAGE')) && isset($lang[$result_message])) {
@@ -162,4 +162,4 @@ $template->assign_vars(array(
   'NOTE_FULL_RENDER' => true,
 ));
 
-display($template);
+SnTemplate::display($template);

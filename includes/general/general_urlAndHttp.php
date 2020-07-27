@@ -18,12 +18,12 @@ function sys_redirect($url) {
 function sys_redirect_js($url) {
   ob_end_flush();
 
-  $redirectTemplate = gettemplate('_redirect');
+  $redirectTemplate = SnTemplate::gettemplate('_redirect');
   $redirectTemplate->assign_vars(array(
     'URL' => js_safe_string($url),
   ));
 
-  display($redirectTemplate);
+  SnTemplate::display($redirectTemplate);
   die();
 }
 
@@ -83,6 +83,9 @@ function sn_post_url_contents($url, $data) {
   return $return;
 }
 
+function invokeUrl($url) {
+  exec("curl $url > /dev/null 2>&1 &");
+}
 
 // ----------------------------------------------------------------------------------------------------------------
 function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {

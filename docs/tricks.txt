@@ -1,0 +1,41 @@
+Список трюков и техник, которые пользуются редко, но полезные
+
+- Объявление объекта в JS ---------------------------------------------------------------
+var TheObject = function() {
+    this.init();
+};
+TheObject.prototype = {
+    init: function() {
+        this.options = {
+            myProperty: 'value'
+        };
+    },
+    method: function(s) {
+        s = s + 1;
+
+        return s;
+    }
+};
+var myObject = new TheObject();
+
+- CSS clear all properties (limited support) ---------------------------------------------------------------
+#someselector {
+  all: initial;
+  * {
+    all: unset;
+  }
+}
+
+-----------------------------------------------------------------------------------------------------------------
+  (function (window, navigator, $) {
+    "use strict";
+
+    console.log('test');
+
+  } (window, navigator, window.jQuery || window.$));
+
+-----------------------------------------------------------------------------------------------------------------
+https://www.sitepoint.com/jquery-document-ready-plain-javascript/
+print "<script type='text/javascript'>document.addEventListener('DOMContentLoaded', function() {
+   console.log('document is ready. I can sleep now');
+});</script>";

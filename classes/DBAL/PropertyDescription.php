@@ -142,7 +142,7 @@ class PropertyDescription {
       break;
 
       default:
-        die("Unknown field type '{$fieldDescription->Type}' in " . get_called_class());
+        die("Unsupported field type '{$fieldDescription->Type}' in " . get_called_class());
       break;
     }
 

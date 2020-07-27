@@ -16,10 +16,10 @@ function eco_lab_sort_effectivness($a, $b) {
 function eco_get_lab_max_effective_level(&$user, $lab_require) {
   if (!$user['user_as_ally'] && !isset($user['laboratories_active'])) {
     $user['laboratories_active'] = array();
-    $query = DBStaticUnit::db_unit_list_laboratories($user['id']);
+    $query                       = DBStaticUnit::db_unit_list_laboratories($user['id']);
     while ($row = db_fetch($query)) {
       if (!eco_unit_busy($user, $row, UNIT_TECHNOLOGIES)) {
-        $row += array(
+        $row                                     += array(
           STRUC_LABORATORY             => $level_lab = mrc_get_level($user, $row, STRUC_LABORATORY),
           STRUC_LABORATORY_NANO        => $level_lab_nano = mrc_get_level($user, $row, STRUC_LABORATORY_NANO),
           'laboratory_effective_level' => $level_lab * pow(2, $level_lab_nano),
@@ -35,7 +35,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require) {
     if ($user['user_as_ally']) {
       $lab_level = doquery("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
     } else {
-      $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH) + 1;
+      $tech_intergalactic           = mrc_get_level($user, false, TECH_RESEARCH) + 1;
       $lab_level['effective_level'] = 0;
 
       foreach ($user['laboratories_active'] as $data) {
@@ -101,7 +101,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[RES_TIME][BUILD_CREATE] /= SN::$gc->pimp->getStructuresTimeDivisor($user, $planet, $unit_id, $unit_data);
 
     // Final calculations
-    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] > 1 ? ceil($cost[RES_TIME][BUILD_CREATE]) : 1;
+    $cost[RES_TIME][BUILD_CREATE]  = $cost[RES_TIME][BUILD_CREATE] > 1 ? ceil($cost[RES_TIME][BUILD_CREATE]) : 1;
     $cost[RES_TIME][BUILD_DESTROY] = $cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? ceil($cost[RES_TIME][BUILD_CREATE] / 2) : 1;
   }
 
@@ -138,7 +138,7 @@ function sn_eco_can_build_unit($user, $planet, $unit_id, &$result) {
 function eco_is_builds_in_que($planet_que, $unit_list) {
   $eco_is_builds_in_que = false;
 
-  $unit_list = is_array($unit_list) ? $unit_list : array($unit_list => $unit_list);
+  $unit_list  = is_array($unit_list) ? $unit_list : array($unit_list => $unit_list);
   $planet_que = explode(';', $planet_que);
   foreach ($planet_que as $planet_que_item) {
     if ($planet_que_item) {
@@ -172,12 +172,15 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result) {
           $result = true;
         }
       }
-      //if(!empty($global_que['ques'][QUE_RESEARCH][$user['id']][0]))
-      //{
-      //  $result = true;
-      //}
-    } elseif (($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun && $planet['que']) {
-      $result = eco_is_builds_in_que($planet['que'], array(STRUC_LABORATORY, STRUC_LABORATORY_NANO));
+    } elseif (($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun) {
+      $userId        = floatval($user['id']);
+      $isLabBuilding = doquery(
+        "SELECT 1 FROM `{{que}}`
+        WHERE
+            `que_player_id` = {$userId}
+            AND `que_unit_id` IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ")", true);
+
+      $result = !empty($isLabBuilding);
     }
   }
 

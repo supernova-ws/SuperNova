@@ -1,6 +1,9 @@
 <?php
 
+use Common\Tools\VersionCheckerDeprecated;
+use Core\Autoloader;
 use \Core\SnBootstrap;
+use Fleet\TaskDispatchFleets;
 use Player\playerTimeDiff;
 
 // Защита от двойного инита
@@ -34,8 +37,8 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 // Installing autoloader
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
-\Core\Autoloader::register('classes/');
-\Core\Autoloader::register('classes/UBE/');
+Autoloader::register('classes/');
+Autoloader::register('classes/UBE/');
 
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';
@@ -45,7 +48,6 @@ SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
 require_once(SN_ROOT_PHYSICAL . 'includes/general/general.php');
-require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
 SN::loadFileSettings();
@@ -73,21 +75,22 @@ define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
-define('TEMPLATE_NAME', SN::$config->game_default_template ? SN::$config->game_default_template : 'OpenGame');
-define('TEMPLATE_PATH', 'design/templates/' . TEMPLATE_NAME);
-define('TEMPLATE_DIR', SN_ROOT_PHYSICAL . TEMPLATE_PATH);
-define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/EpicBlue/');
-define('DEFAULT_SKIN_NAME', substr(DEFAULT_SKINPATH, 6, -1));
+define('SN_COOKIE_WEBP', SN_COOKIE . '_WEBP'); // WebP support cookie
+
+define('DEFAULT_SKIN_NAME', 'EpicBlue');
+define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/' . DEFAULT_SKIN_NAME . '/');
+
 define('DEFAULT_LANG', SN::$config->game_default_language ? SN::$config->game_default_language : 'ru');
+
 define('FMT_DATE', SN::$config->int_format_date ? SN::$config->int_format_date : 'd.m.Y');
 define('FMT_TIME', SN::$config->int_format_time ? SN::$config->int_format_time : 'H:i:s');
 define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
 
 
 /**
- * @var classCache $sn_cache
+ * @var classCache  $sn_cache
  * @var classConfig $config
- * @var debug $debug
+ * @var debug       $debug
  */
 global $sn_cache, $config, $auth, $debug, $lang;
 
@@ -95,7 +98,7 @@ global $sn_cache, $config, $auth, $debug, $lang;
 global $sn_page_name;
 $sn_page_name = INITIAL_PAGE;
 global $template_result;
-$template_result = array('.' => array('result' => array()));
+$template_result = ['.' => ['result' => []]];
 
 SN::$lang = $lang = new classLocale(SN::$config->server_locale_log_usage);
 
@@ -117,12 +120,11 @@ SN::$gc->modules->loadModules(SN_ROOT_MODULES);
 SN::$gc->modules->initModules();
 
 
-
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
-$sn_page_data = $sn_mvc['pages'][$sn_page_name];
+$sn_page_data      = $sn_mvc['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name) {
   // Merging page options to global option pull
@@ -153,7 +155,31 @@ $lang->lng_switch(sys_get_param_str('lang'));
 
 
 if(SN::$config->server_updater_check_auto && SN::$config->server_updater_check_last + SN::$config->server_updater_check_period <= SN_TIME_NOW) {
-  \Common\Tools\VersionCheckerDeprecated::performCheckVersion();
+  VersionCheckerDeprecated::performCheckVersion();
+}
+
+SN::$gc->watchdog->register(new TaskDispatchFleets(), TaskDispatchFleets::class);
+SN::$gc->worker->registerWorker('dispatchFleets', function () {
+  \Core\Worker::detachIncomingRequest();
+
+  $result = SN::$gc->fleetDispatcher->flt_flying_fleet_handler();
+
+  return ['message' => 'Fleets dispatched', 'code' => $result];
+});
+
+// TODO Check URL timestamp when checking signature
+if (INITIAL_PAGE === 'worker' && SN::$gc->request->url->isSigned()) {
+  if (!defined('IN_AJAX')) {
+    define('IN_AJAX', true);
+  }
+
+  $result = [];
+
+  if (!empty($mode = sys_get_param_str('mode'))) {
+    $result = SN::$gc->worker->$mode();
+  }
+
+  die(json_encode($result));
 }
 
 if(SN::$config->user_birthday_gift && SN_TIME_NOW - SN::$config->user_birthday_celebrate > PERIOD_DAY) {
@@ -166,6 +192,7 @@ if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + SN
   dbUpdateUsersOnline(db_user_count(true));
   SN::$config->pass()->var_online_user_time = SN_TIME_NOW;
   if(SN::$config->server_log_online) {
+    /** @noinspection SqlResolve */
     doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
   }
 }
@@ -221,6 +248,7 @@ SN::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
   : false;
 
+// TODO - to scheduler
 StatUpdateLauncher::unlock();
 
 if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
@@ -240,7 +268,7 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
     &&
     empty(SN::$options[PAGE_OPTION_ADMIN])
   ) {
-    messageBox($template_result[F_GAME_DISABLE_REASON], SN::$config->game_name, '', 5, false);
+    SnTemplate::messageBox($template_result[F_GAME_DISABLE_REASON], SN::$config->game_name, '', 5, false);
     ob_end_flush();
     die();
   }
@@ -248,6 +276,7 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
 
 // TODO ban
 // TODO $skip_ban_check
+global $skip_ban_check;
 if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   if(defined('IN_API')) {
     return;
@@ -255,7 +284,7 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
-  messageBox("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
+  SnTemplate::messageBox("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
 
@@ -270,13 +299,9 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-$user_time_diff = playerTimeDiff::user_time_diff_get();
-global $time_diff;
-define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
-define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
-define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]); // Разница в GMT-времени между клиентом и сервером. Реальная разница в ходе часов
+playerTimeDiff::defineTimeDiff();
 
-// ...to controller
+// TODO: ...to controller
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 !empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;
 
@@ -285,13 +310,17 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
-SN::$gc->watchdog->checkConfigTimeDiff(
-  'fleet_update_last',
-  SN::$config->fleet_update_interval,
-  // Promise
-  function () {SN::$gc->fleetDispatcher->dispatch();},
-  WATCHDOG_TIME_SQL,
-  false
-);
+SN::$gc->watchdog->execute();
+
+//ini_set('error_reporting', E_ALL);
+
+//SN::$gc->watchdog->checkConfigTimeDiff(
+//  'fleet_update_last',
+//  SN::$config->fleet_update_interval,
+//  // Promise
+//  function () {SN::$gc->fleetDispatcher->dispatch();},
+//  classConfig::DATE_TYPE_SQL_STRING,
+//  false
+//);
 
 StatUpdateLauncher::scheduler_process();

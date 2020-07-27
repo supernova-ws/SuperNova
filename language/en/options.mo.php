@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a16.13
+* @version 45d0
 *
 */
 
@@ -27,7 +27,7 @@
 
 if (!defined('INSIDE')) die();
 
-$a_lang_array = array(
+$a_lang_array = [
   'opt_account' => 'Account',
   'opt_int_options' => 'Interface',
   'opt_settings_statistics' => 'Player\'s statistics',
@@ -65,19 +65,19 @@ $a_lang_array = array(
   'emaildir_tip' => 'This address can be changed at any time. Address will be the main, if it has not been modified within 7 days.',
   'permanentemaildir' => 'Main e-mail address',
   'opt_planet_sort_title' => 'Order planets by',
-  'opt_planet_sort_options' => array(
+  'opt_planet_sort_options' => [
     SORT_ID       => 'Colonization Time',
     SORT_LOCATION => 'Coordinates',
     SORT_NAME     => 'Name',
     SORT_SIZE     => 'Size',
-  ),
-  'opt_planet_sort_ascending' => array(
+  ],
+  'opt_planet_sort_ascending' => [
     SORT_ASCENDING  => 'Ascending',
     SORT_DESCENDING => 'Descending',
-  ),
+  ],
 
   'opt_navbar_title' => 'Navigation Panel',
-  'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
+  'opt_navbar_description' => 'The navigation bar (or simply "navbar") is located at the very top of the screen. This section allows you to customize the look of the navbar.',
   'opt_navbar_resourcebar_description' => 'Resourcebar - resource panel',
   'opt_navbar_buttons_title' => 'Setup navbar buttons',
   'opt_player_options' => [
@@ -89,13 +89,14 @@ $a_lang_array = array(
     PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH       => 'Disable Research button',
     PLAYER_OPTION_NAVBAR_DISABLE_PLANET         => 'Disable Planet button',
     PLAYER_OPTION_NAVBAR_DISABLE_HANGAR         => 'Disable Hangar button',
+    PLAYER_OPTION_NAVBAR_DISABLE_DEFENSE        => 'Disable Defense button',
     PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS    => 'Disable Expeditions button',
     PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS  => 'Disable Flying Fleets button',
     PLAYER_OPTION_NAVBAR_DISABLE_QUESTS         => 'Disable Quest button',
     PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER    => 'Disable MetaMatter button',
 
-    PLAYER_OPTION_UNIVERSE_OLD                  => 'Использовать старый вид "Обзора Вселенной"',
-    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE     => 'Отключить кнопку колонизации',
+    PLAYER_OPTION_UNIVERSE_OLD                  => 'Use the old view of the "Survey of the Universe"',
+    PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE     => 'Disable Colonization Button',
     PLAYER_OPTION_DESIGN_DISABLE_BORDERS        => 'Disable table borders (if any)',
     PLAYER_OPTION_TECH_TREE_TABLE               => 'View Technology Tree as table (old view)',
     PLAYER_OPTION_FLEET_SHIP_SELECT_OLD         => 'Use old fleet selection view',
@@ -184,7 +185,7 @@ $a_lang_array = array(
   Usually game automatically detects time difference right. However when time zone is worng on player\'s device or player used several devices for playing or when
   internet connection is bad you should set time difference manually',
 
-  'opt_custom' => array(
+  'opt_custom' => [
     'opt_uni_avatar_user' => 'Show user avatar',
     'opt_uni_avatar_ally' => 'Show Ally logo',
     'opt_int_struc_vertical' => 'Vertical structures que',
@@ -193,7 +194,7 @@ $a_lang_array = array(
     'opt_int_overview_planet_columns_hint' => '0 - calculate by maximum row count',
     'opt_int_overview_planet_rows' => 'Maximum row count in planet list',
     'opt_int_overview_planet_rows_hint' => 'Ignored if there is column count',
-  ),
+  ],
 
   'opt_mail_optional_description' => 'Personal messages from other players and notifications about internal game events (like combat reports, expedition reports etc) will be sent to this e-mail',
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
@@ -208,4 +209,8 @@ $a_lang_array = array(
 
   'option_change_nick_disabled' => 'Player nickname change forbidden by server settings',
 
-);
+  'opt_ignores' => 'Игнор-лист',
+  'opt_unignore_do' => 'Удалить из игнор-листа',
+  'opt_ignore_list_empty' => 'Ваш игнор-лист пуст',
+
+];

@@ -24,7 +24,7 @@ if (
   sys_redirect('index.php?page=techtree');
 }
 
-$template = gettemplate('novapedia', true);
+$template = SnTemplate::gettemplate('novapedia', true);
 
 $unit_data = get_unit_param($unit_id);
 $unit_type = $unit_data['type'];
@@ -130,4 +130,4 @@ $template_result += array(
 $template_result['.'][TPL_BLOCK_REQUIRE] = unit_requirements_render($user, $planetrow, $unit_id);
 
 $template->assign_recursive($template_result);
-display($template);
+SnTemplate::display($template);

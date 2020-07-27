@@ -16,9 +16,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate('admin/adm_messagelist', true);
+$template = SnTemplate::gettemplate('admin/adm_messagelist', true);
 
 $int_type_selected = sys_get_param_int('int_type_selected', -1);
 $allowed_types = array(
@@ -99,4 +99,4 @@ $template->assign_vars(array(
   'TYPE_SELECTED' => $int_type_selected,
 ));
 
-display($template, $lang['mlst_title']);
+SnTemplate::display($template, $lang['mlst_title']);

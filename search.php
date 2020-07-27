@@ -13,7 +13,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(SN::$config->game_mode == GAME_BLITZ) {
-  messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  SnTemplate::messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }
 
@@ -23,7 +23,7 @@ $searchtext = sys_get_param_str('searchtext');
 $type = sys_get_param_str('type');
 
 
-$template = gettemplate('search', true);
+$template = SnTemplate::gettemplate('search', true);
 
 if($searchtext && $type)
 {
@@ -98,4 +98,4 @@ $template->assign_vars(array(
   'STATS_HIDE_PM_LINK' => SN::$config->stats_hide_pm_link,
 ));
 
-display($template);
+SnTemplate::display($template);

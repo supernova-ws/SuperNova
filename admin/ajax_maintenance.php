@@ -6,7 +6,7 @@ require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
 {
-  messageBox($lang['sys_noalloaw'], $lang['sys_noaccess']);
+  SnTemplate::messageBox($lang['sys_noalloaw'], $lang['sys_noaccess']);
   die();
 }
 

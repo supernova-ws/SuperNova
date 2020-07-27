@@ -44,6 +44,7 @@ INI-файл:
  * - Наследование скинов любой глубины вложенности (опция _inherit в skin.ini)
  * - Подстановка картинок из родителя при отсутствии данных в skin.ini или физическом отутствии файла
  * - Заглушка _NO_IMAGE при отсутствии картинки (опция _no_image в skin.ini)
+ * - Автоматическая поддержка WebP для браузеров, что поддерживают WebP с фоллбэком на обычный формат
  */
 class SkinV2 implements SkinInterface {
   const PARAM_HTML = 'html';
@@ -51,6 +52,7 @@ class SkinV2 implements SkinInterface {
   const PARAM_HTML_WIDTH = 'width';
   // Use skin for image
   const PARAM_SKIN = 'skin';
+  const WEBP_SUFFIX = '_webp';
 
   /**
    * @var string $iniFileName
@@ -177,9 +179,9 @@ class SkinV2 implements SkinInterface {
    */
   public function __construct($skinName = DEFAULT_SKINPATH, $skinModel) {
     $this->model = $skinModel;
-    $this->name = $skinName;
+    $this->name  = $skinName;
 
-    $this->root_http_relative = 'skins/' . $this->name . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
+    $this->root_http_relative     = 'skins/' . $this->name . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
     $this->root_physical_absolute = SN_ROOT_PHYSICAL . $this->root_http_relative;
     // Искать скин среди пользовательских - когда будет конструктор скинов
     // Может не быть файла конфигурации - тогда используется всё "по дефаулту". Т.е. поданная строка - это именно имя файла
@@ -188,8 +190,8 @@ class SkinV2 implements SkinInterface {
     $this->setParentFromConfig();
 
     // Пытаемся скомпилировать _no_image заранее
-    $model = $this->model;
-    $noImageID = $model::NO_IMAGE_ID;
+    $model       = $this->model;
+    $noImageID   = $model::NO_IMAGE_ID;
     $noImagePath = $model::NO_IMAGE_PATH;
 
     // Заглушка на самый крайний случай - когда скин является корневым и у него нет _no_image
@@ -242,6 +244,8 @@ class SkinV2 implements SkinInterface {
     // Шорткат
     $imageId = $ptlTag->resolved;
 
+    $this->tryWebp($imageId);
+
     // Нет ключа RIT в контейнере - обсчёт пути для RIT из конфигурации
     empty($this->container[$imageId]) && !empty($this->config[$imageId])
       ? $this->compile_try_path($imageId, $this->config[$imageId])
@@ -291,7 +295,7 @@ class SkinV2 implements SkinInterface {
       return $this->container[$ptlTag->resolved];
     }
 
-    $params = $ptlTag->params;
+    $params       = $ptlTag->params;
     $image_string = $this->container[$ptlTag->resolved];
 
     // Здесь автоматически произойдёт упорядочивание параметров
@@ -302,14 +306,14 @@ class SkinV2 implements SkinInterface {
         // If skin - is this skin - then removing this param from list
         $ptlTag->removeParam(self::PARAM_SKIN);
       } else {
-        $skin = $this->model->getSkin($params[self::PARAM_SKIN]);
+        $skin         = $this->model->getSkin($params[self::PARAM_SKIN]);
         $image_string = $skin->imageFromStringTag($ptlTag->resolved, $ptlTag->template);
       }
     }
 
     // Параметр 'html' - выводить изображение в виде HTML-тэга
     if (array_key_exists(self::PARAM_HTML, $params)) {
-      $htmlParams = '';
+      $htmlParams   = '';
       $paramsNoHtml = $params;
       unset($paramsNoHtml[self::PARAM_HTML]);
       // Just dump other params
@@ -361,6 +365,31 @@ class SkinV2 implements SkinInterface {
     }
 
     $this->parent = $this->model->getSkin($parentName);
+  }
+
+  /**
+   * @param string $imageId Internal Image ID to try
+   */
+  private function tryWebp($imageId) {
+    if (!is_object(SN::$gc->theUser) || !SN::$gc->theUser->isWebpSupported()) {
+      return;
+    }
+    if (!empty($this->container[$imageId])) {
+      // Something already there - nothing to do
+      return;
+    }
+
+    $webpImageId = $imageId . self::WEBP_SUFFIX;
+    if (empty($this->config[$webpImageId])) {
+      // No WebP alternative - nothing to do
+      // We WILL NOT check for parent if there is no WebP alternative!
+      return;
+    }
+
+    // Trying to use WebP variant as original image
+    $this->compile_try_path($imageId, $this->config[$webpImageId]);
+
+    // Ready or not - we're out of here
   }
 
 }

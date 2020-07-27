@@ -1,0 +1,120 @@
+<!-- IF $NAVBAR_RESOURCES_ALLY -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_STORAGE = 1 -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_FLEETS = 1 -->
+<!-- ENDIF -->
+
+<!--suppress HtmlUnknownTarget -->
+<div id="navbar_resources_flex" class="navbar_resources_flex header no_select {$NAVBAR_RESOURCES_CLASS}">
+  <div class="navbar_resources_flex_title">
+    <!-- IF $NAVBAR_RESOURCES_ALLY -->
+    {L_sys_alliance}
+    <!-- ELSE -->
+    {L_sys_resources}
+    <!-- ENDIF -->
+  </div>
+
+  <div class="navbar_resbar_flex_wrap2">
+    <div class="navbar_resbar_flex_wrap1">
+      <div class="cell navbar_resources_flex_resource" data-resource="metal">
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_metal.png" alt="{L_sys_metal}"/></div>
+
+        <div class="navbar_resource_numbers">
+          <div class="top_metal_v2">
+            {PLANET_METAL_TEXT}
+          </div>
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_METAL_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_METAL}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_METAL_MAX_NO_COLOR}</span>
+          </div>
+          <!-- ENDIF -->
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+          <div>{PLANET_METAL_FLEET_TEXT}</div>
+          <!-- ENDIF -->
+        </div>
+      </div>
+
+      <div class="cell navbar_resources_flex_resource" data-resource="crystal">
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_crystal.png" alt="{L_sys_crystal}"/></div>
+
+        <div class="navbar_resource_numbers">
+          <div class="top_crystal_v2">
+            {PLANET_CRYSTAL_TEXT}
+          </div>
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_CRYSTAL_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_CRYSTAL}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_CRYSTAL_MAX_NO_COLOR}</span>
+          </div>
+          <!-- ENDIF -->
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+          <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
+          <!-- ENDIF -->
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar_resbar_flex_wrap1">
+      <div class="cell navbar_resources_flex_resource" data-resource="deuterium">
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_deuterium.png" alt="{L_sys_deuterium}"/></div>
+
+        <div class="navbar_resource_numbers">
+          <div class="top_deuterium_v2">
+            {PLANET_DEUTERIUM_TEXT}
+          </div>
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_DEUTERIUM_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_DEUTERIUM}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_DEUTERIUM_MAX_NO_COLOR}</span>
+          </div>
+          <!-- ENDIF -->
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+          <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
+          <!-- ENDIF -->
+        </div>
+
+      </div>
+
+      <!-- IF ! $NAVBAR_RESOURCES_ALLY -->
+      <div class="cell navbar_resources_flex_resource" data-resource="energy">
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_energy.png" alt="{L_sys_energy}"/></div>
+
+        <div class="navbar_resource_numbers">
+          <div>{ENERGY_BALANCE}</div>
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{ENERGY_MAX_NUMBER}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_ENERGY}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{ENERGY_MAX_NUMBER_TEXT_NO_COLOR}</span>
+          </div>
+          <!-- ENDIF -->
+        </div>
+      </div>
+      <!-- ELSE -->
+      <div class="cell navbar_resources_flex_resource">
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png" alt="{L_sys_dark_matter}"/></div>
+
+        <div class="navbar_resource_numbers">
+          <div id='top_dark_matter'>
+            <!-- IF DARK_MATTER_TEXT -->{DARK_MATTER_TEXT}<!-- ELSE -->0<!-- ENDIF -->
+          </div>
+        </div>
+      </div>
+      <!-- ENDIF -->
+    </div>
+  </div>
+</div>
