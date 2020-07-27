@@ -556,11 +556,6 @@ switch ($updater->new_version) {
           "DROP COLUMN `user_proxy`",
         ], $updater->isFieldExists('counter', 'device_id'));
 
-//        upd_alter_table('counter', [
-//          "DROP KEY `I_counter_user_id`",
-//          "ADD KEY `I_counter_user_id` (`user_id`, `player_entry_id`)",
-//        ], !empty($update_tables['counter']['device_id']));
-
         SN::$gc->config->upd_lock_time = $oldLockTime;
         $updater->upd_do_query('COMMIT;', true);
       }
@@ -569,6 +564,7 @@ switch ($updater->new_version) {
     $updater->new_version = 44;
     $updater->upd_do_query('COMMIT;', true);
 
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 44:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
     $updater->upd_log_version_update();
@@ -610,12 +606,18 @@ switch ($updater->new_version) {
       }
     }, PATCH_REGISTER);
 
+    $updater->new_version = 45;
+    $updater->upd_do_query('COMMIT;', true);
+
+  case 45:
+    // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
+    $updater->upd_log_version_update();
 //    // #ctv
-//    $updater->updPatchApply(10, function() use ($updater) {
+//    $updater->updPatchApply(11, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
   // TODO - UNCOMMENT ON RELEASE!
-//    $updater->new_version = 45;
+//    $updater->new_version = 46;
 //    $updater->upd_do_query('COMMIT;', true);
 }
 
