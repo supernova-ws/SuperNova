@@ -164,8 +164,6 @@ AccessorsV2
     - htmlentities($text, ENT_COMPAT, 'UTF-8');
     - Заменить nl2br хелпером ?
 
-Переделать README в markdown
-
 Мигрировать опции
     $options = sys_user_options_pack($user);
 
@@ -2078,6 +2076,18 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 [*] template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
 
 #ctv
+
+
+2020-07-27 12:12:06 45d1
+[!] Документация
+    Переделана в формат MarkDown:
+        - /README -> /README.MD
+        - /docs/install.txt -> /docs/install.md
+        - /docs/install-en.txt -> /docs/install-en.md
+
+[!] Установка/обновление
+    Улучшен процесс установки/обновления
+    Расширен раздел, посвященный проблемам с установкой или обновлением в файлах /docs/install.md и /docs/install-en.md
 
 
 2020-07-27 10:08:44 45d0
@@ -12494,7 +12504,7 @@ get_unit_param()
     транспортов на одну строку вниз
 [%] Локализация/EN: Исправлены очепятки
 
-[@] Документация: readme преобразован в UTF8
+[@] Документация: README преобразован в UTF8
 [@] Добавлена компенсация  работы  механизма  Magic  Quotes.  Подробнее  -  см.
     /docs/install.txt, подраздел "Magic Quotes"
 

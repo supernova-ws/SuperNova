@@ -96,7 +96,7 @@ global $sn_cache, $config, $auth, $debug, $lang;
 
 
 global $sn_page_name;
-$sn_page_name = INITIAL_PAGE;
+empty($sn_page_name) ? $sn_page_name = INITIAL_PAGE : false;
 global $template_result;
 $template_result = ['.' => ['result' => []]];
 
@@ -257,8 +257,33 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
       ? SN::$config->game_disable_reason
       : $lang['sys_game_disable_reason'][SN::$config->game_disable]
   );
+
+  // For API - just skipping all checks
+  // TODO: That is ideologically wrong and should be redone
   if(defined('IN_API')) {
     return;
+  }
+
+  // Actions for install mode
+  if(defined('INSTALL_MODE') && INSTALL_MODE) {
+    // Handling log out - should work even in install mode
+    if(strtolower(INITIAL_PAGE) === 'logout') {
+      SN::$auth->logout(true);
+      die();
+    }
+
+    // If user not logged in AND we are not on login page - redirect user there
+    if(!$sys_user_logged_in && !defined('LOGIN_LOGOUT')) {
+      header('Location: login.php');
+      die();
+    }
+
+    // If user is type of admin AND in user pages - redirecting him to admin interface
+    // You really shouldn't mess in user interface until game not configured!
+    if($user['authlevel'] >= 1 && !defined('IN_ADMIN')) {
+      header('Location: ' . SN_ROOT_VIRTUAL_PARENT . 'admin/overview.php');
+      die();
+    }
   }
 
   if(
