@@ -9,10 +9,10 @@ define('__SN_CONSTANTS_DEFINED', true);
 defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
-define('DB_VERSION', '44');
-define('SN_RELEASE', '44');
-define('SN_VERSION', '45a120');
-define('SN_RELEASE_STABLE', '44d0'); // Latest stable release
+define('DB_VERSION', '45');
+define('SN_RELEASE', '45');
+define('SN_VERSION', '45d0');
+define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));

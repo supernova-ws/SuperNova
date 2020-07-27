@@ -2080,6 +2080,12 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 #ctv
 
 
+2020-07-27 10:08:44 45d0
+[!] Project "SuperNova.WS" Release 45 "11 years anniversary"
+    Project "SuperNova.WS" Release 45 "11 years anniversary"
+    Обновлен docs/changelog.txt
+
+
 2020-07-08 10:35:10 45a118
 [~] Навбар
     Поддержка кнопки "Оборона"
