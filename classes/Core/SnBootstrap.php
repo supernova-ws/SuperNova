@@ -134,7 +134,7 @@ class SnBootstrap {
       return;
     }
 
-    if (defined('IN_ADMIN')) {
+    if (defined('IN_ADMIN') || !$config->pass()->game_installed) {
       sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
       if (SN_TIME_NOW >= $config->pass()->var_db_update_end) {
         $config->pass()->var_db_update_end = SN_TIME_NOW + $config->upd_lock_time;
@@ -145,6 +145,7 @@ class SnBootstrap {
         $current_time                      = time();
         $config->pass()->var_db_update     = $current_time;
         $config->pass()->var_db_update_end = $current_time;
+        $config->pass()->game_installed    = 1;
       } elseif (filemtime($update_file) > $config->var_db_update) {
         $timeout = $config->var_db_update_end - SN_TIME_NOW;
         die(

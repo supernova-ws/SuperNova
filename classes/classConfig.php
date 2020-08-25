@@ -41,6 +41,7 @@
  * @property string     $game_default_skin             => 'skins/EpicBlue/'
  * @property string     $game_default_template         => 'OpenGame'
  *
+ * @property int        $game_installed                => 0 - is game installed
  * @property int        $game_disable                  => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
  * @property string     $game_disable_reason           => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
  *
