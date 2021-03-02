@@ -173,14 +173,30 @@ $ques = array(
     AND `log_timestamp` < DATE_SUB(NOW(),INTERVAL 7 DAY);',
 
 
-  // TODO Удаляем устройства, на которые никто не ссылается
-//  "DELETE sd FROM `{{security_device}}` AS sd
-//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
-//  WHERE player_id IS NULL;",
+  // Удаляем вхождения игроков, на которые никто не ссылается
+  "DELETE spe FROM `{{security_player_entry}}` AS spe
+    LEFT JOIN `{{counter}}` AS c ON c.player_entry_id = spe.id
+  WHERE c.counter_id IS NULL;",
+  //  Удаляем устройства, на которые никто не ссылается
+  "DELETE sd FROM `{{security_device}}` AS sd
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
+  WHERE spe.id IS NULL;",
   // Удаляем браузеры, на которые никто не ссылается
-//  "DELETE sb FROM `{{security_browser}}` AS sb
-//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
-//  WHERE player_id IS NULL;",
+  "DELETE sb FROM `{{security_browser}}` AS sb
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
+  WHERE spe.id IS NULL;",
+  // Удаляем строки запросов, на которые никто не ссылается
+  "DELETE sqs FROM `{{security_query_strings}}` AS sqs
+    LEFT JOIN `{{counter}}` AS c ON c.query_string_id = sqs.id
+  WHERE c.counter_id IS NULL;",
+  // Удаляем УРЛы, на которые никто не ссылается
+  "DELETE su FROM `{{security_url}}` AS su
+    LEFT JOIN `{{counter}}` AS c ON c.page_url_id = su.url_id
+  WHERE c.counter_id IS NULL;",
+
+//  "INSERT INTO {{counter}} SET
+//        `page_url_id` = {$this->page_address_id},
+
 
   // Удаляем записи визитов без пользователей
 //  'DELETE FROM `{{counter}}` WHERE `user_id` NOT IN (SELECT `id` FROM `{{users}}`);',

@@ -2072,10 +2072,17 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 [*] $FIELD_COLOR
 [*] Опция "Всегда показывать горизонтальный список планет
     Отцентрировать горизонтальный список для Оперы
-[*] SQL limit execution time: SET SESSION MAX_EXECUTION_TIME=2000;
-[*] template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
 
 #ctv
+
+2021-03-02 08:46:06 46a9
+[~] Админка
+    Восстановлено обслуживание таблиц БД, относящихся к безопасности
+
+
+2021-03-02 08:43:10 46a8
+[~] Картинки
+    Немного уменьшены размер некоторых изображений
 
 
 2020-12-11 11:56:23 46a3
