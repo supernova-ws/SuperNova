@@ -609,14 +609,23 @@ switch ($updater->new_version) {
     $updater->new_version = 45;
     $updater->upd_do_query('COMMIT;', true);
 
+  /** @noinspection PhpMissingBreakStatementInspection */
   case 45:
     // !!!!!!!!! This one does not start transaction !!!!!!!!!!!!
     $updater->upd_log_version_update();
+
+    // 2021-03-03 13:41:05 46a13
+    $updater->updPatchApply(11, function () use ($updater) {
+      $updater->upd_alter_table('festival_gifts', [
+        'ADD COLUMN `gift_unit_id` bigint(20) NOT NULL DEFAULT 0 AFTER `amount`',
+      ], !$updater->isFieldExists('festival_gifts', 'gift_unit_id'));
+    }, PATCH_PRE_CHECK);
+
 //    // #ctv
-//    $updater->updPatchApply(11, function() use ($updater) {
+//    $updater->updPatchApply(12, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
-  // TODO - UNCOMMENT ON RELEASE!
+//   TODO - UNCOMMENT ON RELEASE!
 //    $updater->new_version = 46;
 //    $updater->upd_do_query('COMMIT;', true);
 }

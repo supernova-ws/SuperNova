@@ -3267,8 +3267,9 @@ tr.error_bg > td, tr.error_bg > th,
   background-color: #446666;
 }
 .msg_admin, .msg_admin * {
-  color: #9900ff !important;
-  background-color: #ffffff;
+  /*color: #9900ff;*/
+  color: #5500aa;
+  background-color: #aaaaaa;
 }
 .new_message, .new_message * {
   color: #000000;

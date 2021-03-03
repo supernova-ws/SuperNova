@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 44a83
+* @version 46a13
 *
 */
 
@@ -284,12 +284,13 @@ $a_lang_array = (array(
 //    MRC_ENGINEER => 'Engineer',
 //    MRC_FORTIFIER => 'Fortifier',
 //
-//    UNIT_RESOURCES => 'Resources',
-//    RES_METAL => 'Metal',
-//    RES_CRYSTAL => 'Crystal',
-//    RES_DEUTERIUM => 'Deuterium',
-//    RES_ENERGY => 'Energy',
-//    RES_DARK_MATTER => 'Dark Matter',
+    UNIT_RESOURCES => 'Res',
+    RES_METAL => 'Met',
+    RES_CRYSTAL => 'Crys',
+    RES_DEUTERIUM => 'Deut',
+    RES_ENERGY => 'Ener',
+    RES_DARK_MATTER => 'DM',
+    RES_METAMATTER => 'MM',
 //
 //    UNIT_ARTIFACTS => 'Artifacts',
 //    ART_LHC => 'Large Hadron Collider',
