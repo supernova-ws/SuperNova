@@ -2073,7 +2073,33 @@ https://stackoverflow.com/questions/1019867/is-there-a-way-to-use-shell-exec-wit
 [*] Опция "Всегда показывать горизонтальный список планет
     Отцентрировать горизонтальный список для Оперы
 
+
+2021-06-25 12:18:51 - ERROR
+array (
+  'type' => 1,
+  'message' => 'Maximum execution time of 300 seconds exceeded',
+  'file' => '/srv/www/vhosts/alpha.supernova.ws/classes/classCache.php',
+  'line' => 189,
+)
+NULL
+
+
+2021-06-25 12:23:55 - ERROR
+array (
+  'type' => 1,
+  'message' => 'Maximum execution time of 300 seconds exceeded',
+  'file' => '/srv/www/vhosts/alpha.supernova.ws/classes/classCache.php',
+  'line' => 189,
+)
+NULL
+
+
 #ctv
+
+
+2022-01-20 05:37:05 45d2
+[~] Юниты
+    Поддержка Фестиваля "СНГ-2022"
 
 
 2021-03-03 13:41:05 46a13

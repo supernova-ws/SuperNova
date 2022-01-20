@@ -5,6 +5,7 @@ config.php
 # Ignore Yandex and Google placeholders
 /yandex_*.txt
 /google*.txt
+/google*.html
 
 # Ignore skin xNova
 /skins/xnova/
