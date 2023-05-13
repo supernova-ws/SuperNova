@@ -2117,7 +2117,10 @@ NULL
 #ctv
 
 2023-05-13 11:23:47 46a32
-
+[~] Template engine fixes
+    Fixed `error: template->_tpl_load_file()` for module template files loaded on admin page
+    Fixed `error: template->_tpl_load_file()` when module template files tried to load files from core template
+        I.e. alliance manager page tries to load `eco_que` template from core template
 
 2023-05-13 09:42:39 46a23
 [@] Code
