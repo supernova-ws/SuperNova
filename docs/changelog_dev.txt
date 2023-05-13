@@ -2114,7 +2114,8 @@ NULL
 2022-10-25 09:08:37		SQL Error	You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '\"' at line 1<br />/* tID 465<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'classes/SN.php' Line 336<br />SN::db_query_select() - 'classes/SN.php' Line 432<br />SN::db_get_record_list() - 'classes/SN.php' Line 631<br />SN::db_que_list_by_type_location() - 'includes/functions/eco_queue.php' Line 409<br />que_get() - 'includes/includes/eco_bld_structures.php' Line 115<br />sn_eco_build() - '' Line _UNDEFINED_<br />call_user_func_array() - 'includes/general/general.php' Line 52<br />sn_function_call() - 'includes/includes/eco_bld_structures.php' Line 16<br />eco_build() - 'buildings.php' Line 52<br /> */ SELECT * FROM game_que WHERE `que_player_id` = 7211448 AND (`que_planet_id` = 7269267) AND `que_type` = 6\"<br />
 
 
-#ctv
+2023-05-13 12:16:55 46a33
+[@] GIT: Fixing versioning problem
 
 2023-05-13 12:01:52 45d15
 [~] DB
