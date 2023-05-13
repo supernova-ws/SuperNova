@@ -20,6 +20,8 @@ use Planet\DBStaticPlanet;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $lang, $user;
+
 define('IN_AJAX', true);
 
 setHeader("Content-type: text/html; charset=utf-8");
@@ -119,7 +121,7 @@ $fleet_ship_count = array_sum($fleet_array);
 if($target_mission == MT_MISSILE)
 {
   $distance = abs($target_coord['system'] - $planetrow['system']);
-  $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
+  $duration = round((30 + (60 * $distance)) / Universe::flt_server_flight_speed_multiplier());
   $arrival = SN_TIME_NOW + $duration;
   $travel_data['consumption'] = 0;
 

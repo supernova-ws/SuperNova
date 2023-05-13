@@ -3,52 +3,8 @@
 use DBAL\OldDbChangeSet;
 use Fleet\DbFleetStatic;
 use Fleet\Fleet;
+use Fleet\FleetStatic;
 use Planet\DBStaticPlanet;
-
-function flt_fleet_speed($user, $fleet, $shipData = []) {
-  if (!is_array($fleet)) {
-    $fleet = array($fleet => 1);
-  }
-
-  $speeds = array();
-  if (!empty($fleet)) {
-    foreach ($fleet as $ship_id => $amount) {
-      if ($amount && in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
-        $single_ship_data = !empty($shipData[$ship_id]) ? $shipData[$ship_id] : get_ship_data($ship_id, $user);
-        $speeds[] = $single_ship_data['speed'];
-      }
-    }
-  }
-
-  return empty($speeds) ? 0 : min($speeds);
-}
-
-function flt_get_galaxy_distance() {
-  return SN::$config->uni_galaxy_distance ? SN::$config->uni_galaxy_distance : UNIVERSE_GALAXY_DISTANCE;
-}
-
-function flt_travel_distance($from, $to) {
-  if ($from['galaxy'] != $to['galaxy']) {
-    $distance = abs($from['galaxy'] - $to['galaxy']) * flt_get_galaxy_distance();
-  } elseif ($from['system'] != $to['system']) {
-    $distance = abs($from['system'] - $to['system']) * 5 * 19 + 2700;
-  } elseif ($from['planet'] != $to['planet']) {
-    $distance = abs($from['planet'] - $to['planet']) * 5 + 1000;
-  } else {
-    $distance = 5;
-  }
-
-  return $distance;
-}
-
-
-function fltDistanceAsGalaxy($distance) {
-  return $distance ? $distance / flt_get_galaxy_distance() : 0;
-}
-
-function fltDistanceAsSystem($distance) {
-  return $distance ? ($distance - 2700) / 5 / 19 : 0;
-}
 
 /**
  * @param int   $ship_id
@@ -64,7 +20,7 @@ function flt_get_max_distance($ship_id, $speed_percent = 100, $shipsData = []) {
     return 0;
   }
 
-  return $distance = calcDistance($speed_percent, $single_ship_data);
+  return calcDistance($speed_percent, $single_ship_data);
 }
 
 /**
@@ -89,19 +45,21 @@ function calcDistance($speed_percent, $single_ship_data) {
  * @return array
  */
 function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 10, $shipsData = [], $distance = null) {
-  $distance = $distance === null ? flt_travel_distance($from, $to) : $distance;
+  $distance = $distance === null ? Universe::distance($from, $to) : $distance;
 
   $consumption = 0;
   $capacity = 0;
   $duration = 0;
 
-  $game_fleet_speed = flt_server_flight_speed_multiplier();
-  $fleet_speed = flt_fleet_speed($user_row, $fleet_array, $shipsData);
+  $game_fleet_speed = Universe::flt_server_flight_speed_multiplier();
+  $fleet_speed = FleetStatic::flt_fleet_speed($user_row, $fleet_array, $shipsData);
   if (!empty($fleet_array) && $fleet_speed && $game_fleet_speed) {
     $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
     $real_speed = $speed_percent * sqrt($fleet_speed);
 
-    $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
+    $duration = max(1, round(
+      (35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed
+    ));
 
     foreach ($fleet_array as $ship_id => $ship_count) {
       if (!$ship_id || !$ship_count) {

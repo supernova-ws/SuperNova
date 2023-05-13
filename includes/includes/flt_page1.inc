@@ -1,10 +1,7 @@
 <?php
 
-// floten1.php
-// @version 1.0
-// @copyright 2008 by Chlorel for XNova
-
 use Fleet\DbFleetStatic;
+use Fleet\FleetStatic;
 use Planet\DBStaticPlanet;
 
 if(SN_IN_FLEET !== true) {
@@ -122,14 +119,14 @@ while($row = db_fetch($aks_madnessred)) {
 $template->assign_vars(array(
   'usedfleet'       => str_rot13(base64_encode(json_encode($fleet['fleetarray']))),
 
-  'speed_factor'     => flt_server_flight_speed_multiplier(),
+  'speed_factor'     => Universe::flt_server_flight_speed_multiplier(),
   "t{$planet_type}" => 'SELECTED',
 
 //  'target_mission'  => $target_mission,
 
 //  'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-  'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
+  'fleet_speed'     => FleetStatic::flt_fleet_speed($user, $fleet['fleetarray']),
   'fleet_capacity'  => $fleet['capacity'],
 
   'PLANET_DEUTERIUM'   => HelperString::numberFloorAndFormat($planetrow['deuterium']),

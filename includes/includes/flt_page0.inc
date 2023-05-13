@@ -99,7 +99,7 @@ $template->assign_vars(array(
 
   'ShipList'           => $ShipList,
 
-  'speed_factor'       => flt_server_flight_speed_multiplier(),
+  'speed_factor'       => Universe::flt_server_flight_speed_multiplier(),
 
   'PLANET_RESOURCES'   => HelperString::numberFloorAndFormat($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
   'PLANET_DEUTERIUM'   => HelperString::numberFloorAndFormat($planetrow['deuterium']),

@@ -211,18 +211,6 @@ function get_game_speed($plain = false) {
 }
 
 /**
- * Get fleet flying speed aka... hmph... fleet flying speed
- *
- * @param bool $plain
- *
- * @return float|int
- */
-function flt_server_flight_speed_multiplier($plain = false) {
-  return getValueFromStorage(UNIT_SERVER_SPEED_FLEET, $plain);
-}
-
-
-/**
  * Получение стоимости ММ в валюте сервера
  *
  * @param bool|false $plain
