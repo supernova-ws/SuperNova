@@ -135,7 +135,7 @@ SnBootstrap::performUpdate(SN::$config);
 // init constants from db
 // Moved from SnBootstrap for phpStorm autocomplete
 // TODO - Should be removed someday - there should NOT be constants that depends on configuration!
-define('SN_COOKIE', (SN::$config->COOKIE_NAME ?: 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE', (SN::$config->COOKIE_NAME ?: 'SuperNova') . (SN_GOOGLE ? '_G' : ''));
 define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D', SN_COOKIE . '_D');
 define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie

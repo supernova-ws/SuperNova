@@ -220,7 +220,7 @@ $sn_menu = [
     'ICON'  => true,
   ],
 
-//  'menu_metamatter' => !defined('SN_GOOGLE') ? array(
+//  'menu_metamatter' => !SN_GOOGLE ? array(
 //    'LEVEL' => 'header',
 //    'TYPE'  => 'lang',
 //    'ITEM'  => 'sys_metamatter',

@@ -83,7 +83,7 @@ class SnTemplate {
       'SN_TIME_NOW'      => SN_TIME_NOW,
       'SN_TEMPLATE_NAME' => SnTemplate::getPlayerTemplateName(),
       'USER_AUTHLEVEL'   => isset($user['authlevel']) ? $user['authlevel'] : -1,
-      'SN_GOOGLE'        => defined('SN_GOOGLE'),
+      'SN_GOOGLE'        => SN_GOOGLE,
     ));
 
     $template->parsed = true;
@@ -220,7 +220,7 @@ class SnTemplate {
       'USER_AUTHLEVEL'      => $user['authlevel'],
       'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
       'PAYMENT'             => SN::$gc->modules->countModulesInGroup('payment'),
-      'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
+      'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || SN_GOOGLE,
     ));
 
     if (isset($template_result['MENU_CUSTOMIZE'])) {
@@ -232,7 +232,7 @@ class SnTemplate {
         'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
         'PLAYER_OPTION_MENU_WHITE_TEXT'       => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
         'PLAYER_OPTION_MENU_OLD'              => SN::$user_options[PLAYER_OPTION_MENU_OLD],
-        'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE')
+        'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !SN_GOOGLE
           ? SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
       ));
     }
@@ -922,7 +922,7 @@ class SnTemplate {
       'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 
       // TODO ГРЯЗНЫЙ ХАК!!!
-      'TOPNAV_PAYMENT'                => SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE'),
+      'TOPNAV_PAYMENT'                => SN::$gc->modules->countModulesInGroup('payment') && !SN_GOOGLE,
 
       'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
       'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],

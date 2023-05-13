@@ -258,7 +258,7 @@ $template->assign_vars([
 
   'DARK_MATTER_DESCRIPTION' => SN::$lang['info'][RES_DARK_MATTER]['description'],
 
-  'PAYMENT_AVAILABLE' => SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE'),
+  'PAYMENT_AVAILABLE' => SN::$gc->modules->countModulesInGroup('payment') && !SN_GOOGLE,
 
 ]);
 
