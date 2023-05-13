@@ -79,7 +79,14 @@ NULL
     [*] Instancing on google servers
     [*] Direct physical root in config file
 
+    [*] Flying fleet handler works 3.0368 (> 3) seconds - skip rest. Processed 65 events. Last event: mission Передислокация event Прибытие (0.0887s)
+        Добавить количество оставшихся эвентов? или флотов?
+
+
 #ctv
+
+2023-05-13 23:24:17 46a39
+[%] Fixed bug with missing closing slash
 
 2023-05-13 19:33:01 46a37
 [%] Fixed problems related to `SN_GOOGLE` constant

@@ -79,7 +79,7 @@ $avatarDirs = [
 foreach ($avatarDirs as $possibleDir) {
   $avatarInstancePath = SN_ROOT_PHYSICAL . $possibleDir . '/';
   if (is_dir($avatarInstancePath) && is_writable($avatarInstancePath)) {
-    define('SN_PATH_AVATAR_RELATIVE', $possibleDir);
+    define('SN_PATH_AVATAR_RELATIVE', $possibleDir . '/');
     define('SN_PATH_AVATAR', $avatarInstancePath);
     break;
   }
