@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a33');
+define('SN_VERSION', '46a35');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -41,6 +41,10 @@ define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_N
 
 $_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_server_http_host . SN_ROOT_RELATIVE);
+
+define('SN_PATH_AVATAR_RELATIVE', 'images/avatar');
+define('SN_HTTP_AVATAR', SN_ROOT_VIRTUAL . SN_PATH_AVATAR_RELATIVE);
+define('SN_PATH_AVATAR', SN_ROOT_PHYSICAL . SN_PATH_AVATAR_RELATIVE . '/');
 
 $_server_server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 if(strpos(strtolower($_server_server_name), 'google.') !== false) {

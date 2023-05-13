@@ -11,6 +11,8 @@ if(defined('INIT')) {
   return;
 }
 
+version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
+
 define('INIT', true);
 
 // Замеряем начальные параметры
@@ -19,8 +21,6 @@ define('SN_MEM_START', memory_get_usage());
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 define('SN_ROOT_MODULES', SN_ROOT_PHYSICAL . 'modules/');
-
-version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
 
 //define('DEBUG_UBE', true);
 //define('DEBUG_FLYING_FLEETS', true);
