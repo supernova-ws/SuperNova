@@ -73,11 +73,27 @@ NULL
 #ctv
 
 #wip
+[*] Bypass auth with secret key
+
 [!] Server Instances
-    [*] Use config.(server_name).php if present
-    [*] Use images/(server_name)/avatar if present
     [*] Use same image/css resources ???
-    [*] Rid off D_SN_HTTP_AVATAR and D_SN_ROOT_AVATAR in templates - pass constants in variables
+    [*] Rid off D_SN_HTTP_AVATAR in templates - pass constants in variables
+    [*] Instancing on google servers
+    [*] Direct physical root in config file
+
+2023-05-13 16:39:53 46a36
+[!] Server Instances. Now several servers can work on one copy of SN engine
+    * Instance-specific files located in `/servers/{domainName}[{_port}]/` folders
+        * `_port` part is optional and used only for servers running on ports other then 80 or 443
+        * {domainName} is SN's domain name
+        * I.e. for `sn.domain.com` folder would be `/servers/sn.domain.com/`
+        * I.e. for `sn.other_domain.com:8080` folder would be `/servers/sn.other_domain.com_8080/`
+    * If SN detects `config.php` file in instance-specific folder it would use it instead of `/config.php`
+    * If SN detectes subfolder `avatars` in instance folder writable by web-server - it would be used for player and Alliance avatars
+        * I.e. if for domain `sn.domain.com` there is folder `/servers/sn.domain.com/avatars` and it writable by web server - it would be used as avatar storage
+[~] Now SN recognize `/avatars` folder in code root as folder for non-instanced servers and prefers it to use before `/image/avatar` folder
+    * It's recommended to move all avatars to this folder because in future `/image/avatar` folder would be deprecated and unsupported
+
 
 2023-05-13 13:36:51 46a35
 [@] Replaced path to avatars with constants

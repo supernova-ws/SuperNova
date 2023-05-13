@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a35');
+define('SN_VERSION', '46a36');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -28,29 +28,6 @@ const SN_DATE_PREHISTORIC_SQL = '2000-01-01';
 define('SN_DATE_PREHISTORIC_UNIX', strtotime(SN_DATE_PREHISTORIC_SQL));
 
 define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
-
-// Getting relative HTTP root to game resources
-// I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
-// It needed to make game work on sub-folders and do not mess with cookies
-// Not very accurate - heavily relies on filesystem paths and may fail on complicate web server setups
-$sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
-$sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
-$sn_root_relative = $sn_root_relative . basename($_SERVER['SCRIPT_NAME']);
-// Removing script name to obtain HTTP root
-define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']));
-
-$_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_server_http_host . SN_ROOT_RELATIVE);
-
-define('SN_PATH_AVATAR_RELATIVE', 'images/avatar');
-define('SN_HTTP_AVATAR', SN_ROOT_VIRTUAL . SN_PATH_AVATAR_RELATIVE);
-define('SN_PATH_AVATAR', SN_ROOT_PHYSICAL . SN_PATH_AVATAR_RELATIVE . '/');
-
-$_server_server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
-if(strpos(strtolower($_server_server_name), 'google.') !== false) {
-  define('SN_GOOGLE', true);
-}
-define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 define('FLEET_ID_TEMPLATE', 'f%sown');
 

@@ -86,7 +86,7 @@ class db_mysql {
   public function load_db_settings() {
     $dbsettings = array();
 
-    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+    require(SN_CONFIG_PATH);
 
     $this->setDbSettings($dbsettings);
   }

@@ -1,8 +1,10 @@
 <?php
 
+version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
+
 use Common\Tools\VersionCheckerDeprecated;
 use Core\Autoloader;
-use \Core\SnBootstrap;
+use Core\SnBootstrap;
 use Fleet\TaskDispatchFleets;
 use Player\playerTimeDiff;
 
@@ -11,39 +13,104 @@ if(defined('INIT')) {
   return;
 }
 
-version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
+const INIT = true;
 
-define('INIT', true);
-
-// Замеряем начальные параметры
+// Initial time and mem params
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
+
+// Basic constants
+!defined('INSIDE') && define('INSIDE', true);
+!defined('INSTALL') && define('INSTALL', false);
+!defined('IN_PHPBB') && define('IN_PHPBB', true);
+
+// Config file name
+const SN_CONFIG_NAME = 'config.php';
+
+// Calculating physical root path to SN
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
-define('SN_ROOT_MODULES', SN_ROOT_PHYSICAL . 'modules/');
 
-//define('DEBUG_UBE', true);
-//define('DEBUG_FLYING_FLEETS', true);
-//define('SN_DEBUG_LOG', true);
-//define('SN_DEBUG_PDUMP_CALLER', true);
+// Getting relative HTTP root to game resources and executable pages (.php)
+// I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
+// It needed to make game work on sub-folders and do not mess with cookies
+// Not very accurate - heavily relies on filesystem paths and may fail on complicate web server setups
+$sn_root_relative = str_replace(['\\', '//'], '/', getcwd() . '/');
+$sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
+$sn_root_relative = $sn_root_relative . basename($_SERVER['SCRIPT_NAME']);
+// Removing script name to obtain HTTP root
+define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']));
 
-!defined('INSIDE') ? define('INSIDE', true) : false;
-!defined('INSTALL') ? define('INSTALL', false) : false;
-!defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
+// Path to modules
+const SN_ROOT_MODULES = SN_ROOT_PHYSICAL . 'modules/';
+const SN_MODULE_CONFIG_NAME = SN_CONFIG_NAME;
+
+// Detecting if we are under Google's eye - domain is prefixed with `google.`
+$_server_server_name =
+  isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] :
+    (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+if (substr(strtolower($_server_server_name), 0, 7) === 'google.') {
+  define('SN_GOOGLE', true);
+} else {
+  define('SN_GOOGLE', false);
+}
+
+// Instancing
+// If server name contains port - replacing : with _ - servers on different ports are different instances
+$instanceName = str_replace(':', '_', $_server_server_name);
+if(SN_GOOGLE) {
+  $instanceName = substr($instanceName, 7);
+}
+$instancePath = 'servers/' . $instanceName . '/';
+// This would be our relative path to instance-specific files
+// Instance is propagated only if config file `/servers/(server name with port - if any)/config.php` present
+define('SN_INSTANCE_PATH_RELATIVE', file_exists(SN_ROOT_PHYSICAL . $instancePath . SN_CONFIG_NAME) ? $instancePath : '');
+// Absolute path to instance files
+const SN_INSTANCE_PATH_ABSOLUTE = SN_ROOT_PHYSICAL . SN_INSTANCE_PATH_RELATIVE;
+// Config for instance
+const SN_CONFIG_PATH = SN_INSTANCE_PATH_ABSOLUTE . SN_CONFIG_NAME;
+
+// Now finding what folder we will use for player's avatars
+$avatarDirs = [
+  SN_INSTANCE_PATH_RELATIVE . 'avatars',
+  'avatars',
+  'images/avatar',
+];
+foreach ($avatarDirs as $possibleDir) {
+  $avatarInstancePath = SN_ROOT_PHYSICAL . $possibleDir . '/';
+  if (is_dir($avatarInstancePath) && is_writable($avatarInstancePath)) {
+    define('SN_PATH_AVATAR_RELATIVE', $possibleDir);
+    define('SN_PATH_AVATAR', $avatarInstancePath);
+    break;
+  }
+}
+if (!defined('SN_PATH_AVATAR_RELATIVE')) {
+  die('Can not finding writable folder for player avatars. Check that `/avatars` or `/image/avatar` folder exists and it writable by web-server.');
+}
+
+// Detecting root URL aka Virtual Root
+$_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_server_http_host . SN_ROOT_RELATIVE);
+// Extra config in case of Google
+define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+// HTTP path to user avatars
+define('SN_HTTP_AVATAR', SN_ROOT_VIRTUAL . SN_PATH_AVATAR_RELATIVE);
+
+
+ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 header('Content-type: text/html; charset=utf-8');
 ob_start();
-ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 // Installing autoloader
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
 Autoloader::register('classes/');
 Autoloader::register('classes/UBE/');
 
-
+// Propagating other constants
 require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';
 
-// Бенчмарк
+// Initiating benchmark
 SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
@@ -68,7 +135,7 @@ SnBootstrap::performUpdate(SN::$config);
 // init constants from db
 // Moved from SnBootstrap for phpStorm autocomplete
 // TODO - Should be removed someday - there should NOT be constants that depends on configuration!
-define('SN_COOKIE', (SN::$config->COOKIE_NAME ? SN::$config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE', (SN::$config->COOKIE_NAME ?: 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D', SN_COOKIE . '_D');
 define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
@@ -78,14 +145,13 @@ define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Curren
 define('SN_COOKIE_WEBP', SN_COOKIE . '_WEBP'); // WebP support cookie
 
 define('DEFAULT_SKIN_NAME', 'EpicBlue');
-define('DEFAULT_SKINPATH', SN::$config->game_default_skin ? SN::$config->game_default_skin : 'skins/' . DEFAULT_SKIN_NAME . '/');
+define('DEFAULT_SKINPATH', SN::$config->game_default_skin ?: 'skins/' . DEFAULT_SKIN_NAME . '/');
 
-define('DEFAULT_LANG', SN::$config->game_default_language ? SN::$config->game_default_language : 'ru');
+define('DEFAULT_LANG', SN::$config->game_default_language ?: 'ru');
 
-define('FMT_DATE', SN::$config->int_format_date ? SN::$config->int_format_date : 'd.m.Y');
-define('FMT_TIME', SN::$config->int_format_time ? SN::$config->int_format_time : 'H:i:s');
+define('FMT_DATE', SN::$config->int_format_date ?: 'd.m.Y');
+define('FMT_TIME', SN::$config->int_format_time ?: 'H:i:s');
 define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
-
 
 /**
  * @var classCache  $sn_cache

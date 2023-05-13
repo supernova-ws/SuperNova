@@ -712,7 +712,7 @@ class SN {
   public static function loadFileSettings() {
     $dbsettings = array();
 
-    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+    require(SN_CONFIG_PATH);
     //self::$db_prefix = $dbsettings['prefix'];
     self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $dbsettings['prefix'];
     self::$db_name = $dbsettings['name'];
@@ -732,12 +732,12 @@ class SN {
 
     self::$user_options = new userOptions(0);
 
-    // Initializing global 'cache' object
+    // Initializing global `cache` object
     $sn_cache = static::$cache = self::$gc->cache;
     $tables = SN::$db->schema()->getSnTables();
     empty($tables) && die('DB error - cannot find any table. Halting...');
 
-    // Initializing global "config" object
+    // Initializing global `config` object
     $config = static::$config = self::$gc->config;
 
     // Initializing statics
