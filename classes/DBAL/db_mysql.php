@@ -114,7 +114,7 @@ class db_mysql {
         die('DB error - cannot find any table. Halting...');
       }
 
-      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE);
+      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ);
     } else {
       $this->connected = false;
     }

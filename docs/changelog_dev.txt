@@ -2116,6 +2116,11 @@ NULL
 
 #ctv
 
+2023-05-13 12:01:52 45d15
+[~] DB
+    Драйвер db_mysql_v4 удалён
+    Для db_mysql_v5 `TRANSACTION ISOLATION LEVEL` установлен в `REPEATABLE READ`
+
 2023-05-13 11:23:47 46a32
 [~] Template engine fixes
     Fixed `error: template->_tpl_load_file()` for module template files loaded on admin page
