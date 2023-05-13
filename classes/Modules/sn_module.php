@@ -19,7 +19,7 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#45a26#';
+  public $versionCommitted = '#46a32#';
   /**
    * Is module currently active?
    *
@@ -39,7 +39,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #45a26# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a32# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -437,7 +437,12 @@ class sn_module {
    * @return template
    */
   public function addModuleTemplate($templateName, $template) {
-    return SnTemplate::gettemplate($templateName, $template, $this->getTemplateRootRelative());
+    return SnTemplate::gettemplate(
+      $templateName,
+      $template,
+      SN_ROOT_PHYSICAL . $this->getTemplateRootRelative(),
+      is_object($template) ? $template->root : SnTemplate::getCurrentTemplate()->getPathFull()
+    );
   }
 
   /**

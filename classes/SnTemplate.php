@@ -335,6 +335,8 @@ class SnTemplate {
       // WARNING! This can be set by page!
       // CHANGE CODE TO MAKE IT IMPOSSIBLE!
       'GLOBAL_META_TAGS'         => isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : '',
+
+      'IN_ADMIN' => $inAdmin ? 1 : '',
     ));
 
     $template->assign_vars(array(
@@ -982,10 +984,10 @@ class SnTemplate {
    *
    * @return template
    */
-  public static function gettemplate($files, $template = null, $template_path = null) {
+  public static function gettemplate($files, $template = null, $template_path = null, $fallBackPath = '') {
     global $sn_mvc, $sn_page_name;
 
-    $template = self::getCurrentTemplate()->getTemplate($template, $template_path);
+    $template = self::getCurrentTemplate()->getTemplate($template, $template_path, $fallBackPath);
 
     // TODO ГРЯЗНЫЙ ХАК! Это нужно, что бы по возможности перезаписать инфу из языковых пакетов модулей там, где она была перезаписана раньше инфой из основного пакета. Почему?
     //  - сначала грузятся модули и их языковые пакеты
@@ -1233,7 +1235,7 @@ class SnTemplate {
   /**
    * @return TemplateMeta
    */
-  protected static function getCurrentTemplate() {
+  public static function getCurrentTemplate() {
     $templateName = SnTemplate::getPlayerTemplateName();
     $tMeta        = static::me()->registerTemplate($templateName);
 

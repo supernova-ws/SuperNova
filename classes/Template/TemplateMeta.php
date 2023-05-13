@@ -120,20 +120,33 @@ class TemplateMeta {
   /**
    * @param template $template
    * @param string   $template_path
+   * @param string   $fallBackPath
    *
    * @return template
    */
-  public function getTemplate($template, $template_path) {
-    !is_object($template) ? $template = new template(SN_ROOT_PHYSICAL) : false;
-
-    !$template_path || !is_string($template_path) ? $template_path = SN_ROOT_PHYSICAL . SnTemplate::SN_TEMPLATES_PARTIAL_PATH : false;
-
-    if (!$this->parent || empty($fallbackName = $this->parent->getName()) || !$this->isTemplateExists()) {
-      // If no parent template - then using default template as fallback one
-      $fallbackName = SnTemplate::SN_TEMPLATE_NAME_DEFAULT;
+  public function getTemplate($template, $template_path, $fallBackPath = '') {
+    if (!is_object($template)) {
+      $template = new template(SN_ROOT_PHYSICAL);
     }
 
-    $template->set_custom_template($template_path . $this->name . '/', $this->name, $template_path . $fallbackName . '/');
+    if (!$template_path || !is_string($template_path)) {
+      $template_path = SN_ROOT_PHYSICAL . SnTemplate::SN_TEMPLATES_PARTIAL_PATH;
+    }
+
+//    var_dump($fallBackPath);
+//    var_dump($template);
+
+    if(empty($fallBackPath)) {
+      if (!$this->parent || empty($fallbackName = $this->parent->getName()) || !$this->isTemplateExists()) {
+        // If no parent template - then using default template as fallback one
+        $fallbackName = SnTemplate::SN_TEMPLATE_NAME_DEFAULT;
+      }
+      $fallBackPath = $template_path . $fallbackName . '/';
+    }
+
+//    var_dump($fallBackPath);
+
+    $template->set_custom_template("{$template_path}{$this->name}/", $this->name, $fallBackPath);
 
     return $template;
   }
@@ -141,6 +154,10 @@ class TemplateMeta {
 
   public function getName() {
     return $this->name;
+  }
+
+  public function getPathFull() {
+    return $this->pathFull;
   }
 
   public function cssAddFileName($cssFileName, array $standard_css) {
