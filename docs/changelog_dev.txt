@@ -50,8 +50,6 @@ array (
 NULL
 
 
-[*] error: template->_tpl_load_file(): File modules/ali_ally_player/design/templates/OpenGame/eco_queue.tpl.html does not exist or is empty
-[*] error: template->_tpl_load_file(): File modules/player_login_token/design/templates/OpenGame/player_login_token_popup.tpl.html does not exist or is empty
 [*] warning: Flying fleet handler works 3
     Flying fleet handler works 4.0210 (> 3) seconds - skip rest. Processed 12 events. Last event: mission Экспедиция event Прибытие (1.0681s)
     Flying fleet handler works 4.7837 (> 3) seconds - skip rest. Processed 4 events. Last event: mission Экспедиция event Прибытие (3.1765s)
@@ -71,7 +69,20 @@ NULL
 
 
 #wip
-[*] Bypass auth with secret key
+SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = 5 AND fleet_start_system = AND fleet_mess = 1) OR ( fleet_end_galaxy = 5 AND fleet_end_system = AND fleet_mess = 0)
+=>
+SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = 5 AND fleet_start_system = 1 AND fleet_mess = 1)
+UNION
+SELECT * FROM `game_fleets` WHERE  ( fleet_end_galaxy = 5 AND fleet_end_system = 1 AND fleet_mess = 0)
+
+???
+ SET profiling = 1;
+
+SHOW PROFILES;
+ SET profiling = 0;
+
+
+[*] Bypass auth with secret key - for admins, when auth is failing
 
 [!] Server Instances
     [*] Use same image/css resources ???
@@ -81,9 +92,17 @@ NULL
 
     [*] Flying fleet handler works 3.0368 (> 3) seconds - skip rest. Processed 65 events. Last event: mission Передислокация event Прибытие (0.0887s)
         Добавить количество оставшихся эвентов? или флотов?
+        Когда берешь флоты/считаешь ивенты изначально - их можно не лочить. Просто потом брать один за другим и считать... наверное
+            Или нет - если кто-то вставил ОЧЕНЬ БЫСТРЫЙ флот
+                Подумать
+
+
 
 
 #ctv
+
+2023-05-14 11:30:37 46a41
+[~] FFH - Added total event amount to FFH timeout message
 
 2023-05-13 23:24:17 46a39
 [%] Fixed bug with missing closing slash
