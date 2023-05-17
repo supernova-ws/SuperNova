@@ -13,7 +13,6 @@
 class _SnCacheInternal {
   public static $data = array(); // Кэш данных - юзера, планеты, юниты, очередь, альянсы итд
   public static $locks = array(); // Информация о блокировках
-  public static $queries = array(); // Кэш запросов
 
   // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
   // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
@@ -47,7 +46,6 @@ class _SnCacheInternal {
 
     _SnCacheInternal::array_repack(_SnCacheInternal::$data[$location_type]);
     _SnCacheInternal::array_repack(_SnCacheInternal::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    _SnCacheInternal::array_repack(_SnCacheInternal::$queries[$location_type], 1);
   }
 
   public static function cache_clear($location_type, $hard = true) {
@@ -57,7 +55,6 @@ class _SnCacheInternal {
       array_walk(_SnCacheInternal::$data[$location_type], function (&$item) { $item = null; });
     }
     _SnCacheInternal::$locator[$location_type] = [];
-    _SnCacheInternal::$queries[$location_type] = [];
     _SnCacheInternal::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
   }
 
@@ -72,21 +69,6 @@ class _SnCacheInternal {
   public static function cache_locator_unset_all() {
     _SnCacheInternal::$locator = [];
   }
-
-  public static function cache_queries_unset_all() {
-    _SnCacheInternal::$queries = [];
-  }
-
-//  public static function cache_clear_all($hard = true) {
-//    //print('<br />CACHE CLEAR ALL<br />');
-//    if($hard) {
-//      _SnCacheInternal::$data = array();
-//      _SnCacheInternal::cache_lock_unset_all();
-//    }
-//    _SnCacheInternal::$locator = array();
-//    _SnCacheInternal::$queries = array();
-//  }
-
 
   // TODO - this code is currently unused (!)
   public static function cache_get($location_type, $record_id) {

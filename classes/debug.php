@@ -135,7 +135,7 @@ class debug {
       }
     }
 
-    if($deadlock && ($q = db_fetch(SN::$db->mysql_get_innodb_status()))) {
+    if($deadlock && ($q = SN::$db->mysql_get_innodb_status())) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = _SnCacheInternal::$locks;
       $error_backtrace['cSN_data'] = _SnCacheInternal::$data;

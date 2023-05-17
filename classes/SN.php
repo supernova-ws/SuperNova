@@ -271,7 +271,6 @@ class SN {
 
     static::$db_in_transaction = true;
     _SnCacheInternal::cache_locator_unset_all();
-    _SnCacheInternal::cache_queries_unset_all();
 
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
 
@@ -388,18 +387,19 @@ class SN {
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    $query_cache = &_SnCacheInternal::$queries[$location_type][$filter];
+    $query_cache = null;
 
-    if (!isset($query_cache) || $query_cache === null) {
+    // Always - disabled query cache
+    {
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
-      $query_cache = array();
+      $query_cache = [];
 
       if (static::db_transaction_check(false)) {
         // Проходим по всем родителям данной записи
         foreach ($location_info[P_OWNER_INFO] as $owner_data) {
           $owner_location_type = $owner_data[P_LOCATION];
-          $parent_id_list = array();
+          $parent_id_list = [];
           // Выбираем родителей данного типа и соответствующие ИД текущего типа
           $query = static::db_query_select(
             "SELECT
