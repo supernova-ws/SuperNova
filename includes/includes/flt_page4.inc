@@ -57,7 +57,7 @@ $template->assign_vars(array(
   'MISSION_NAME' => $lang['type_mission'][MT_AKS],
 ));
 
-if($aks['eingeladen'] && is_array($members = SN::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {
+if($aks['eingeladen'] && is_array($members = db_user_list("`id` in ({$aks['eingeladen']})")) && !empty($members)) {
   foreach($members as $row) {
     $template->assign_block_vars('invited', array(
       'NAME' => $row['username'],

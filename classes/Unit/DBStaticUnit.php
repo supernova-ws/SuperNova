@@ -33,10 +33,42 @@ class DBStaticUnit {
     // apply time restrictions ????
     SN::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return
-      !$unit_snid
-        ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
-        : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
+    $unit_snid = intval($unit_snid);
+
+    $resultOld = !$unit_snid
+      ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
+      : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
+
+//    // Alternative non-cache version - VERY SLOW!
+//    $resultNew = false;
+//    $filter = ($unit_snid ? "`unit_snid` = {$unit_snid} AND " : '') .
+//      "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . SN::db_unit_time_restrictions();
+//
+//    $query = SN::db_query_select(
+//      "SELECT * FROM {{unit}}"
+//      . ($filter ? " WHERE {$filter}" : '')
+//      . ($unit_snid ? ' LIMIT 1' : '')
+//    );
+//
+//    if ($unit_snid) {
+//      $resultNew = db_fetch($query);
+//
+//      $resultNew = $resultNew ?: null;
+//    } else {
+//      while ($row = db_fetch($query)) {
+//        $resultNew[$row['unit_snid']] = $row;
+//      }
+//    }
+//
+//    if ($resultOld != $resultNew) {
+//      pdump("$user_id, $location_type, $location_id, $unit_snid", '$user_id, $location_type, $location_id, $unit_snid');
+//
+//      pdump($resultOld);
+//      pdump($resultNew);
+//      die("DbUnByLoc FATAL! db_user_list() '{$filter}'");
+//    }
+
+    return $resultOld;
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

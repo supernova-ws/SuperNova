@@ -190,7 +190,7 @@ class FleetDispatcher {
     $workBegin = microtime(true);
     //log_file('Начинаем обсчёт флотов');
 
-    //log_file('Обсчёт ракет');
+//    $this->log_file('Обсчёт ракет');
     sn_db_transaction_start();
     coe_o_missile_calculate();
     sn_db_transaction_commit();
@@ -570,13 +570,7 @@ class FleetDispatcher {
    * @param string $msg
    */
   public function log_file($msg) {
-    static $handler;
-
-    if (!$handler) {
-      $handler = fopen('event.log', 'a+');
-    }
-
-    fwrite($handler, date(FMT_DATE_TIME_SQL, time()) . ' ' . $msg . "\r\n");
+    file_put_contents(__DIR__ . '/../../.ffh-event.log', date(FMT_DATE_TIME_SQL, time()) . ' ' . $msg . "\r\n", FILE_APPEND);
   }
 
 }

@@ -387,14 +387,12 @@ class SN {
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    $query_cache = null;
+    $location_info = &static::$location_info[$location_type];
+    $id_field = $location_info[P_ID];
+    $query_cache = [];
 
     // Always - disabled query cache
     {
-      $location_info = &static::$location_info[$location_type];
-      $id_field = $location_info[P_ID];
-      $query_cache = [];
-
       if (static::db_transaction_check(false)) {
         // Проходим по всем родителям данной записи
         foreach ($location_info[P_OWNER_INFO] as $owner_data) {

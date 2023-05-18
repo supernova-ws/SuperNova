@@ -84,34 +84,41 @@ SHOW PROFILES;
 
 [*] Bypass auth with secret key - for admins, when auth is failing
 
+[*] Flying fleet handler works 3.0368 (> 3) seconds - skip rest. Processed 65 events. Last event: mission Передислокация event Прибытие (0.0887s)
+    Добавить количество оставшихся эвентов? или флотов?
+    Когда берешь флоты/считаешь ивенты изначально - их можно не лочить. Просто потом брать один за другим и считать... наверное
+        Или нет - если кто-то вставил ОЧЕНЬ БЫСТРЫЙ флот
+            Подумать
+    Уменьшить время FFH и уменьшить промежутки между запусками?
+        - Типа, меньше локов?
+        - Надо вообще проверить что там с локами творится
+
+* [*] Проблема с бэкграундом в хроме - посмотреть
+
+* Запрашивать пароль при выходе в отпуск?
+
 [!] Server Instances
     [*] Use same image/css resources ???
     [*] Rid off D_SN_HTTP_AVATAR in templates - pass constants in variables
     [*] Instancing on google servers
     [*] Direct physical root in config file
 
-    [*] Flying fleet handler works 3.0368 (> 3) seconds - skip rest. Processed 65 events. Last event: mission Передислокация event Прибытие (0.0887s)
-        Добавить количество оставшихся эвентов? или флотов?
-        Когда берешь флоты/считаешь ивенты изначально - их можно не лочить. Просто потом брать один за другим и считать... наверное
-            Или нет - если кто-то вставил ОЧЕНЬ БЫСТРЫЙ флот
-                Подумать
-
     [*] Url to server images - something like cdn.supernova.ws/images.supernova.ws
 
-    Уменьшить время FFH и уменьшить промежутки между запусками?
-        - Типа, меньше локов?
-        - Надо вообще проверить что там с локами творится
-
-    * [*] Проблема с бэкграундом в хроме - посмотреть
 
     Отвязать путь/урл от физического пути - или задавать альтернативно в конфигурации
         Потому что сейчас supernova.sn.ws указывает на beta.sn.ws и так работает
         Сервер так же пользует для sn.sn.ws путь beta.sn.ws. Но если убрать каталог sn.sn.ws движок (?) сходит с ума и перекидывает на бету
             Ну или кто-то сходит с ума
 
-    Запрашивать пароль при выходе в отпуск?
-
 #ctv
+
+# WiP
+
+* Переписать кэшер целиком?
+
+2023-05-18 12:36:49 46a46
+[@] Code - added (disabled now) code to bypass SnInternal cache
 
 2023-05-17 11:47:52 46a44
 [@] Code - removed SN::$queries

@@ -90,8 +90,26 @@ function dbPlayerByIdOrName($username_unsafe, $player = null, $like = false) {
 /**
  * @deprecated
  */
-function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
-  return SN::db_get_record_list(LOC_USER, $user_filter);
+function db_user_list($filter = '', $for_update = false, $fields = '*') {
+  $resultOld = SN::db_get_record_list(LOC_USER, $filter);
+
+//  // Alternative full version
+//  $resultNew = false;
+//
+//  $id_field = 'id';
+//
+//  $query = SN::db_query_select(
+//    "SELECT * FROM {{users}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+//  );
+//  while ($row = db_fetch($query)) {
+//    $resultNew[$row[$id_field]] = $row;
+//  }
+//
+//  if ($resultOld != $resultNew) {
+//    die("DUL FATAL! db_user_list() '{$filter}'");
+//  }
+
+  return $resultOld;
 }
 
 
