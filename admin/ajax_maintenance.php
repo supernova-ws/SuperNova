@@ -223,13 +223,13 @@ function sn_maintenance_pack_user_list($user_list) {
 
 global $config, $debug, $lang;
 
-sn_db_transaction_start();
+SN::db_transaction_start();
 $old_server_status = SN::$config->pass()->game_disable;
 $old_server_status == GAME_DISABLE_NONE ? SN::$config->pass()->game_disable = GAME_DISABLE_MAINTENANCE : false;
-sn_db_transaction_commit();
+SN::db_transaction_commit();
 
 foreach($ques as $que_transaction) {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
 
   !is_array($que_transaction) ? $que_transaction = array($que_transaction) : false;
   foreach($que_transaction as $que) {
@@ -249,18 +249,18 @@ foreach($ques as $que_transaction) {
     $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . SN::$db->db_affected_rows() . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
 }
 
-sn_db_transaction_start();
+SN::db_transaction_start();
 SN::$config->pass()->stats_hide_player_list = sn_maintenance_pack_user_list(SN::$config->pass()->stats_hide_player_list);
 $debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
+SN::db_transaction_commit();
 
-sn_db_transaction_start();
+SN::db_transaction_start();
 SN::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(SN::$config->pass()->game_watchlist));
 $debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
+SN::db_transaction_commit();
 
 SN::$config->db_saveItem('users_amount', db_user_count());
 SN::$config->db_saveItem('game_disable', $old_server_status);

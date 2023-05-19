@@ -135,10 +135,10 @@ class SnBootstrap {
     }
 
     if (defined('IN_ADMIN') || !$config->pass()->game_installed) {
-      sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
+      SN::db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
       if (SN_TIME_NOW >= $config->pass()->var_db_update_end) {
         $config->pass()->var_db_update_end = SN_TIME_NOW + $config->upd_lock_time;
-        sn_db_transaction_commit();
+        SN::db_transaction_commit();
 
         require_once($update_file);
 
@@ -154,7 +154,7 @@ class SnBootstrap {
         Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait..."
         );
       }
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
     } else {
       die(
       'Происходит обновление сервера - пожалуйста, подождите...<br />

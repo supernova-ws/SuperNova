@@ -101,7 +101,7 @@ class RepoV2 implements IContainer {
       $entity = $this->get($className, $objectId);
 
       // If in transaction and version missmatch - record should be refreshed just for a case
-      if (sn_db_transaction_check(false) && $this->version($className, $objectId) < SN::$transaction_id) {
+      if (SN::db_transaction_check(false) && $this->version($className, $objectId) < SN::$transaction_id) {
         // Entity will care by itself - should it be really reloaded or not
         $entity->reload();
       }

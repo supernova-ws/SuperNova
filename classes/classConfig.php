@@ -174,6 +174,7 @@
  * @property string            $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
  * @property string            $var_stat_update_msg           => 'Update never started' - Last stat update message
  *
+ * @property string            $var_news_last                 => 0, // Last news post time
  */
 class classConfig extends classPersistent {
   const DATE_TYPE_UNIX = 0;

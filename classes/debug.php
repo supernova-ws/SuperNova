@@ -1,4 +1,5 @@
 <?php
+
 /*
  * debug.php ::  Clase Debug, maneja reporte de eventos
  *
@@ -29,31 +30,33 @@ if(!defined('INSIDE')) {
 }
 
 class debug {
-  var $log, $numqueries;
-  var $log_array;
+  protected $log;
+  protected $numqueries;
+  protected $log_array;
 
-  private $log_file_handler = null;
-
-  function log_file($message, $ident_change = 0) {
-    static $ident = 0;
-
-    if(!defined('SN_DEBUG_LOG')) {
+  public function log_file($message, $ident_change = 0) {
+    if (!defined('SN_DEBUG_LOG') || !SN_DEBUG_LOG) {
       return;
     }
 
-    if($this->log_file_handler === null) {
-      $this->log_file_handler = @fopen(SN_ROOT_PHYSICAL . '/.logs/supernova.log', 'a+');
-      @fwrite($this->log_file_handler, "\r\n\r\n");
+    static $ident = 0;
+    static $logFileName;
+
+    if (!$logFileName) {
+      $logFileName = SN_ROOT_PHYSICAL . '/.logs/supernova.log';
+      file_put_contents($logFileName, "\r\n\r\n", FILE_APPEND);
     }
-    $ident_change < 0 ? $ident += $ident_change * 2 : false;
-    if($this->log_file_handler) {
-      @fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . str_repeat(' ', $ident + 1) . $message . "\r\n");
+    if ($ident_change < 0) {
+      $ident += $ident_change * 2;
     }
-    $ident_change > 0 ? $ident += $ident_change * 2 : false;
+    file_put_contents($logFileName, date(FMT_DATE_TIME_SQL, time()) . str_repeat(' ', $ident + 1) . $message . "\r\n", FILE_APPEND);
+    if ($ident_change > 0) {
+      $ident += $ident_change * 2;
+    }
   }
 
   public function __construct() {
-    $this->vars = $this->log = '';
+    $this->log = '';
     $this->numqueries = 0;
   }
 
@@ -109,7 +112,7 @@ class debug {
 
   function dump($dump = false, $force_base = false, $deadlock = false) {
     if($dump === false) {
-      return;
+      return [];
     }
 
     $error_backtrace = array();
@@ -200,7 +203,7 @@ class debug {
     die($die_message);
   }
 
-  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
+  function error($message = 'There is a error on page', $title = 'Internal Error', $httpCode = 500, $dump = true) {
     global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
 
     if(empty(SN::$db->connected)) {
@@ -208,27 +211,25 @@ class debug {
       die('SQL server currently unavailable. Please contact Administration...');
     }
 
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
 
     if(SN::$config->debug == 1) {
+      /** @noinspection HtmlDeprecatedTag */
+      /** @noinspection XmlDeprecatedElement */
+      /** @noinspection HtmlDeprecatedAttribute */
       echo "<h2>{$title}</h2><br><font color=red>" . htmlspecialchars($message) . "</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
 
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
 
-    $error_text = db_escape($message);
+    $error_text = SN::$db->db_escape($message);
     $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
     if(!$sys_log_disabled) {
-      $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
-        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
-        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
-      doquery($query, '', false, true) or die($fatal_error . db_error());
+      $this->_writeLogMessage($httpCode, $user, $title, $message, $error_backtrace, $fatal_error);
 
-      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
+      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . SN::$db->db_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
@@ -236,7 +237,7 @@ class debug {
     } else {
 //        // TODO Здесь надо писать в файло
       ob_start();
-      print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
+      print("<hr>User ID {$user['id']} raised error code {$httpCode} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
       foreach($error_backtrace as $name => $value) {
         print('<hr>');
@@ -247,7 +248,7 @@ class debug {
     }
   }
 
-  function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
+  function warning($message, $title = 'System Message', $httpCode = 300, $dump = false) {
     global $user, $lang, $sys_log_disabled;
 
     if(empty(SN::$db->connected)) {
@@ -255,19 +256,40 @@ class debug {
       die('SQL server currently unavailable. Please contact Administration...');
     }
 
+    $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
+
     $error_backtrace = $this->dump($dump, false);
 
-    if(!$sys_log_disabled) {
-      $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
-        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
-        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
-      doquery($query, '', false, true);
+    if(empty($sys_log_disabled)) {
+      $this->_writeLogMessage($httpCode, $user, $title, $message, $error_backtrace, $fatal_error);
     } else {
 //        // TODO Здесь надо писать в файло
-      print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
+      print("<hr>User ID {$user['id']} made log entry with code {$httpCode} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
+  }
+
+  /**
+   * @param       $httpCode
+   * @param       $user
+   * @param       $title
+   * @param       $message
+   * @param array $error_backtrace
+   * @param       $fatal_error
+   *
+   * @return void
+   */
+  function _writeLogMessage($httpCode, $user, $title, $message, array $error_backtrace, $fatal_error)
+  {
+    /** @noinspection SqlResolve */
+    $query = "INSERT INTO `{{logs}}` SET
+        `log_time` = '" . time() . "', `log_code` = '" . SN::$db->db_escape($httpCode) . "', " .
+      "`log_sender` = '" . ($user['id'] ? SN::$db->db_escape($user['id']) : 0) . "', " .
+      "`log_username` = '" . SN::$db->db_escape($user['user_name']) . "', " .
+      "`log_title` = '" . SN::$db->db_escape($title) . "',  `log_text` = '" . SN::$db->db_escape($message) . "', " .
+      "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
+      "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(serialize($error_backtrace)) : '') . "'" . ";";
+
+    doquery($query, '', false, true) or die($fatal_error . SN::$db->db_error());
   }
 }
 

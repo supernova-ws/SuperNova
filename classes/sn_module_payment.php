@@ -14,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#45a50#';
+  public $versionCommitted = '#46a49#';
 
   public $active = false;
 
@@ -236,7 +236,7 @@ abstract class sn_module_payment extends sn_module {
       // Проверяем - был ли этот платеж обработан?
       // TODO - Статусы бывают разные. Нужен спецфлаг payment_processed
       if ($this->payment_status != PAYMENT_STATUS_NONE && empty($options[self::DO_NOT_REDIRECT])) {
-        sn_db_transaction_rollback();
+        SN::db_transaction_rollback();
         sys_redirect(SN_ROOT_VIRTUAL . 'metamatter.php?payment_id=' . $this->payment_id);
         die();
       }
@@ -348,7 +348,7 @@ abstract class sn_module_payment extends sn_module {
     $this->account = new Account($this->db);
 
     // TODO - REPLACE WITH INNATE CALL!
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     try {
       $response = $this->payment_request_process();
     } catch (Exception $e) {
@@ -364,10 +364,10 @@ abstract class sn_module_payment extends sn_module {
     }
 
     if ($response['result'] == SN_PAYMENT_REQUEST_OK) {
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
       $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Успешный платёж', LOG_INFO_PAYMENT);
     } else {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Ошибка платежа', LOG_INFO_PAYMENT, true);
     }
 
@@ -519,7 +519,7 @@ abstract class sn_module_payment extends sn_module {
       if ($value === null) {
         $value = 'NULL';
       } else {
-        $value = is_string($value) ? '"' . db_escape($value) . '"' : $value;
+        $value = is_string($value) ? '"' . SN::$db->db_escape($value) . '"' : $value;
       }
       $query[] = "`{$key}` = {$value}";
     }
@@ -572,7 +572,7 @@ abstract class sn_module_payment extends sn_module {
     }
 
     if ($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $safe_comment = db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] . ' ' . $payment['payment_comment']);
+      $safe_comment = SN::$db->db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] . ' ' . $payment['payment_comment']);
 
       if (!$payment['payment_test']) {
         $result = $this->account->metamatter_change(RPG_PURCHASE_CANCEL, -$payment['payment_dark_matter_gained'], $payment['payment_comment']);

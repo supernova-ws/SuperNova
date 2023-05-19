@@ -129,7 +129,7 @@ class EntityDb extends Entity implements IContainer {
   public function dbLoadRecord($id) {
     $this->reset();
 
-    if (sn_db_transaction_check(false)) {
+    if (SN::db_transaction_check(false)) {
       $this->setForUpdate();
     }
 

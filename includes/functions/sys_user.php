@@ -61,8 +61,8 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 
   db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
+  $banned['username'] = SN::$db->db_escape($banned['username']);
+  $banner['username'] = SN::$db->db_escape($banner['username']);
   doquery(
     "INSERT INTO
       `{{banned}}`
@@ -91,9 +91,9 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  $reason = db_escape($reason);
+  $banned['username'] = SN::$db->db_escape($banned['username']);
+  $banner['username'] = SN::$db->db_escape($banner['username']);
+  $reason = SN::$db->db_escape($reason);
   doquery(
     "INSERT INTO `{{banned}}`
     SET
@@ -130,7 +130,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
  * @return array|false
  */
 function player_create($username_unsafe, $email_unsafe, $options) {
-  sn_db_transaction_check(true);
+  SN::db_transaction_check(true);
 
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
 
@@ -161,7 +161,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
   \DBAL\DbQuery::build()->setTable('users')->setValues($field_set)->doInsert();
-  $user_new = db_user_by_id(db_insert_id());
+  $user_new = db_user_by_id(SN::$db->db_insert_id());
 
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = SN::$config->LastSettedGalaxyPos;
@@ -201,7 +201,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
-  $username_safe = db_escape($username_unsafe);
+  $username_safe = SN::$db->db_escape($username_unsafe);
   doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
 
   if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {

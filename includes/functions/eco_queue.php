@@ -120,7 +120,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     */
 
 
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     // Это нужно, что бы заблокировать пользователя и работу с очередями
     $user = db_user_by_id($user['id']);
     // Это нужно, что бы заблокировать планету от списания ресурсов
@@ -344,7 +344,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       $unit_amount_qued += $place;
     }
 
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
 
     if($redirect) {
       sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
@@ -355,7 +355,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       'MESSAGE' => '{Строительство начато}',
     );
   } catch(exception $e) {
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()
@@ -413,7 +413,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
   $planets_locked = array();
 
   // TODO: Some checks
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   $user = db_user_by_id($user['id'], true);
   $planet['id'] = $planet['id'] && $que_type !== QUE_RESEARCH ? $planet['id'] : 0;
   $global_que = que_get($user['id'], $planet['id'], $que_type, true);
@@ -452,9 +452,9 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
       db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
 
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
   } else {
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
   }
 
   sys_redirect("{$_SERVER['PHP_SELF']}?mode={$que_type}" . "&ally_id=" . sys_get_param_id('ally_id'));
@@ -527,7 +527,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
  *
  */
 function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
-  sn_db_transaction_check(true);
+  SN::db_transaction_check(true);
 
   $que = array();
 

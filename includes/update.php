@@ -30,7 +30,7 @@ switch ($updater->new_version) {
   /** @noinspection PhpMissingBreakStatementInspection */
   case 40:
     $updater->upd_log_version_update();
-    $this->upd_do_query('START TRANSACTION;', true);
+    $updater->transactionStart();
 
     if (!$updater->isTableExists('festival')) {
       $updater->upd_create_table('festival',
@@ -146,12 +146,12 @@ switch ($updater->new_version) {
 
     // 2017-02-03 16:10:49 41b1
     $updater->new_version = 41;
-    $updater->upd_do_query('COMMIT;', true);
+    $updater->transactionCommit();
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 41:
     $updater->upd_log_version_update();
-    $this->upd_do_query('START TRANSACTION;', true);
+    $updater->transactionStart();
 
     // 2017-02-07 09:43:45 42a0
     $updater->upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset(SN::$gc->config->game_news_overview_show));
@@ -231,7 +231,7 @@ switch ($updater->new_version) {
           $skinName = $row['dpath'];
         }
         if ($skinName) {
-          $skinName = db_escape($skinName);
+          $skinName = SN::$db->db_escape($skinName);
           $updater->upd_do_query("UPDATE `{{users}}` SET `skin` = '{$skinName}' WHERE `id` = {$row['id']};");
         }
       }
@@ -241,12 +241,12 @@ switch ($updater->new_version) {
 
     // 2017-06-12 13:47:36 42c1
     $updater->new_version = 42;
-    $updater->upd_do_query('COMMIT;', true);
+    $updater->transactionCommit();
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 42:
     $updater->upd_log_version_update();
-    $this->upd_do_query('START TRANSACTION;', true);
+    $updater->transactionStart();
 
     // 2017-10-11 09:51:49 43a4.3
     $updater->upd_alter_table('messages',
@@ -320,7 +320,7 @@ switch ($updater->new_version) {
 
         try {
           $updater->upd_do_query(
-            "UPDATE `{{chat}}` SET `user` = '" . db_escape(
+            "UPDATE `{{chat}}` SET `user` = '" . SN::$db->db_escape(
               json_encode(
                 unserialize($row['user'])
                 , JSON_FORCE_OBJECT
@@ -379,7 +379,7 @@ switch ($updater->new_version) {
     });
 
     $updater->new_version = 43;
-    $updater->upd_do_query('COMMIT;', true);
+    $updater->transactionCommit();
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 43:
@@ -478,7 +478,7 @@ switch ($updater->new_version) {
         $oldLockTime                   = SN::$gc->config->upd_lock_time;
         SN::$gc->config->upd_lock_time = 300;
 
-        $updater->upd_do_query('START TRANSACTION;', true);
+        $updater->transactionStart();
         $updater->upd_drop_table('spe_temp');
         $updater->upd_create_table(
           'spe_temp',
@@ -557,12 +557,12 @@ switch ($updater->new_version) {
         ], $updater->isFieldExists('counter', 'device_id'));
 
         SN::$gc->config->upd_lock_time = $oldLockTime;
-        $updater->upd_do_query('COMMIT;', true);
+        $updater->transactionCommit();
       }
     });
 
     $updater->new_version = 44;
-    $updater->upd_do_query('COMMIT;', true);
+    $updater->transactionCommit();
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 44:
@@ -607,7 +607,7 @@ switch ($updater->new_version) {
     }, PATCH_REGISTER);
 
     $updater->new_version = 45;
-    $updater->upd_do_query('COMMIT;', true);
+    $updater->transactionCommit();
 
   /** @noinspection PhpMissingBreakStatementInspection */
   case 45:
@@ -627,7 +627,8 @@ switch ($updater->new_version) {
 
 //   TODO - UNCOMMENT ON RELEASE!
 //    $updater->new_version = 46;
-//    $updater->upd_do_query('COMMIT;', true);
+//    $updater->transactionCommit();
+
 }
 
 $updater->successTermination = true;

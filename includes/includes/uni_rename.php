@@ -31,7 +31,7 @@
       }
       $uni_row['universe_price'] = $uni_price;
 
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $user = db_user_by_id($user['id'], true);
       // if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $uni_price)
       if(mrc_get_level($user, null, RES_DARK_MATTER) < $uni_price)
@@ -46,13 +46,13 @@
 
       doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
       $debug->warning(sprintf($lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? $lang['uni_system_of'] : $lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_unsafe('uni_name'))), $lang['uni_naming'], LOG_INFO_UNI_RENAME);
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
       sys_redirect("galaxy.php?mode=name&galaxy={$uni_galaxy}&system={$uni_system}");
     }
   }
   catch (exception $e)
   {
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()

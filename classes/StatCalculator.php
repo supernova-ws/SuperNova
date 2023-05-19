@@ -31,7 +31,7 @@ class StatCalculator {
     set_time_limit($value);
     $config->pass()->var_stat_update_end = time() + $value;
 
-    $sta_update_msg = db_escape($sta_update_msg);
+    $sta_update_msg = SN::$db->db_escape($sta_update_msg);
 
     if ($next_step) {
       $sta_update_step++;
@@ -90,7 +90,7 @@ class StatCalculator {
 
     static::sta_set_time_limit('calculating players stats');
 
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     $i = 0;
     // Блокируем всех пользователей
     SN::db_lock_tables('users');
@@ -125,7 +125,7 @@ class StatCalculator {
     static::sta_set_time_limit('calculating planets stats');
     $i = 0;
     $query = DBStaticPlanet::db_planet_list_resources_by_owner();
-    $row_num = db_num_rows($query);
+    $row_num = SN::$db->db_num_rows($query);
     while ($planet = db_fetch($query)) {
       if ($i++ % 100 == 0) {
         static::sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
@@ -145,7 +145,7 @@ class StatCalculator {
     static::sta_set_time_limit('calculating flying fleets stats');
     $i = 0;
     $query = DbFleetStatic::db_fleet_list_query_all_stat();
-    $row_num = db_num_rows($query);
+    $row_num = SN::$db->db_num_rows($query);
     while ($fleet_row = db_fetch($query)) {
       if ($i++ % 100 == 0) {
         static::sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
@@ -179,7 +179,7 @@ class StatCalculator {
     static::sta_set_time_limit('calculating ques stats');
     $i = 0;
     $query = DBStaticQue::db_que_list_stat();
-    $row_num = db_num_rows($query);
+    $row_num = SN::$db->db_num_rows($query);
     while ($que_item = db_fetch($query)) {
       if ($i++ % 100 == 0) {
         static::sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
@@ -200,7 +200,7 @@ class StatCalculator {
     static::sta_set_time_limit('calculating unit stats');
     $i = 0;
     $query = DBStaticUnit::db_unit_list_stat_calculate();
-    $row_num = db_num_rows($query);
+    $row_num = SN::$db->db_num_rows($query);
     while ($unit = db_fetch($query)) {
       if ($i++ % 100 == 0) {
         static::sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
@@ -338,7 +338,7 @@ class StatCalculator {
     // Counting real user count and updating values
     dbUpdateUsersCount(db_user_count());
 
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
   }
 
 }

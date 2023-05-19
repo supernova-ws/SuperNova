@@ -111,11 +111,26 @@ SHOW PROFILES;
         Сервер так же пользует для sn.sn.ws путь beta.sn.ws. Но если убрать каталог sn.sn.ws движок (?) сходит с ума и перекидывает на бету
             Ну или кто-то сходит с ума
 
+
+Бан по IP в игре
+
+ИД игрока в чате по навердению курсора
+    Возможно - дополнительное меню
+
+* Переписать кэшер целиком?
+
+track all doquery() and replace with statics
+
 #ctv
 
 # WiP
 
-* Переписать кэшер целиком?
+BEFORE PUTTING IT ON GITHUB!!!!
+Check for module version - die() if it's not compatible with v46a46+
+
+2023-05-19 16:17:46 46a49
+[@] Code
+    Replaced part of intermediate function sn_db_XXX and db_XXX with direct calls to SN::$db methods
 
 2023-05-18 12:36:49 46a46
 [@] Code - added (disabled now) code to bypass SnInternal cache

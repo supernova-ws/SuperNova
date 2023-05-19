@@ -6,6 +6,7 @@
 namespace Que;
 
 use Planet\DBStaticPlanet;
+use SN;
 
 class QueUnitStatic {
 
@@ -26,7 +27,7 @@ class QueUnitStatic {
 
     // TODO que_process() тут
 
-    sn_db_transaction_check(true);
+    SN::db_transaction_check(true);
 
     $build_mode = $build_mode == BUILD_CREATE ? BUILD_CREATE : BUILD_DESTROY;
 

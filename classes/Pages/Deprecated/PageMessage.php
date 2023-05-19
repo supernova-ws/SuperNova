@@ -224,7 +224,7 @@ class PageMessage extends PageDeprecated {
 
     $this->resultTemplatize($template);
 
-    $recipientIdSafe = db_escape($this->recipient_id_unsafe);
+    $recipientIdSafe = SN::$db->db_escape($this->recipient_id_unsafe);
     $message_query = doquery(
       "SELECT * FROM {{messages}}
         WHERE

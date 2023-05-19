@@ -16,7 +16,7 @@ lng_include('buddy');
 $result = array();
 try
 {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
 
   if($buddy_id = sys_get_param_id('buddy_id'))
   {
@@ -54,7 +54,7 @@ try
         {
           msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
             sprintf($lang['buddy_msg_accept_text'], $user['username']));
-          sn_db_transaction_commit();
+          SN::db_transaction_commit();
           throw new exception('buddy_err_accept_none', ERR_NONE);
         }
         else
@@ -77,13 +77,13 @@ try
             sprintf($lang['buddy_msg_unfriend_text'], $user['username']));
 
           doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-          sn_db_transaction_commit();
+          SN::db_transaction_commit();
           throw new exception('buddy_err_unfriend_none', ERR_NONE);
         }
         elseif($buddy_row['BUDDY_SENDER_ID'] == $user['id']) // Player's outcoming request - either denied or waiting
         {
           doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-          sn_db_transaction_commit();
+          SN::db_transaction_commit();
           throw new exception('buddy_err_delete_own', ERR_NONE);
         }
         elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
@@ -92,7 +92,7 @@ try
             sprintf($lang['buddy_msg_deny_text'], $user['username']));
 
           doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_DENIED . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-          sn_db_transaction_commit();
+          SN::db_transaction_commit();
           throw new exception('buddy_err_deny_none', ERR_NONE);
         }
       break;
@@ -108,7 +108,7 @@ try
   elseif($new_friend_name = sys_get_param_str_unsafe('request_user_name'))
   {
     $new_friend_row = db_user_by_username($new_friend_name);
-    $new_friend_name = db_escape($new_friend_name);
+    $new_friend_name = SN::$db->db_escape($new_friend_name);
   }
 
   if($new_friend_row['id'] == $user['id'])
@@ -135,7 +135,7 @@ try
       sprintf($lang['buddy_msg_adding_text'], $user['username']));
 
     doquery($q = "INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
     throw new exception('buddy_err_adding_none', ERR_NONE);
   }
 }
@@ -147,7 +147,7 @@ catch(exception $e)
   );
 }
 // TODO - Это просто заглушка. Дойдут руки - разобраться, в чём проблема
-sn_db_transaction_rollback();
+SN::db_transaction_rollback();
 
 $query = db_buddy_list_by_user($user['id']);
 while($row = db_fetch($query))

@@ -7,13 +7,13 @@ use DBAL\db_mysql;
  */
 // Расширяет Modules\sn_module, потому что его потомки так же являются модулями
 class auth_local extends auth_abstract {
-  public $versionCommitted = '#43a15.27#';
+  public $versionCommitted = '#46a49#';
 
   public $manifest = [
     'package'   => 'auth',
     'name'      => 'local',
     'version'   => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #43a15.27# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a49# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 
@@ -234,9 +234,9 @@ class auth_local extends auth_abstract {
       // Удаляем предыдущие записи продтверждения сброса пароля
       !empty($confirmation['id']) or $this->confirmation->db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
 
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $confirm_code_unsafe = $this->confirmation->db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
 
       if (!is_email($email_unsafe)) {
         SN::$debug->error("Email is invalid: '{$email_unsafe}'", 'Invalid email for password restoration');
@@ -249,7 +249,7 @@ class auth_local extends auth_abstract {
 
       $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       $result = $e->getMessage();
     }
 
@@ -283,7 +283,7 @@ class auth_local extends auth_abstract {
         throw new Exception(PASSWORD_RESTORE_ERROR_CODE_EMPTY, ERR_ERROR);
       }
 
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $confirmation = $this->confirmation->db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_unsafe); // OK 4.5
 
       if (empty($confirmation)) {
@@ -343,11 +343,11 @@ class auth_local extends auth_abstract {
 
       $this->confirmation->db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $confirmation['email']); // OK 4.5
 
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
 
       sys_redirect('overview.php');
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       $this->account_login_status = $e->getMessage();
     }
 
@@ -392,7 +392,7 @@ class auth_local extends auth_abstract {
 
       $this->register_validate_input();
 
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $this->account->db_get_by_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
       if ($this->account->is_exists) {
         if ($this->account->account_email == $this->input_email_unsafe) {
@@ -416,9 +416,9 @@ class auth_local extends auth_abstract {
 
       // А вот это пока не нужно. Трансляцией аккаунтов в юзеров и созданием новых юзеров для новозашедших аккаунтов занимается Auth
       // $this->register_account();
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
 

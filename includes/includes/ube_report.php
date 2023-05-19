@@ -120,7 +120,7 @@ function sn_ube_report_save(&$combat_data) {
       `ube_report_debris_total_in_metal` = " . $ube_report_debris_total_in_metal . ",
 
       `ube_report_planet_id`          = " . (int)$outcome[UBE_PLANET][PLANET_ID] . ",
-      `ube_report_planet_name`        = '" . db_escape($outcome[UBE_PLANET][PLANET_NAME]) . "',
+      `ube_report_planet_name`        = '" . SN::$db->db_escape($outcome[UBE_PLANET][PLANET_NAME]) . "',
       `ube_report_planet_size`        = " . (int)$outcome[UBE_PLANET][PLANET_SIZE] . ",
       `ube_report_planet_galaxy`      = " . (int)$outcome[UBE_PLANET][PLANET_GALAXY] . ",
       `ube_report_planet_system`      = " . (int)$outcome[UBE_PLANET][PLANET_SYSTEM] . ",
@@ -137,7 +137,7 @@ function sn_ube_report_save(&$combat_data) {
 
       `ube_report_capture_result` = " . (int)$outcome[UBE_CAPTURE_RESULT] . "
   ");
-  $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
+  $ube_report_id = $combat_data[UBE_REPORT_ID] = SN::$db->db_insert_id();
 
   // Сохраняем общую информацию по игрокам
   foreach ($combat_data[UBE_PLAYERS] as $player_id => &$player_info) {
@@ -145,7 +145,7 @@ function sn_ube_report_save(&$combat_data) {
       $ube_report_id,
       $player_id,
 
-      "'" . db_escape($player_info[UBE_NAME]) . "'",
+      "'" . SN::$db->db_escape($player_info[UBE_NAME]) . "'",
       (int)$player_info[UBE_ATTACKER],
 
       (float)$player_info[UBE_BONUSES][UBE_ATTACK],
@@ -164,7 +164,7 @@ function sn_ube_report_save(&$combat_data) {
       $fleet_id,
 
       (float)$fleet_info[UBE_PLANET][PLANET_ID],
-      "'" . db_escape($fleet_info[UBE_PLANET][PLANET_NAME]) . "'",
+      "'" . SN::$db->db_escape($fleet_info[UBE_PLANET][PLANET_NAME]) . "'",
       (int)$fleet_info[UBE_PLANET][PLANET_GALAXY],
       (int)$fleet_info[UBE_PLANET][PLANET_SYSTEM],
       (int)$fleet_info[UBE_PLANET][PLANET_PLANET],
@@ -268,7 +268,7 @@ function sn_ube_report_save(&$combat_data) {
 // ------------------------------------------------------------------------------------------------
 // Читает боевой отчет из БД
 function sn_ube_report_load($report_cypher) {
-  $report_cypher = db_escape($report_cypher);
+  $report_cypher = SN::$db->db_escape($report_cypher);
 
   $report_row = doquery("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
   if (!$report_row) {

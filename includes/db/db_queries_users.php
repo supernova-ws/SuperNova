@@ -62,7 +62,7 @@ function db_user_by_username($username_unsafe, $like = false) {
     return null;
   }
 
-  $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+  $username_safe = SN::$db->db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
   $user = db_get_user_by_where("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'");
 

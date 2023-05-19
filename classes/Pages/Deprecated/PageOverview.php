@@ -96,7 +96,7 @@ class PageOverview extends PageDeprecated {
 
     if (sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
-      $new_name_safe = db_escape($new_name);
+      $new_name_safe = SN::$db->db_escape($new_name);
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
       $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
       $this->planet->reload();
@@ -126,9 +126,9 @@ class PageOverview extends PageDeprecated {
 
       $planet_count++;
 
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
 
       $templatizedPlanet = tpl_parse_planet($user, $updatedData['planet']);
       $templatizedPlanet += tpl_parse_planet_result_fleet($updatedData['planet'], $fleet_list);
@@ -237,7 +237,7 @@ class PageOverview extends PageDeprecated {
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif (sys_get_param_str('action') == 'make_capital') {
       try {
-        sn_db_transaction_start();
+        SN::db_transaction_start();
         $user = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 
@@ -261,10 +261,10 @@ class PageOverview extends PageDeprecated {
 
         $user['id_planet'] = $planetrow['id'];
         $this->resultMessageList->add($this->lang['ov_capital_err_none'], ERR_NONE);
-        sn_db_transaction_commit();
+        SN::db_transaction_commit();
         sys_redirect('overview.php?mode=manage');
       } catch (exception $e) {
-        sn_db_transaction_rollback();
+        SN::db_transaction_rollback();
         $this->resultMessageList->add($e->getMessage(), $e->getCode());
       }
     } elseif (sys_get_param_str('action') == 'planet_teleport') {
@@ -277,7 +277,7 @@ class PageOverview extends PageDeprecated {
           throw new exception($this->lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
-        sn_db_transaction_start();
+        SN::db_transaction_start();
         // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
         $user = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
@@ -297,14 +297,14 @@ class PageOverview extends PageDeprecated {
         if ($planetrow['id'] == $user['id_planet']) {
           db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
-        sn_db_transaction_commit();
+        SN::db_transaction_commit();
 
         $user = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
         $this->resultMessageList->add($this->lang['ov_teleport_err_none'], ERR_NONE);
         sys_redirect('overview.php?mode=manage');
       } catch (exception $e) {
-        sn_db_transaction_rollback();
+        SN::db_transaction_rollback();
         $this->resultMessageList->add($e->getMessage(), $e->getCode());
       }
     } elseif (sys_get_param_str('action') == 'planet_abandon') {

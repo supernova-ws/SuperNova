@@ -109,7 +109,7 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
  */
 
 function coe_o_missile_calculate() {
-  sn_db_transaction_check(true);
+  SN::db_transaction_check(true);
 
   global $lang;
 

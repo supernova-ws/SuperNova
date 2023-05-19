@@ -43,7 +43,7 @@ class DbFleetStatic {
         ->setValues($fieldArray)
         ->doInsert(DbQuery::DB_INSERT_PLAIN, true);
 
-      $fleet_id = db_insert_id();
+      $fleet_id = SN::$db->db_insert_id();
     } else {
       $fleet_id = 0;
     }
@@ -566,7 +566,7 @@ class DbFleetStatic {
    */
   public static function dbAcsInsert($userId, $fleetid, $fleet) {
     return doquery("INSERT INTO `{{aks}}` SET
-          `name` = '" . db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
+          `name` = '" . SN::$db->db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $userId . "',
           `flotten` = '" . $fleetid . "',
           `ankunft` = '" . $fleet['fleet_start_time'] . "',

@@ -143,7 +143,7 @@ class OldDbChangeSet {
           if (is_string($field_id)) {
             $field_value =
               $field_value === null ? 'NULL' :
-                (is_string($field_value) ? "'" . db_escape($field_value) . "'" :
+                (is_string($field_value) ? "'" . SN::$db->db_escape($field_value) . "'" :
                   (is_bool($field_value) ? intval($field_value) : $field_value));
             $the_conditions[] = "`{$field_id}` = {$field_value}";
           } else {

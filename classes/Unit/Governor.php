@@ -56,7 +56,7 @@ class Governor extends Unit {
       return;
     }
 
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     $user = db_user_by_id($this->planet->id_owner, true);
 //    $this->planetRow = Planet\DBStaticPlanet::db_planet_by_id($this->planet->id, true);
 //    $build_data = eco_get_build_data($user, $this->planetRow, $hireId, $this->getId() == $hireId ? $this->getLevel() : 0);
@@ -83,7 +83,7 @@ class Governor extends Unit {
       $this->addLevel($hireId);
       $this->planet->update();
     }
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
   }
 
 

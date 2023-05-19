@@ -20,7 +20,7 @@ if(is_array($shipList)) {
     $intError = MARKET_NO_DM;
   }
 
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   // Здесь не надо апдейтить планету - очередь мы посчитали глобально
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //  $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
@@ -115,14 +115,14 @@ if(is_array($shipList)) {
     $stock = $newstock;
     $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
 
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_NONE,
       'MESSAGE' => $message,
     ));
   } else {
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_ERROR,
       'MESSAGE' => $lang['eco_mrk_errors'][$intError],

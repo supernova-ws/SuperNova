@@ -97,10 +97,10 @@ class RequestInfo {
     $this->write_full_url = !SN::$config->security_write_full_url_disabled;
 
     // Инфа об устройстве и браузере - общая для всех
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
     if ($this->device_cypher) {
-      $cypher_safe = db_escape($this->device_cypher);
+      $cypher_safe = SN::$db->db_escape($this->device_cypher);
       /** @noinspection SqlResolve */
       $device_id = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       if (!empty($device_id['device_id'])) {
@@ -110,16 +110,16 @@ class RequestInfo {
 
     if ($this->device_id <= 0) {
       do {
-        $cypher_safe = db_escape($this->device_cypher = sys_random_string());
+        $cypher_safe = SN::$db->db_escape($this->device_cypher = sys_random_string());
 
         /** @noinspection SqlResolve */
         $row = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
       doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
-      $this->device_id = db_insert_id();
+      $this->device_id = SN::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
 
     $this->user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $this->browser_id = db_get_set_unique_id_value('security_browser', 'browser_id', ['browser_user_agent' => $this->user_agent,]);
@@ -196,8 +196,8 @@ class RequestInfo {
       return;
     }
 
-    $user_id_safe = db_escape($user_id_unsafe);
-    $proxy_safe   = db_escape($this->ip_v4_proxy_chain);
+    $user_id_safe = SN::$db->db_escape($user_id_unsafe);
+    $proxy_safe   = SN::$db->db_escape($this->ip_v4_proxy_chain);
 
     $is_watching = true;
     doquery(

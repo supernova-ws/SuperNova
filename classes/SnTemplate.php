@@ -1173,7 +1173,7 @@ class SnTemplate {
 
     $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
-    sn_db_disconnect();
+    SN::$db->db_disconnect();
 
     $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
 

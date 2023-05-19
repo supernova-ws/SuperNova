@@ -145,7 +145,7 @@ class classLocale implements ArrayAccess {
       doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
       foreach ($this->stat_usage_new as &$value) {
         foreach ($value as &$value2) {
-          $value2 = '"' . db_escape($value2) . '"';
+          $value2 = '"' . SN::$db->db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) . ')';
       }

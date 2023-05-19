@@ -151,7 +151,7 @@ class Updater {
         $declaration .= $tableOptions;
       }
       $result = $this->upd_do_query("CREATE TABLE IF NOT EXISTS `{$this->config->db_prefix}{$table_name}` {$declaration}");
-      $error  = db_error();
+      $error  = SN::$db->db_error();
       if ($error) {
         die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
       }
@@ -187,7 +187,7 @@ class Updater {
     $qry = "ALTER TABLE {$this->config->db_prefix}{$table} {$alters};";
 
     $result = $this->upd_do_query($qry);
-    $error  = db_error();
+    $error  = SN::$db->db_error();
     if ($error) {
       die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
     }
@@ -261,7 +261,7 @@ class Updater {
         $query = str_replace("{{{$tableName}}}", $this->db->db_prefix . $tableName, $query);
       }
     }
-    $result = $this->db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+    $result = $this->db->db_sql_query($query) or die('Query error for ' . $query . ': ' . SN::$db->db_error());
 
     return $result;
   }
@@ -316,6 +316,16 @@ class Updater {
 
   public function isIndexExists($table, $index) {
     return $this->db->schema()->isIndexExists($table, $index);
+  }
+
+  public function transactionStart() {
+//    $this->upd_do_query('START TRANSACTION;', true);
+    $this->db->transactionStart();
+  }
+
+  public function transactionCommit() {
+//    $this->upd_do_query('COMMIT;', true);
+    $this->db->transactionCommit();
   }
 
 }

@@ -25,18 +25,18 @@ function flyingFleetsModel($userId, $debug) {
       continue;
     }
 
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     if (empty($fleet = SN::$gc->repoV2->getFleet($fleet_id))) {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       continue;
     }
 
     if (!$fleet->returnForce($userId)) {
       $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, ['base_dump' => true, 'fleet_row' => $fleet->asArray()]);
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
       die('Hack attempt 302');
     }
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
   }
 }
 

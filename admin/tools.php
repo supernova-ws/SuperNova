@@ -78,9 +78,9 @@ switch ($mode) {
 
     $template->assign_block_vars('table', $lang['adm_tool_sql_table']['server']);
     $status = array(
-      $lang['adm_tool_sql_server_version'] => db_get_server_info(),
-      $lang['adm_tool_sql_client_version'] => db_get_client_info(),
-      $lang['adm_tool_sql_host_info']      => db_get_host_info(),
+      $lang['adm_tool_sql_server_version'] => SN::$db->getServerInfo(),
+      $lang['adm_tool_sql_client_version'] => SN::$db->getClientInfo(),
+      $lang['adm_tool_sql_host_info']      => SN::$db->getHostInfo(),
     );
     foreach ($status as $key => $value) {
       $template->assign_block_vars('table.row', array(
@@ -90,7 +90,7 @@ switch ($mode) {
     }
 
     $template->assign_block_vars('table', $lang['adm_tool_sql_table']['status']);
-    $status = explode('  ', db_server_stat());
+    $status = explode('  ', SN::$db->getServerStat());
     foreach ($status as $value) {
       $row = explode(': ', $value);
       $template->assign_block_vars('table.row', array(

@@ -19,7 +19,7 @@ lng_include('fleet');
 
 if($TargetPlanet = sys_get_param_id('jmpto'))
 {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   db_user_by_id($user['id'], true, 'id');
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
   if(!($NextJumpTime = uni_get_time_to_jump($planetrow)))
@@ -71,7 +71,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   } else {
     $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
   SnTemplate::messageBox($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $template = SnTemplate::gettemplate('jumpgate', true);

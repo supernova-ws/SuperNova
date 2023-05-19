@@ -110,7 +110,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
       )
     );
 
-  $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
+  $planet['name'] = SN::$db->db_escape(strip_tags(trim($planet_name_unsafe)));
   $planet['id_owner'] = $PlanetOwnerID;
   $planet['last_update'] = SN_TIME_NOW;
   $planet['image'] = $planet_image;
@@ -196,7 +196,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $size 
       $temp_max = $temp_min + 40;
 
       $moon_name = !empty($options['name']) ? $options['name'] : "{$moon_planet['name']} {$lang['sys_moon']}";
-      $moon_name_safe = db_escape($moon_name);
+      $moon_name_safe = SN::$db->db_escape($moon_name);
 
       $field_max = ceil($size / 1000);
 

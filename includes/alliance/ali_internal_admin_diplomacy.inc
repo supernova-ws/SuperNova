@@ -15,7 +15,7 @@ if (!$user_can_negotiate) {
 $template = SnTemplate::gettemplate('ali_admin_diplomacy', true);
 $page_title = $lang['ali_dip_title'];
 
-$ally_name_safe = db_escape($user['ally_name']);
+$ally_name_safe = SN::$db->db_escape($user['ally_name']);
 
 $autoAccept = false;
 if(sys_get_param_str('ali_dip_offer_make'))
@@ -127,7 +127,7 @@ else
 
 if($accept_offer)
 {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
 
   DbQuery::build()
     ->setTable('alliance_diplomacy')
@@ -182,7 +182,7 @@ if($accept_offer)
   msg_ali_send($messages['own'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
   msg_ali_send($messages['other'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
 
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
 }
 
 foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_relation)

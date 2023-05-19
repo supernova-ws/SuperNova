@@ -256,17 +256,15 @@ class SN {
   }
 
   public static function db_transaction_start($level = '') {
-    global $config;
-
     static::db_transaction_check(null);
 
-    SN::$gc->db->transactionStart($level);
+    static::$gc->db->transactionStart($level);
 
     static::$transaction_id++;
 
-    if ($config->db_manual_lock_enabled) {
-      $config->db_loadItem('var_db_manually_locked');
-      $config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
+    if (static::$config->db_manual_lock_enabled) {
+      static::$config->db_loadItem('var_db_manually_locked');
+      static::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
 
     static::$db_in_transaction = true;
@@ -502,7 +500,7 @@ class SN {
     if ($result = static::db_query_insert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
-        $record_id = db_insert_id();
+        $record_id = SN::$db->db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего

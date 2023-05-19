@@ -20,7 +20,7 @@ $current_round = intval(SN::$config->db_loadItem('game_blitz_register_round'));
 $current_price = intval(SN::$config->db_loadItem('game_blitz_register_price'));
 
 if(SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   $user = db_user_by_id($user['id'], true);
   $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
   if(sys_get_param_str('register_me')) {
@@ -36,7 +36,7 @@ if(SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sy
   }
   $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
   SN::$config->db_saveItem('game_blitz_register_users', $registered_count['count']);
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
 }
 
 $blitz_generated = array();
@@ -107,7 +107,7 @@ pdump($system_step, '$system_step');
     foreach($blitz_result as $blitz_result_data) {
       $blitz_result_data = explode(',', $blitz_result_data);
       if(count($blitz_result_data) == 5) {
-        $blitz_result_data[1] = db_escape($blitz_result_data[1]);
+        $blitz_result_data[1] = SN::$db->db_escape($blitz_result_data[1]);
         doquery(
           "UPDATE `{{blitz_registrations}}` SET
             `blitz_player_id` = '{$blitz_result_data[0]}',
@@ -146,7 +146,7 @@ pdump($system_step, '$system_step');
     if(sys_get_param_str('prize_calculate') && $blitz_prize_players_active && ($blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter'))) {
       // $blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter');
       $blitz_prize_places_actual = sys_get_param_int('blitz_prize_places');
-      sn_db_transaction_start();
+      SN::db_transaction_start();
       $query = doquery("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
       while($row = db_fetch($query)) {
         if(!$row['blitz_place']) {
@@ -169,7 +169,7 @@ pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize p
           break;
         }
       }
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
     }
 
   }

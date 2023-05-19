@@ -270,7 +270,7 @@ function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditio
  */
 // OK v4.7
 function db_player_name_exists($player_name_unsafe) {
-  sn_db_transaction_check(true);
+  SN::db_transaction_check(true);
 
   $player_name_safe = SN::$db->db_escape($player_name_unsafe);
 

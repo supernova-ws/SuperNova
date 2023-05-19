@@ -67,9 +67,9 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
   if($escaped == STRING_NEED_ESCAPING)
   {
-    $from = db_escape($from);
-    $subject = db_escape($subject);
-    $text = db_escape($text);
+    $from = SN::$db->db_escape($from);
+    $subject = SN::$db->db_escape($subject);
+    $text = SN::$db->db_escape($text);
   }
 
   $text_unescaped = stripslashes(str_replace(array('\r\n', "\r\n"), "<br />", $text));

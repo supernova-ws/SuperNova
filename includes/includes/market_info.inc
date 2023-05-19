@@ -19,7 +19,7 @@ if($info_action)
 {
   try
   {
-    sn_db_transaction_start();
+    SN::db_transaction_start();
 
     $user = db_user_by_id($user['id'], true);
     if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->rpg_cost_info)
@@ -77,12 +77,12 @@ if($info_action)
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }
 
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
     throw new Exception($info_action, ERR_NONE);
   }
   catch (Exception $e)
   {
-    sn_db_transaction_rollback();
+    SN::db_transaction_rollback();
 
     $template->assign_block_vars('result', array(
       'STATUS' => $e->getCode(),

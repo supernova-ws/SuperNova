@@ -47,7 +47,7 @@ if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$t
   die($lang['gs_c00']);
 }
 
-sn_db_transaction_start();
+SN::db_transaction_start();
 
 $user = db_user_by_id($user['id'], true);
 $planetrow = DBStaticPlanet::db_planet_by_id($user['current_planet'], true);
@@ -169,7 +169,7 @@ else
 
 DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
 OldDbChangeSet::db_changeset_apply($db_changeset);
-sn_db_transaction_commit();
+SN::db_transaction_commit();
 
 $ships_sent = array();
 //$ships_sent_js = array();

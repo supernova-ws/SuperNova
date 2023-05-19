@@ -120,5 +120,10 @@ function sec_player_ip() {
     $ip['ip'] = '127.0.0.1';
   }
 
-  return array_map('db_escape', $ip);
+  foreach($ip as &$val) {
+    $val = SN::$db->db_escape($val);
+  }
+
+  return $ip;
+//  return array_map('db_escape', $ip);
 }

@@ -2,6 +2,8 @@
 
 use Alliance\DBStaticAlly;
 
+const WHO_IS_USER = 1;
+
 /**
  * stat.php
  *
@@ -35,9 +37,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('stat');
 
 $sn_group_stat_common = sn_get_groups('STAT_COMMON');
-$who = sys_get_param_int('who', 1);
+$who = sys_get_param_int('who', WHO_IS_USER);
 $type = sys_get_param_int('type');
-$type = $who != 1 && !in_array($type, $sn_group_stat_common) ? 1 : $type;
+$type = $who != WHO_IS_USER && !in_array($type, $sn_group_stat_common) ? 1 : $type;
 $range = sys_get_param_int('range', 1);
 $source = sys_get_param_str('source');
 
@@ -109,7 +111,7 @@ $start = floor($range / 100 % 100) * 100;
 $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
 
 // TODO - Не работает, если игроков на Блице > 100
-$record_count = $source ? db_num_rows($query) : ($who == 1 ? db_user_count() : DBStaticAlly::db_ally_count());
+$record_count = $source ? SN::$db->db_num_rows($query) : ($who == WHO_IS_USER ? db_user_count() : DBStaticAlly::db_ally_count());
 
 $page_count = floor($record_count / 100);
 $pages = array();
@@ -132,7 +134,7 @@ while ($row = db_fetch($query)) {
     'POINTS' => HelperString::numberFloorAndFormat($row['points']),
   );
 
-  if($who == 1) {
+  if($who == WHO_IS_USER) {
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
     empty($row['username']) ? $row['username'] = $row['name'] : false;

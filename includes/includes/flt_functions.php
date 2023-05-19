@@ -484,7 +484,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = [], $mission, $opt
  * @see flt_can_attack()
  */
 function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $options = array()) {
-  $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
+  $internal_transaction = !SN::db_transaction_check(false) ? SN::db_transaction_start() : false;
 
   // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
   $user = db_user_by_id($user['id'], true);
@@ -511,7 +511,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
   }
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if ($can_attack != ATTACK_ALLOWED) {
-    $internal_transaction ? sn_db_transaction_rollback() : false;
+    $internal_transaction ? SN::db_transaction_rollback() : false;
 
     return $can_attack;
   }
@@ -534,7 +534,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
 
   $result = fltSendFleetAdjustPlanetUnits($user, $from['id'], $fleet);
 
-  $internal_transaction ? sn_db_transaction_commit() : false;
+  $internal_transaction ? SN::db_transaction_commit() : false;
 
   $from = DBStaticPlanet::db_planet_by_id($from['id']);
 

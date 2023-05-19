@@ -44,8 +44,8 @@ class PlayerStatic {
    */
   public static function DeleteSelectedUser($UserID) {
     $internalTransaction = false;
-    if (!sn_db_transaction_check(false)) {
-      sn_db_transaction_start();
+    if (!SN::db_transaction_check(false)) {
+      SN::db_transaction_start();
 
       $internalTransaction = true;
     }
@@ -92,7 +92,7 @@ class PlayerStatic {
     dbUpdateUsersCount(SN::$config->pass()->users_amount - 1);
 
     if ($internalTransaction) {
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
     }
   }
 

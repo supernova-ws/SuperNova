@@ -69,13 +69,13 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   }
 
   if($rows_affected || !$dark_matter) {
-    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
+    $page_url = SN::$db->db_escape($_SERVER['SCRIPT_NAME']);
     if(is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
-    $comment = db_escape($comment);
+    $comment = SN::$db->db_escape($comment);
     $row = db_user_by_id($user_id, false, 'username');
-    $row['username'] = db_escape($row['username']);
+    $row['username'] = SN::$db->db_escape($row['username']);
     doquery(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)

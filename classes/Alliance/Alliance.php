@@ -9,6 +9,7 @@ use Core\GlobalContainer;
 use \Exception;
 use \HelperString;
 use Player\RecordPlayer;
+use SN;
 
 /**
  * Class Alliance
@@ -148,7 +149,7 @@ class Alliance extends RecordAlliance {
    */
   public function pass(AllianceMember $newOwnerMember) {
     try {
-      sn_db_transaction_start();
+      SN::db_transaction_start();
 
       if ($newOwnerMember->isOwner()) {
         throw new Exception('{ Указанный пользователь уже является владельцем указанного Альянса }', ERR_NOTICE);
@@ -169,9 +170,9 @@ class Alliance extends RecordAlliance {
         throw new Exception('{ Ошибка изменения владельца Альянса }', ERR_ERROR);
       }
 
-      sn_db_transaction_commit();
+      SN::db_transaction_commit();
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      SN::db_transaction_rollback();
 
       throw $e;
     }

@@ -153,7 +153,7 @@ class PageMercenary {
       throw new Exception('mrc_msg_error_wrong_period', ERR_ERROR);
     }
 
-    sn_db_transaction_start();
+    SN::db_transaction_start();
 
     $mercenary_level_old = mrc_get_level($user, [], $mercenary_id, true, true);
     if ($this->config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level) {
@@ -195,7 +195,7 @@ class PageMercenary {
       rpg_points_change($user['id'], $this->mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost),
         sprintf($this->lang[$this->mode == UNIT_PLANS ? 'mrc_plan_bought_log' : 'mrc_mercenary_hired_log'], $this->lang['tech'][$mercenary_id], $mercenary_id, $darkmater_cost, round($mercenary_period / PERIOD_DAY)));
     }
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
     sys_redirect($_SERVER['REQUEST_URI']);
   }
 
@@ -234,7 +234,7 @@ class PageMercenary {
       try {
         $this->mrc_mercenary_hire($user, $mercenary_id);
       } catch (Exception $e) {
-        sn_db_transaction_rollback();
+        SN::db_transaction_rollback();
         $operation_result = array(
           'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
           'MESSAGE' => $this->lang[$e->getMessage()],

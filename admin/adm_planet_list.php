@@ -34,19 +34,19 @@ while ($planet_row = db_fetch($query)) {
     'PARENT_ID'   => js_safe_string($planet_row['parent_planet']),
     'PARENT_NAME' => js_safe_string($planet_row['parent_name']),
     'OWNER'       => js_safe_string($planet_row['username']),
-    'OWNER_ID'    => $planet_row['id_owner'], 
+    'OWNER_ID'    => $planet_row['id_owner'],
   ));
 }
 
-$page_title = 
-  $lang['adm_planet_list_title'] . ': ' . 
+$page_title =
+  $lang['adm_planet_list_title'] . ': ' .
   ($planet_active ? $lang['adm_planet_active'] :
     ($planet_type ? ($planet_type == 3 ? $lang['sys_moons'] : $lang['sys_planets']) : '')
   );
 $template->assign_vars(array(
   'PAGE_TITLE' => $page_title,
 
-  'PLANET_COUNT'  => db_num_rows($query),
+  'PLANET_COUNT'  => SN::$db->db_num_rows($query),
   'PARENT_COLUMN' => $table_parent_columns,
 ));
 

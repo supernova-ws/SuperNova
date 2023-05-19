@@ -29,7 +29,7 @@ $username_unsafe = sys_get_param_str_unsafe('username');
 $username = sys_get_param_escaped('username');
 
 if ($galaxy_src) {
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   $errors = array();
 
   $owner = db_user_by_username($username_unsafe, true);
@@ -102,7 +102,7 @@ if ($galaxy_src) {
       $template->assign_var('CHECK', 2);
     }
   }
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
 }
 
 $template->assign_vars(array(

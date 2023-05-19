@@ -225,7 +225,7 @@ class db_mysql {
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql);
     if(!$sqlquery) {
-      $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+      $debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
     }
     restore_error_handler();
 
@@ -240,7 +240,7 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     set_error_handler([$this, 'handlerQueryWarning']);
-    $sqlquery = $this->db_sql_query($sql) or SN::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    $sqlquery = $this->db_sql_query($sql) or SN::$debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
@@ -415,7 +415,7 @@ class db_mysql {
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
 
-    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
+    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . SN::$db->db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['CONSTRAINT_NAME'];
 
@@ -490,19 +490,19 @@ class db_mysql {
     return $this->driver->mysql_affected_rows();
   }
 
-  public function db_get_client_info() {
+  public function getClientInfo() {
     return $this->driver->mysql_get_client_info();
   }
 
-  public function db_get_server_info() {
+  public function getServerInfo() {
     return $this->driver->mysql_get_server_info();
   }
 
-  public function db_get_host_info() {
+  public function getHostInfo() {
     return $this->driver->mysql_get_host_info();
   }
 
-  public function db_get_server_stat() {
+  public function getServerStat() {
     return $this->driver->mysql_stat();
   }
 
@@ -523,7 +523,9 @@ class db_mysql {
   public function transactionStart($level = '') {
     $this->inTransaction = true;
 
-    $level ? $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};") : false;
+    if ($level) {
+      $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};");
+    }
 
     $this->db_sql_query('START TRANSACTION;');
   }

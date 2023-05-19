@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 /**
  * @version 2015-04-11 11:47:49 39b14.2
@@ -16,16 +16,18 @@ function db_change_units_perform($query, $tablename, $object_id) {
   if($query && $object_id) {
     return SN::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
   }
+
+  return null;
 }
 
 // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
 // TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
-function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) {
-  $query = is_array($query) ? $query : array(
-    LOC_USER => array(),
-    LOC_PLANET => array(),
-  );
+function db_change_units(&$user, &$planet, $unit_list = [], $query = null) {
+  $query = is_array($query) ? $query : [
+    LOC_USER => [],
+    LOC_PLANET => [],
+  ];
 
   $group = sn_get_groups('resources_loot');
 
@@ -63,42 +65,6 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) 
   db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
 }
 
-
-/**
- * Функция проверяет статус транзакции
- *
- * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
- *   <p>null - транзакция НЕ должна быть запущена</p>
- *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
- *   <p>false - всё равно - для совместимости с $for_update</p>
- * @return bool Текущий статус транзакции
- */
-function sn_db_transaction_check($transaction_should_be_started = null) {
-  return SN::db_transaction_check($transaction_should_be_started);
-}
-function sn_db_transaction_start($level = '') {
-  return SN::db_transaction_start($level);
-}
-function sn_db_transaction_commit() {
-  return SN::db_transaction_commit();
-}
-function sn_db_transaction_rollback() {
-  return SN::db_transaction_rollback();
-}
-
-
-
-
-function db_error() {
-  return SN::$db->db_error();
-}
-function sn_db_connect() {
-  return SN::$db->sn_db_connect();
-}
-function sn_db_disconnect() {
-  return SN::$db->db_disconnect();
-}
-
 /**
  * @param        $query
  * @param string $table
@@ -117,31 +83,9 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
 function db_fetch(&$query) {
   return SN::$db->db_fetch($query);
 }
-function db_fetch_row(&$query) {
-  return SN::$db->db_fetch_row($query);
-}
 function db_escape($unescaped_string) {
   return SN::$db->db_escape($unescaped_string);
 }
-function db_insert_id() {
-  return SN::$db->db_insert_id();
-}
-function db_num_rows(&$result) {
-  return SN::$db->db_num_rows($result);
-}
-function db_affected_rows() {
-  return SN::$db->db_affected_rows();
-}
-// Информационные функции
-function db_get_client_info() {
-  return SN::$db->db_get_client_info();
-}
-function db_get_server_info() {
-  return SN::$db->db_get_server_info();
-}
-function db_get_host_info() {
-  return SN::$db->db_get_host_info();
-}
-function db_server_stat() {
-  return SN::$db->db_get_server_stat();
-}
+
+/* DEPRECATED FUNCTION for back-compatibility with old modules ------------------------------------------------------ */
+require_once 'db_deprecated.php';

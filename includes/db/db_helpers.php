@@ -34,13 +34,13 @@ function db_set_make_safe_string($set, $delta = false) {
       continue;
     }
 
-    $field = '`' . db_escape($field) . '`';
+    $field = '`' . SN::$db->db_escape($field) . '`';
     $new_value = $value;
     if($value === null) {
       $new_value = 'NULL';
     } elseif(is_string($value) && (string)($new_value = floatval($value)) != (string)$value) {
       // non-float
-      $new_value = '"' . db_escape($value) . '"';
+      $new_value = '"' . SN::$db->db_escape($value) . '"';
     } elseif($delta) {
       // float and DELTA-set
       $new_value = "{$field} + ({$new_value})";

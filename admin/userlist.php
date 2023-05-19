@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #45a23#
+ * @version #46a49#
  *
  * userlist.php v2
  **/
@@ -107,7 +107,7 @@ while ($user_row = db_fetch($query)) {
 }
 
 $template->assign_vars(array(
-  'USER_COUNT'      => db_num_rows($query),
+  'USER_COUNT'      => SN::$db->db_num_rows($query),
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
   'METAMATTER'      => !empty(SN::$gc->modules->getModule('unit_res_metamatter')),

@@ -37,7 +37,7 @@ $sn_group_artifacts = sn_get_groups('artifacts');
  */
 function art_buy($user, $unit_id, $planetrow, $lang) {
   $Message = '';
-  sn_db_transaction_start();
+  SN::db_transaction_start();
 
   $user = db_user_by_id($user['id'], true);
   $artifact_level = mrc_get_level($user, array(), $unit_id, true);
@@ -53,7 +53,7 @@ function art_buy($user, $unit_id, $planetrow, $lang) {
         $Message = '{Ошибка записи в БД}';
       } else {
         rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
-        sn_db_transaction_commit();
+        SN::db_transaction_commit();
         sys_redirect("artifacts.php#{$unit_id}");
       }
     } else {
@@ -62,7 +62,7 @@ function art_buy($user, $unit_id, $planetrow, $lang) {
   } else {
     $Message = $lang['sys_no_points'];
   }
-  sn_db_transaction_rollback();
+  SN::db_transaction_rollback();
 
   return $Message;
 }

@@ -27,7 +27,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
 
   // TODO НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!!
   if($user['ally_id']) {
-    sn_db_transaction_start();
+    SN::db_transaction_start();
     \Alliance\Alliance::sn_ali_fill_user_ally($user);
     if(!$user['ally']['player']['id']) {
       // sn_sys_logout(false, true);
@@ -38,14 +38,14 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     // TODO UNCOMMENT
     que_process($user['ally']['player']);
     db_user_set_by_id($user['ally']['player']['id'], '`onlinetime` = ' . SN_TIME_NOW);
-    sn_db_transaction_commit();
+    SN::db_transaction_commit();
   }
 
 
   // TODO - в режиме эмуляции, на самом деле!
-  sn_db_transaction_start();
+  SN::db_transaction_start();
   $global_data = sys_o_get_updated($user['id'], $planet_id, SN_TIME_NOW);
-  sn_db_transaction_commit();
+  SN::db_transaction_commit();
 
   $planetrow = $global_data['planet'];
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id'])) {
