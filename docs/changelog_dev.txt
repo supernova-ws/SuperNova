@@ -119,7 +119,9 @@ SHOW PROFILES;
 
 * Переписать кэшер целиком?
 
-track all doquery() and replace with statics
+* track all doquery() and replace with statics
+
+* Переписать все запросы через DbQuery::build()
 
 #ctv
 
@@ -127,6 +129,12 @@ track all doquery() and replace with statics
 
 BEFORE PUTTING IT ON GITHUB!!!!
 Check for module version - die() if it's not compatible with v46a46+
+
+
+2023-05-31 16:04:19 46a53
+[~] Юниты
+    Поддержка Фестиваля "ДР-2023"
+
 
 2023-05-19 16:17:46 46a49
 [@] Code

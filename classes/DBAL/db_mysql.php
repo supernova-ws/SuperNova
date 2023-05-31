@@ -199,9 +199,10 @@ class db_mysql {
 
     if ($config->debug) {
       $numqueries++;
-      $arr = debug_backtrace();
-      $file = end(explode('/', $arr[0]['file']));
-      $line = $arr[0]['line'];
+      $arr   = debug_backtrace();
+      $array = explode('/', $arr[0]['file']);
+      $file  = end($array);
+      $line  = $arr[0]['line'];
       $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th><th>$fetch</th></tr>");
     }
 
