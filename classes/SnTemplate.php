@@ -565,7 +565,7 @@ class SnTemplate {
   /**
    * @param $template
    * @param $user
-   * @param $config
+   * @param classConfig $config
    */
   public static function tpl_navbar_render_news(&$template, &$user, $config) {
     if ($config->game_news_overview) {

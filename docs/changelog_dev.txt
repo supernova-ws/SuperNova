@@ -123,6 +123,112 @@ SHOW PROFILES;
 
 * Переписать все запросы через DbQuery::build()
 
+shadowmute - игрок видит свои сообщения, но его никто не видит
+
+Ограничение доступа к чату и ЛС в зависимости от ранга
+Интеграция с форумом
+* Парсинг УРЛов в чате и ЛС - не парсится корректно УРЛы от админа, если УПЛ находится в конце строки и не закрывается пробелом
+    * Очевидно, надо добавить в РЕГЕКП символ окончания строки/линии как признак конка УРЛа
+* Проверить, что там с CI/CD
+
+* !!!!!!!!! 134 элемента грузится на странице чата!!!!!! На 2023-07-03 22:00
+    * Надо компрессировать элементы
+    * Начать с картинок
+        * Начать с меню - оно грузится всегда и везде
+        * В чате - смайлики пожать
+            * Могут быть проблемы с анимированными гифками
+        * В модулях
+            * картинки ивентов
+            * картинки мидалек
+        * Картинки планет (миниатюрные)
+        * Картинки юнитов (миниатюрные)
+        * Иконки
+
+https://medium.com/@robertcooper_rc/animating-a-sprite-sheet-with-css-ca15e2664
+
+sprite from animated gifs and generate css
+
+
+I am very early in experimenting with CSS sprites, but for me the biggest (and so far the only) benefit in using them is to reduce amount of request the client needs to send to server.
+
+I haven't tried, but I assume that for the same end result (in that optimization context anyway), one could add the animated gif to the HTML inline with data URI scheme: https://en.wikipedia.org/wiki/Data_URI_scheme
+
+https://stackoverflow.com/questions/30231943/smooth-and-fast-sprite-animation-css
+https://stackoverflow.com/questions/9139386/animated-gif-vs-spritesheet-js-css
+https://stackoverflow.com/questions/10186257/why-not-animated-gif-instead-of-animated-css-sprites
+https://stackoverflow.com/questions/37222609/sprite-multiple-gif-files-with-css-info
+
+https://www.w3schools.com/css/css_image_sprites.asp
+
+https://www.geeksforgeeks.org/how-to-use-flex-to-shrink-an-image-in-css/
+
+
+Offline CSS Sprites Image Generator
+1) Smartsprites 0.3.2 This is a open source PHP CSS sprites Generator Source Code for Download
+http://www.tanila.de/smartsprite/index.php
+
+2) Open Source Java CSS sprites Generator Source Code
+http://smartsprites.osinski.name/cgi-sys/defaultwebpage.cgi
+
+3) Free PHP Source Code of CCS Sprites Generator from Website-Performace.org
+https://linux.softpedia.com/get/Internet/HTTP-WWW-/CSS-Sprite-Generator-39417.shtml
+
+
+https://stackoverflow.com/questions/2428053/css-sprites-not-only-for-background-images
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_images/Implementing_image_sprites_in_CSS
+
+https://web.dev/serve-images-webp/
+
+
+Было:
+<img src="flower.jpg" alt="">
+
+Стало:
+<picture>
+  <source type="image/webp" srcset="flower.webp">
+  <source type="image/jpeg" srcset="flower.jpg">
+  <img src="flower.jpg" alt="">
+</picture>
+
+
+https://cheapsslsecurity.com/p/how-to-enable-http2/
+https://www.google.com/search?hl=en&q=lighttpd+http%2F2+support&oq=lighttpd+http%2F2+support&sourceid=chrome&ie=UTF-8
+
+
+mod-multiserver: дроп-даун для выбора сервера.
+
+объединение очередей, разделение очередей
+
+Роботы:
+* Отдельный аккаунт под роботов без логина
+* Отключать чат
+* Отключать личку
+* Отключать вывод галактики
+
+Антимультик: не пускать в игру, если залогинен аккаунт с того же АйПи/с той же сетки.
+
+
+* Режим "Королевская битва"
+    * Игроки наачинают в разных частях вселенных
+    * Вселенная уменьшается каждые сутки
+    * Кто последний - тот и выиграл
+    * С разрушением планет, включая столицу ?
+    * Вопросы
+        * Что делать с флотом без планеты? Удалять? Или "Флот последней надежды" - долетает и делает, что делает? Или можно перенаправить?
+
+* Реклама проекта - послать какую-нибудь мелочь блоггерам зарубеж с письмом
+
+
+
+Флоты вы полёте - добавить попап/надпись на "откуда" и "куда" с названием планеты
+
+!!!!!!!!!!! Перестало работать редактирование новостей - в ячейке новостей теперь нет данных для редактирования
+
+* Добавить в статистику метки "слабый/сильный игрок"
+
+https://css-tricks.com/using-webp-images/
+
 #ctv
 
 # WiP
@@ -130,11 +236,13 @@ SHOW PROFILES;
 BEFORE PUTTING IT ON GITHUB!!!!
 Check for module version - die() if it's not compatible with v46a46+
 
+2024-01-03 19:59:46 46a58
+[%] News
+    Now non-admin users doesn't see announces
 
 2023-05-31 16:04:19 46a53
 [~] Юниты
     Поддержка Фестиваля "ДР-2023"
-
 
 2023-05-19 16:17:46 46a49
 [@] Code

@@ -8,6 +8,7 @@ lng_include('menu');
 
 $active_payment_modules = SN::$gc->modules->countModulesInGroup('payment') > 0;
 
+/** @var classConfig $config */
 global $sn_version_check_class, $template_result, $user, $config, $lang;
 global $sn_menu, $sn_menu_admin;
 
@@ -357,7 +358,7 @@ $sn_menu = [
   'menu_news'          => [
     'LEVEL'       => 'submenu',
     'ITEM'        => $lang['news_title'],
-    'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"fresh\">{$lang['lm_announce_fresh']}</span>" : ''),
+    'ITEM_FINISH' => ($user['news_lastread'] < SN::$config->var_news_last ? "&nbsp;<span class=\"fresh\">{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'        => 'announce.php',
     'ICON'        => true,
   ],
@@ -452,38 +453,38 @@ $sn_menu = [
 //$sn_menu_admin = defined('IN_ADMIN') && IN_ADMIN === true ? array(
 $sn_menu_admin = [
   'menu_admin_server_name' => [
-    'LEVEL' => 'header',
-    'TYPE'  => 'text',
-    'ITEM'  => $config->game_name,
+    'LEVEL'               => 'header',
+    'TYPE'                => 'text',
+    'ITEM'                => $config->game_name,
     MENU_FIELD_AUTH_LEVEL => AUTH_LEVEL_MODERATOR,
   ],
   'menu_admin_server_time' => [
-    'TYPE' => 'text',
-    'ITEM' => '',
+    'TYPE'       => 'text',
+    'ITEM'       => '',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 
   'menu_admin_version_check' => [
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'adm_opt_ver_check',
+    'LEVEL'      => 'header',
+    'TYPE'       => 'lang',
+    'ITEM'       => 'adm_opt_ver_check',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
   'menu_admin_version_info'  => [
-    'TYPE' => 'text',
-    'ITEM' => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
+    'TYPE'       => 'text',
+    'ITEM'       => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
       $sn_version_check_class[$config->server_updater_check_result] . '">' . $lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 
-  'USER_AUTHLEVEL_NAME'       => [
-    'LEVEL' => 'header',
-    'ITEM'  => $lang['user_level'][$user['authlevel']],
-    'LINK'  => 'index.php',
+  'USER_AUTHLEVEL_NAME' => [
+    'LEVEL'      => 'header',
+    'ITEM'       => $lang['user_level'][$user['authlevel']],
+    'LINK'       => 'index.php',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
 
-  'menu_admin_overview'       => [
+  'menu_admin_overview' => [
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_over',
@@ -491,34 +492,34 @@ $sn_menu_admin = [
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
 
-  'menu_admin_configuration'  => [
+  'menu_admin_configuration' => [
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_conf',
     'LINK'       => 'admin/settings.php',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
-  'menu_admin_modules'          => [
+  'menu_admin_modules'       => [
     'TYPE'       => 'lang',
     'ITEM'       => 'menu_admin_modules',
     'LINK'       => 'index.php?page=admin/admin_modules',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
-  'menu_admin_quests'         => [
+  'menu_admin_quests'        => [
     'TYPE'       => 'lang',
     'ITEM'       => 'qst_quests',
     'LINK'       => 'admin/adm_quest.php',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
 
-  'menu_admin_dark_matter'    => [
+  'menu_admin_dark_matter'        => [
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'dark_matter',
     'LINK'       => 'admin/admin_darkmatter.php',
     'AUTH_LEVEL' => AUTH_LEVEL_ADMINISTRATOR,
   ],
-  'menu_admin_matter_analyze' => [
+  'menu_admin_matter_analyze'     => [
     'TYPE'       => 'lang',
     'ITEM'       => 'matter_analyze',
     'LINK'       => 'admin/admin_analyze_matter.php',
@@ -562,7 +563,7 @@ $sn_menu_admin = [
     'LINK'       => 'admin/banned.php',
     'AUTH_LEVEL' => AUTH_LEVEL_MODERATOR,
   ],
-  'menu_admin_mining'      => [
+  'menu_admin_mining'     => [
     'TYPE'       => 'lang',
     'ITEM'       => 'menu_admin_mining',
     'LINK'       => 'index.php?page=admin/admin_mining',

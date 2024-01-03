@@ -9,6 +9,11 @@ use General\Helpers\PagingRenderer;
  * @param int      $query_limit
  */
 function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
+  if($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
+    $query_where .= (!empty($query_where) ? ' AND ' : '')
+      . '`tsTimeStamp` <= UNIX_TIMESTAMP(NOW())';
+  }
+
   $mmModuleIsActive = !empty(SN::$gc->modules->getModulesInGroup('payment'));
 
   $sqlText = "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
