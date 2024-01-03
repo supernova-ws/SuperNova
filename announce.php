@@ -123,18 +123,18 @@ if ($user['authlevel'] >= 3) {
 /** @noinspection PhpRedundantOptionalArgumentInspection */
 nws_render($user, $template, $annQuery, 20);
 
-$template->assign_vars(array(
+$template->assign_vars([
   'PAGE_HEADER'     => $lang['news_title'],
   'AUTHLEVEL'       => $user['authlevel'],
   'MODE'            => $mode,
   'ANNOUNCE_ID'     => $announce_id,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
-  'strAnnounce'     => $announce['strAnnounce'],
+  'strAnnounce'     => $announce['strAnnounce'], // Obsolete ?
+  'strAnnounceJS'   => json_encode($announce['strAnnounce']),
   'DETAIL_URL'      => $announce['detail_url'],
   'SURVEY_QUESTION' => $announce['survey_question'],
   'SURVEY_UNTIL'    => $announce['survey_until'],
   'SURVEY_ANSWERS'  => $survey_answers,
-
-));
+]);
 
 SnTemplate::display($template, $lang['news_title']);

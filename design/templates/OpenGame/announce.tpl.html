@@ -18,6 +18,10 @@
     $(this).hide();
     $("#js_news_add_form").show();
   });
+
+  $(document).ready(function() {
+    $("#announceText").val({strAnnounceJS});
+  });
 </script>
 
 <div id="js_news_add_form" style="{$HIDE_NEWS_ADD_FORM}">
@@ -37,7 +41,7 @@
 
       <tr>
         <td valign="top">{L_news_announce}</td>
-        <td><textarea name="text" cols=40 rows=5>{strAnnounce}</textarea></td>
+        <td><textarea name="text" cols=40 rows=5 id="announceText"></textarea></td>
       </tr>
       <tr>
         <td>{L_news_detail_url}</td>
