@@ -29,44 +29,24 @@ class DBStaticUnit {
     return $unit;
   }
 
+  /**
+   * @param int $user_id
+   * @param int $location_type
+   * @param int $location_id
+   * @param int $unit_snid
+   *
+   * @return array|false|mixed|null
+   */
   public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
-    SN::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+    $allUnits = _SnCacheInternal::db_get_unit_list_by_location($location_type, $location_id);
 
     $unit_snid = intval($unit_snid);
 
-    $resultOld = !$unit_snid
-      ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
-      : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
-
-//    // Alternative non-cache version - VERY SLOW!
-//    $resultNew = false;
-//    $filter = ($unit_snid ? "`unit_snid` = {$unit_snid} AND " : '') .
-//      "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . SN::db_unit_time_restrictions();
-//
-//    $query = SN::db_query_select(
-//      "SELECT * FROM {{unit}}"
-//      . ($filter ? " WHERE {$filter}" : '')
-//      . ($unit_snid ? ' LIMIT 1' : '')
-//    );
-//
-//    if ($unit_snid) {
-//      $resultNew = db_fetch($query);
-//
-//      $resultNew = $resultNew ?: null;
-//    } else {
-//      while ($row = db_fetch($query)) {
-//        $resultNew[$row['unit_snid']] = $row;
-//      }
-//    }
-//
-//    if ($resultOld != $resultNew) {
-//      pdump("$user_id, $location_type, $location_id, $unit_snid", '$user_id, $location_type, $location_id, $unit_snid');
-//
-//      pdump($resultOld);
-//      pdump($resultNew);
-//      die("DbUnByLoc FATAL! db_user_list() '{$filter}'");
-//    }
+//    $resultOld = !$unit_snid
+//      ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
+//      : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
+    $resultOld = $unit_snid ? (isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null ) : $allUnits;
 
     return $resultOld;
   }

@@ -1008,8 +1008,6 @@ REAL Planets: pcs x players
 - db_get_record_by_id - количество параметров и сократить
 Избавиться от
 - _SnCacheInternal::$queries
-- И вообще - вынести из classSupernova все явные обращения к конкретным таблицам/сущностям
-  classSupernova::db_get_unit_list_by_location
 
 db_unit_by_location()
 db_planet_by_id()

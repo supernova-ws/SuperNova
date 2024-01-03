@@ -3,6 +3,8 @@
  * Created by Gorlum 31.10.2017 2:04
  */
 
+use Unit\DBStaticUnit;
+
 /**
  * Class _SnCacheInternal
  *
@@ -200,4 +202,30 @@ class _SnCacheInternal {
 
     return isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null;
   }
+
+  /**
+   * @param     $location_type
+   * @param     $location_id
+   *
+   * @return array|false
+   */
+  public static function db_get_unit_list_by_location($location_type, $location_id) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+      return false;
+    }
+
+    if (!_SnCacheInternal::unit_locatorIsSet($location_type, $location_id)) {
+      $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
+      if (is_array($got_data)) {
+        foreach ($got_data as $unit_db_id => $unitRow) {
+          _SnCacheInternal::unit_linkLocatorToData($unitRow, $unit_db_id);
+        }
+      }
+    }
+
+    $result = _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id);
+
+    return $result;
+  }
+
 }

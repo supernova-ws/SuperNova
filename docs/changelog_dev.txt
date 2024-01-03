@@ -62,7 +62,6 @@ NULL
 
 2023-03-04 15:32:28		SQL Error	Deadlock found when trying to get lock; try restarting transaction<br />/* tID 521<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'classes/SN.php' Line 336<br />SN::db_query_select() - 'classes/SN.php' Line 432<br />SN::db_get_record_list() - 'classes/Planet/DBStaticPlanet.php' Line 39<br />Planet\DBStaticPlanet::db_planet_by_gspt_safe() - 'classes/Planet/DBStaticPlanet.php' Line 59<br />Planet\DBStaticPlanet::db_planet_by_vector() - 'includes/functions/eco_planet_update.php' Line 43<br />sys_o_get_updated() - 'classes/Pages/Deprecated/PageFleet5Gathering.php' Line 57<br />(Pages\Deprecated\PageFleet5Gathering)Pages\Deprecated\PageFleet5Gathering->flt_build_gathering() - 'classes/Pages/Deprecated/PageFleet5Gathering.php' Line 273<br />(Pages\Deprecated\PageFleet5Gathering)Pages\Deprecated\PageFleet5Gathering->viewPage5Gathering() - 'fleet.php' Line 240<br /> */ SELECT * FROM game_planets WHERE game_planets.`galaxy` = 8 AND game_planets.`system` = 250 AND game_planets.`planet` = 11 AND game_planets.`planet_type` = 1 FOR UPDATE<br />
 2023-03-04 15:32:29		SQL Error	Deadlock found when trying to get lock; try restarting transaction<br />/* tID 481<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'classes/SN.php' Line 336<br />SN::db_query_select() - 'classes/SN.php' Line 432<br />SN::db_get_record_list() - 'classes/SN.php' Line 631<br />SN::db_que_list_by_type_location() - 'includes/functions/eco_queue.php' Line 409<br />que_get() - 'includes/functions/eco_queue.php' Line 546<br />que_process() - 'includes/functions/eco_planet_update.php' Line 52<br />sys_o_get_updated() - 'common.php' Line 47<br />include() - 'buildings.php' Line 17<br /> */ SELECT * FROM game_que WHERE `que_player_id` = 7240683 AND (`que_planet_id` = 7485628 OR que_planet_id IS NULL) FOR UPDATE<br />
-2023-03-04 15:33:46		SQL Error	Deadlock found when trying to get lock; try restarting transaction<br />/* tID 560<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'classes/SN.php' Line 336<br />SN::db_query_select() - 'classes/SN.php' Line 432<br />SN::db_get_record_list() - 'classes/SN.php' Line 578<br />SN::db_get_unit_list_by_location() - 'classes/Unit/DBStaticUnit.php' Line 34<br />Unit\DBStaticUnit::db_unit_by_location() - 'classes/DBAL/OldDbChangeSet.php' Line 51<br />DBAL\OldDbChangeSet::db_changeset_prepare_unit() - 'includes/functions/eco_queue.php' Line 657<br />que_process() - 'includes/functions/eco_planet_update.php' Line 52<br />sys_o_get_updated() - 'classes/Pages/Deprecated/PageOverview.php' Line 130<br />(Pages\Deprecated\PageOverview)Pages\Deprecated\PageOverview->overview() - 'classes/Pages/Deprecated/PageOverview.php' Line 78<br />(Pages\Deprecated\PageOverview)Pages\Deprecated\PageOverview->route() - 'overview.php' Line 38<br /> */ SELECT * FROM game_unit WHERE unit_location_type = 1 AND unit_location_id = 7455347 AND (unit_time_start IS NULL OR unit_time_start <= FROM_UNIXTIME(1677936805)) AND (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= FROM_UNIXTIME(1677936805)) FOR UPDATE<br />
 
 2022-10-23 03:29:11		SQL Error	You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{{blitz_alliance}} AS subject ON subject.id = sp.id_ally LEFT JOIN game_blitz_st' at line 1<br />/* tID 444<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'includes/db.php' Line 115<br />doquery() - 'includes/db/db_queries.php' Line 171<br />db_stat_list_statistic() - 'stat.php' Line 109<br /> */ SELECT @rownum:=@rownum+1 as rownum, subject.id as `id`, sp.total_rank as rank, sp.total_old_rank as rank_old, sp.total_points as points, subject.ally_name as name, subject.ally_tag, subject.ally_members FROM (SELECT @rownum:=0) r, game_blitz_statpoints AS sp LEFT JOIN {{blitz_alliance}} AS subject ON subject.id = sp.id_ally LEFT JOIN game_blitz_statpoints AS sp_old ON sp_old.id_ally = subject.id AND sp_old.`stat_type` = 2 AND sp_old.`stat_code` = 2 WHERE sp.`stat_type` = 2 AND sp.`stat_code` = 1 ORDER BY sp.`total_rank`, subject.id LIMIT 0,100;<br />
 2022-10-25 09:08:37		SQL Error	You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '\"' at line 1<br />/* tID 465<br />(DBAL\db_mysql)DBAL\db_mysql->doquery() - 'classes/SN.php' Line 336<br />SN::db_query_select() - 'classes/SN.php' Line 432<br />SN::db_get_record_list() - 'classes/SN.php' Line 631<br />SN::db_que_list_by_type_location() - 'includes/functions/eco_queue.php' Line 409<br />que_get() - 'includes/includes/eco_bld_structures.php' Line 115<br />sn_eco_build() - '' Line _UNDEFINED_<br />call_user_func_array() - 'includes/general/general.php' Line 52<br />sn_function_call() - 'includes/includes/eco_bld_structures.php' Line 16<br />eco_build() - 'buildings.php' Line 52<br /> */ SELECT * FROM game_que WHERE `que_player_id` = 7211448 AND (`que_planet_id` = 7269267) AND `que_type` = 6\"<br />
@@ -112,21 +111,15 @@ SHOW PROFILES;
             Ну или кто-то сходит с ума
 
 
-Бан по IP в игре
-
-ИД игрока в чате по навердению курсора
-    Возможно - дополнительное меню
-
+* Бан по IP в игре
+* ИД игрока в чате по навердению курсора
+  * Возможно - дополнительное меню
 * Переписать кэшер целиком?
-
 * track all doquery() and replace with statics
-
 * Переписать все запросы через DbQuery::build()
-
-shadowmute - игрок видит свои сообщения, но его никто не видит
-
-Ограничение доступа к чату и ЛС в зависимости от ранга
-Интеграция с форумом
+* shadowmute - игрок видит свои сообщения, но его никто не видит
+* Ограничение доступа к чату и ЛС в зависимости от ранга
+* Интеграция с форумом
 * Парсинг УРЛов в чате и ЛС - не парсится корректно УРЛы от админа, если УПЛ находится в конце строки и не закрывается пробелом
     * Очевидно, надо добавить в РЕГЕКП символ окончания строки/линии как признак конка УРЛа
 * Проверить, что там с CI/CD
@@ -143,72 +136,54 @@ shadowmute - игрок видит свои сообщения, но его ни
         * Картинки планет (миниатюрные)
         * Картинки юнитов (миниатюрные)
         * Иконки
+    * https://medium.com/@robertcooper_rc/animating-a-sprite-sheet-with-css-ca15e2664
+    * sprite from animated gifs and generate css
+      * I am very early in experimenting with CSS sprites, but for me the biggest (and so far the only) benefit in using them is to reduce amount of request the client needs to send to server.
+      * I haven't tried, but I assume that for the same end result (in that optimization context anyway), one could add the animated gif to the HTML inline with data URI scheme: https://en.wikipedia.org/wiki/Data_URI_scheme
+    * https://stackoverflow.com/questions/30231943/smooth-and-fast-sprite-animation-css
+    * https://stackoverflow.com/questions/9139386/animated-gif-vs-spritesheet-js-css
+    * https://stackoverflow.com/questions/10186257/why-not-animated-gif-instead-of-animated-css-sprites
+    * https://stackoverflow.com/questions/37222609/sprite-multiple-gif-files-with-css-info
+    * https://www.w3schools.com/css/css_image_sprites.asp
+    * https://www.geeksforgeeks.org/how-to-use-flex-to-shrink-an-image-in-css/
+    * Offline CSS Sprites Image Generator
+      * 1) Smartsprites 0.3.2 This is a open source PHP CSS sprites Generator Source Code for Download
+      * http://www.tanila.de/smartsprite/index.php
+      *
+* 2) Open Source Java CSS sprites Generator Source Code
+* http://smartsprites.osinski.name/cgi-sys/defaultwebpage.cgi
+* 3) Free PHP Source Code of CCS Sprites Generator from Website-Performace.org
+* https://linux.softpedia.com/get/Internet/HTTP-WWW-/CSS-Sprite-Generator-39417.shtml
+* https://stackoverflow.com/questions/2428053/css-sprites-not-only-for-background-images
+* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_images/Implementing_image_sprites_in_CSS
 
-https://medium.com/@robertcooper_rc/animating-a-sprite-sheet-with-css-ca15e2664
-
-sprite from animated gifs and generate css
-
-
-I am very early in experimenting with CSS sprites, but for me the biggest (and so far the only) benefit in using them is to reduce amount of request the client needs to send to server.
-
-I haven't tried, but I assume that for the same end result (in that optimization context anyway), one could add the animated gif to the HTML inline with data URI scheme: https://en.wikipedia.org/wiki/Data_URI_scheme
-
-https://stackoverflow.com/questions/30231943/smooth-and-fast-sprite-animation-css
-https://stackoverflow.com/questions/9139386/animated-gif-vs-spritesheet-js-css
-https://stackoverflow.com/questions/10186257/why-not-animated-gif-instead-of-animated-css-sprites
-https://stackoverflow.com/questions/37222609/sprite-multiple-gif-files-with-css-info
-
-https://www.w3schools.com/css/css_image_sprites.asp
-
-https://www.geeksforgeeks.org/how-to-use-flex-to-shrink-an-image-in-css/
-
-
-Offline CSS Sprites Image Generator
-1) Smartsprites 0.3.2 This is a open source PHP CSS sprites Generator Source Code for Download
-http://www.tanila.de/smartsprite/index.php
-
-2) Open Source Java CSS sprites Generator Source Code
-http://smartsprites.osinski.name/cgi-sys/defaultwebpage.cgi
-
-3) Free PHP Source Code of CCS Sprites Generator from Website-Performace.org
-https://linux.softpedia.com/get/Internet/HTTP-WWW-/CSS-Sprite-Generator-39417.shtml
-
-
-https://stackoverflow.com/questions/2428053/css-sprites-not-only-for-background-images
-
-https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_images/Implementing_image_sprites_in_CSS
-
-https://web.dev/serve-images-webp/
-
-
-Было:
-<img src="flower.jpg" alt="">
-
-Стало:
-<picture>
-  <source type="image/webp" srcset="flower.webp">
-  <source type="image/jpeg" srcset="flower.jpg">
-  <img src="flower.jpg" alt="">
-</picture>
+* WebP
+  * https://web.dev/serve-images-webp/
+    * Changes
+        * Было:
+            * <img src="flower.jpg" alt="">
+        * Стало:
+            '''html
+            <picture>
+              <source type="image/webp" srcset="flower.webp">
+              <source type="image/jpeg" srcset="flower.jpg">
+              <img src="flower.jpg" alt="">
+            </picture>
+            '''
+  * https://css-tricks.com/using-webp-images/
+* Http2
+  * https://cheapsslsecurity.com/p/how-to-enable-http2/
+  * https://www.google.com/search?hl=en&q=lighttpd+http%2F2+support&oq=lighttpd+http%2F2+support&sourceid=chrome&ie=UTF-8
 
 
-https://cheapsslsecurity.com/p/how-to-enable-http2/
-https://www.google.com/search?hl=en&q=lighttpd+http%2F2+support&oq=lighttpd+http%2F2+support&sourceid=chrome&ie=UTF-8
-
-
-mod-multiserver: дроп-даун для выбора сервера.
-
-объединение очередей, разделение очередей
-
-Роботы:
-* Отдельный аккаунт под роботов без логина
-* Отключать чат
-* Отключать личку
-* Отключать вывод галактики
-
-Антимультик: не пускать в игру, если залогинен аккаунт с того же АйПи/с той же сетки.
-
-
+* mod-multiserver: дроп-даун для выбора сервера.
+* объединение очередей, разделение очередей
+* Роботы-пауки:
+  * Отдельный аккаунт под роботов без логина
+  * Отключать чат
+  * Отключать личку
+  * Отключать вывод галактики
+* Антимультик: не пускать в игру, если залогинен аккаунт с того же АйПи/с той же сетки.
 * Режим "Королевская битва"
     * Игроки наачинают в разных частях вселенных
     * Вселенная уменьшается каждые сутки
@@ -216,25 +191,28 @@ mod-multiserver: дроп-даун для выбора сервера.
     * С разрушением планет, включая столицу ?
     * Вопросы
         * Что делать с флотом без планеты? Удалять? Или "Флот последней надежды" - долетает и делает, что делает? Или можно перенаправить?
-
 * Реклама проекта - послать какую-нибудь мелочь блоггерам зарубеж с письмом
 
 
 
-Флоты вы полёте - добавить попап/надпись на "откуда" и "куда" с названием планеты
-
-!!!!!!!!!!! Перестало работать редактирование новостей - в ячейке новостей теперь нет данных для редактирования
-
+* Флоты в полёте - добавить попап/надпись на "откуда" и "куда" с названием планеты
 * Добавить в статистику метки "слабый/сильный игрок"
 
-https://css-tricks.com/using-webp-images/
-
-#ctv
 
 # WiP
 
 BEFORE PUTTING IT ON GITHUB!!!!
 Check for module version - die() if it's not compatible with v46a46+
+
+#ctv
+
+2024-01-03 22:36:43 46a63
+[%] News
+    Now announce editing/copying works again in Chrome
+
+[@] Code
+    Start moving Unit operations from using `SN` or `_SnCacheInternal` objects
+    Misc speedup
 
 2024-01-03 19:59:46 46a58
 [%] News

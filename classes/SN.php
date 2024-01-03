@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection SqlResolve */
 
 use DBAL\db_mysql;
 use Player\userOptions;
@@ -548,39 +548,6 @@ class SN {
     return $result;
   }
 
-
-
-  public static function db_unit_time_restrictions($date = SN_TIME_NOW) {
-    $date = is_numeric($date) ? "FROM_UNIXTIME({$date})" : "'{$date}'";
-
-    return
-      "(unit_time_start IS NULL OR unit_time_start <= {$date}) AND
-    (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
-  }
-
-  /**
-   * @param int $user_id
-   * @param     $location_type
-   * @param     $location_id
-   *
-   * @return array|false
-   */
-  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id) {
-    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
-      return false;
-    }
-
-    if (!_SnCacheInternal::unit_locatorIsSet($location_type, $location_id)) {
-      $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
-      if (is_array($got_data)) {
-        foreach ($got_data as $unit_db_id => $unitRow) {
-          _SnCacheInternal::unit_linkLocatorToData($unitRow, $unit_db_id);
-        }
-      }
-    }
-
-    return _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id);
-  }
 
   /*
    * С $for_update === true эта функция должна вызываться только из транзакции! Все соответствующие записи в users и planets должны быть уже блокированы!
