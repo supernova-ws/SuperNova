@@ -120,7 +120,7 @@ class StatCalculator {
       }
     }
     unset($user_list);
-    _SnCacheInternal::cache_clear(LOC_USER, true);
+    DBStaticUnit::cache_clear();
 
     static::sta_set_time_limit('calculating planets stats');
     $i = 0;

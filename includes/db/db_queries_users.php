@@ -48,7 +48,7 @@ function db_get_user_by_where($where_safe) {
       true
     );
 
-    _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
+//    _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
   }
 
   return $user;
@@ -162,7 +162,7 @@ function db_user_last_registered_username() {
     'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
     true
   );
-  _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
+//  _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
 
   return isset($user['username']) ? $user['username'] : '';
 }

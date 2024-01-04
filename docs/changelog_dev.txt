@@ -217,8 +217,14 @@ _SnCacheInternal::cache_clear(LOC_UNIT
     db_upd_record_list
     StatCalculator:sys_stat_calculate
 
+TODO: Если пересчёт статы идёт раньше, чем положено - сохранять предыдущие значения и сравнивать с ними новый расчёт, а не с предыдущим расчётом
 
 #ctv
+
+2024-01-04 02:07:54 46a67
+[@] Code
+    `_SnCacheInternal` class removed from code along with caching players/planets
+    Units cached inside `DbStaticUnit` class
 
 2024-01-04 00:58:46 46a65
 [@] Code

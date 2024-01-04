@@ -140,8 +140,6 @@ class debug {
 
     if($deadlock && ($q = SN::$db->mysql_get_innodb_status())) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
-      $error_backtrace['locks'] = _SnCacheInternal::$locks;
-      $error_backtrace['cSN_data'] = _SnCacheInternal::$data;
       foreach($error_backtrace['cSN_data'] as &$location) {
         foreach($location as $location_id => &$location_data) //          $location_data = $location_id;
         {

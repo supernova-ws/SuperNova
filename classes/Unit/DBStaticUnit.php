@@ -4,7 +4,6 @@
 
 namespace Unit;
 
-use _SnCacheInternal;
 use Exception;
 use mysqli_result;
 use Planet\Planet;
@@ -41,13 +40,50 @@ class DBStaticUnit {
    */
   public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
-    $allUnits = _SnCacheInternal::db_get_unit_list_by_location($location_type, $location_id);
+    $allUnits = DBStaticUnit::db_get_unit_list_by_location($location_type, $location_id);
 
     $unit_snid = intval($unit_snid);
 
     $resultOld = $unit_snid ? (isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null ) : $allUnits;
 
     return $resultOld;
+  }
+
+  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов
+
+  /**
+   * @param $location_type
+   * @param $location_id
+   *
+   * @return array|false
+   */
+  public static function db_get_unit_list_by_location($location_type, $location_id) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+      return false;
+    }
+
+    if (!isset(DBStaticUnit::$locator[$location_type][$location_id])) {
+      $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
+      if (is_array($got_data)) {
+        foreach ($got_data as $unitRow) {
+          DBStaticUnit::$locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
+        }
+      }
+    }
+
+    $result = false;
+
+    if (is_array(DBStaticUnit::$locator[$location_type][$location_id])) {
+      foreach (DBStaticUnit::$locator[$location_type][$location_id] as $key => $value) {
+        $result[$key] = $value;
+      }
+    }
+
+    return $result;
+  }
+
+  public static function cache_clear() {
+    DBStaticUnit::$locator = [];
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

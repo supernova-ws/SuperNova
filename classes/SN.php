@@ -4,6 +4,7 @@ use DBAL\db_mysql;
 use Player\userOptions;
 use Common\Vector;
 use Core\GlobalContainer;
+use Unit\DBStaticUnit;
 
 /**
  * Class SN
@@ -268,7 +269,7 @@ class SN {
     }
 
     static::$db_in_transaction = true;
-    _SnCacheInternal::cache_locator_unset_all();
+    DBStaticUnit::cache_clear();
 
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
 
@@ -278,7 +279,7 @@ class SN {
   public static function db_transaction_commit() {
     static::db_transaction_check(true);
 
-    _SnCacheInternal::cache_lock_unset_all();
+    DBStaticUnit::cache_clear();
     SN::$gc->db->transactionCommit();
 
     //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
@@ -289,7 +290,7 @@ class SN {
 
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
-    _SnCacheInternal::cache_lock_unset_all();
+    DBStaticUnit::cache_clear();
 
     SN::$gc->db->transactionRollback();
 
@@ -387,64 +388,58 @@ class SN {
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
-    $query_cache = [];
+//    $query_cache = [];
+//
+//    // Always - disabled query cache
+//    {
+//      if (static::db_transaction_check(false)) {
+//        // Проходим по всем родителям данной записи
+//        foreach ($location_info[P_OWNER_INFO] as $owner_data) {
+//          $owner_location_type = $owner_data[P_LOCATION];
+//          $parent_id_list = [];
+//          // Выбираем родителей данного типа и соответствующие ИД текущего типа
+//          $query = static::db_query_select(
+//            "SELECT
+//              distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
+//            FROM {{{$location_info[P_TABLE_NAME]}}}" .
+//            ($filter ? ' WHERE ' . $filter : '') .
+//            ($fetch ? ' LIMIT 1' : ''),
+//            false,
+//            true
+//          );
+//
+//          while ($row = db_fetch($query)) {
+//            // Исключаем из списка родительских ИД уже заблокированные записи
+//            if (!_SnCacheInternal::cache_lock_get($owner_location_type, $row['parent_id'])) {
+//              $parent_id_list[$row['parent_id']] = $row['parent_id'];
+//            }
+//          }
+//
+//          // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
+//          if ($indexes_str = implode(',', $parent_id_list)) {
+//            $parent_id_field = static::$location_info[$owner_location_type][P_ID];
+//            static::db_get_record_list($owner_location_type,
+//              $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
+//          }
+//        }
+//      }
 
-    // Always - disabled query cache
-    {
-      if (static::db_transaction_check(false)) {
-        // Проходим по всем родителям данной записи
-        foreach ($location_info[P_OWNER_INFO] as $owner_data) {
-          $owner_location_type = $owner_data[P_LOCATION];
-          $parent_id_list = [];
-          // Выбираем родителей данного типа и соответствующие ИД текущего типа
-          $query = static::db_query_select(
-            "SELECT
-              distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
-            FROM {{{$location_info[P_TABLE_NAME]}}}" .
-            ($filter ? ' WHERE ' . $filter : '') .
-            ($fetch ? ' LIMIT 1' : ''),
-            false,
-            true
-          );
-
-          while ($row = db_fetch($query)) {
-            // Исключаем из списка родительских ИД уже заблокированные записи
-            if (!_SnCacheInternal::cache_lock_get($owner_location_type, $row['parent_id'])) {
-              $parent_id_list[$row['parent_id']] = $row['parent_id'];
-            }
-          }
-
-          // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
-          if ($indexes_str = implode(',', $parent_id_list)) {
-            $parent_id_field = static::$location_info[$owner_location_type][P_ID];
-            static::db_get_record_list($owner_location_type,
-              $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
-          }
-        }
-      }
+      $result = false;
 
       $query = static::db_query_select(
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
       while ($row = db_fetch($query)) {
-        _SnCacheInternal::cache_set($location_type, $row[$id_field], $row);
-        $query_cache[$row[$id_field]] = &_SnCacheInternal::$data[$location_type][$row[$id_field]];
+        $result[$row[$id_field]] = $row;
+        if ($fetch) {
+          break;
+        }
       }
-    }
+//    }
 
     if ($no_return) {
       return true;
     } else {
-      $result = false;
-      if (is_array($query_cache)) {
-        foreach ($query_cache as $key => $value) {
-          $result[$key] = $value;
-          if ($fetch) {
-            break;
-          }
-        }
-      }
-
       return $fetch ? (is_array($result) ? reset($result) : false) : $result;
     }
   }
@@ -461,13 +456,7 @@ class SN {
     {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
-        // TODO - переделать под работу со структурированными $set
-
-        // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись. Будет нужно на будущее
-        _SnCacheInternal::$data[$location_type][$record_id] = null;
-        // Вытаскиваем обновленную запись
-        static::db_get_record_by_id($location_type, $record_id);
-        _SnCacheInternal::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        DBStaticUnit::cache_clear();
       }
     }
 
@@ -486,8 +475,7 @@ class SN {
 
       if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
-        // TODO - когда будет структурированный $condition и $set - перепаковывать данные
-        _SnCacheInternal::cache_clear($location_type, true);
+        DBStaticUnit::cache_clear();
       }
     }
 
@@ -504,8 +492,7 @@ class SN {
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
-        // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        _SnCacheInternal::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        DBStaticUnit::cache_clear();
       }
     }
 
@@ -523,7 +510,7 @@ class SN {
     if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
-        _SnCacheInternal::cache_unset($location_type, $safe_record_id);
+        DBStaticUnit::cache_clear();
       }
     }
 
@@ -541,7 +528,7 @@ class SN {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
-        _SnCacheInternal::cache_clear($location_type);
+        DBStaticUnit::cache_clear();
       }
     }
 
