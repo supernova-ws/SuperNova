@@ -18,8 +18,7 @@ class _SnCacheInternal {
 
   // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
   // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
-  // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
-  protected static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+  protected static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов
 
 
   public static function array_repack(&$array, $level = 0) {
@@ -40,16 +39,6 @@ class _SnCacheInternal {
     }
   }
 
-  public static function cache_repack($location_type, $record_id = 0) {
-    // Если есть $user_id - проверяем, а надо ли перепаковывать?
-    if ($record_id && isset(_SnCacheInternal::$data[$location_type][$record_id]) && _SnCacheInternal::$data[$location_type][$record_id] !== null) {
-      return;
-    }
-
-    _SnCacheInternal::array_repack(_SnCacheInternal::$data[$location_type]);
-    _SnCacheInternal::array_repack(_SnCacheInternal::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-  }
-
   public static function cache_clear($location_type, $hard = true) {
     //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
     if ($hard && !empty(_SnCacheInternal::$data[$location_type])) {
@@ -57,7 +46,7 @@ class _SnCacheInternal {
       array_walk(_SnCacheInternal::$data[$location_type], function (&$item) { $item = null; });
     }
     _SnCacheInternal::$locator[$location_type] = [];
-    _SnCacheInternal::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
+    _SnCacheInternal::array_repack(_SnCacheInternal::$data[$location_type]);
   }
 
   public static function cache_lock_unset_all() {
@@ -152,27 +141,6 @@ class _SnCacheInternal {
     _SnCacheInternal::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &_SnCacheInternal::$data[LOC_UNIT][$unit_db_id];
   }
 
-
-  /**
-   * @param $location_type
-   * @param $location_id
-   *
-   * @return bool
-   */
-  public static function unit_locatorIsSet($location_type, $location_id) {
-    return isset(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id]);
-  }
-
-  /**
-   * @param $location_type
-   * @param $location_id
-   *
-   * @return bool
-   */
-  public static function unit_locatorIsArray($location_type, $location_id) {
-    return is_array(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id]);
-  }
-
   /**
    * @param $location_type
    * @param $location_id
@@ -181,26 +149,13 @@ class _SnCacheInternal {
    */
   public static function unit_locatorGetAllFromLocation($location_type, $location_id) {
     $result = false;
-    if (_SnCacheInternal::unit_locatorIsArray($location_type, $location_id)) {
+    if (is_array(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
       foreach (_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id] as $key => $value) {
         $result[$key] = $value;
       }
     }
 
     return $result;
-  }
-
-  /**
-   * @param $location_type
-   * @param $location_id
-   * @param $unit_snid
-   *
-   * @return array|null
-   */
-  public static function unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid) {
-    $allUnits = _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id);
-
-    return isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null;
   }
 
   /**
@@ -214,11 +169,11 @@ class _SnCacheInternal {
       return false;
     }
 
-    if (!_SnCacheInternal::unit_locatorIsSet($location_type, $location_id)) {
+    if (!isset(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
       $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
       if (is_array($got_data)) {
-        foreach ($got_data as $unit_db_id => $unitRow) {
-          _SnCacheInternal::unit_linkLocatorToData($unitRow, $unit_db_id);
+        foreach ($got_data as $unitRow) {
+          _SnCacheInternal::$locator[LOC_UNIT][$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
         }
       }
     }

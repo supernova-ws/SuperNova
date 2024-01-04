@@ -204,7 +204,26 @@ SHOW PROFILES;
 BEFORE PUTTING IT ON GITHUB!!!!
 Check for module version - die() if it's not compatible with v46a46+
 
+
+Отключить использование кэша - пусть даже будет медленнее
+
+_SnCacheInternal::cache_clear(LOC_UNIT
+    planet_edit_model
+    db_del_record_by_id - NO LOC_UNIT
+    db_del_record_list
+    db_upd_record_by_id -
+    db_ins_record
+    db_upd_record_by_id
+    db_upd_record_list
+    StatCalculator:sys_stat_calculate
+
+
 #ctv
+
+2024-01-04 00:58:46 46a65
+[@] Code
+    `_SnCacheInternal::$locator` now used only by LOC_UNIT and LOC_UNIT now does not stored in ::$data
+    Simplified cacher code a little
 
 2024-01-03 22:36:43 46a63
 [%] News

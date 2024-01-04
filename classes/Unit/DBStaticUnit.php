@@ -20,13 +20,15 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
+  /**
+   * Used by `unit_captain`
+   *
+   * @param int $unit_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public static function db_unit_by_id($unit_id) {
-    $unit = SN::db_get_record_by_id(LOC_UNIT, $unit_id);
-    if (is_array($unit)) {
-      _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);
-    }
-
-    return $unit;
+    return doquery("SELECT * FROM `{{unit}}` WHERE `unit_id` = " . idval($unit_id), true);
   }
 
   /**
@@ -43,9 +45,6 @@ class DBStaticUnit {
 
     $unit_snid = intval($unit_snid);
 
-//    $resultOld = !$unit_snid
-//      ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
-//      : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
     $resultOld = $unit_snid ? (isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null ) : $allUnits;
 
     return $resultOld;
