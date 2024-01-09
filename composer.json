@@ -3,7 +3,8 @@
     "ext-json": "*",
     "ext-mysqli": "*",
     "ext-curl": "*",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "ext-gd": "*"
   },
   "require-dev": {
     "ext-json": "*",

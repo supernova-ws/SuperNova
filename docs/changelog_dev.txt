@@ -205,19 +205,31 @@ BEFORE PUTTING IT ON GITHUB!!!!
 Check for module version - die() if it's not compatible with v46a46+
 
 
-Отключить использование кэша - пусть даже будет медленнее
-
-_SnCacheInternal::cache_clear(LOC_UNIT
-    planet_edit_model
-    db_del_record_by_id - NO LOC_UNIT
-    db_del_record_list
-    db_upd_record_by_id -
-    db_ins_record
-    db_upd_record_by_id
-    db_upd_record_list
-    StatCalculator:sys_stat_calculate
-
 TODO: Если пересчёт статы идёт раньше, чем положено - сохранять предыдущие значения и сравнивать с ними новый расчёт, а не с предыдущим расчётом
+
+
+* Не масштабируются попапы от размера фонта!
+
+I have solved this problem using img tags and using the object-fit and object-position properties in my css. Here's a sample of the html and css I used:-
+
+HTML
+
+<img src="<your image source>" class="sprite-icon sprite-icon-1 " />
+CSS
+
+.sprite-icon {
+  height: 20px;
+  width: 20px;
+  object-fit: none;
+}
+
+.sprite-icon-1 {
+  object-position: 0 0;
+}
+
+.sprite-icon-2 {
+  object-position: -20px 0;
+}
 
 #ctv
 

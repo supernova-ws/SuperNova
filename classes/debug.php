@@ -366,11 +366,19 @@ function pdump($value, $varname = null) {
     $caller = "\r\n" . $caller;
   }
 
-  print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
-    dump($value, $varname) .
-    $caller .
-    '</pre>'
-  );
+  if (php_sapi_name() == "cli") {
+    print("\n" .
+      dump($value, $varname) .
+      $caller .
+      "\n\n"
+    );
+  } else {
+    print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
+      dump($value, $varname) .
+      $caller .
+      '</pre>'
+    );
+  }
 }
 
 function debug($value, $varname = null) {
