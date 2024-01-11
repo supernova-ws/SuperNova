@@ -5,4 +5,4 @@ require_once __DIR__ . '/classes/Spritify.php';
 
 use Tools\Spritify;
 
-Spritify::go(__DIR__ . '/../skins/EpicBlue/icons/', __DIR__ . '/_output/');
+Spritify::go(__DIR__ . '/../skins/EpicBlue/icons/', __DIR__ . '/_output/', 'icons', '#', '');

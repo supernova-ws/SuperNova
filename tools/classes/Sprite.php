@@ -66,36 +66,43 @@ class Sprite {
    *
    * @return void
    */
-  public function generate($dirOut) {
+  public function generate($dirOut, $outName, $cssPrefix, $cssSuffix) {
     $this->width = $this->height = 0;
-
+    // Generating lines and calculating line sizes
     foreach ($this->lines as $line) {
-      $line->generate();
+      $line->generate($this->height);
 
       $this->height += $line->height;
-      $this->width = max($this->width, $line->width);
+      $this->width  = max($this->width, $line->width);
 
       // TODO debug
       // $line->image2->savePng($dirOut . count($breakpoints) . '.png');
     }
-
+    // Recreating main sprite image with new width and height
     $this->imageReset();
-
+    // Generating final sprite
     $position = 0;
     foreach ($this->lines as $line) {
       $this->image->copyFrom($line->image, 0, $position);
 
       $position += $line->height;
+      $css      .= $line->css;
     }
 
-    $this->image->savePng($dirOut . 'output.png');
+    $pngName = $outName . '.png';
+    $this->image->savePng($dirOut . $pngName);
 
+    $css = ".{$outName} {background-image: url('{$pngName}');}\n" . sprintf($css, $cssPrefix, $cssSuffix);
+    file_put_contents($dirOut . $outName . '.css', $css);
 
     /*
   .bg-menu_affiliates {
       width: 12px; height: 12px;
       background: url('css_sprites.png') -58px -42px;
   }
+
+      transform: scale(.3);
+      transform-origin: top left;
      */
 
   }

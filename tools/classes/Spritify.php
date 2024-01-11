@@ -19,7 +19,7 @@ class Spritify {
    * @return void
    * @throws Exception
    */
-  public static function go($dirIn, $dirOut) {
+  public static function go($dirIn, $dirOut, $outName, $cssPrefix, $cssSuffix = '') {
     $dirIn = realpath($dirIn) . '/';
 
     $images = self::propagateImages(scandir($dirIn), $dirIn);
@@ -31,7 +31,7 @@ class Spritify {
       throw new Exception("Can't create directory {$dirOut}\n");
     }
 
-    $sprite->generate($dirOut);
+    $sprite->generate($dirOut, $outName, $cssPrefix, $cssSuffix);
   }
 
   /**

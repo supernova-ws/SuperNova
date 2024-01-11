@@ -16,6 +16,8 @@ class SpriteLine {
 
   /** @var ImageContainer|null $image */
   public $image = null;
+  /** @var string */
+  public $css = '';
 
   /**
    * @param ImageFile $imageFile
@@ -33,7 +35,7 @@ class SpriteLine {
     return count($this->files);
   }
 
-  public function generate() {
+  public function generate($posY) {
     unset($this->widthList);
 
     unset($this->image);
@@ -45,8 +47,32 @@ class SpriteLine {
 
       $this->widthList[] = $file->width;
 
+      $onlyName = explode('.', $file->fileName);
+      if(count($onlyName) > 1) {
+        array_pop($onlyName);
+      }
+      $onlyName  = implode('.', $onlyName);
+
+      $this->css .= "%1\$s{$onlyName}" . "%2\$s {width: {$file->width}px; height: {$file->height}px;background-position: -{$position}px -{$posY}px;}\n";
+//      $this->css .= implode("\n", [
+//        "%1\$s{$onlyName}" . "%2\$s {",
+//        "width: {$file->width}px; height: {$file->height}px;",
+//        "background-position: -{$position}px -{$posY}px;",
+//        '}',
+//        '',
+//      ]);
+
       $position += $file->width;
     }
+
+    /*
+  .bg-menu_affiliates {
+      width: 12px; height: 12px;
+      background: url('css_sprites.png') -58px -42px;
+  }
+     */
+
+
   }
 
 }
