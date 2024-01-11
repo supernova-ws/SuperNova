@@ -66,11 +66,11 @@ class Sprite {
    *
    * @return void
    */
-  public function generate($dirOut, $outName, $cssPrefix, $cssSuffix) {
+  public function generate($dirOut, $outName, $cssPrefix, $cssSuffix, $scaleToPx, $httpLocation) {
     $this->width = $this->height = 0;
     // Generating lines and calculating line sizes
     foreach ($this->lines as $line) {
-      $line->generate($this->height);
+      $line->generate($this->height, $scaleToPx);
 
       $this->height += $line->height;
       $this->width  = max($this->width, $line->width);
@@ -92,7 +92,10 @@ class Sprite {
     $pngName = $outName . '.png';
     $this->image->savePng($dirOut . $pngName);
 
-    $css = ".{$outName} {background-image: url('{$pngName}');}\n" . sprintf($css, $cssPrefix, $cssSuffix);
+    $css = ".{$outName} {background-image: url('{$httpLocation}{$pngName}');" .
+//      ($scaleToPx > 0 ? "width:{$scaleToPx}px;height:{$scaleToPx}px;" : "") .
+      ($scaleToPx > 0 ? "transform-origin: top left;" : "") .
+      "}\n" . sprintf($css, $cssPrefix, $cssSuffix);
     file_put_contents($dirOut . $outName . '.css', $css);
 
     /*

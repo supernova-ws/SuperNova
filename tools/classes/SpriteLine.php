@@ -35,7 +35,7 @@ class SpriteLine {
     return count($this->files);
   }
 
-  public function generate($posY) {
+  public function generate($posY, $scaleToPx) {
     unset($this->widthList);
 
     unset($this->image);
@@ -48,12 +48,29 @@ class SpriteLine {
       $this->widthList[] = $file->width;
 
       $onlyName = explode('.', $file->fileName);
-      if(count($onlyName) > 1) {
+      if (count($onlyName) > 1) {
         array_pop($onlyName);
       }
-      $onlyName  = implode('.', $onlyName);
+      $onlyName = implode('.', $onlyName);
 
-      $this->css .= "%1\$s{$onlyName}" . "%2\$s {width: {$file->width}px; height: {$file->height}px;background-position: -{$position}px -{$posY}px;}\n";
+      $css = [
+        "%1\$s{$onlyName}" . "%2\$s",
+        "{",
+        "background-position: -{$position}px -{$posY}px;",
+      ];
+      if ($scaleToPx > 0) {
+        $maxSize = max($file->width, $file->height);
+        if ($maxSize != $scaleToPx) {
+            // transform: scale(4);transform-origin: top left;
+//          $css[] = "transform: scale(calc({$scaleToPx}/{$maxSize}));";
+          $css[] = "zoom: calc({$scaleToPx}/{$maxSize});";
+        } else {
+        }
+        $css[] = "width: {$file->width}px;";
+        $css[] = "height: {$file->height}px;";
+      }
+      $css[]     = "}\n";
+      $this->css .= implode('', $css);
 //      $this->css .= implode("\n", [
 //        "%1\$s{$onlyName}" . "%2\$s {",
 //        "width: {$file->width}px; height: {$file->height}px;",

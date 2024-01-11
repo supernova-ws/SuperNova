@@ -13,13 +13,18 @@ require_once __DIR__ . '/Sprite.php';
 
 class Spritify {
   /**
-   * @param string $dirIn
-   * @param string $dirOut
+   * @param string $dirIn     Input directory
+   * @param string $dirOut    Output directory
+   * @param string $outName   Name to use as CSS/PNG files
+   * @param string $cssPrefix Prefix to CSS qualifier. Default '#'
+   * @param string $cssSuffix Suffix to CSS qualifier. Default ''
+   * @param int    $scaleToPx Pixel size to scale largest side of sprite to for scale(). Default 0 - no scaling
+   * @param string $httpLocation Url relative to root where PNG sprite will reside - '/design/images/' by default
    *
    * @return void
    * @throws Exception
    */
-  public static function go($dirIn, $dirOut, $outName, $cssPrefix, $cssSuffix = '') {
+  public static function go($dirIn, $dirOut, $outName, $cssPrefix = '#', $cssSuffix = '', $scaleToPx = 0, $httpLocation = '/design/images/') {
     $dirIn = realpath($dirIn) . '/';
 
     $images = self::propagateImages(scandir($dirIn), $dirIn);
@@ -31,7 +36,7 @@ class Spritify {
       throw new Exception("Can't create directory {$dirOut}\n");
     }
 
-    $sprite->generate($dirOut, $outName, $cssPrefix, $cssSuffix);
+    $sprite->generate($dirOut, $outName, $cssPrefix, $cssSuffix, $scaleToPx, $httpLocation);
   }
 
   /**
