@@ -31,6 +31,12 @@ class ImageContainer {
     return $that;
   }
 
+  /**
+   * @param int $width
+   * @param int $height
+   *
+   * @return static
+   */
   public static function create($width, $height) {
     $that = new static();
 
@@ -40,37 +46,6 @@ class ImageContainer {
     $that->imageReset();
 
     return $that;
-  }
-
-  /**
-   * @return void
-   */
-  public function imageReset() {
-    if (!empty($this->image)) {
-      imagedestroy($this->image);
-    }
-
-    $this->image = imagecreatetruecolor($this->width, $this->height);
-    imagealphablending($this->image, true);
-    imagesavealpha($this->image, true);
-    $color = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
-    imagefill($this->image, 0, 0, $color);
-  }
-
-
-  public function __get($property) {
-
-    if (in_array($property, ['height', 'width',]) && ($this->$property === -1)) {
-      if (isset($this->image)) {
-//        list($this->width, $this->height) = getimagesize($this->fullPath);
-        $this->width  = imagesx($this->image);
-        $this->height = imagesy($this->image);
-      } else {
-        $this->width = $this->height = 0;
-      }
-    }
-
-    return property_exists($this, $property) ? $this->$property : null;
   }
 
   /**
@@ -86,6 +61,18 @@ class ImageContainer {
     return imagecopy($this->image, $anImage->image, $positionX, $positionY, $sourceX, $sourceY, $anImage->width, $anImage->height);
   }
 
+  public function __get($property) {
+    if (in_array($property, ['height', 'width',]) && ($this->$property === -1)) {
+      if (isset($this->image)) {
+        $this->width  = imagesx($this->image);
+        $this->height = imagesy($this->image);
+      } else {
+        $this->width = $this->height = 0;
+      }
+    }
+
+    return property_exists($this, $property) ? $this->$property : null;
+  }
 
   public function __destruct() {
     if (!empty($this->image)) {
@@ -93,13 +80,6 @@ class ImageContainer {
     }
   }
 
-//  public function __set($property, $value) {
-//    if (property_exists($this, $property)) {
-//      $this->$property = $value;
-//    }
-//
-//    return $this;
-//  }
   /**
    * @param string $string
    *
@@ -107,6 +87,21 @@ class ImageContainer {
    */
   public function savePng($string) {
     return imagepng($this->image, $string, 9);
+  }
+
+  /**
+   * @return void
+   */
+  protected function imageReset() {
+    if (!empty($this->image)) {
+      imagedestroy($this->image);
+    }
+
+    $this->image = imagecreatetruecolor($this->width, $this->height);
+    imagealphablending($this->image, true);
+    imagesavealpha($this->image, true);
+    $color = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
+    imagefill($this->image, 0, 0, $color);
   }
 
 }

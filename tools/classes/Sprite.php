@@ -32,6 +32,18 @@ class Sprite {
     $this->gridSize = $gridSize;
   }
 
+  public static function createGridSquare(array $images) {
+    $gridSize = ceil(sqrt(count($images)));
+    usort($images, function (ImageFile $a, ImageFile $b) { return $b->height - $a->height; });
+
+    $sprite = new static($gridSize);
+    foreach ($images as $image) {
+      $sprite->addToGrid($image);
+    }
+
+    return $sprite;
+  }
+
 
   /**
    * @param ImageFile $imageFIle
@@ -55,15 +67,10 @@ class Sprite {
    * @return void
    */
   public function generate($dirOut) {
-    // TODO - reset image sprite
-
     $this->width = $this->height = 0;
 
-    $breakpoints = [];
     foreach ($this->lines as $line) {
       $line->generate();
-
-      $breakpoints[] = $line->height;
 
       $this->height += $line->height;
       $this->width = max($this->width, $line->width);
@@ -76,12 +83,21 @@ class Sprite {
 
     $position = 0;
     foreach ($this->lines as $line) {
-      $this->image->copyFrom($line->image2, 0, $position);
+      $this->image->copyFrom($line->image, 0, $position);
 
       $position += $line->height;
     }
 
     $this->image->savePng($dirOut . 'output.png');
+
+
+    /*
+  .bg-menu_affiliates {
+      width: 12px; height: 12px;
+      background: url('css_sprites.png') -58px -42px;
+  }
+     */
+
   }
 
   /**
