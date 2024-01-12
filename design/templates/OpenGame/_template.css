@@ -462,6 +462,10 @@ input[type=text].coordinate {
   /*border: none;*/
 }
 
+.menu_icons { /* New menu icon*/
+  margin-right: 0.5em;
+}
+
 
 
 .menu_text_t, .menu_text_b {

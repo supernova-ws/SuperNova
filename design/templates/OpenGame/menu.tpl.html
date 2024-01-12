@@ -1,3 +1,5 @@
+<!--<link rel="stylesheet" type="text/css" href="/design/css/menu_icons.css" />-->
+
 <script type="text/javascript">
   sn_timers.unshift({'id': 'menu_admin_server_time', 'type': TIMER_CLOCK_REALTIME, 'options': {
     'format': 3,
@@ -118,7 +120,8 @@
         <!-- IF menu.ICON_PATH -->
           <img src="{menu.ICON_PATH}" class="menu_icon" />
         <!-- ELSEIF menu.ICON  -->
-          <img src="{I_[menu.ICON]}" class="menu_icon" />
+<!--          <img src="{I_[menu.ICON]}" class="menu_icon" />-->
+          <span id="icon_{menu.ICON}" class="menu_icons"></span>
         <!-- ENDIF -->
 
         <!-- IF menu.TYPE == 'image' -->

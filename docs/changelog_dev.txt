@@ -211,27 +211,30 @@ TODO: Если пересчёт статы идёт раньше, чем пол�
 * Не масштабируются попапы от размера фонта!
 
 I have solved this problem using img tags and using the object-fit and object-position properties in my css. Here's a sample of the html and css I used:-
-
 HTML
-
 <img src="<your image source>" class="sprite-icon sprite-icon-1 " />
 CSS
-
 .sprite-icon {
   height: 20px;
   width: 20px;
   object-fit: none;
 }
-
 .sprite-icon-1 {
   object-position: 0 0;
 }
-
 .sprite-icon-2 {
   object-position: -20px 0;
 }
 
+// TODO -Remove unused menu image icons
+
 #ctv
+
+2024-01-12 00:05:58 46a73
+[!] Tools - Spritify
+    New tool to create sprite PNG and CSS for it from set of images
+[!] Menu
+    Switched to using sprites as menu icons
 
 2024-01-04 02:07:54 46a67
 [@] Code

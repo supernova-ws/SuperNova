@@ -11,6 +11,7 @@
     "ext-mysqli": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
+    "ext-gd": "*",
     "phpunit/phpunit": "5.*"
   }
 }
