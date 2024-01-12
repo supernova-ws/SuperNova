@@ -89,7 +89,7 @@ table.c_l th, table.c_c th, table.c_j th, table.c_r th
 }
 
 td.l {
-  background-image: url("img/bg2.gif");
+  background-image: url("/skins/EpicBlue/img/bg2.gif");
 }
 
 a:not(.nohover):hover {
@@ -195,7 +195,7 @@ div .ui-dialog-content table {
 
 /* Icon file */
 .icons {
-  background-image: url(images/icons.png) !important;
+  background-image: url("/skins/EpicBlue/images/icons.png") !important;
 }
 
 div.ui-slider-range {
@@ -260,7 +260,7 @@ Break points:
 
 @media only screen and (min-width: 480px) {
   body {
-    background-image: url(img/background_0800.jpg);
+    background-image: url("/skins/EpicBlue/img/background_0800.jpg");
   }
 }
 
@@ -274,25 +274,25 @@ Break points:
 /* Desktops and laptops ----------- */
 @media only screen and (min-width: 950px) {
   body {
-    background-image: url(img/background_1024.jpg);
+    background-image: url("/skins/EpicBlue/img/background_1024.jpg");
   }
 }
 
 @media only screen and (min-width: 1224px) {
   body {
-    background-image: url(img/background_1280.jpg);
+    background-image: url("/skins/EpicBlue/img/background_1280.jpg");
   }
 }
 
 /* Large screens ----------- */
 @media only screen and (min-width: 1550px) {
   body {
-    background-image: url(img/background_1600.jpg);
+    background-image: url("/skins/EpicBlue/img/background_1600.jpg");
   }
 }
 
 @media only screen and (min-width: 1824px) {
   body {
-    background-image: url(img/background_1920.jpg);
+    background-image: url("/skins/EpicBlue/img/background_1920.jpg");
   }
 }

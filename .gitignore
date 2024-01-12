@@ -22,6 +22,7 @@ t.*
 
 # Ignore cache folder
 /cache/
+/design/cache/
 
 # Ignore avatar folder
 /images/avatar/

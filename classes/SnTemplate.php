@@ -403,6 +403,12 @@ class SnTemplate {
     $standard_css = self::cssAddFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
     $standard_css = self::cssAddFileName('design/css/global_override', $standard_css);
 
+    // Trying to cache CSS files
+    // url("images/ui-icons_e6ebfb_256x240.png")
+    // url("images/ui-icons_13233E_256x240.png")
+    // url("images/ui-icons_e6ebfb_256x240
+    $standard_css = self::cssCache($standard_css);
+
     // Prepending standard CSS files
     $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
 
@@ -564,8 +570,8 @@ class SnTemplate {
   }
 
   /**
-   * @param $template
-   * @param $user
+   * @param             $template
+   * @param             $user
    * @param classConfig $config
    */
   public static function tpl_navbar_render_news(&$template, &$user, $config) {
@@ -837,7 +843,7 @@ class SnTemplate {
       }
 
       $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
-      if($CurPlanet['planet_type'] == PT_MOON) {
+      if ($CurPlanet['planet_type'] == PT_MOON) {
         $parentPlanet = DBStaticPlanet::db_planet_by_id($CurPlanet['parent_planet']);
       } else {
         $parentPlanet = $CurPlanet;
@@ -1241,6 +1247,60 @@ class SnTemplate {
     $tMeta        = static::me()->registerTemplate($templateName);
 
     return $tMeta;
+  }
+
+  /**
+   * @param array $standard_css
+   *
+   * @return array|string[]
+   */
+  protected static function cssCache(array $standard_css) {
+// Calculating CSS key which include all used CSS filenames and modification time for them
+    $filesToMerge = [];
+    $key          = '';
+    foreach ($standard_css as $cssFile => $cssContent) {
+      // If content empty - index is a filename
+      if (empty($cssContent)) {
+        // Checking file modification time. Also we will check if file exists
+        if ($filemtime = filemtime(SN_ROOT_PHYSICAL . $cssFile)) {
+          // Generating key
+          $key .= "$cssFile:" . date(FMT_DATE_TIME_SQL, $filemtime) . "\n";
+          // Adding filename to list of merge
+          $filesToMerge[$cssFile] = "$cssFile:" . date(FMT_DATE_TIME_SQL, $filemtime);
+        }
+      }
+    }
+    // Name we will be using to address this file
+    $partialNewName = 'design/cache/' . md5($key) . '.css';
+    // If no file exists - trying to create it
+    if (!file_exists($cachedCssFileName = SN_ROOT_PHYSICAL . $partialNewName)) {
+      // Caching several CSSes into one file
+      $cssCached = '';
+      foreach ($filesToMerge as $cssFile => $temp) {
+        if (file_exists($fName = SN_ROOT_PHYSICAL . $cssFile) && !empty($content = file_get_contents($fName))) {
+          // Adding content of cached file
+          $cssCached .= $content . "\n";
+          // Marking that file was read OK - for future debug purposes if any
+          $filesToMerge[$cssFile] .= " - OK\n";
+        }
+      }
+      // If we have something to cache...
+      if (!empty($cssCached)) {
+        file_put_contents($cachedCssFileName, "/* Generated content. Safe to delete\n" . implode('', $filesToMerge) . "*/\n\n" . $cssCached);
+      }
+    }
+
+    // If CSS cache exists for current combination of files
+    if (file_exists($cachedCssFileName)) {
+      // Removing from list all CSS files that already in cache
+      foreach ($filesToMerge as $cssFile => $temp) {
+        unset($standard_css[$cssFile]);
+      }
+      // Adding to list CSS cache file
+      $standard_css = [$partialNewName => ''] + $standard_css;
+    }
+
+    return $standard_css;
   }
 
 }
