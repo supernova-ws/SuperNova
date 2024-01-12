@@ -230,6 +230,10 @@ CSS
 
 #ctv
 
+2024-01-12 14:55:46 46a81
+[%] HTML
+    Fixed strange jQueryUI behavior on texteareas in new Chrome
+
 2024-01-12 14:09:58 46a80
 [%] News
     Fixed typo in news rendering engine
