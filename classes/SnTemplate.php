@@ -396,9 +396,9 @@ class SnTemplate {
     $standard_css = self::cssAddFileName('design/css/jquery-ui', $standard_css);
     $standard_css = self::cssAddFileName('design/css/global', $standard_css);
     $is_login ? $standard_css = self::cssAddFileName('design/css/login', $standard_css) : false;
+    $standard_css = self::cssAddFileName('design/css/menu_icons', $standard_css);
 
     $standard_css = self::getCurrentTemplate()->cssAddFileName('_template', $standard_css);
-    $standard_css = self::getCurrentTemplate()->cssAddFileName('design/css/menu_icons', $standard_css);
 
     $standard_css = self::cssAddFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
     $standard_css = self::cssAddFileName('design/css/global_override', $standard_css);
