@@ -444,13 +444,13 @@ input[type=text].coordinate {
 }
 
 .i_icon_visible {
-  background-image: url("../../images/icon_eye_visible.png");
+  background-image: url("/design/images/icon_eye_visible.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 .i_icon_invisible {
-  background-image: url("../../images/icon_eye_invisible.png");
+  background-image: url("/design/images/icon_eye_invisible.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -2367,10 +2367,10 @@ body:not(.no_border_image) .border_image_large
 
   border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;
 
-  -moz-border-image:    url("../../../design/images/border.png") 24 11 25 25 round round;
-  -o-border-image:      url("../../../design/images/border.png") 24 11 25 25 round round;
-  -webkit-border-image: url("../../../design/images/border.png") 24 11 25 25 round round;
-  border-image:         url("../../../design/images/border.png") 24 11 25 25 round round;
+  -moz-border-image:    url("/design/images/border.png") 24 11 25 25 round round;
+  -o-border-image:      url("/design/images/border.png") 24 11 25 25 round round;
+  -webkit-border-image: url("/design/images/border.png") 24 11 25 25 round round;
+  border-image:         url("/design/images/border.png") 24 11 25 25 round round;
 }
 
 body:not(.no_border_image) .border_image_small:not(.no_border_image), body:not(.no_border_image) .ui-dialog
@@ -2380,10 +2380,10 @@ body:not(.no_border_image) .border_image_small:not(.no_border_image), body:not(.
 
   border-width: 1em 1em 1em 1em;
 
-  -moz-border-image:    url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  -o-border-image:      url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  -webkit-border-image: url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  border-image:         url("../../../design/images/border_small.png") 11 11 11 11 round round;
+  -moz-border-image:    url("/design/images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("/design/images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("/design/images/border_small.png") 11 11 11 11 round round;
+  border-image:         url("/design/images/border_small.png") 11 11 11 11 round round;
 }
 
 
@@ -3151,10 +3151,10 @@ tr.error_bg > td, tr.error_bg > th,
   color: #9900ff;
 }
 .birthday:before {
-  content: url("../../images/birthday.png");
+  content: url("/design/images/birthday.png");
 }
 .vacation:before { /* Replaces .birthday ! */
-  content: url("../../images/icon_vacation.png");
+  content: url("/design/images/icon_vacation.png");
 }
 .vacation {
   color: cyan;
@@ -3976,7 +3976,7 @@ td.error_message {
   display: inline-block;
   height: 1.454545em;
   width: 1.454545em;
-  background-image: url("../../images/ranks_sprite_small.png");
+  background-image: url("/design/images/ranks_sprite_small.png");
   /*height: 1.5em;*/
   /*width: 1.5em;*/
 }
@@ -3986,7 +3986,7 @@ td.error_message {
 }
 .rank {
   background-size: 1000% 600%;
-  background-image: url("../../images/ranks_sprite.png");
+  background-image: url("/design/images/ranks_sprite.png");
 }
 .rank.rank-0 {background-position:    0  0;}
 .rank.rank-1 {background-position: -200% 0;}

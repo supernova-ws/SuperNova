@@ -407,7 +407,7 @@ class SnTemplate {
     // url("images/ui-icons_e6ebfb_256x240.png")
     // url("images/ui-icons_13233E_256x240.png")
     // url("images/ui-icons_e6ebfb_256x240
-    $standard_css = self::cssCache($standard_css);
+    $standard_css = self::cacheFiles($standard_css);
 
     // Prepending standard CSS files
     $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
@@ -1250,57 +1250,59 @@ class SnTemplate {
   }
 
   /**
-   * @param array $standard_css
+   * @param array  $fileList
+   * @param string $extension
    *
    * @return array|string[]
    */
-  protected static function cssCache(array $standard_css) {
-// Calculating CSS key which include all used CSS filenames and modification time for them
-    $filesToMerge = [];
+  protected static function cacheFiles($fileList, $extension = '.css') {
+    // Calculating file key which include all used filenames and modification time for them
     $key          = '';
-    foreach ($standard_css as $cssFile => $cssContent) {
+    $filesToMerge = [];
+    foreach ($fileList as $fileName => $aContent) {
       // If content empty - index is a filename
-      if (empty($cssContent)) {
+      if (empty($aContent)) {
         // Checking file modification time. Also we will check if file exists
-        if ($filemtime = filemtime(SN_ROOT_PHYSICAL . $cssFile)) {
+        if ($fileMTime = filemtime(SN_ROOT_PHYSICAL . $fileName)) {
           // Generating key
-          $key .= "$cssFile:" . date(FMT_DATE_TIME_SQL, $filemtime) . "\n";
+          $key .= "$fileName:" . date(FMT_DATE_TIME_SQL, $fileMTime) . "\n";
           // Adding filename to list of merge
-          $filesToMerge[$cssFile] = "$cssFile:" . date(FMT_DATE_TIME_SQL, $filemtime);
+          $filesToMerge[$fileName] = "$fileName:" . date(FMT_DATE_TIME_SQL, $fileMTime);
         }
       }
     }
     // Name we will be using to address this file
-    $partialNewName = 'design/cache/' . md5($key) . '.css';
+    $cacheFileName = 'design/cache/' . md5($key) . $extension;
     // If no file exists - trying to create it
-    if (!file_exists($cachedCssFileName = SN_ROOT_PHYSICAL . $partialNewName)) {
-      // Caching several CSSes into one file
-      $cssCached = '';
-      foreach ($filesToMerge as $cssFile => $temp) {
-        if (file_exists($fName = SN_ROOT_PHYSICAL . $cssFile) && !empty($content = file_get_contents($fName))) {
+    if (!file_exists($fullCacheFileName = SN_ROOT_PHYSICAL . $cacheFileName)) {
+      // Caching several files into one
+      $contentToCache = '';
+      foreach ($filesToMerge as $fileName => $temp) {
+        if (file_exists($fName = SN_ROOT_PHYSICAL . $fileName) && !empty($content = file_get_contents($fName))) {
           // Adding content of cached file
-          $cssCached .= $content . "\n";
+          $contentToCache .= $content . "\n";
           // Marking that file was read OK - for future debug purposes if any
-          $filesToMerge[$cssFile] .= " - OK\n";
+          $filesToMerge[$fileName] .= " - OK\n";
         }
       }
       // If we have something to cache...
-      if (!empty($cssCached)) {
-        file_put_contents($cachedCssFileName, "/* Generated content. Safe to delete\n" . implode('', $filesToMerge) . "*/\n\n" . $cssCached);
+      if (!empty($contentToCache)) {
+        // /* */ works as comment for both JS and CSS
+        file_put_contents($fullCacheFileName, "/* Generated content. Safe to delete\n" . implode('', $filesToMerge) . "*/\n\n" . $contentToCache);
       }
     }
 
     // If CSS cache exists for current combination of files
-    if (file_exists($cachedCssFileName)) {
+    if (file_exists($fullCacheFileName)) {
       // Removing from list all CSS files that already in cache
-      foreach ($filesToMerge as $cssFile => $temp) {
-        unset($standard_css[$cssFile]);
+      foreach ($filesToMerge as $fileName => $temp) {
+        unset($fileList[$fileName]);
       }
-      // Adding to list CSS cache file
-      $standard_css = [$partialNewName => ''] + $standard_css;
+      // Adding to list cache file
+      $fileList = [$cacheFileName => ''] + $fileList;
     }
 
-    return $standard_css;
+    return $fileList;
   }
 
 }

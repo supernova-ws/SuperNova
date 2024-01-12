@@ -230,6 +230,11 @@ CSS
 
 #ctv
 
+2024-01-12 03:17:44 46a78
+[~] CSS cacher refactored
+
+[%] Fixed some template error to be compatible with CSS cacher
+
 2024-01-12 01:42:07 46a75
 [!] CSS cacher
     Internal subsystem to compact several CSS files into one file and cache it
