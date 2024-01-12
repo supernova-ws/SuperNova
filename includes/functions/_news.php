@@ -11,7 +11,7 @@ use General\Helpers\PagingRenderer;
 function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
   if($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
     $query_where .= (!empty($query_where) ? ' AND ' : '')
-      . '`tsTimeStamp` <= UNIX_TIMESTAMP(NOW())';
+      . '`tsTimeStamp` <= (NOW())';
   }
 
   $mmModuleIsActive = !empty(SN::$gc->modules->getModulesInGroup('payment'));

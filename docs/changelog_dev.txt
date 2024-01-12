@@ -230,6 +230,10 @@ CSS
 
 #ctv
 
+2024-01-12 14:09:58 46a80
+[%] News
+    Fixed typo in news rendering engine
+
 2024-01-12 03:17:44 46a78
 [~] CSS cacher refactored
 
