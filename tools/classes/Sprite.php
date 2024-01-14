@@ -10,6 +10,11 @@ require_once __DIR__ . '/ImageContainer.php';
 use ImageFile;
 
 class Sprite {
+  const LAYOUT_LINE = 0;
+  const LAYOUT_COLUMN = 1;
+  const LAYOUT_SQUARE = 'square';
+  const LAYOUT_BTREE = 'btree';
+
   /** @var SpriteLine[] $lines */
   public $lines = [];
 
@@ -32,7 +37,12 @@ class Sprite {
     $this->gridSize = $gridSize;
   }
 
-  public static function createGridSquare(array $images) {
+  /**
+   * @param ImageFile[] $images
+   *
+   * @return static
+   */
+  public static function createGridSquare($images) {
     $gridSize = ceil(sqrt(count($images)));
     usort($images, function (ImageFile $a, ImageFile $b) { return $b->height - $a->height; });
 
@@ -46,16 +56,16 @@ class Sprite {
 
 
   /**
-   * @param ImageFile $imageFIle
+   * @param ImageFile $imageFile
    *
    * @return void
    */
-  public function addToGrid($imageFIle) {
+  public function addToGrid($imageFile) {
     // This is first image in row
     if (empty($this->lines[$this->lineIndex])) {
       $this->lines[$this->lineIndex] = new SpriteLine();
     }
-    $this->lines[$this->lineIndex]->addImage($imageFIle);
+    $this->lines[$this->lineIndex]->addImage($imageFile);
     if ($this->lines[$this->lineIndex]->getImageCount() >= $this->gridSize) {
       $this->lineIndex++;
     }
@@ -75,13 +85,13 @@ class Sprite {
       $this->height += $line->height;
       $this->width  = max($this->width, $line->width);
 
-      // TODO debug
-      // $line->image2->savePng($dirOut . count($breakpoints) . '.png');
+      // $line->image2->savePng($dirOut . count($breakpoints) . '.png'); // TODO remove debug
     }
     // Recreating main sprite image with new width and height
     $this->imageReset();
     // Generating final sprite
     $position = 0;
+    $css = '';
     foreach ($this->lines as $line) {
       $this->image->copyFrom($line->image, 0, $position);
 
@@ -92,8 +102,7 @@ class Sprite {
     $pngName = $outName . '.png';
     $this->image->savePng($dirOut . $pngName);
 
-    $css = ".{$outName} {background-image: url('{$httpLocation}{$pngName}');" .
-//      ($scaleToPx > 0 ? "width:{$scaleToPx}px;height:{$scaleToPx}px;" : "") .
+    $css = ".{$outName} {background-image: url('{$httpLocation}{$pngName}');display: inline-block;" .
       ($scaleToPx > 0 ? "transform-origin: top left;" : "") .
       "}\n" . sprintf($css, $cssPrefix, $cssSuffix);
     file_put_contents($dirOut . $outName . '.css', $css);

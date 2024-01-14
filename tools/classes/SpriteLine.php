@@ -64,11 +64,10 @@ class SpriteLine {
             // transform: scale(4);transform-origin: top left;
 //          $css[] = "transform: scale(calc({$scaleToPx}/{$maxSize}));";
           $css[] = "zoom: calc({$scaleToPx}/{$maxSize});";
-        } else {
         }
-        $css[] = "width: {$file->width}px;";
-        $css[] = "height: {$file->height}px;";
       }
+      $css[] = "width: {$file->width}px;";
+      $css[] = "height: {$file->height}px;";
       $css[]     = "}\n";
       $this->css .= implode('', $css);
 //      $this->css .= implode("\n", [

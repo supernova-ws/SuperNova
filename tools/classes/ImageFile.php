@@ -15,11 +15,17 @@ class ImageFile {
 
   private $image = null;
 
-  public function __construct($dir, $fileName) {
-    $this->dir      = $dir;
-    $this->fileName = $fileName;
+  public function __construct($dir, $fileName, $fullFileName = '') {
+    if ($fullFileName) {
+      $this->dir      = realpath(dirname($fullFileName));
+      $this->fileName = basename($fullFileName);
+    } else {
+      $this->dir      = realpath($dir);
+      $this->fileName = $fileName;
+    }
+    $this->dir      = str_replace('\\', '/', $this->dir) . '/';
 
-    $this->fullPath = $dir . $fileName;
+    $this->fullPath = $this->dir . $this->fileName;
   }
 
   public function __get($property) {
