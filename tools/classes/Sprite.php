@@ -41,8 +41,10 @@ class Sprite {
    * @param ImageFile[] $images
    *
    * @return static
+   *
+   * @noinspection PhpUnusedParameterInspection
    */
-  public static function createGridSquare($images) {
+  public static function createGridSquare($images, $layout) {
     $gridSize = ceil(sqrt(count($images)));
     usort($images, function (ImageFile $a, ImageFile $b) { return $b->height - $a->height; });
 
@@ -72,11 +74,20 @@ class Sprite {
   }
 
   /**
-   * @param string $dirOut
-   *
    * @return void
    */
-  public function generate($dirOut, $outName, $cssPrefix, $cssSuffix, $scaleToPx, $httpLocation) {
+  public function imageReset() {
+    if (!empty($this->image)) {
+      unset($this->image);
+    }
+
+    $this->image = ImageContainer::create($this->width, $this->height);
+  }
+
+  /**
+   * @param $scaleToPx
+   */
+  public function renderLines($scaleToPx) {
     $this->width = $this->height = 0;
     // Generating lines and calculating line sizes
     foreach ($this->lines as $line) {
@@ -87,47 +98,44 @@ class Sprite {
 
       // $line->image2->savePng($dirOut . count($breakpoints) . '.png'); // TODO remove debug
     }
+  }
+
+  /**
+   * @param int $scaleToPx
+   *
+   * @return ImageContainer|null
+   */
+  public function generate($scaleToPx) {
+    $this->renderLines($scaleToPx);
+
     // Recreating main sprite image with new width and height
     $this->imageReset();
+
     // Generating final sprite
     $position = 0;
-    $css = '';
     foreach ($this->lines as $line) {
       $this->image->copyFrom($line->image, 0, $position);
 
       $position += $line->height;
-      $css      .= $line->css;
     }
 
-    $pngName = $outName . '.png';
-    $this->image->savePng($dirOut . $pngName);
-
-    $css = ".{$outName} {background-image: url('{$httpLocation}{$pngName}');display: inline-block;" .
-      ($scaleToPx > 0 ? "transform-origin: top left;" : "") .
-      "}\n" . sprintf($css, $cssPrefix, $cssSuffix);
-    file_put_contents($dirOut . $outName . '.css', $css);
-
-    /*
-  .bg-menu_affiliates {
-      width: 12px; height: 12px;
-      background: url('css_sprites.png') -58px -42px;
-  }
-
-      transform: scale(.3);
-      transform-origin: top left;
-     */
-
+    return $this->image;
   }
 
   /**
-   * @return void
+   * @param $scaleToPx
+   *
+   * @return string %3$s - $outName, %4$s - $relativeUrl
    */
-  public function imageReset() {
-    if (!empty($this->image)) {
-      unset($this->image);
+  public function generateCss($scaleToPx) {
+    $css = '';
+    foreach ($this->lines as $line) {
+      $css .= $line->css;
     }
 
-    $this->image = ImageContainer::create($this->width, $this->height);
+    return ".%3\$s{background-image: url('%4\$s%3\$s.png');display: inline-block;" .
+      ($scaleToPx > 0 ? "transform-origin: top left;" : "") .
+      "}\n" . $css;
   }
 
 }

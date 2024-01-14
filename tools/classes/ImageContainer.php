@@ -17,15 +17,20 @@ class ImageContainer {
   /**
    * @param string $file
    *
-   * @return static
+   * @return static|null
    */
   public static function load($file) {
+    $image = @imagecreatefromstring(file_get_contents($file));
+    if (!$image) {
+      return null;
+    }
+
     $that = new static();
 
-    $that->image = imagecreatefromstring(file_get_contents($file));
+    $that->image = $image;
     imagesavealpha($that->image, true);
 
-    $that->width = imagesx($that->image);
+    $that->width  = imagesx($that->image);
     $that->height = imagesy($that->image);
 
     return $that;
@@ -48,19 +53,6 @@ class ImageContainer {
     return $that;
   }
 
-  /**
-   * @param ImageContainer $anImage
-   * @param int            $positionX
-   * @param int            $positionY
-   * @param int            $sourceX
-   * @param int            $sourceY
-   *
-   * @return bool
-   */
-  public function copyFrom(ImageContainer $anImage, $positionX, $positionY, $sourceX = 0, $sourceY = 0) {
-    return imagecopy($this->image, $anImage->image, $positionX, $positionY, $sourceX, $sourceY, $anImage->width, $anImage->height);
-  }
-
   public function __get($property) {
     if (in_array($property, ['height', 'width',]) && ($this->$property === -1)) {
       if (isset($this->image)) {
@@ -78,6 +70,19 @@ class ImageContainer {
     if (!empty($this->image)) {
       imagedestroy($this->image);
     }
+  }
+
+  /**
+   * @param ImageContainer $anImage
+   * @param int            $positionX
+   * @param int            $positionY
+   * @param int            $sourceX
+   * @param int            $sourceY
+   *
+   * @return bool
+   */
+  public function copyFrom(ImageContainer $anImage, $positionX, $positionY, $sourceX = 0, $sourceY = 0) {
+    return imagecopy($this->image, $anImage->image, $positionX, $positionY, $sourceX, $sourceY, $anImage->width, $anImage->height);
   }
 
   /**

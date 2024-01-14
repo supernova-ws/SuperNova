@@ -1,5 +1,8 @@
 <?php
+
 /** Created by Gorlum 08.01.2024 20:04 */
+
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 namespace Tools;
 
@@ -37,8 +40,8 @@ class SpriteLine {
 
   public function generate($posY, $scaleToPx) {
     unset($this->widthList);
-
     unset($this->image);
+
     $this->image = ImageContainer::create($this->width, $this->height);
 
     $position = 0;
@@ -53,42 +56,19 @@ class SpriteLine {
       }
       $onlyName = implode('.', $onlyName);
 
-      $css = [
-        "%1\$s{$onlyName}" . "%2\$s",
-        "{",
-        "background-position: -{$position}px -{$posY}px;",
-      ];
+      $css = "%1\$s{$onlyName}%2\$s{background-position: -{$position}px -{$posY}px;";
       if ($scaleToPx > 0) {
         $maxSize = max($file->width, $file->height);
         if ($maxSize != $scaleToPx) {
-            // transform: scale(4);transform-origin: top left;
-//          $css[] = "transform: scale(calc({$scaleToPx}/{$maxSize}));";
-          $css[] = "zoom: calc({$scaleToPx}/{$maxSize});";
+          $css .= "zoom: calc({$scaleToPx}/{$maxSize});";
         }
       }
-      $css[] = "width: {$file->width}px;";
-      $css[] = "height: {$file->height}px;";
-      $css[]     = "}\n";
-      $this->css .= implode('', $css);
-//      $this->css .= implode("\n", [
-//        "%1\$s{$onlyName}" . "%2\$s {",
-//        "width: {$file->width}px; height: {$file->height}px;",
-//        "background-position: -{$position}px -{$posY}px;",
-//        '}',
-//        '',
-//      ]);
+      $css .= "width: {$file->width}px;height: {$file->height}px;}\n";
+
+      $this->css .= $css;
 
       $position += $file->width;
     }
-
-    /*
-  .bg-menu_affiliates {
-      width: 12px; height: 12px;
-      background: url('css_sprites.png') -58px -42px;
-  }
-     */
-
-
   }
 
 }

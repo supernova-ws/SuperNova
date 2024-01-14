@@ -6,7 +6,15 @@ Will arrange all images into square pattern
 
 Support scaling (via `zoom` CSS property) to predefined box (square only)
 
+# Todo
+
+* Layouts: line, column, btree
+* CSS animations from animated gif
+
 # Changelog
 
 * #ctv#
-  * Now support glob masks (like in OS - with `*` and `?`) with `GLOB_BRACE` extension
+    * Error handling
+    * Streamlining sources
+* 46a88
+    * Now support glob masks (like in OS - with `*` and `?`) with `GLOB_BRACE` extension
