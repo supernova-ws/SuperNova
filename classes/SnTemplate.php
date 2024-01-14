@@ -391,8 +391,21 @@ class SnTemplate {
 
     empty($sn_mvc['javascript']) ? $sn_mvc['javascript'] = ['' => []] : false;
 
-//    $standard_js = [];
-//    $standard_js = self::addFileName('design/css/jquery-ui', $standard_js);
+    $standard_js = self::addFileName([
+      'js/lib/jquery',
+      'js/lib/js.cookie',
+      'js/lib/jquery-ui',
+      'js/lib/jquery.ui.touch-punch',
+      'js/lib/ion.sound',
+      'js/sn_global',
+      'js/sn_sound',
+      'js/sn_timer',
+    ], [], '.js');
+
+    $standard_js = self::cacheFiles($standard_js, '.js');
+
+    // Prepending standard CSS files
+    $sn_mvc['javascript'][''] = array_merge($standard_js, $sn_mvc['javascript']['']);
 
     self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
   }
@@ -417,9 +430,6 @@ class SnTemplate {
     $standard_css = self::addFileName('design/css/global_override', $standard_css);
 
     // Trying to cache CSS files
-    // url("images/ui-icons_e6ebfb_256x240.png")
-    // url("images/ui-icons_13233E_256x240.png")
-    // url("images/ui-icons_e6ebfb_256x240
     $standard_css = self::cacheFiles($standard_css);
 
     // Prepending standard CSS files
@@ -525,16 +535,22 @@ class SnTemplate {
   /**
    * Checks if minified/full-size file variant exists - and adds it if any
    *
-   * @param string $fileName
+   * @param string|string[] $fileNames
    * @param array  $anArray
    *
    * @return array
    */
-  public static function addFileName($fileName, $anArray, $ext = '.css') {
-    if (file_exists(SN_ROOT_PHYSICAL . $fileName . '.min' . $ext)) {
-      $anArray[$fileName . '.min' . $ext] = '';
-    } elseif (file_exists(SN_ROOT_PHYSICAL . $fileName . '.css' . $ext)) {
-      $anArray[$fileName . $ext] = '';
+  public static function addFileName($fileNames, $anArray, $ext = '.css') {
+    if(!is_array($fileNames)) {
+      $fileNames = [$fileNames];
+    }
+
+    foreach($fileNames as $fileName) {
+      if (file_exists(SN_ROOT_PHYSICAL . $fileName . '.min' . $ext)) {
+        $anArray[$fileName . '.min' . $ext] = '';
+      } elseif (file_exists(SN_ROOT_PHYSICAL . $fileName . '.css' . $ext)) {
+        $anArray[$fileName . $ext] = '';
+      }
     }
 
     return $anArray;

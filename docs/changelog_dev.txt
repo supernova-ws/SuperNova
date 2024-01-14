@@ -230,11 +230,19 @@ CSS
 
 * Режим сканирования - без таблиц, без картинок, совсем просто
 
+
+* Пираты?
+    * Застримлайнить UBE
+
 // TODO -Remove unused menu image icons
 
-#ctv
-
 // TODO: Switches to disable merging CSS and JS (javascript)
+// Replace $sn_mvc with class in SN
+
+2024-01-14 04:31:34 46a86
+[@] HTML
+    JS cacher - merges all JS files into one and caches results
+
 
 2024-01-14 01:45:52 46a85
 [@] Code

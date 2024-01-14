@@ -1,5 +1,4 @@
-
-<!-- BEGIN JAVASCRIPT block _40_js.tpl.html ======================================================================== -->
+<!-- JS block _40_js.tpl.html ====================================================================================== -->
 <script type="text/javascript">
   // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
   var timeBrowser = new Date();
@@ -10,17 +9,6 @@
 <!-- ENDIF -->
 
 <!-- JS file include block ----------------------------------------------------------------------------------------- -->
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/js.cookie.min.js?{C_var_db_update}"></script>
-
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.ui.touch-punch.min.js?{C_var_db_update}"></script>
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/ion.sound.min.js?{C_var_db_update}"></script>
-
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.min.js?{C_var_db_update}"></script>
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_sound.min.js?{C_var_db_update}"></script>
-<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_timer.min.js?{C_var_db_update}"></script>
-
 <!-- BEGIN js -->
   <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>
 <!-- END js -->
@@ -84,23 +72,14 @@
 
   var WEBP_SUPPORTED = Math.intVal('{WEBP_SUPPORTED}');
   var WEBP_SUPPORT_NEED_CHECK = Math.intVal('{WEBP_SUPPORT_NEED_CHECK}');
-  // WEBP_SUPPORT_NEED_CHECK = 1;
-
-  // console.log('WEBP_SUPPORT_NEED_CHECK ' + WEBP_SUPPORT_NEED_CHECK);
 
   if(WEBP_SUPPORT_NEED_CHECK) {
     hasWebP().then(function() {
-      // add("Basic WebP available");
       jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 1,});
-      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
     }, function() {
       jQuery.post("time_probe.php", {'webpSupport': WEBP_SUPPORTED = 0,});
-      // console.log('WEBP_SUPPORTED ' + WEBP_SUPPORTED);
     });
   }
-
-  // console.log('PRE WEBP_SUPPORTED ' + WEBP_SUPPORTED);
-
   // var HIGHSPOT_GATHER = "{HIGHSPOT_GATHER}";
 </script>
 
@@ -111,5 +90,4 @@
 </script>
 <span class="halloween"></span>
 <!-- ENDIF -->
-
-<!-- END JAVASCRIPT block _40_js.tpl.html ========================================================================== -->
+<!-- JS block _40_js.tpl.html ====================================================================================== -->
