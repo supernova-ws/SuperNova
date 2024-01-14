@@ -234,9 +234,12 @@ CSS
 
 #ctv
 
+// TODO: Switches to disable merging CSS and JS (javascript)
 
-// $config->user_birthday_gift
-// $config->user_birthday_celebrate
+2024-01-14 01:45:52 46a85
+[@] Code
+    Streamlined `classConfig` - listed all known config keys with types
+
 
 2024-01-14 01:07:40 46a84
 [@] HTML

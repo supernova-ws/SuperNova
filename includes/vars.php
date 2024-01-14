@@ -19,7 +19,7 @@ if (!defined('INSIDE')) {
   die('Hack attempt!');
 }
 
-global $sn_menu_extra, $sn_menu_admin_extra, $config;
+global $sn_menu_extra, $sn_menu_admin_extra, $config, $sn_version_check_class;
 
 $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
