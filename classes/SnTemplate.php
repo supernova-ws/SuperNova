@@ -385,6 +385,19 @@ class SnTemplate {
   }
 
   /**
+   */
+  public static function renderJavaScript() {
+    global $sn_mvc, $sn_page_name, $template_result;
+
+    empty($sn_mvc['javascript']) ? $sn_mvc['javascript'] = ['' => []] : false;
+
+//    $standard_js = [];
+//    $standard_js = self::addFileName('design/css/jquery-ui', $standard_js);
+
+    self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
+  }
+
+  /**
    * @param $is_login
    */
   public static function renderCss($is_login) {
@@ -393,15 +406,15 @@ class SnTemplate {
     empty($sn_mvc['css']) ? $sn_mvc['css'] = ['' => []] : false;
 
     $standard_css = [];
-    $standard_css = self::cssAddFileName('design/css/jquery-ui', $standard_css);
-    $standard_css = self::cssAddFileName('design/css/global', $standard_css);
-    $is_login ? $standard_css = self::cssAddFileName('design/css/login', $standard_css) : false;
-    $standard_css = self::cssAddFileName('design/css/menu_icons', $standard_css);
+    $standard_css = self::addFileName('design/css/jquery-ui', $standard_css);
+    $standard_css = self::addFileName('design/css/global', $standard_css);
+    $is_login ? $standard_css = self::addFileName('design/css/login', $standard_css) : false;
+    $standard_css = self::addFileName('design/css/menu_icons', $standard_css);
 
     $standard_css = self::getCurrentTemplate()->cssAddFileName('_template', $standard_css);
 
-    $standard_css = self::cssAddFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
-    $standard_css = self::cssAddFileName('design/css/global_override', $standard_css);
+    $standard_css = self::addFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
+    $standard_css = self::addFileName('design/css/global_override', $standard_css);
 
     // Trying to cache CSS files
     // url("images/ui-icons_e6ebfb_256x240.png")
@@ -413,14 +426,6 @@ class SnTemplate {
     $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
 
     self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'css');
-  }
-
-  /**
-   */
-  public static function renderJavaScript() {
-    global $sn_mvc, $sn_page_name, $template_result;
-
-    self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
   }
 
   /**
@@ -518,21 +523,21 @@ class SnTemplate {
   }
 
   /**
-   * Checks if minified/full-size CSS file exists - and adds it if any
+   * Checks if minified/full-size file variant exists - and adds it if any
    *
-   * @param string $cssFileName
-   * @param array  $cssArray
+   * @param string $fileName
+   * @param array  $anArray
    *
    * @return array
    */
-  public static function cssAddFileName($cssFileName, $cssArray) {
-    if (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.min.css')) {
-      $cssArray[$cssFileName . '.min.css'] = '';
-    } elseif (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.css')) {
-      $cssArray[$cssFileName . '.css'] = '';
+  public static function addFileName($fileName, $anArray, $ext = '.css') {
+    if (file_exists(SN_ROOT_PHYSICAL . $fileName . '.min' . $ext)) {
+      $anArray[$fileName . '.min' . $ext] = '';
+    } elseif (file_exists(SN_ROOT_PHYSICAL . $fileName . '.css' . $ext)) {
+      $anArray[$fileName . $ext] = '';
     }
 
-    return $cssArray;
+    return $anArray;
   }
 
   /**

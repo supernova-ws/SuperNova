@@ -226,27 +226,48 @@ CSS
   object-position: -20px 0;
 }
 
+* Чат моргает, если в Хроме выставлено обнуление кэша - он каждый раз перезапрашивает иконки
+
+* Режим сканирования - без таблиц, без картинок, совсем просто
+
 // TODO -Remove unused menu image icons
 
 #ctv
+
+
+// $config->user_birthday_gift
+// $config->user_birthday_celebrate
+
+2024-01-14 01:07:40 46a84
+[@] HTML
+    Rearranged JS code/file include in `_40_js.tpl.html`
+
+[@] Code
+    SnTemplate - refactored a bit
+    Basic support for different environments - @see: .env.ini.example
+
 
 2024-01-12 14:55:46 46a81
 [%] HTML
     Fixed strange jQueryUI behavior on texteareas in new Chrome
 
+
 2024-01-12 14:09:58 46a80
 [%] News
     Fixed typo in news rendering engine
+
 
 2024-01-12 03:17:44 46a78
 [~] CSS cacher refactored
 
 [%] Fixed some template error to be compatible with CSS cacher
 
+
 2024-01-12 01:42:07 46a75
 [!] CSS cacher
     Internal subsystem to compact several CSS files into one file and cache it
     Updated skins to accomodate CSS cacher
+
 
 2024-01-12 00:05:58 46a73
 [!] Tools - Spritify
@@ -254,15 +275,18 @@ CSS
 [!] Menu
     Switched to using sprites as menu icons
 
+
 2024-01-04 02:07:54 46a67
 [@] Code
     `_SnCacheInternal` class removed from code along with caching players/planets
     Units cached inside `DbStaticUnit` class
 
+
 2024-01-04 00:58:46 46a65
 [@] Code
     `_SnCacheInternal::$locator` now used only by LOC_UNIT and LOC_UNIT now does not stored in ::$data
     Simplified cacher code a little
+
 
 2024-01-03 22:36:43 46a63
 [%] News
@@ -272,33 +296,42 @@ CSS
     Start moving Unit operations from using `SN` or `_SnCacheInternal` objects
     Misc speedup
 
+
 2024-01-03 19:59:46 46a58
 [%] News
     Now non-admin users doesn't see announces
+
 
 2023-05-31 16:04:19 46a53
 [~] Юниты
     Поддержка Фестиваля "ДР-2023"
 
+
 2023-05-19 16:17:46 46a49
 [@] Code
     Replaced part of intermediate function sn_db_XXX and db_XXX with direct calls to SN::$db methods
 
+
 2023-05-18 12:36:49 46a46
 [@] Code - added (disabled now) code to bypass SnInternal cache
+
 
 2023-05-17 11:47:52 46a44
 [@] Code - removed SN::$queries
 
+
 2023-05-14 11:30:37 46a41
 [~] FFH - Added total event amount to FFH timeout message
+
 
 2023-05-13 23:24:17 46a39
 [%] Fixed bug with missing closing slash
 
+
 2023-05-13 19:33:01 46a37
 [%] Fixed problems related to `SN_GOOGLE` constant
     * Another reminder about maintain maximum back-compatibility...
+
 
 2023-05-13 16:39:53 46a36
 [!] Server Instances. Now several servers can work on one copy of SN engine
@@ -317,14 +350,18 @@ CSS
 2023-05-13 13:36:51 46a35
 [@] Replaced path to avatars with constants
 
+
 2023-05-13 12:24:59 46a33
 [@] GIT: Fixing versioning problem
+
 
 2023-05-13 12:24:15 45d16
 [@] GIT: Fixing versioning problem
 
+
 2023-05-13 12:16:55 46a33
 [@] GIT: Fixing versioning problem
+
 
 2023-05-13 12:01:52 45d15
 [~] DB

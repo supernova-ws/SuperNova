@@ -24,6 +24,21 @@ define('SN_MEM_START', memory_get_usage());
 !defined('INSTALL') && define('INSTALL', false);
 !defined('IN_PHPBB') && define('IN_PHPBB', true);
 
+call_user_func(function () {
+  if (file_exists($fileName = realpath(__DIR__ . '/../.env.ini'))) {
+    define('SN_ENV_PROD', 'production');
+    define('SN_ENV_DEV', 'development');
+
+    if (($ini = @parse_ini_file($fileName)) !== false) {
+      if (!empty($ini['SN_ENV']) && in_array($envName = $ini['SN_ENV'], [SN_ENV_DEV, SN_ENV_PROD,])) {
+        define('SN_ENV', $envName);
+      } else {
+        define('SN_ENV', SN_ENV_PROD);
+      }
+    }
+  }
+});
+
 // Config file name
 const SN_CONFIG_NAME = 'config.php';
 

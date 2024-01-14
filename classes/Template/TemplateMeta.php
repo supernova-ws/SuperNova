@@ -165,10 +165,10 @@ class TemplateMeta {
       $standard_css = $this->parent->cssAddFileName($cssFileName, $standard_css);
     } elseif (!$this->isTemplateExists()) {
       // If template dir does not exists - falling back to default CSS file
-      $standard_css = SnTemplate::cssAddFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . SnTemplate::SN_TEMPLATE_NAME_DEFAULT . '/' . $cssFileName, $standard_css);
+      $standard_css = SnTemplate::addFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . SnTemplate::SN_TEMPLATE_NAME_DEFAULT . '/' . $cssFileName, $standard_css);
     }
 
-    $standard_css = SnTemplate::cssAddFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . $this->name . '/' . $cssFileName, $standard_css);
+    $standard_css = SnTemplate::addFileName(SnTemplate::SN_TEMPLATES_PARTIAL_PATH . $this->name . '/' . $cssFileName, $standard_css);
 
     return $standard_css;
   }
