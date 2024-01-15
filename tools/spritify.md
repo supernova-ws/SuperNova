@@ -13,7 +13,7 @@ Support scaling (via `zoom` CSS property) to predefined box (square only)
 
 # Changelog
 
-* #ctv#
+* 46a89
     * Error handling
     * Streamlining sources
 * 46a88
