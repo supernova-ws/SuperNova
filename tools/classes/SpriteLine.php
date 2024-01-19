@@ -23,11 +23,25 @@ class SpriteLine {
   public $css = '';
 
   /**
+   * @param ImageFile $image
+   * @param int       $gridSize
+   *
+   * @return static|null
+   */
+  public function fillLine($image, $gridSize) {
+    $line = $this->isFull($gridSize) ? new static() : $this;
+
+    $line->addImage($image);
+
+    return $line;
+  }
+
+  /**
    * @param ImageFile $imageFile
    *
    * @return void
    */
-  public function addImage($imageFile) {
+  protected function addImage($imageFile) {
     $this->files[] = $imageFile;
 
     $this->height = max($this->height, $imageFile->height);
@@ -69,6 +83,10 @@ class SpriteLine {
 
       $position += $file->width;
     }
+  }
+
+  protected function isFull($gridSize) {
+    return $this->getImageCount() >= $gridSize;
   }
 
 }

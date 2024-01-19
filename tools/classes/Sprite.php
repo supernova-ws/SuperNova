@@ -56,27 +56,6 @@ class Sprite {
     $this->gridSize = $gridSize;
 
     $this->imageList = $images;
-
-    usort($this->imageList, function (ImageFile $a, ImageFile $b) { return $b->height - $a->height; });
-    foreach ($this->imageList as $image) {
-      $this->addToGrid($image);
-    }
-  }
-
-  /**
-   * @param ImageFile $imageFile
-   *
-   * @return void
-   */
-  protected function addToGrid($imageFile) {
-    // This is first image in row
-    if (empty($this->lines[$this->lineIndex])) {
-      $this->lines[$this->lineIndex] = new SpriteLine();
-    }
-    $this->lines[$this->lineIndex]->addImage($imageFile);
-    if ($this->gridSize && $this->lines[$this->lineIndex]->getImageCount() >= $this->gridSize) {
-      $this->lineIndex++;
-    }
   }
 
   /**
@@ -111,6 +90,8 @@ class Sprite {
    * @return ImageContainer|null
    */
   public function generate() {
+    $this->createGrid();
+
     $this->renderLines($this->scaleToPx);
 
     // Recreating main sprite image with new width and height
@@ -174,6 +155,32 @@ class Sprite {
     // Saving PNG
     $this->savePng($dirOut . $outName . '.png');
     $this->saveCss($dirOut . $outName . '.css', $vsprintf);
+  }
+
+  /**
+   * @return void
+   */
+  protected function createGrid() {
+    $this->lineIndex = 0;
+
+    usort($this->imageList, function (ImageFile $a, ImageFile $b) { return $b->height - $a->height; });
+
+    $prevLine = new SpriteLine();
+    foreach ($this->imageList as $image) {
+      $line = $prevLine->fillLine($image, $this->gridSize);
+      if ($line != $prevLine) {
+        if ($prevLine) {
+          $this->lines[$this->lineIndex] = $prevLine;
+          $this->lineIndex++;
+        }
+        $prevLine = $line;
+      }
+    }
+
+    if ($prevLine) {
+      // There is something in line to keep
+      $this->lines[$this->lineIndex] = $prevLine;
+    }
   }
 
 }
