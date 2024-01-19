@@ -16,42 +16,44 @@ require_once __DIR__ . '/Sprite.php';
 
 class Spritify {
   /**
-   * @param string $dirIn       Input directory
-   * @param string $dirOut      Output directory
-   * @param string $outName     Name to use as CSS/PNG files
-   * @param string $cssPrefix   Prefix to CSS qualifier. Default '#'
-   * @param string $cssSuffix   Suffix to CSS qualifier. Default ''
-   * @param int    $scaleToPx   Pixel size to scale largest side of sprite to for scale(). Default 0 - no scaling
-   * @param string $relativeUrl Url relative to root where PNG sprite will reside - '/design/images/' by default
+   * @param string|string[] $dirInArray  Input directory
+   * @param string          $dirOut      Output directory
+   * @param string          $outName     Name to use CSS/PNG file names and global CSS class
+   * @param string          $cssPrefix   Prefix to CSS qualifier. Default '#'
+   * @param string          $cssSuffix   Suffix to CSS qualifier. Default ''
+   * @param int             $scaleToPx   Pixel size to scale largest side of sprite to for scale(). Default 0 - no scaling
+   * @param string          $relativeUrl Url relative to root where PNG sprite will reside. Default: '/design/images/'
+   * @param string          $layout      How images should be arranged in sprite. Default: Sprite::LAYOUT_SQUARE
    *
    * @return void
+   *
    * @throws Exception
+   * @see Sprite::LAYOUT_SQUARE and others Sprite::LAYOUT_XXX constants
+   *
    */
-  public static function go($dirIn, $dirOut, $outName, $cssPrefix = '#', $cssSuffix = '', $scaleToPx = 0, $relativeUrl = '/design/images/') {
-    print "Processing folder/filter `$dirIn` to `$outName`\n";
+  public static function go($dirInArray, $dirOut, $outName, $cssPrefix = '#', $cssSuffix = '', $scaleToPx = 0, $relativeUrl = '/design/images/', $layout = Sprite::LAYOUT_SQUARE) {
+    if (!is_array($dirInArray)) {
+      $dirInArray = [$dirInArray];
+    }
+
+    $images = [];
+    foreach ($dirInArray as $dirIn) {
+      print "Loading files from folder/filter `$dirIn` \n";
 
 //    $images = self::propagateImagesScanDir($dirIn);
-    $images = self::propagateImagesGlob($dirIn);
+      $images = array_merge($images, self::propagateImagesGlob($dirIn));
+    }
+
+    print "Processing images to `$outName`\n";
     if (empty($images)) {
       print "No images found to process\n\n";
 
       return;
     }
 
-    $sprite = Sprite::createGridSquare($images, Sprite::LAYOUT_SQUARE);
-
-    $finalImage = $sprite->generate($scaleToPx);
-
-    // Checking if output directory exists and creating one - if not
-    if (!is_dir($dirOut) && !mkdir($dirOut, 0777, true)) {
-      throw new Exception("Can't create output directory {$dirOut}\n");
-    }
-    // Saving PNG
-    $finalImage->savePng($dirOut . $outName . '.png');
-    file_put_contents(
-      $dirOut . $outName . '.css',
-      sprintf($sprite->generateCss($scaleToPx), $cssPrefix, $cssSuffix, $outName, $relativeUrl)
-    );
+    $sprite = new Sprite($images, $layout, $scaleToPx);
+    $sprite->generate();
+    $sprite->saveOutput($dirOut, $outName, [$cssPrefix, $cssSuffix, $outName, $relativeUrl,]);
 
     print "Folder/filter processed\n\n";
   }
