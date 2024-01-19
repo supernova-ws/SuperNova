@@ -239,13 +239,25 @@ CSS
 * Пираты?
     * Застримлайнить UBE
 
-// TODO -Remove unused menu image icons
-
-// TODO: Switches to disable merging CSS and JS (javascript)
-// Replace $sn_mvc with class in SN
+* TODO
+    * Remove unused menu image icons
+    * Switches to disable merging CSS and JS (javascript)
+    * Replace $sn_mvc with class in SN
+    * $sn_mvc['css_filenames']
 
 
 #ctv
+
+
+2024-01-19 11:34:34 46a95
+[@] Modules
+    * Added support for `javascript_filenames` in `sn_mvc`:
+        * Modules' JS now added to new subarray
+        * Now modules' JS can be cached too
+        * This fixed errors with modules' JS loaded too early and not working
+
+[@] CSS
+    * Override jQueryUI images in `_template.css` to make it work with CSS caching
 
 
 2024-01-16 12:28:03 46a91

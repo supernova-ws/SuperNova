@@ -402,6 +402,8 @@ class SnTemplate {
       'js/sn_timer',
     ], [], '.js');
 
+    $standard_js = self::addFileName(!empty($sn_mvc['javascript_filenames']) ? $sn_mvc['javascript_filenames'] : [], $standard_js, '.js');
+
     $standard_js = self::cacheFiles($standard_js, '.js');
 
     // Prepending standard CSS files
