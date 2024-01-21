@@ -247,6 +247,7 @@ CSS
         * NB! Do not forget to copy them to use later as source in Spritify
 * Replace smiles with sprites
 
+* В чате не показываются смайлики неактивных ивентов. А должны
 
 #ctv
 
