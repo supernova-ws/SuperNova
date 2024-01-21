@@ -296,3 +296,17 @@ Break points:
     background-image: url("/skins/EpicBlue/img/background_1920.jpg");
   }
 }
+
+/* Navbar button images ***********************************************************************************************/
+.sprite_navbar_buttons{background-image: url('/skins/EpicBlue/images/sprite_navbar_buttons.png');display: inline-block;}
+.navbar_research_button_wide{background-position: -64px -192px;width: 128px;height: 64px;zoom:calc(77.438/64);}
+.navbar_research_button{background-position: -0px -192px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_hangar_button{background-position: -128px -0px;width: 128px;height: 128px;zoom:calc(77.438/128);}
+.navbar_expedition_button{background-position: -320px -0px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_fleet_own_button{background-position: -0px -128px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_quest_button{background-position: -192px -128px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_mail_button{background-position: -64px -128px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_dark_matter_button{background-position: -256px -0px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+.navbar_metamatter_button{background-position: -128px -128px;width: 64px;height: 64px;zoom:calc(77.438/64);}
+
+.navbar_defense_button{background-position: -0px -0px;width: 128px;height: 128px;zoom:calc(77.438/128);}

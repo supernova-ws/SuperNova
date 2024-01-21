@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #45a118#
+* @version #46a105#
 *
 */
 
@@ -614,7 +614,7 @@ $a_lang_array = [
     MSG_TYPE_OUTBOX => 'Отправленные сообщения',
     MSG_TYPE_SPY => 'Шпионские отчёты',
     MSG_TYPE_PLAYER => 'Сообщения от игроков',
-    MSG_TYPE_ALLIANCE => 'Сообщения альянса',
+    MSG_TYPE_ALLIANCE => 'Сообщения Альянса',
     MSG_TYPE_COMBAT => 'Военные отчёты',
     MSG_TYPE_RECYCLE => 'Отчеты переработки',
     MSG_TYPE_TRANSPORT => 'Прибытие флота',

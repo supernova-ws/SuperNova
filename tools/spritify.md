@@ -1,4 +1,4 @@
-# Spritify #46a104#
+# Spritify #46a105#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -56,6 +56,12 @@ Basic support for animated GIFs:
     * ? Background color on disposition `RESTORE_TO_BACKGROUND_COLOR`
     * ? Is it possible then size + offset be larger then largest frame? Read spec or find GIF
     * Streamline code for files to use GdImageWrapper as base image class and convert frames to it
+
+* Layout: Fit to width
+* Image: now it fit (zoom) to largest side
+  * todo: fit (zoom) to smallest, to width, to height
+* INI file
+  * Per-image file settings
 
 # Changelog
 

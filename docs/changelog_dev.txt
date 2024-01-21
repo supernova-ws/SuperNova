@@ -235,15 +235,29 @@ CSS
 
 * TODO
     * Remove unused menu image icons
+        * NB! Do not forget to copy them to use later as source in Spritify
     * Switches to disable merging CSS and JS (javascript)
     * Replace $sn_mvc with class in SN
-    * $sn_mvc['css_filenames']
+        * $sn_mvc['css_filenames'] - for modules to utilize
+    * Skin names should be used as BODY/HTML class names - including parents - to trigger CSS override
+        * Same for templates
+
+* Replace navbar items with sprites
+    * Delete unused navbar images
+        * NB! Do not forget to copy them to use later as source in Spritify
+* Replace smiles with sprites
 
 
 #ctv
 
 
-#ctv
+2024-01-21 19:38:32 46a105
+[+] Navbar
+    * Navbar now use sprites
+    * This should speed up page loading due to combining multiple standard navbar buttons into one sprite
+
+
+2024-01-21 07:04:39 46a104
 [@] Tools: Spritify update
     * Adjusted behavior in case if first frame in A-GIF smaller then largest one
 
