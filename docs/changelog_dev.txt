@@ -243,17 +243,22 @@ CSS
 #ctv
 
 
+2024-01-21 02:45:25 46a100
+[@] Tools: Spritify update
+    * Animated GIF frame expansion - disposal methods `UNSPECIFIED` and `DO_NOT_DISPOSE`
+
+
 2024-01-21 01:27:46 46a99
 [@] Tools: Spritify update
     * Basic support for animated GIFs - extract frames into sprite line
 
 
 2024-01-19 17:51:35 46a98
-[@] Tools - `spritify` update
+[@] Tools: Spritify update
 
 
 2024-01-19 16:04:51 46a97
-[@] Tools - `spritify` update
+[@] Tools: Spritify update
 
 
 2024-01-19 11:34:34 46a95
