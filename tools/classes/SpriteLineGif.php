@@ -141,14 +141,25 @@ class SpriteLineGif extends SpriteLine {
      */
     $thisFrame = $this->frames[$i];
     if (!$this->expandFrame || $i === 0) {
+//      $newGdImage = imagecreatetruecolor($thisFrame->getSize()->getWidth(), $thisFrame->getSize()->getHeight());
+//      imagealphablending($newGdImage, false);
+//      imagesavealpha($newGdImage, true);
+//      $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 127);
+//      imagefill($newGdImage, 0, 0, $color);
+//
+//      imagecopy($newGdImage, $thisFrame->createGDImage(),
+//        $thisFrame->getOffset()->getX(), $thisFrame->getOffset()->getY(),
+//        0, 0, $thisFrame->getSize()->getWidth(), $thisFrame->getSize()->getHeight()
+//      );
+
       // This is first frame - just return it immediately
+//      return $thisFrame->gdImage = $newGdImage;
       return $thisFrame->gdImage = $thisFrame->createGDImage();
     }
-//    return $thisFrame->createGDImage();
 
     $prevFrame = $this->frames[$i - 1];
     // For now no different
-    if (!in_array($prevFrame->getDisposalMethod(), [0, 1])) {
+    if (!in_array($prevFrame->getDisposalMethod(), [0, 1, 2])) {
       die("Disposal method {$prevFrame->getDisposalMethod()} does not supported yet");
     }
     // Disposal method 0 or 1 - just copy next frame above
@@ -157,13 +168,22 @@ class SpriteLineGif extends SpriteLine {
     $newGdImage = imagecreatetruecolor(imagesx($prevFrame->gdImage), imagesy($prevFrame->gdImage));
     imagealphablending($newGdImage, false);
     imagesavealpha($newGdImage, true);
-    imagefill($newGdImage, 0, 0, imagecolorallocatealpha($newGdImage, 0, 0, 0, 127));
+    $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 127);
+    imagefill($newGdImage, 0, 0, $color);
 
     imagecopy($newGdImage, $prevFrame->gdImage,
       0, 0,
       0, 0, imagesx($prevFrame->gdImage), imagesy($prevFrame->gdImage)
     );
-    //
+    if($prevFrame->getDisposalMethod() === 2) {
+//      $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 0);
+      imagefilledrectangle($newGdImage, $prevFrame->getOffset()->getX() -1 ,
+        $prevFrame->getOffset()->getY() - 1,
+        $prevFrame->getOffset()->getX() + $prevFrame->getSize()->getWidth()-2,
+        $prevFrame->getOffset()->getY() + $prevFrame->getSize()->getHeight()-2,
+        $color
+      );
+    }
     $sourceGdImage = $thisFrame->createGDImage();
     imagecopy($newGdImage, $sourceGdImage,
       // GIF offset starts from (1,1) instead of (0,0)

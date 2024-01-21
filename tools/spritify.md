@@ -1,4 +1,4 @@
-# Spritify #46a101#
+# Spritify #46a102#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -16,7 +16,7 @@ Basic support for animated GIFs:
 
 * Extract all frames in one "line" (layout pattern ignored for animated GIFs)
 * Expand each sprite to fully-qualified image (SpriteLineGif::$expandFrame === true)
-    * Only `DO_NOT_DISPOSE` and `UNSPECIFIED` disposal methods supported for now
+    * Only `DO_NOT_DISPOSE`, `UNSPECIFIED` and `RESTORE_TO_BACKGROUND_COLOR` disposal methods supported for now
 * Generates CSS per frame with extra info: frame position and size along with disposition method
 * Generates pure CSS animations via `@keyframes` and `animation` property
     * Spritify honors A-GIF frame delays
@@ -58,6 +58,10 @@ Basic support for animated GIFs:
 2024-01-19 16:04:51 is Fri Jan 19 18:04:55 2024 +0200
 
 * #ctv
+
+
+* 2024-01-21 04:44:55 46a102
+    * Spritify supports `RESTORE_TO_BACKGROUND_COLOR` disposition method 
 
 
 * 2024-01-21 03:55:30 46a101
