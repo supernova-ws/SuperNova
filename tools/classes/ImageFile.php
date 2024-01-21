@@ -2,6 +2,9 @@
 
 /** Created by Gorlum 08.01.2024 19:14 */
 
+use GIFEndec\Decoder;
+use GIFEndec\Events\FrameDecodedEvent;
+use GIFEndec\IO\FileStream;
 use Tools\ImageContainer;
 
 /**
@@ -14,6 +17,8 @@ class ImageFile {
   public $fullPath = '';
 
   private $image = null;
+  /** @var string|false $content Image file content */
+  protected $content;
 
   /**
    * @param $fileName
@@ -76,8 +81,38 @@ class ImageFile {
     return $this->image;
   }
 
-//  public function load() {
-//    $this->image = ImageContainer::load($this->fullPath);
-//  }
+  public function isAnimatedGif() {
+    // Checking file extension
+    if (!strtolower(pathinfo($this->fullPath, PATHINFO_EXTENSION)) === 'gif') {
+      return false;
+    }
+
+    // Counting frame(s)
+    if (substr($content = $this->loadContent(), 0, 4) !== 'GIF8') {
+      return false;
+    }
+    //an animated gif contains multiple "frames", with each frame having a
+    //header made up of:
+    // * a static 4-byte sequence (\x00\x21\xF9\x04)
+    // * 4 variable bytes
+    // * a static 2-byte sequence (\x00\x2C)
+    if (preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $content) <= 1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * @return false|string
+   */
+  protected function loadContent() {
+    if (empty($this->content)) {
+      $this->content = file_get_contents($this->fullPath);
+    }
+
+    return $this->content;
+  }
+
 
 }

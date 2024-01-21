@@ -37,6 +37,28 @@ class ImageContainer {
   }
 
   /**
+   * @param string $file
+   *
+   * @return static|null
+   */
+  public static function copyGdImage($gdImage) {
+    $image = @imagecreatefromstring(file_get_contents($file));
+    if (!$image) {
+      return null;
+    }
+
+    $that = new static();
+
+    $that->image = $image;
+    imagesavealpha($that->image, true);
+
+    $that->width  = imagesx($that->image);
+    $that->height = imagesy($that->image);
+
+    return $that;
+  }
+
+  /**
    * @param int $width
    * @param int $height
    *
@@ -83,6 +105,19 @@ class ImageContainer {
    */
   public function copyFrom(ImageContainer $anImage, $positionX, $positionY, $sourceX = 0, $sourceY = 0) {
     return imagecopy($this->image, $anImage->image, $positionX, $positionY, $sourceX, $sourceY, $anImage->width, $anImage->height);
+  }
+
+  /**
+   * @param \GdImage|resource $anImage
+   * @param int               $positionX
+   * @param int               $positionY
+   * @param int               $sourceX
+   * @param int               $sourceY
+   *
+   * @return bool
+   */
+  public function copyFromGd($anImage, $positionX, $positionY, $sourceX = 0, $sourceY = 0) {
+    return imagecopy($this->image, $anImage, $positionX, $positionY, $sourceX, $sourceY, imagesx($anImage), imagesy($anImage));
   }
 
   /**

@@ -4,6 +4,7 @@
 namespace Tools;
 
 require_once __DIR__ . '/SpriteLine.php';
+require_once __DIR__ . '/SpriteLineGif.php';
 require_once __DIR__ . '/ImageFile.php';
 require_once __DIR__ . '/ImageContainer.php';
 
@@ -81,7 +82,7 @@ class Sprite {
       $this->height += $line->height;
       $this->width  = max($this->width, $line->width);
 
-      // $line->image2->savePng($dirOut . count($breakpoints) . '.png'); // TODO remove debug
+//      $line->image->savePng(__DIR__ . '/../gif_line_' . $this->height . '.png'); // TODO remove debug
     }
   }
 
@@ -169,7 +170,7 @@ class Sprite {
     foreach ($this->imageList as $image) {
       $line = $prevLine->fillLine($image, $this->gridSize);
       if ($line != $prevLine) {
-        if ($prevLine) {
+        if ($prevLine && $prevLine->width > 0) {
           $this->lines[$this->lineIndex] = $prevLine;
           $this->lineIndex++;
         }

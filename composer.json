@@ -4,7 +4,8 @@
     "ext-mysqli": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "stil/gif-endec": "^0.2.0"
   },
   "require-dev": {
     "ext-json": "*",

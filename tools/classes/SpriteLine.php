@@ -12,8 +12,6 @@ class SpriteLine {
   /** @var ImageFile[] $files */
   public $files = [];
 
-  public $widthList = [];
-
   public $height = 0;
   public $width = 0;
 
@@ -29,7 +27,11 @@ class SpriteLine {
    * @return static|null
    */
   public function fillLine($image, $gridSize) {
-    $line = $this->isFull($gridSize) ? new static() : $this;
+    if($image->isAnimatedGif()) {
+      $line = new SpriteLineGif();
+    } else {
+      $line = $this->isFull($gridSize) ? new static() : $this;
+    }
 
     $line->addImage($image);
 
@@ -53,7 +55,6 @@ class SpriteLine {
   }
 
   public function generate($posY, $scaleToPx) {
-    unset($this->widthList);
     unset($this->image);
 
     $this->image = ImageContainer::create($this->width, $this->height);
@@ -61,8 +62,6 @@ class SpriteLine {
     $position = 0;
     foreach ($this->files as $file) {
       $this->image->copyFrom($file->getImageContainer(), $position, 0);
-
-      $this->widthList[] = $file->width;
 
       $onlyName = explode('.', $file->fileName);
       if (count($onlyName) > 1) {

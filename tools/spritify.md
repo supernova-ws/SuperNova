@@ -1,18 +1,24 @@
-# Spritify #46a98#
+# Spritify #46a99#
 
 Tool that make sprites from set of images
 
-Will arrange all images into predefined patterns. Patterns supported:
+Will arrange all images into predefined layout pattern. Patterns supported:
 * Square
 * Line
 * Column
+* Layout pattern ignored for animated GIFs - each GIF decompresses in it's own line of images
 
 Supports scaling (via `zoom` CSS property) to predefined box (square only)
+
+Basic support for animated GIFs:
+* Extract all frames in one "line" (layout pattern ignored for animated GIFs)
+* Generates CSS per frame with extra info: frame position and size along with disposition method
+
 
 # Todo
 
 * Layouts: btree, same_height, same_width, pixel-size
-* Сортировать изображения еще и по полному пути/имени изображения/прификсу имени?
+* Сортировать изображения еще и по полному пути/имени изображения/префиксу имени?
   * menu_item -> menu_item_hidden -> menu_item_highlighted
 * Code
   * Отдельный класс/метод построения спрайта 
@@ -26,12 +32,23 @@ Supports scaling (via `zoom` CSS property) to predefined box (square only)
   * Animated GIF PHP encoder/decoder https://github.com/stil/gif-endec
     * https://itecnote.com/tecnote/php-detect-animated-gifs-using-php-and-gd/
   * file:///X:/Documents/Projects/supernova/supernova_trunk/tools/_test/border.html
+* https://www.youtube.com/watch?v=jLbz6LRblV0
+  * https://matthewrayfield.com/articles/encoding-animated-gifs-into-pure-css/
+  * https://matthewrayfield.com/projects/gif2css/
+  * https://github.com/MatthewRayfield/gif2css
+
+* GIF decoding
+  * Expand each sprite to fully-qualified image
 
 # Changelog
 
 2024-01-19 16:04:51 is Fri Jan 19 18:04:55 2024 +0200
 
 * #ctv
+
+ 
+* 2024-01-21 01:27:46 46a99
+  * Now Spritify can decompress animated GIF to set of frames
 
 
 * 2024-01-19 17:51:35 46a98
