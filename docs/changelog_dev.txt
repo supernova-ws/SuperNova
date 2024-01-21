@@ -243,6 +243,11 @@ CSS
 #ctv
 
 
+2024-01-21 03:55:30 46a101
+[@] Tools: Spritify update
+    * Now Spritify generates pure CSS animations for extracted A-GIF frames, honoring delay between frames
+
+
 2024-01-21 02:45:25 46a100
 [@] Tools: Spritify update
     * Animated GIF frame expansion - disposal methods `UNSPECIFIED` and `DO_NOT_DISPOSE`

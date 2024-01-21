@@ -66,20 +66,21 @@ class SpriteLineGif extends SpriteLine {
     unset($this->image);
     $this->image = ImageContainer::create($this->width, $this->height);
 
-    $position = 0;
+    $durations = [];
+    $position  = 0;
     foreach ($this->frames as $i => $frame) {
       $frameGdImage = $this->expandFrame($i);
-      $width = imagesx($frameGdImage);
-      $height = imagesy($frameGdImage);
 
+      $width  = imagesx($frameGdImage);
+      $height = imagesy($frameGdImage);
 
       $this->image->copyFromGd($frameGdImage, $position, 0);
 
-      $frameName = $onlyName . '_' . $i;
-
       $frame = $this->frames[$i];
+      // Fixing duration 0 to 10
+      $durations[$i] = ($duration = $frame->getDuration()) ? $duration : 10;
 
-      $css = "%1\$s{$frameName}%2\$s{background-position: -{$position}px -{$posY}px;";
+      $css = "%1\$s{$onlyName}_{$i}%2\$s{background-position: -{$position}px -{$posY}px;";
 
       // Extra info about frame
       $size   = $frame->getSize();
@@ -95,13 +96,32 @@ class SpriteLineGif extends SpriteLine {
 
       if ($i === 0) {
         // If it's first frame - generating CSS for static image
-        $css = "%1\$s{$onlyName}%2\$s," . $css;
+        $css = "%1\$s{$onlyName}%2\$s,\n" . $css;
       }
 
       $this->css .= $css;
 
       $position += $width;
     }
+
+    $totalDuration = array_sum($durations);
+    $durInSec      = round($totalDuration / 100, 4);
+
+    $animation  = '';
+    $cumulative = 0;
+    $position   = 0;
+    foreach ($durations as $i => $duration) {
+      $animation .= $cumulative . "%% {background-position-x: {$position}px;}\n";
+
+      $cumulative += round($duration / $totalDuration * 100, 3);
+      $position   -= imagesx($this->frames[$i]->gdImage);
+    }
+    $animation = "%1\$s{$onlyName}%2\$s {animation: {$onlyName}_animation%2\$s {$durInSec}s step-end infinite;}\n" .
+      "@keyframes {$onlyName}_animation%2\$s {\n" .
+      $animation .
+      "}";
+
+    $this->css .= $animation;
   }
 
   /**

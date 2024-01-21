@@ -1,4 +1,4 @@
-# Spritify #46a100#
+# Spritify #46a101#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -15,15 +15,17 @@ Supports scaling (via `zoom` CSS property) to predefined box (square only)
 Basic support for animated GIFs:
 
 * Extract all frames in one "line" (layout pattern ignored for animated GIFs)
-* Generates CSS per frame with extra info: frame position and size along with disposition method
 * Expand each sprite to fully-qualified image (SpriteLineGif::$expandFrame === true)
     * Only `DO_NOT_DISPOSE` and `UNSPECIFIED` disposal methods supported for now
+* Generates CSS per frame with extra info: frame position and size along with disposition method
+* Generates pure CSS animations via `@keyframes` and `animation` property
+    * Spritify honors A-GIF frame delays
 
 # Thanks
 
 * https://github.com/stil/gif-endec - Animated GIF encoding/decoding lib
-* https://itecnote.com/tecnote/php-detect-animated-gifs-using-php-and-gd/ animated GIF detection
-* CSS sprite animation https://jsfiddle.net/simurai/CGmCe/
+* Animated GIF detection - https://itecnote.com/tecnote/php-detect-animated-gifs-using-php-and-gd/ 
+* CSS sprite animation - https://jsfiddle.net/simurai/CGmCe/
 
 # Todo
 
@@ -45,6 +47,7 @@ Basic support for animated GIFs:
         * https://matthewrayfield.com/articles/encoding-animated-gifs-into-pure-css/
         * https://matthewrayfield.com/projects/gif2css/
         * https://github.com/MatthewRayfield/gif2css
+    * https://www.w3.org/Graphics/GIF/spec-gif89a.txt
 
 # WiP
 
@@ -55,6 +58,10 @@ Basic support for animated GIFs:
 2024-01-19 16:04:51 is Fri Jan 19 18:04:55 2024 +0200
 
 * #ctv
+
+
+* 2024-01-21 03:55:30 46a101
+    * Now Spritify generates pure CSS animations for extracted A-GIF frames, honoring delay between frames
 
 
 * 2024-01-21 02:45:25 46a100
