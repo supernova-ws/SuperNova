@@ -243,6 +243,10 @@ CSS
 #ctv
 
 
+2024-01-21 06:17:01 46a103
+[@] Tools: Spritify update
+    * Now Spritify honors offset in first frame of A-GIF
+
 2024-01-21 04:44:55 46a102
 [@] Tools: Spritify update
     * Spritify supports `RESTORE_TO_BACKGROUND_COLOR` disposition method

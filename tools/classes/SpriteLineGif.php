@@ -60,7 +60,17 @@ class SpriteLineGif extends SpriteLine {
     // You can't have this chars in CSS qualifier
     $onlyName = str_replace(['.', '#'], '_', $onlyName);
 
-    $maxDimension = max($file->width, $file->height);
+
+    // Expanding frames. Their sizes can change due to offset
+    foreach ($this->frames as $i => $frame) {
+      $this->expandFrame($i);
+    }
+
+    $firstFrame = reset($this->frames);
+//    $maxDimension = max($file->width, $file->height);
+    $this->width  = imagesx($firstFrame->gdImage) * count($this->frames);
+    $this->height = imagesy($firstFrame->gdImage);
+    $maxDimension = max(imagesx($firstFrame->gdImage), imagesy($firstFrame->gdImage));
 
     // Recreating image - if any
     unset($this->image);
@@ -69,14 +79,15 @@ class SpriteLineGif extends SpriteLine {
     $durations = [];
     $position  = 0;
     foreach ($this->frames as $i => $frame) {
-      $frameGdImage = $this->expandFrame($i);
+//      $frameGdImage = $this->expandFrame($i);
+      $frameGdImage = $frame->gdImage;
 
       $width  = imagesx($frameGdImage);
       $height = imagesy($frameGdImage);
 
       $this->image->copyFromGd($frameGdImage, $position, 0);
 
-      $frame = $this->frames[$i];
+//      $frame = $this->frames[$i];
       // Fixing duration 0 to 10
       $durations[$i] = ($duration = $frame->getDuration()) ? $duration : 10;
 
@@ -140,55 +151,50 @@ class SpriteLineGif extends SpriteLine {
      *       what was there prior to rendering the graphic.
      */
     $thisFrame = $this->frames[$i];
-    if (!$this->expandFrame || $i === 0) {
-//      $newGdImage = imagecreatetruecolor($thisFrame->getSize()->getWidth(), $thisFrame->getSize()->getHeight());
-//      imagealphablending($newGdImage, false);
-//      imagesavealpha($newGdImage, true);
-//      $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 127);
-//      imagefill($newGdImage, 0, 0, $color);
-//
-//      imagecopy($newGdImage, $thisFrame->createGDImage(),
-//        $thisFrame->getOffset()->getX(), $thisFrame->getOffset()->getY(),
-//        0, 0, $thisFrame->getSize()->getWidth(), $thisFrame->getSize()->getHeight()
-//      );
-
-      // This is first frame - just return it immediately
-//      return $thisFrame->gdImage = $newGdImage;
+    if (!$this->expandFrame) {
       return $thisFrame->gdImage = $thisFrame->createGDImage();
     }
 
-    $prevFrame = $this->frames[$i - 1];
-    // For now no different
-    if (!in_array($prevFrame->getDisposalMethod(), [0, 1, 2])) {
-      die("Disposal method {$prevFrame->getDisposalMethod()} does not supported yet");
-    }
-    // Disposal method 0 or 1 - just copy next frame above
+    if ($i === 0) {
+      // This is first frame
+      $sizeX = $thisFrame->getSize()->getWidth() + $thisFrame->getOffset()->getX();
+      $sizeY = $thisFrame->getSize()->getHeight() + $thisFrame->getOffset()->getY();
+    } else {
+      $prevFrame = $this->frames[$i - 1];
+      if (!in_array($prevFrame->getDisposalMethod(), [0, 1, 2])) {
+        die("Disposal method {$prevFrame->getDisposalMethod()} does not supported yet");
+      }
 
-    // Creating detached copy of previous frame image
-    $newGdImage = imagecreatetruecolor(imagesx($prevFrame->gdImage), imagesy($prevFrame->gdImage));
+      // Creating detached copy of previous frame image
+      $sizeX = imagesx($prevFrame->gdImage);
+      $sizeY = imagesy($prevFrame->gdImage);
+    }
+    $newGdImage = imagecreatetruecolor($sizeX, $sizeY);
     imagealphablending($newGdImage, false);
     imagesavealpha($newGdImage, true);
     $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 127);
     imagefill($newGdImage, 0, 0, $color);
 
-    imagecopy($newGdImage, $prevFrame->gdImage,
-      0, 0,
-      0, 0, imagesx($prevFrame->gdImage), imagesy($prevFrame->gdImage)
-    );
-    if($prevFrame->getDisposalMethod() === 2) {
-//      $color = imagecolorallocatealpha($newGdImage, 0, 0, 0, 0);
-      imagefilledrectangle($newGdImage, $prevFrame->getOffset()->getX() -1 ,
-        $prevFrame->getOffset()->getY() - 1,
-        $prevFrame->getOffset()->getX() + $prevFrame->getSize()->getWidth()-2,
-        $prevFrame->getOffset()->getY() + $prevFrame->getSize()->getHeight()-2,
-        $color
+    if ($i !== 0) {
+      imagecopy($newGdImage, $prevFrame->gdImage,
+        0, 0,
+        0, 0, imagesx($prevFrame->gdImage), imagesy($prevFrame->gdImage)
       );
+
+      if ($prevFrame->getDisposalMethod() === 2) {
+        imagefilledrectangle($newGdImage,
+          $prevFrame->getOffset()->getX(), $prevFrame->getOffset()->getY(),
+          $prevFrame->getOffset()->getX() + ($prevFrame->getSize()->getWidth() - 1),
+          $prevFrame->getOffset()->getY() + ($prevFrame->getSize()->getHeight() - 1),
+          $color
+        );
+      }
     }
-    $sourceGdImage = $thisFrame->createGDImage();
-    imagecopy($newGdImage, $sourceGdImage,
-      // GIF offset starts from (1,1) instead of (0,0)
-      $thisFrame->getOffset()->getX() - 1, $thisFrame->getOffset()->getY() - 1,
-      0, 0, imagesx($sourceGdImage), imagesy($sourceGdImage)
+
+    $anImage = $thisFrame->createGDImage();
+    imagecopy($newGdImage, $anImage,
+      $thisFrame->getOffset()->getX(), $thisFrame->getOffset()->getY(),
+      0, 0, imagesx($anImage), imagesy($anImage)
     );
 
     return $thisFrame->gdImage = $newGdImage;

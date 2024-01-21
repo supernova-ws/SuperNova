@@ -1,4 +1,4 @@
-# Spritify #46a102#
+# Spritify #46a103#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -20,6 +20,7 @@ Basic support for animated GIFs:
 * Generates CSS per frame with extra info: frame position and size along with disposition method
 * Generates pure CSS animations via `@keyframes` and `animation` property
     * Spritify honors A-GIF frame delays
+    * Spritify honors A-GIF frame offsets
 
 # Thanks
 
@@ -52,12 +53,17 @@ Basic support for animated GIFs:
 # WiP
 
 * GIF decoding
+  * ? Background color on disposition `RESTORE_TO_BACKGROUND_COLOR`
 
 # Changelog
 
 2024-01-19 16:04:51 is Fri Jan 19 18:04:55 2024 +0200
 
 * #ctv
+
+
+* 2024-01-21 06:17:01 46a103
+    * Now Spritify honors offset in first frame of A-GIF 
 
 
 * 2024-01-21 04:44:55 46a102
