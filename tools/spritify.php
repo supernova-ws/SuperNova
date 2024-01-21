@@ -10,7 +10,7 @@
  * Prefix and suffix can be used to produce different types of CSS qualifiers: IDs, classes, nested qualifiers etc
  * Have support to scale all sprites to single-sized square
  *
- * @version 46a103
+ * @version 46a104
  */
 
 /** @noinspection PhpRedundantOptionalArgumentInspection */
@@ -30,15 +30,79 @@ use Tools\Spritify;
 //Spritify::go(__DIR__ . '/../skins/EpicBlue/icons/*', __DIR__ . '/.output/', 'menu_icons_full', '#icon_full_', '', 0, '/design/images/');
 
 // WiP
-//Spritify::go(
-//  [
+Spritify::go(
+  [
 //    __DIR__ . '/../design/images/smileys/blink.gif',
 //    __DIR__ . '/../design/images/smileys/cool.gif',
 //    __DIR__ . '/../design/images/smileys/bomb.gif',
 //    __DIR__ . '/../design/images/smileys/blush.gif',
-//  ],
-//  __DIR__ . '/.output/', 'smile_icons', '#icon_smile_', '', 64, '/design/images/'
-//);
+//    __DIR__ . '/../design/images/smileys/maniac.gif',
+
+    __DIR__ . '/../design/images/smileys/accordion.gif',
+    __DIR__ . '/../design/images/smileys/aggressive.gif',
+    __DIR__ . '/../design/images/smileys/angel.gif',
+    __DIR__ . '/../design/images/smileys/bad.gif',
+    __DIR__ . '/../design/images/smileys/ban.gif',
+    __DIR__ . '/../design/images/smileys/bayan.gif',
+    __DIR__ . '/../design/images/smileys/blackeye.gif',
+    __DIR__ . '/../design/images/smileys/blink.gif',
+    __DIR__ . '/../design/images/smileys/blush.gif',
+    __DIR__ . '/../design/images/smileys/bomb.gif',
+    __DIR__ . '/../design/images/smileys/censored.gif',
+    __DIR__ . '/../design/images/smileys/clapping.gif',
+    __DIR__ . '/../design/images/smileys/coctail.gif',
+    __DIR__ . '/../design/images/smileys/coffee.gif',
+    __DIR__ . '/../design/images/smileys/contract.gif',
+    __DIR__ . '/../design/images/smileys/cool.gif',
+    __DIR__ . '/../design/images/smileys/cray.gif',
+    __DIR__ . '/../design/images/smileys/crazy.gif',
+    __DIR__ . '/../design/images/smileys/diablo.gif',
+    __DIR__ . '/../design/images/smileys/dirol.gif',
+    __DIR__ . '/../design/images/smileys/drinks.gif',
+    __DIR__ . '/../design/images/smileys/facepalm.gif',
+    __DIR__ . '/../design/images/smileys/fool.gif',
+    __DIR__ . '/../design/images/smileys/friends.gif',
+    __DIR__ . '/../design/images/smileys/give_rose.gif',
+    __DIR__ . '/../design/images/smileys/good.gif',
+    __DIR__ . '/../design/images/smileys/help.gif',
+    __DIR__ . '/../design/images/smileys/index.html',
+    __DIR__ . '/../design/images/smileys/lol.gif',
+    __DIR__ . '/../design/images/smileys/maniac.gif',
+    __DIR__ . '/../design/images/smileys/mellow.gif',
+    __DIR__ . '/../design/images/smileys/mill.gif',
+    __DIR__ . '/../design/images/smileys/nea.gif',
+    __DIR__ . '/../design/images/smileys/new_year',
+    __DIR__ . '/../design/images/smileys/panic.gif',
+    __DIR__ . '/../design/images/smileys/pardon.gif',
+    __DIR__ . '/../design/images/smileys/pleasantry.gif',
+    __DIR__ . '/../design/images/smileys/plushit.gif',
+    __DIR__ . '/../design/images/smileys/poke.gif',
+    __DIR__ . '/../design/images/smileys/popcorn.gif',
+    __DIR__ . '/../design/images/smileys/pray.gif',
+    __DIR__ . '/../design/images/smileys/rofl.gif',
+    __DIR__ . '/../design/images/smileys/sad.gif',
+    __DIR__ . '/../design/images/smileys/sarcasm.gif',
+    __DIR__ . '/../design/images/smileys/shok.gif',
+    __DIR__ . '/../design/images/smileys/shout.gif',
+    __DIR__ . '/../design/images/smileys/smile.gif',
+    __DIR__ . '/../design/images/smileys/sorry.gif',
+    __DIR__ . '/../design/images/smileys/spiteful.gif',
+    __DIR__ . '/../design/images/smileys/suicide.gif',
+    __DIR__ . '/../design/images/smileys/tease.gif',
+    __DIR__ . '/../design/images/smileys/tongue.gif',
+    __DIR__ . '/../design/images/smileys/unknw.gif',
+    __DIR__ . '/../design/images/smileys/wall.gif',
+    __DIR__ . '/../design/images/smileys/whistle.gif',
+    __DIR__ . '/../design/images/smileys/wink.gif',
+    __DIR__ . '/../design/images/smileys/yahoo.gif',
+    __DIR__ . '/../design/images/smileys/yu.gif',
+    __DIR__ . '/../design/images/smileys/hmm.gif',
+
+//    Gives problem if with other files
+//    __DIR__ . '/../design/images/smileys/huh.gif',
+  ],
+  __DIR__ . '/.output/', 'smile_icons', '#icon_smile_', '', 64, '/design/images/'
+);
 
 // Actual converts
 Spritify::go(__DIR__ . '/../skins/EpicBlue/icons/menu*', __DIR__ . '/.output/', 'menu_icons', '#icon_', '', 14, '/design/images/');

@@ -14,28 +14,38 @@ class SpriteLineGif extends SpriteLine {
 
   /** @var Frame[] $frames */
   protected $frames = [];
+  /**
+   * @var int
+   */
+  protected $maxWidth = 0;
 
   protected function addImage($imageFile) {
     $this->files[] = $imageFile;
 
     $this->frames = [];
 
-    $this->height = $this->width = 0;
+    $this->height = $this->width = $this->maxWidth = 0;
 
     /** Open GIF as FileStream */
     // TODO - own class from loaded
     $gifStream = new FileStream($imageFile->fullPath);
     /** Create Decoder instance from MemoryStream */
     $gifDecoder = new Decoder($gifStream);
+
     /** Run decoder. Pass callback function to process decoded Frames when they're ready. */
     $gifDecoder->decode(function (FrameDecodedEvent $event) {
       $this->frames[] = $event->decodedFrame;
 
-      $this->width  += $event->decodedFrame->getSize()->getWidth();
+      $this->width    += $event->decodedFrame->getSize()->getWidth();
+      $this->maxWidth = max($this->maxWidth, $event->decodedFrame->getSize()->getWidth());
+
       $this->height = max($this->height, $event->decodedFrame->getSize()->getHeight());
     });
     // For EXPAND_FRAME delta width would be equal size of the largest frame
-    $this->width = count($this->frames) * reset($this->frames)->getSize()->getWidth();
+//    $this->width = count($this->frames) * reset($this->frames)->getSize()->getWidth();
+    if ($this->expandFrame) {
+      $this->width = count($this->frames) * $this->maxWidth;
+    }
   }
 
   /**
@@ -60,17 +70,16 @@ class SpriteLineGif extends SpriteLine {
     // You can't have this chars in CSS qualifier
     $onlyName = str_replace(['.', '#'], '_', $onlyName);
 
-
     // Expanding frames. Their sizes can change due to offset
     foreach ($this->frames as $i => $frame) {
       $this->expandFrame($i);
     }
 
-    $firstFrame = reset($this->frames);
-//    $maxDimension = max($file->width, $file->height);
-    $this->width  = imagesx($firstFrame->gdImage) * count($this->frames);
-    $this->height = imagesy($firstFrame->gdImage);
-    $maxDimension = max(imagesx($firstFrame->gdImage), imagesy($firstFrame->gdImage));
+//    $firstFrame = reset($this->frames);
+//    $this->width  = imagesx($firstFrame->gdImage) * count($this->frames);
+//    $this->height = imagesy($firstFrame->gdImage);
+//    $maxDimension = max(imagesx($firstFrame->gdImage), imagesy($firstFrame->gdImage));
+    $maxDimension = max($this->maxWidth, $this->height);
 
     // Recreating image - if any
     unset($this->image);
@@ -157,8 +166,10 @@ class SpriteLineGif extends SpriteLine {
 
     if ($i === 0) {
       // This is first frame
-      $sizeX = $thisFrame->getSize()->getWidth() + $thisFrame->getOffset()->getX();
-      $sizeY = $thisFrame->getSize()->getHeight() + $thisFrame->getOffset()->getY();
+      $sizeX = $this->maxWidth;
+      $sizeY = $this->height;
+//      $sizeX = $thisFrame->getSize()->getWidth() + $thisFrame->getOffset()->getX();
+//      $sizeY = $thisFrame->getSize()->getHeight() + $thisFrame->getOffset()->getY();
     } else {
       $prevFrame = $this->frames[$i - 1];
       if (!in_array($prevFrame->getDisposalMethod(), [0, 1, 2])) {

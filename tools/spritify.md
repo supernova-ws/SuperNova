@@ -1,4 +1,4 @@
-# Spritify #46a103#
+# Spritify #46a104#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -25,7 +25,7 @@ Basic support for animated GIFs:
 # Thanks
 
 * https://github.com/stil/gif-endec - Animated GIF encoding/decoding lib
-* Animated GIF detection - https://itecnote.com/tecnote/php-detect-animated-gifs-using-php-and-gd/ 
+* Animated GIF detection - https://itecnote.com/tecnote/php-detect-animated-gifs-using-php-and-gd/
 * CSS sprite animation - https://jsfiddle.net/simurai/CGmCe/
 
 # Todo
@@ -53,7 +53,9 @@ Basic support for animated GIFs:
 # WiP
 
 * GIF decoding
-  * ? Background color on disposition `RESTORE_TO_BACKGROUND_COLOR`
+    * ? Background color on disposition `RESTORE_TO_BACKGROUND_COLOR`
+    * ? Is it possible then size + offset be larger then largest frame? Read spec or find GIF
+    * Streamline code for files to use GdImageWrapper as base image class and convert frames to it
 
 # Changelog
 
@@ -62,12 +64,16 @@ Basic support for animated GIFs:
 * #ctv
 
 
+* 2024-01-21 07:04:38 46a104
+    * Adjusted behavior in case if first frame in A-GIF smaller then largest one
+
+
 * 2024-01-21 06:17:01 46a103
-    * Now Spritify honors offset in first frame of A-GIF 
+    * Now Spritify honors offset in first frame of A-GIF
 
 
 * 2024-01-21 04:44:55 46a102
-    * Spritify supports `RESTORE_TO_BACKGROUND_COLOR` disposition method 
+    * Spritify supports `RESTORE_TO_BACKGROUND_COLOR` disposition method
 
 
 * 2024-01-21 03:55:30 46a101

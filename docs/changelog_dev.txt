@@ -243,6 +243,11 @@ CSS
 #ctv
 
 
+#ctv
+[@] Tools: Spritify update
+    * Adjusted behavior in case if first frame in A-GIF smaller then largest one
+
+
 2024-01-21 06:17:01 46a103
 [@] Tools: Spritify update
     * Now Spritify honors offset in first frame of A-GIF
