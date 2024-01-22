@@ -1,4 +1,4 @@
-# Spritify #46a105#
+# Spritify #46a108#
 
 Tool that make sprites from set of images - PNG sprite file along with CSS to use
 
@@ -62,6 +62,8 @@ Basic support for animated GIFs:
   * todo: fit (zoom) to smallest, to width, to height
 * INI file
   * Per-image file settings
+
+* Write `zoom: calc()` separately? It will help to fine-tune actual sizes later
 
 # Changelog
 
