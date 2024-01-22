@@ -252,6 +252,11 @@ CSS
 #ctv
 
 
+2024-01-22 00:39:08 46a110
+[%] Navbar
+    * Fixed error reposition que in navbar buttons
+
+
 2024-01-22 00:32:52 46a108
 [%] Navbar
     * Restored links on some navbar buttons
