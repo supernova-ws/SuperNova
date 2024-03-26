@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a110');
+define('SN_VERSION', '46a113');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -993,7 +993,7 @@ define('THIS_STRING', '$this');
 
 define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
 
-define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
+// define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
 const PLAYER_INACTIVE_TIMEOUT = PERIOD_WEEK; // Player inactivity timeout to become 'i'-marked player

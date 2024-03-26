@@ -30,10 +30,11 @@
  * @property int        $empire_mercenary_base_period  => PERIOD_MONTH, // Base hire period for price calculations
  * @property int        $empire_mercenary_temporary    => 0, // Temporary empire-wide mercenaries
  *
- * @property int        $fleet_update_max_run_time     => 30,         // Maximum length in seconds for single fleet dispatch run. Should be 1 second or more
- * @property int        $fleet_update_interval         => 4 second    // how often fleets should be updated
+ * @property int        $fleet_update_max_run_time     => 30,         // (int), seconds. How long fleet dispatch worker can run. Should be 1 second or more
+ * @property int        $fleet_update_interval         => 4 second    // how often fleet dispatch worker should run
  * @property int        $fleet_update_last             => SN_TIME_NOW // unixtime - when fleet was updated last
  * @property int        $fleet_update_lock             => ''          // SQL time when lock was acquired
+ * @property float      $fleet_dispatch_max_time       => 3           // (float), seconds Maximum seconds fleet dispatch can run, Default 3s
  *
  * @property string     $game_adminEmail               => 'root@localhost',    // Admin email to show to users
  *
@@ -301,9 +302,10 @@ class classConfig extends classPersistent {
     'Fleet_Cdr'   => 30,
     'fleet_speed' => 1,
 
-    self::FLEET_UPDATE_MAX_RUN_TIME => 30,     // Maximum length in seconds for single fleet dispatch run
-    'fleet_update_interval'         => 4,
+    self::FLEET_UPDATE_MAX_RUN_TIME => 30, // (int) seconds. How long fleet dispatch worker can run. Should be 1 second or more
+    'fleet_update_interval'         => 4,  // How often fleet dispatch worker should run
     'fleet_update_lock'             => '', // SQL time when lock was acquired
+    'fleet_dispatch_max_time'       => 3,  // (float) Maximum seconds fleet dispatch can run, Default 3s
 
     'game_adminEmail'       => 'root@localhost',    // Admin email to show to users
     'game_counter'          => 0,  // Does built-in page hit counter is on?

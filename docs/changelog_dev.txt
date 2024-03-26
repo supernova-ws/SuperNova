@@ -249,7 +249,17 @@ CSS
 
 * В чате не показываются смайлики неактивных ивентов. А должны
 
+@see changelog_todo_nocommit.md
+
+* Переделать интерфейс МО на планеты в колонках
+
 #ctv
+
+
+2024-03-26 17:04:00 46a113
+[~] Fleets
+    * Now length of each fleet dispatch job can be configured via `fleet_dispatch_max_time` config (float). Default: 3 seconds
+    * `GAME_FLEET_HANDLER_MAX_TIME` is obsolete
 
 
 2024-01-22 00:39:08 46a110
