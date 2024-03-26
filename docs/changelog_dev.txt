@@ -256,6 +256,11 @@ CSS
 #ctv
 
 
+2024-03-26 17:38:51 46a117
+[~] Fleets
+    * `fleet_dispatch_max_time` renamed to `fleet_update_dispatch_time` for uniformity
+
+
 2024-03-26 17:04:00 46a113
 [~] Fleets
     * Now length of each fleet dispatch job can be configured via `fleet_dispatch_max_time` config (float). Default: 3 seconds

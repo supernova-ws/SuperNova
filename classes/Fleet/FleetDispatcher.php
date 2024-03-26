@@ -267,10 +267,10 @@ class FleetDispatcher {
     foreach ($fleet_event_list as $fleet_event) {
       $lastEventEnd = microtime(true);
       // Watchdog timer
-      // If flying fleet handler works more than `fleet_dispatch_max_time` seconds - stopping it
+      // If flying fleet handler works more than `fleet_update_dispatch_time` seconds - stopping it
       // Let next run handle rest of fleets
       $workTime = microtime(true) - $workBegin;
-      if ($workTime >= SN::$config->fleet_dispatch_max_time) {
+      if ($workTime >= SN::$config->fleet_update_dispatch_time) {
         $this->logTermination($workTime, $eventsProcessed, $lastMission, $lastEvent, $lastEventEnd - $lastEventBegin, count($fleet_event_list));
 
         $result = self::TASK_TERMINATED;
