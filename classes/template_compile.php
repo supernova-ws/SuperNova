@@ -614,7 +614,7 @@ class template_compile
               // Add the block reference for the last child.
               $varref .= "['" . $blocks[0] . "']";
             }
-            $token = "sizeof($varref)";
+            $token = "(empty($varref) ? 0 : sizeof($varref))";
           }
           else if (!empty($token))
           {

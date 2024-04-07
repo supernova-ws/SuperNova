@@ -960,9 +960,9 @@ class SnTemplate {
       'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
       'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
-      'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
+      'TOPNAV_FLEETS_FLYING'      => empty($fleet_flying_list[0]) ? 0 : count($fleet_flying_list[0]),
       'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
-      'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
+      'TOPNAV_EXPEDITIONS_FLYING' => empty($fleet_flying_list[MT_EXPLORE]) ? 0 : count($fleet_flying_list[MT_EXPLORE]),
       'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
       'TOPNAV_QUEST_COMPLETE'    => get_quest_amount_complete($user['id']),
@@ -996,7 +996,11 @@ class SnTemplate {
       'QUE_STRUCTURES' => QUE_STRUCTURES,
     ));
 
-    if ((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
+    if (
+      (defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true)
+      ||
+      ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && (!defined('SN_RENDER_NAVBAR_PLANET') || SN_RENDER_NAVBAR_PLANET !== false))
+    ) {
       tpl_set_resource_info($template, $planetrow);
       $template->assign_vars(array(
         'SN_RENDER_NAVBAR_PLANET' => true,

@@ -12,8 +12,6 @@ Stay out of my shed
 [*] ToDo - см. todo.txt & todo.xls
 
 
-@see changelog.dev.todo.txt
-
 [*] Карты на конкретные ауткомы в Экспедициях
 
 [*] https://stackoverflow.com/questions/32378953/keep-the-middle-item-centered-when-side-items-have-different-widths
@@ -249,12 +247,85 @@ CSS
 
 * В чате не показываются смайлики неактивных ивентов. А должны
 
+
+https://www.percona.com/software/database-tools/percona-toolkit
+
+config - index is hash
+
+@see changelog.dev.todo.txt
 @see changelog_todo_nocommit.md
 
 * Переделать интерфейс МО на планеты в колонках
+* По-максимуму избавится от полей BLOB/TEXT - особенно в `config`
+
+* Дропнуть во `fleets` индексы:
+    * `fleet_both`
+    * `I_test`
+    * `fleet_id`
+ALTER TABLE `ogame`.`game_fleets`
+DROP INDEX `fleet_id`,
+DROP INDEX `fleet_both`,
+DROP INDEX `I_test`;
+
+* Если нет конфигов модулей - сыпится куча ошибок
+
+* Переделать в UNION
+    * SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = ? AND fleet_start_system = ? AND fleet_start_planet = 16 AND fleet_start_type = 3 AND fleet_mess = 1) OR ( fleet_end_galaxy = ? AND fleet_end_system = ? AND fleet_end_planet = 16 AND fleet_end_type = 3 AND fleet_mess = 0)\G
+    * WHERE
+        * fleet_start_galaxy = ?
+        * fleet_start_system = ?
+        * fleet_start_planet = 16
+        * fleet_start_type = 3
+        * fleet_mess = 1
+    * OR
+        * fleet_end_galaxy = ?
+        * fleet_end_system = ?
+        * fleet_end_planet = 16
+        * fleet_end_type = 3
+        * fleet_mess = 0
+
+* ube_report_unit
+    * decimal 64 -> decimal 32 или даже 16-20 - 32 МАЛО!!!
+    * SELECT max(ube_report_unit_attack) FROM `game_ube_report_unit`
+        * 10154002942728 (14)
+    * SELECT max(ube_report_unit_shield) FROM `game_ube_report_unit`
+        * 4002480000000 (13) МАЛО 32!!!
+* SELECT max(unit_level) FROM `game_unit`
+    * 2730432019 (10) 2.730.432.019 2 млрд
+* SELECT
+  max(ube_report_outcome_fleet_resource_lost_metal),
+  max(ube_report_outcome_fleet_resource_lost_crystal),
+  max(ube_report_outcome_fleet_resource_lost_deuterium),
+  max(ube_report_outcome_fleet_resource_dropped_metal),
+  max(ube_report_outcome_fleet_resource_dropped_crystal),
+  max(ube_report_outcome_fleet_resource_dropped_deuterium),
+  max(ube_report_outcome_fleet_resource_loot_metal),
+  max(ube_report_outcome_fleet_resource_loot_crystal),
+  max(ube_report_outcome_fleet_resource_loot_deuterium),
+  max(ube_report_outcome_fleet_resource_lost_in_metal)
+  FROM `game_ube_report_outcome_fleet`
+  * 31929954315500	24344582856500	6892749829600	0	0	0	4230547540717	6539453840652	952727336533	111274170527130 (15)   111.274.170.527.130 111 трлн ube_report_outcome_fleet_resource_lost_in_metal
+* SELECT  max(ube_report_fleet_resource_metal), max(ube_report_fleet_resource_crystal), max(ube_report_fleet_resource_deuterium) FROM `game_ube_report_fleet`;
+    * 10771609702592	25796158896330	1905454673066 (14) 25.796.158.896.330 25 трлн ube_report_fleet_resource_crystal
+
+* `confirmation` - чистить
+    * delete FROM `game_confirmations` where create_time < "2024-01-01";
+
+* `unit` - `unit_location_type`/`unit_location_id` - развязать, что бы работали констрейнты?
+
+
+
+
+
+* see changelog_dev.deadlock.sql
 
 #ctv
 
+2024-04-07 14:33:41 46a118
+[~] PHP 7
+    * Fixed no que items on building pages
+    * Fixed que for mass-operations
+    * Fixed other PHP 7 compatibility issues
 
 2024-03-26 17:38:51 46a117
 [~] Fleets

@@ -136,7 +136,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     $in_que = &$que['in_que'][$que_id][$user['id']][$planet_id];
     $que_max_length = que_get_max_que_length($user, $planet, $que_id, $que_data);
     // TODO Добавить вызовы функций проверок текущей и максимальной длин очередей
-    if(count($in_que) >= $que_max_length) {
+    if((empty($in_que) ? 0 : count($in_que)) >= $que_max_length) {
       throw new exception('{Все слоты очереди заняты}', ERR_ERROR); // TODO EXCEPTION
     }
 
@@ -309,7 +309,11 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     }
 
     $unit_amount_qued = 0;
-    while($unit_amount > 0 && count($que['ques'][$que_id][$user['id']][$planet_id]) < $que_max_length) {
+    while(
+      $unit_amount > 0
+      &&
+      (empty($que['ques'][$que_id][$user['id']][$planet_id]) ? 0 : count($que['ques'][$que_id][$user['id']][$planet_id])) < $que_max_length
+    ) {
       $place = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
 //      $sqlBlock = QueUnitStatic::que_unit_make_sql($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
       $sqlBlock = SN::$gc->pimp->que_unit_make_sql($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
