@@ -2,6 +2,7 @@
 
 namespace DBAL;
 
+use debug;
 use mysqli_result;
 use SN;
 
@@ -179,6 +180,10 @@ class db_mysql {
   }
 
   public function doquery($query, $fetch = false, $skip_query_check = false) {
+    /**
+     * @var debug $debug
+     * @var \classConfig $config
+     */
     global $numqueries, $debug, $config;
 
     if (!$this->connected) {

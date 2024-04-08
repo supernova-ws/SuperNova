@@ -314,12 +314,37 @@ DROP INDEX `I_test`;
 * `unit` - `unit_location_type`/`unit_location_id` - развязать, что бы работали констрейнты?
 
 
-
-
+* Get all highspots and activities once at start
+array (
+  0 => 'SELECT * FROM `game_festival_highspot_activity` WHERE `highspot_id` = 1445 ORDER BY `start`, `finish`, `id`',
+  1 => 'tID 16',
+  2 => '(DBAL\\db_mysql)DBAL\\db_mysql->doquery() - \'includes/db.php\' Line 81',
+  3 => 'doquery() - \'modules/core_festival/classes/FestivalHighspot.php\' Line 190',
+  4 => '(FestivalHighspot)FestivalHighspot->__construct() - \'modules/core_festival/classes/Festival.php\' Line 122',
+  5 => '(Festival)Festival->build_highspot() - \'modules/core_festival/classes/Festival.php\' Line 102',
+  6 => '(Festival)Festival->__construct() - \'modules/core_festival/core_festival.php\' Line 108',
+  7 => '(core_festival)core_festival->__construct() - \'classes/Modules/ModulesManager.php\' Line 119',
+  8 => '(Modules\\ModulesManager)Modules\\ModulesManager->loadModulesFromDirectory() - \'classes/Modules/ModulesManager.php\' Line 69',
+  9 => '(Modules\\ModulesManager)Modules\\ModulesManager->loadModules() - \'classes/Modules/ModulesManager.php\' Line 56',
+  10 => '(Modules\\ModulesManager)Modules\\ModulesManager->__construct() - \'classes/Core/GlobalContainer.php\' Line 210',
+  11 => '(Core\\GlobalContainer)Core\\GlobalContainer->Core\\{closure}() - \'classes/Common/Pimple/Container.php\' Line 113',
+  12 => '(Common\\Pimple\\Container)Core\\GlobalContainer->offsetGet() - \'classes/Common/ContainerPlus.php\' Line 21',
+  13 => '(Common\\ContainerPlus)Core\\GlobalContainer->__get() - \'classes/core_auth.php\' Line 184',
+  14 => '(core_auth)core_auth->__construct() - \'includes/init.php\' Line 196',
+  15 => 'require_once() - \'common.php\' Line 10',
+  16 => 'require_once() - \'time_probe.php\' Line 7',
+)
+* see changelog_todo_festival.txt
 
 * see changelog_dev.deadlock.sql
 
 #ctv
+
+
+2024-04-08 09:08:32 46a122
+[~] Admin
+    * Adjusted log detail output
+
 
 2024-04-07 14:33:41 46a118
 [~] PHP 7

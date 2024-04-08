@@ -15,6 +15,7 @@
  * @property int        $debug
  *
  * @property string     $db_version
+ * @property int        $db_manual_lock_enabled
  *
  * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
  *
@@ -225,6 +226,8 @@ class classConfig extends classPersistent {
 
   protected $defaults = array(
     'geoip_whois_url' => '',
+
+    'db_manual_lock_enabled' => 0,
 
     // SEO meta
     'adv_conversion_code_payment'  => '',

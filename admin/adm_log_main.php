@@ -31,22 +31,46 @@ elseif(sys_get_param_str('deleteall') == 'yes')
 //  doquery("TRUNCATE TABLE `{{logs}}`");
 }
 
+/**
+ * @param $value
+ *
+ * @return string|null
+ */
+function admLogRender($value) {
+  if (is_array($value)) {
+    $result = '<table class="no_border_image var_in">';
+    foreach ($value as $key => $val) {
+      $result .= '<tr><td>' . $key . '</td><td>' . var_export($val, true) . '</td></tr>';
+    }
+    $result .= '</table>';
+  } else {
+    $result = var_export($value, true);
+  }
+
+  return $result;
+}
+
 if($detail = sys_get_param_id('detail'))
 {
   $template = SnTemplate::gettemplate('admin/adm_log_main_detail', true);
 
   $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
-  $error_dump = unserialize($errorInfo['log_dump']);
+  $error_dump = json_decode($errorInfo['log_dump'], true);
   if(is_array($error_dump))
   {
     foreach ($error_dump as $key => $value)
     {
-      $v = array(
-        'VAR_NAME' => $key,
-        'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
-      );
+//      $v = [
+//        'VAR_NAME' => $key,
+//        'VAR_VALUE' => $key == 'query_log' ? $value : var_export($value, true)
+//      ];
 
-      $template->assign_block_vars('vars', $v);
+      $val = $key == 'query_log' ? $value : admLogRender($value);
+
+      $template->assign_block_vars('vars', [
+        'VAR_NAME' => $key,
+        'VAR_VALUE' => $val,
+      ]);
     }
   }
   $template->assign_vars($errorInfo);

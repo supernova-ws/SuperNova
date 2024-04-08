@@ -285,7 +285,7 @@ class debug {
       "`log_username` = '" . SN::$db->db_escape($user['user_name']) . "', " .
       "`log_title` = '" . SN::$db->db_escape($title) . "',  `log_text` = '" . SN::$db->db_escape($message) . "', " .
       "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
-      "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(serialize($error_backtrace)) : '') . "'" . ";";
+      "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
 
     doquery($query, '', false, true) or die($fatal_error . SN::$db->db_error());
   }
