@@ -364,7 +364,7 @@ class Planet extends EntityDb {
     $resourceCount = ceil($resourceCount);
 
     if ($this->resources[$resourceId] + $resourceCount < 0) {
-      throw new \Exception("PLANET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when planet [{$this->id}] has only {$this->resources[$resourceId]}");
+      throw new \Exception("PLANET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when planet [{$this->id}] has only {$this->resources[$resourceId]} - deficiency " . ($this->resources[$resourceId] + $resourceCount));
     }
 
     $this->resources[$resourceId] += $resourceCount;

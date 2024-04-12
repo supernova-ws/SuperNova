@@ -65,7 +65,7 @@ class PageMercenary {
     $this->mode = in_array($this->mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $this->mode : UNIT_MERCENARIES;
 
     $this->isUnitsPermanent = $this->mode == UNIT_PLANS || !$this->config->empire_mercenary_temporary;
-    $this->cost_alliance_multiplier = min(1, SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
+    $this->cost_alliance_multiplier = min(1, defined('SN_IN_ALLY') && (SN_IN_ALLY === true) && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
   }
 
 

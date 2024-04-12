@@ -35,14 +35,14 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
   imagedestroy($im);
 
   // Colors
-  $color = "FFFFFF";
-  $red = hexdec(substr($color, 0, 2));
-  $green = hexdec(substr($color, 2, 4));
-  $blue = hexdec(substr($color, 4, 6));
-  $select = imagecolorallocate($image, $red, $green, $blue);
-  $txt_shadow = imagecolorallocatealpha($image, 255, 255, 255, 255);
+//  $color = "FFFFFF";
+//  $red = hexdec(substr($color, 0, 2));
+//  $green = hexdec(substr($color, 2, 4));
+//  $blue = hexdec(substr($color, 4, 6));
+//  $select = imagecolorallocate($image, $red, $green, $blue);
+  $txt_shadow = imagecolorallocatealpha($image, 255, 255, 255, 0); // was 255
   $txt_color = imagecolorallocatealpha($image, 255, 255, 255, 2);
-  $txt_shadow2 = imagecolorallocatealpha($image, 255, 255, 255, 255);
+  $txt_shadow2 = imagecolorallocatealpha($image, 255, 255, 255, 0); // was 255
   $txt_color2 = imagecolorallocatealpha($image, 255, 255, 255, 40);
 
   $fonts = array(

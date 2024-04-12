@@ -514,7 +514,7 @@ class FleetDispatcher {
     SN::$debug->warning(sprintf(
       'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d / %7$d events. Last event: mission %4$s event %6$s (%5$ss)',
       number_format($workTime, 4),
-      GAME_FLEET_HANDLER_MAX_TIME,
+      SN::$config->fleet_update_dispatch_time,
       $eventsProcessed,
       $lastMissionId ? SN::$lang['type_mission'][$lastMissionId] : '!TERMINATED BY TIMEOUT!',
       number_format($lastEventLength, 4),
