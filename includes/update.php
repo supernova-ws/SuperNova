@@ -619,6 +619,82 @@ switch ($updater->new_version) {
       $updater->upd_alter_table('festival_gifts', [
         'ADD COLUMN `gift_unit_id` bigint(20) NOT NULL DEFAULT 0 AFTER `amount`',
       ], !$updater->isFieldExists('festival_gifts', 'gift_unit_id'));
+    }, PATCH_REGISTER);
+
+    // 2024-04-13 13:04:16 46a127
+    $updater->updPatchApply(12, function () use ($updater) {
+      $updater->upd_alter_table('config', [
+        "ADD COLUMN `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+        "ADD COLUMN `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+      ], ! $updater->isFieldExists('config', 'created_at'));
+
+      if (!$updater->isTableExists('festival_config')) {
+        $updater->upd_create_table(
+          'festival_config',
+          [
+            "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+            "`festival_id` smallint(5) unsigned NULL DEFAULT NULL",
+            "`highspot_id` int(10) unsigned NULL DEFAULT NULL",
+
+            "`config_name` varchar(64) NOT NULL",
+            "`config_value` mediumtext NOT NULL",
+
+            "`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+            "`updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+
+            "PRIMARY KEY (`id`)",
+
+            "KEY `I_festival_config_festival` (`festival_id`,`config_name`) USING BTREE",
+            "UNIQUE KEY `I_festival_config_highspot` (`highspot_id`,`festival_id`,`config_name`) USING BTREE",
+
+            "CONSTRAINT `FK_festival_config_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `{{festival}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+            "CONSTRAINT `FK_festival_config_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+
+        // module_festival_69_highspot_1396_code
+        $query = $updater->upd_do_query("SELECT * FROM {{config}} WHERE `config_name` LIKE 'module_festival_%_highspot_%';");
+        $total = $patched = 0;
+        while ($row = db_fetch($query)) {
+          $total++;
+          if (preg_match('/module_festival_(\d+)_highspot_(\d+)_(.+)/', $row['config_name'], $matches)) {
+            /*
+             74|array(4)
+                0 => string(38) module_festival_13_highspot_275_status
+                1 => string(2) 13
+                2 => string(3) 275
+                3 => string(6) status
+             * */
+            $festival = $updater->upd_do_query("SELECT `id` FROM {{festival}} WHERE `id` = {$matches[1]};", true);
+            $highspot = $updater->upd_do_query("SELECT `id` FROM {{festival_highspot}} WHERE `id` = {$matches[2]};", true);
+            if (!empty($festival->num_rows) && !empty($highspot->num_rows)) {
+              $matches[3] = "'" . SN::$db->db_escape($matches[3]) . "'";
+              $matches[4] = "'" . SN::$db->db_escape($row['config_value']) . "'";
+              $updater->upd_do_query("
+                REPLACE INTO {{festival_config}}
+                SET
+                  `festival_id` = {$matches[1]},
+                  `highspot_id` = {$matches[2]},
+                  `config_name` = {$matches[3]},
+                  `config_value` = {$matches[4]}
+                ;");
+              $patched++;
+            } elseif(empty($festival->num_rows)) {
+              $updater->upd_log_message("Warning! Festival ID {$matches[1]} not found");
+            } elseif(empty($highspot->num_rows)) {
+              $updater->upd_log_message("Warning! Highspot ID {$matches[2]} not found");
+            }
+//          pdump($matches);
+//          pdump($festival);
+//          pdump($highspot);
+//          break;
+          }
+        }
+
+        $updater->upd_log_message("Migrated {$patched}/{$total} festival configuration records");
+      }
+
     }, PATCH_PRE_CHECK);
 
 //    // #ctv

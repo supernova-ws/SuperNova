@@ -533,16 +533,16 @@ class db_mysql {
       $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};");
     }
 
-    $this->db_sql_query('START TRANSACTION;');
+    $this->doquery('START TRANSACTION; /* transaction start */', false);
   }
 
   public function transactionCommit() {
-    $this->db_sql_query('COMMIT;');
+    $this->doquery('COMMIT; /* transaction commit */');
     $this->inTransaction = false;
   }
 
   public function transactionRollback() {
-    $this->db_sql_query('ROLLBACK;');
+    $this->doquery('ROLLBACK; /* transaction rollback */');
     $this->inTransaction = false;
   }
 

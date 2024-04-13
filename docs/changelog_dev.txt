@@ -343,6 +343,15 @@ array (
 #ctv
 
 
+2024-04-13 13:04:16 46a127
+[@] PHP 7
+    Added support for `fastcgi_finish_request()` where it supported
+[@] SQL
+    Added comments to transaction-related statements - to easier found them later in debug/dump
+    Added separate table `festival_config` for festival-specific config
+    Migrated festival config to separate table
+
+
 2024-04-12 08:13:34 46a124
 [~] PHP 7
     * Fixed minor issues
