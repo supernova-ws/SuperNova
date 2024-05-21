@@ -12,6 +12,15 @@
 
 use Planet\DBStaticPlanet;
 
+/**
+ * @param array|int|string $user
+ * @param $planet
+ * @param $UpdateTime
+ * @param $simulation
+ * @param $no_user_update
+ *
+ * @return array|false[]|void
+ */
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
   SN::db_transaction_check(true);
 
@@ -34,6 +43,11 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
 
     $user = db_user_by_id($user, !$simulation, '*', true);
   }
+
+  $user = SN::db_query_select(
+    "SELECT * FROM `{{users}}`  WHERE `id` = " . SN::$db->db_escape($user['id']),
+    true
+  );
 
   if (empty($user['id'])) {
     return $no_data;

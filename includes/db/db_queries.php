@@ -232,7 +232,8 @@ function db_message_insert_all($message_type, $from, $subject, $text) {
 function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditions) {
   $isTransactionStarted = SN::db_transaction_check(SN::DB_TRANSACTION_WHATEVER);
   if (!$isTransactionStarted) {
-    SN::db_transaction_start();
+//    SN::db_transaction_start();
+    doquery("LOCK TABLES {{" . $db_table_name . "}} WRITE;");
   }
 
   $dbq    = new DbQuery(SN::$gc->db);
@@ -255,7 +256,8 @@ function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditio
   }
 
   if (!$isTransactionStarted) {
-    SN::db_transaction_commit();
+    doquery("UNLOCK TABLES;");
+//    SN::db_transaction_commit();
   }
 
   return $variable_id;

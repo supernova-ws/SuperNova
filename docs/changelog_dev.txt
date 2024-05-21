@@ -342,6 +342,74 @@ array (
 
 #ctv
 
+* Удалить из БД module_festival_39_highspot_796_lock
+* Мигрировать
+    * festival_highspot_puzzle_birthday_698
+    * festival_highspot_puzzle_christmas_tree_1138
+
+
+* https://dev.mysql.com/doc/refman/5.7/en/lock-tables.html#lock-tables-and-transactions
+* The correct way to use LOCK TABLES and UNLOCK TABLES with transactional tables, such as InnoDB tables, is to begin a transaction with SET autocommit = 0 (not START TRANSACTION) followed by LOCK TABLES, and to not call UNLOCK TABLES until you commit the transaction explicitly. For example, if you need to write to table t1 and read from table t2, you can do this:
+    SET autocommit=0;
+    LOCK TABLES t1 WRITE, t2 READ, ...;
+    // FLUSH TABLES WITH READ LOCK;
+    // FLUSH TABLES WITH WRITE LOCK;
+    ... do something with tables t1 and t2 here ...
+    COMMIT;
+    UNLOCK TABLES;
+https://thushw.blogspot.com/2010/11/mysql-deadlocks-with-concurrent-inserts.html
+
+DROP INDEX
+    counter_id	`counter_id`	UNIQUE	BTREE
+    que_id	`que_id`	UNIQUE	BTREE	3583	A		0
+
+
+
+Убрать все unique key - потому что это провоцирует gap_lock?
+"UNIQUE KEY `I_festival_config_highspot` (`highspot_id`,`festival_id`,`config_name`) USING BTREE",
+
+2024-04-14 20:50
+* DROP INDEX
+    * counter.counter_id
+    * que.que_id
+    * captain.captain_id
+
+https://www.percona.com/blog/logging-deadlocks-errors/
+pt-deadlock-logger u=user,p=password,h=host
+pt-deadlock-logger --create-dest-table --dest D=test,t=deadlocks u=root,h=127.0.0.1
+pt-deadlock-logger --daemonize --run-time=3000 --dest D=test,t=deadlocks u=root,h=127.0.0.1
+
+https://www.percona.com/blog/how-to-deal-with-mysql-deadlocks/
+https://rimzy.net/category/pt-deadlock-logger/
+https://topic.alibabacloud.com/a/monitoring-deadlocks-with-pt-deadlock-logger_8_8_31094333.html
+
+* Analyze all transactions methods
+* sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
+
+AddType application/vnd.ms-fontobject .eot
+AddType font/ttf .ttf
+AddType font/otf .otf
+AddType application/x-font-woff .woff
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|svg)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+* Господа и дамы - напомните: в отчёте передислокации КАКИЕ корабли без имён? Понятно, что это из модулей - но какие именно? Расовые? Объектовые? Какие-то еще?
+* Пытаюсь повторить это у себя на лоакльной машине - не получается, а лезть в работающий сервак очень не хочется.
+    * (Сингулярность[БАС])Расовые и объектыне, остальные нормально отображаются.
+* Уведомление о начале и конце Фестиваля
+
+crowdin.com - переводчик всякого встроенного в ПО
+
+#ctv
+
+
+2024-05-21 14:41:12 46a131
+[@] PHP 7
+    More PHP7/MariaDB shenanigans
+
 
 2024-04-13 13:04:16 46a127
 [@] PHP 7

@@ -17,6 +17,8 @@
  * @property string     $db_version
  * @property int        $db_manual_lock_enabled
  *
+ * @property string     $admin_http_key                => '', // Use this key to access some admin functionality via HTTP - say, in script
+ *
  * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
  *
  * @property string     $auth_vkontakte_app_id
@@ -228,6 +230,8 @@ class classConfig extends classPersistent {
     'geoip_whois_url' => '',
 
     'db_manual_lock_enabled' => 0,
+
+    'admin_http_key'  => '',
 
     // SEO meta
     'adv_conversion_code_payment'  => '',

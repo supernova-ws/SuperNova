@@ -11,17 +11,17 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #46a49#
+ * version #46a131#
  */
 
 class core_auth extends sn_module {
-  public $versionCommitted = '#46a49#';
+  public $versionCommitted = '#46a131#';
 
   public $manifest = [
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #46a49# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a131# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
@@ -718,10 +718,12 @@ class core_auth extends sn_module {
 
       $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
 
+      doquery("LOCK TABLES {{users}} WRITE;");
       db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
       `banaday` = " . static::$db->db_escape($user['banaday']) . ", `vacation` = " . static::$db->db_escape($user['vacation']) . ",
       `user_lastip` = '" . static::$db->db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$device->browser_id
       );
+      doquery("UNLOCK TABLES;");
     }
 
     if($extra = $config->security_ban_extra) {

@@ -695,6 +695,9 @@ switch ($updater->new_version) {
         $updater->upd_log_message("Migrated {$patched}/{$total} festival configuration records");
       }
 
+      $updater->upd_alter_table('que', ['DROP KEY `que_id`',], $updater->isIndexExists('que', 'que_id'));
+      $updater->upd_alter_table('counter', ['DROP KEY `counter_id`',], $updater->isIndexExists('counter', 'counter_id'));
+      $updater->upd_alter_table('captain', ['DROP KEY `captain_id`',], $updater->isIndexExists('captain', 'captain_id'));
     }, PATCH_PRE_CHECK);
 
 //    // #ctv

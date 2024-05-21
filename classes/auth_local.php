@@ -7,13 +7,13 @@ use DBAL\db_mysql;
  */
 // Расширяет Modules\sn_module, потому что его потомки так же являются модулями
 class auth_local extends auth_abstract {
-  public $versionCommitted = '#46a49#';
+  public $versionCommitted = '#46a131#';
 
   public $manifest = [
     'package'   => 'auth',
     'name'      => 'local',
     'version'   => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #46a49# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a131# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 
@@ -384,11 +384,12 @@ class auth_local extends auth_abstract {
     // TODO РЕГИСТРАЦИЯ ВСЕГДА ДОЛЖНА ЛОГИНИТЬ ПОЛЬЗОВАТЕЛЯ!
     $this->flog('Регистрация: начинаем. Провайдер ' . $this->provider_id);
 
+    if (!$this->is_register) {
+      $this->flog('Регистрация: не выставлен флаг регистрации - пропускаем');
+    }
+    else
+    {
     try {
-      if (!$this->is_register) {
-        $this->flog('Регистрация: не выставлен флаг регистрации - пропускаем');
-        throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
-      }
 
       $this->register_validate_input();
 
@@ -420,6 +421,7 @@ class auth_local extends auth_abstract {
     } catch (Exception $e) {
       SN::db_transaction_rollback();
       $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
+    }
     }
 
     return $this->account_login_status;

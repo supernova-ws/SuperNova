@@ -332,6 +332,10 @@ SN::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
 // TODO - to scheduler
 StatUpdateLauncher::unlock();
 
+if(!empty($_GET['admin_http_key']) && $_GET['admin_http_key'] == $config->admin_http_key) {
+  define('IN_API', true);
+}
+
 if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = HelperString::nl2br(
     SN::$config->game_disable == GAME_DISABLE_REASON
@@ -395,13 +399,14 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 }
 
 // TODO !!! Просто $allow_anonymous используется в платежных модулях !!!
+global $allow_anonymous;
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
 
 if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
 } elseif($account_logged_in && !$sys_user_logged_in) { // empty(core_auth::$user['id'])
-} elseif(!$allow_anonymous && !$sys_user_logged_in) {
+} elseif(!$allow_anonymous && !$sys_user_logged_in && !defined('IN_API')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 

@@ -4,10 +4,24 @@ define('IN_ADMIN', true);
 
 require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
+global $user, $lang, $result;
+/**
+ * @var array $user
+ */
+
+if(
+  ($user['authlevel'] < 3)
+  &&
+  (empty($config->admin_http_key) || empty($_GET['admin_http_key']) || $_GET['admin_http_key'] != $config->admin_http_key)
+)
 {
   SnTemplate::messageBox($lang['sys_noalloaw'], $lang['sys_noaccess']);
   die();
+}
+
+// If we have  already passed here through admin_http_key - then we can safely assume that it's admin
+if(empty($user['authlevel'])) {
+  $user['authlevel'] = 3;
 }
 
 define('IN_AJAX', true);
