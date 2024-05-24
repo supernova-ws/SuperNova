@@ -134,6 +134,10 @@ class FleetDispatcher {
 
 
   // ------------------------------------------------------------------
+
+  /**
+   * @return int|int[]
+   */
   public function flt_flying_fleet_handler() {
     /*
 
@@ -183,7 +187,7 @@ class FleetDispatcher {
 //      $this->log_file('ALL RELEASED');
     });
 
-    $result = self::TASK_COMPLETE;
+    $result = ['code' => self::TASK_COMPLETE];
 
     set_time_limit(max(3, SN::$gc->config->fleet_update_max_run_time - 3));
 
@@ -273,7 +277,7 @@ class FleetDispatcher {
       if ($workTime >= SN::$config->fleet_update_dispatch_time) {
         $this->logTermination($workTime, $eventsProcessed, $lastMission, $lastEvent, $lastEventEnd - $lastEventBegin, count($fleet_event_list));
 
-        $result = self::TASK_TERMINATED;
+        $result['code'] = self::TASK_TERMINATED;
         break;
       }
 
@@ -289,6 +293,7 @@ class FleetDispatcher {
       $lastMission    = $fleet_row['fleet_mission'];
       $lastEvent      = $fleet_event['fleet_event'];
       $eventsProcessed++;
+      $result['eventsProcessed'] = $eventsProcessed;
 
       // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
       SN::db_transaction_start();

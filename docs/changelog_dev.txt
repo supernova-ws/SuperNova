@@ -405,6 +405,10 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 #ctv
 
+2024-05-24 04:56:07 46a134
+[%] Language
+    Fixed not loading module l10n files before user init
+
 
 2024-05-21 14:41:12 46a131
 [@] PHP 7

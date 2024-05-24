@@ -296,11 +296,11 @@ class classLocale implements ArrayAccess {
 
     SN::log_file("locale.switch: Trying to switch language to '{$language_new}'");
 
-    if ($language_new == $this->active) {
-      SN::log_file("locale.switch: New language '{$language_new}' is equal to current language '{$this->active}' - EXIT", -1);
-
-      return false;
-    }
+//    if ($language_new == $this->active) {
+//      SN::log_file("locale.switch: New language '{$language_new}' is equal to current language '{$this->active}' - EXIT", -1);
+//
+//      return false;
+//    }
 
     $this->active            = $language = $language_new;
     $this->cache_prefix_lang = $this->cache_prefix . $this->active . '_';
