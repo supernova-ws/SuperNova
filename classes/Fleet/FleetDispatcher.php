@@ -21,6 +21,9 @@ class FleetDispatcher {
   const TASK_COMPLETE = 0;
   const TASK_TERMINATED = 1;
   const TASK_ALREADY_LOCKED = -1;
+
+  const FLEET_EVENT = 'fleet_event';
+  const FLEET_MISSION = 'fleet_mission';
   /**
    * @var GlobalContainer $gc
    */
@@ -208,29 +211,29 @@ class FleetDispatcher {
 //      set_time_limit(15);
 
       // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
-      $fleet_list[$fleet_row['fleet_id']]         = $fleet_row;
-      $missions_used[$fleet_row['fleet_mission']] = 1;
+      $fleet_list[$fleet_row['fleet_id']]             = $fleet_row;
+      $missions_used[$fleet_row[self::FLEET_MISSION]] = 1;
       if ($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
         $fleet_event_list[] = array(
-          'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
-          'fleet_event' => EVENT_FLT_ARRIVE,
+          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
+          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
+          self::FLEET_EVENT => EVENT_FLT_ARRIVE,
         );
       }
 
       if ($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
         $fleet_event_list[] = array(
-          'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
-          'fleet_event' => EVENT_FLT_ACOMPLISH,
+          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
+          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
+          self::FLEET_EVENT => EVENT_FLT_ACOMPLISH,
         );
       }
 
       if ($fleet_row['fleet_end_time'] <= SN_TIME_NOW) {
         $fleet_event_list[] = array(
-          'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
-          'fleet_event' => EVENT_FLT_RETURN,
+          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
+          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
+          self::FLEET_EVENT => EVENT_FLT_RETURN,
         );
       }
     }
@@ -289,9 +292,11 @@ class FleetDispatcher {
         continue;
       }
 
+      $usersToLock = DbFleetStatic::getRelatedUsers($fleet_row);
+
       $lastEventBegin = microtime(true);
-      $lastMission    = $fleet_row['fleet_mission'];
-      $lastEvent      = $fleet_event['fleet_event'];
+      $lastMission    = $fleet_row[self::FLEET_MISSION];
+      $lastEvent      = $fleet_event[self::FLEET_EVENT];
       $eventsProcessed++;
       $result['eventsProcessed'] = $eventsProcessed;
 
@@ -300,10 +305,12 @@ class FleetDispatcher {
       // а текущее время
       SN::$gc->config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
 
-      $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
-      // Формируем запрос, блокирующий сразу все нужные записи
+      $mission_data = $sn_groups_mission[$fleet_row[self::FLEET_MISSION]];
+      // Adding real event happens
+      $mission_data[self::FLEET_EVENT] = $fleet_event[self::FLEET_EVENT];
 
-      DbFleetStatic::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
+      // Формируем запрос, блокирующий сразу все нужные записи
+      DbFleetStatic::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data, $usersToLock);
 
 //    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
       $fleet_row = DbFleetStatic::db_fleet_get($fleet_row['fleet_id']);
@@ -313,14 +320,14 @@ class FleetDispatcher {
         continue;
       }
 
-      if ($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
+      if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_RETURN) {
         // Fleet returns to planet
         RestoreFleetToPlanet($fleet_row, true, false, true);
         SN::db_transaction_commit();
         continue;
       }
 
-      if ($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
+      if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
         // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
         // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
         SN::db_transaction_commit();
@@ -333,14 +340,14 @@ class FleetDispatcher {
 
       // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
       $mission_data = array(
-        'fleet'       => &$fleet_row,
-        'dst_user'    => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
+        'fleet'           => &$fleet_row,
+        'dst_user'        => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
         // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-        'dst_planet'  => $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
-        'src_user'    => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true) : null,
+        'dst_planet'      => $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
+        'src_user'        => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true) : null,
         // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-        'src_planet'  => $mission_data['src_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
-        'fleet_event' => $fleet_event['fleet_event'],
+        'src_planet'      => $mission_data['src_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
+        self::FLEET_EVENT => $fleet_event[self::FLEET_EVENT],
       );
 
       if ($mission_data['dst_planet']) {
@@ -351,7 +358,7 @@ class FleetDispatcher {
         $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
       }
 
-      switch ($fleet_row['fleet_mission']) {
+      switch ($fleet_row[self::FLEET_MISSION]) {
         // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
         case MT_AKS:
         case MT_ATTACK:
@@ -555,11 +562,11 @@ class FleetDispatcher {
       $a['fleet_time'] > $b['fleet_time'] ? 1 : ($a['fleet_time'] < $b['fleet_time'] ? -1 :
         // Если время - одинаковое, сравниваем события флотов
         // Если события - одинаковые, то флоты равны
-        ($a['fleet_event'] == $b['fleet_event'] ? 0 :
+        ($a[self::FLEET_EVENT] == $b[self::FLEET_EVENT] ? 0 :
           // Если события разные - первыми считаем прибывающие флоты
-          ($a['fleet_event'] == EVENT_FLT_ARRIVE ? 1 : ($b['fleet_event'] == EVENT_FLT_ARRIVE ? -1 :
+          ($a[self::FLEET_EVENT] == EVENT_FLT_ARRIVE ? 1 : ($b[self::FLEET_EVENT] == EVENT_FLT_ARRIVE ? -1 :
             // Если нет прибывающих флотов - дальше считаем флоты, которые закончили миссию
-            ($a['fleet_event'] == EVENT_FLT_ACOMPLISH ? 1 : ($b['fleet_event'] == EVENT_FLT_ACOMPLISH ? -1 :
+            ($a[self::FLEET_EVENT] == EVENT_FLT_ACOMPLISH ? 1 : ($b[self::FLEET_EVENT] == EVENT_FLT_ACOMPLISH ? -1 :
               // Если нет флотов, закончивших задание - остались возвращающиеся флоты, которые равны между собой
               // TODO: Добавить еще проверку по ID флота и/или времени запуска - что бы обсчитывать их в порядке запуска
               (
