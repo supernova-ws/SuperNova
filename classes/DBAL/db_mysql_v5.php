@@ -1,6 +1,7 @@
 <?php
 
 namespace DBAL;
+
 use mysqli;
 use mysqli_result;
 
@@ -59,7 +60,7 @@ class db_mysql_v5 {
     or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
 
     //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
-    $this->mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';')
+    $this->mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE . ';')
     or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
 
     $this->connected = true;

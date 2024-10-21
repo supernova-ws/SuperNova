@@ -115,7 +115,7 @@ class db_mysql {
         die('DB error - cannot find any table. Halting...');
       }
 
-      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ);
+      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE);
     } else {
       $this->connected = false;
     }
@@ -139,6 +139,7 @@ class db_mysql {
 
   public function db_disconnect() {
     if ($this->connected) {
+      /** @noinspection PhpFieldImmediatelyRewrittenInspection */
       $this->connected = !$this->driver_disconnect();
       $this->connected = false;
     }
@@ -212,26 +213,13 @@ class db_mysql {
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
-      $backtrace = debug_backtrace();
-      $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
-
-      $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-      if (defined('DEBUG_SQL_ONLINE')) {
-        $debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
-      }
-
-      if (defined('DEBUG_SQL_ERROR')) {
-        array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
-        $debug->add_to_array($sql_comment);
-        // $debug->add_to_array($sql_comment . preg_replace("/\s+/", ' ', $sql));
-      }
-      $sql = $sql_commented;
+      $sql = $debug->comment_query(debug_backtrace(), $sql);
     }
 
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql);
     if(!$sqlquery) {
-      $debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
+      $debug->error(SN::$db->db_error() . "\n$sql\n", 'SQL Error');
     }
     restore_error_handler();
 
@@ -355,6 +343,7 @@ class db_mysql {
 
         $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
         die($message);
+      /** @noinspection PhpUnreachableStatementInspection */
       break;
     }
   }
@@ -570,4 +559,5 @@ class db_mysql {
 
     return $result;
   }
+
 }

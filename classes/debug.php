@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 /*
  * debug.php ::  Clase Debug, maneja reporte de eventos
@@ -55,6 +55,29 @@ class debug {
     }
   }
 
+  public function log_sql($message, $ident_change = 0) {
+    static $ident = 0;
+    static $logFileName;
+    static $mt_rand;
+
+    if(!$mt_rand) {
+      $mt_rand = mt_rand();
+    }
+
+    if (!$logFileName) {
+      $logFileName = SN_ROOT_PHYSICAL . "/.logs/supernova.mysql." . date('Y-m-d-H-i-s.') . sprintf("%06d", gettimeofday()["usec"]) . ".log";
+//      file_put_contents($logFileName, "\n\n", FILE_APPEND);
+    }
+    if ($ident_change < 0) {
+      $ident += $ident_change * 2;
+    }
+//    file_put_contents($logFileName, date('s', time()) . str_repeat(' ', $ident + 1) . $message . "\n\n", FILE_APPEND);
+    file_put_contents($logFileName, str_repeat(' ', $ident) . $message . "\n\n", FILE_APPEND);
+    if ($ident_change > 0) {
+      $ident += $ident_change * 2;
+    }
+  }
+
   public function __construct() {
     $this->log = '';
     $this->numqueries = 0;
@@ -74,20 +97,34 @@ class debug {
     die();
   }
 
-  function compact_backtrace($backtrace, $long_comment = false) {
+  public function compact_backtrace($backtrace, $long_comment = false, $onlyLastX = null) {
     static $exclude_functions = array(
-//      'doquery',
-//      'db_query_select', 'db_query_delete', 'db_query_insert', 'db_query_update',
-//      'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id'
+      // Caller not needed
+      'comment_query',
+      // Excluding includes/requires
+      'include', 'include_once', 'require_once', 'require',
+      // Excluding query calls/DB wrap functions
+      'doquery',
+      'db_query_select', // 'db_query_delete', 'db_query_insert', 'db_query_update',
+      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
+      'doSelect', 'doSelectFetch',
+      'db_query_update',
+      'selectValue',
+      // classPersistent
+      '__get', 'db_loadItem', '__set', 'db_saveItem',
+      // Constructors ?! Why not...
+      '__construct',
+      // Hook handlers
+      'sn_function_call',
+      // Chat
+      'db_chat_player_list_online',
+      // Transaction-related functions
+      'db_transaction_commit', 'transactionCommit', 'transactionStart', 'db_transaction_start', 'db_transaction_rollback', 'transactionRollback',
     );
 
-    $result = array();
-    $transaction_id = SN::db_transaction_check(false) ? SN::$transaction_id : SN::$transaction_id++;
-    $result[] = "tID {$transaction_id}";
+    $raw      = [];
+    $filtered = [];
     foreach($backtrace as $a_trace) {
-      if(in_array($a_trace['function'], $exclude_functions)) {
-        continue;
-      }
       $function =
         (!empty($a_trace['type'])
           ? ($a_trace['type'] == '->'
@@ -99,16 +136,71 @@ class debug {
 
       $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', !empty($a_trace['file']) ? $a_trace['file'] : ''));
 
-      $line = !empty($a_trace['line']) ? $a_trace['line'] : '_UNDEFINED_';
-      $result[] = "{$function} - '{$file}' Line {$line}";
+      $line  = !empty($a_trace['line']) ? '@' . $a_trace['line'] : '';
+      $raw[] = "{$function} - '{$file}'{$line}";
+
+      if(! in_array($a_trace['function'], $exclude_functions)) {
+        $filtered[] = &$raw[count($raw) - 1];
+      }
 
       if(!$long_comment) {
         break;
       }
     }
 
-    return $result;
+    $raw = array_reverse($raw);
+    $filtered = array_reverse($filtered);
+
+    if ($onlyLastX) {
+      $raw = array_slice($raw, -$onlyLastX);
+      $filtered = array_slice($filtered, -$onlyLastX);
+    }
+
+    return [$raw, $filtered,];
   }
+
+  /**
+   * @param array  $backtrace
+   * @param string $sql
+   *
+   * @return string
+   */
+  public function comment_query($backtrace, $sql) {
+    list($raw, $filtered, ) = $this->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
+
+    $sql_commented = [
+      "/* ",
+      'date' => date("s.") . sprintf("%06d", gettimeofday()["usec"]),
+      !empty($filtered) ? "\n" . implode("\n", $filtered) . " \n" : '',
+      "*/\n",
+      // SQL itself with removed double spaces
+      preg_replace("/\s+/", ' ', $sql),
+    ];
+
+    if (defined('DEBUG_SQL_FILE_LOG') && !empty(DEBUG_SQL_FILE_LOG)) {
+      $this->log_sql(implode('', $sql_commented));
+    }
+
+//      $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
+//      $isSelect = strpos(strtoupper($query), 'SELECT') !== false ? 'true' : 'false';
+    $sql_commented['date'] = date('Y-m-d H:i:') . $sql_commented['date'];
+
+//      if(strpos($sql_comment, 'compact_backtrace') === false) {
+//        $transaction_id = SN::db_transaction_check(false) ? SN::$transaction_id : SN::$transaction_id++;
+//        $result[] = "tID {$transaction_id}";
+//      }
+
+    if (defined('DEBUG_SQL_ERROR')) {
+      array_unshift($raw, preg_replace("/\s+/", ' ', $sql));
+      array_unshift($raw, $sql_commented['date']);
+      $this->add_to_array($raw);
+    }
+
+    $sql = implode('', $sql_commented);
+
+    return $sql;
+  }
+
 
   function dump($dump = false, $force_base = false, $deadlock = false) {
     if($dump === false) {
@@ -201,7 +293,7 @@ class debug {
     die($die_message);
   }
 
-  function error($message = 'There is a error on page', $title = 'Internal Error', $httpCode = 500, $dump = true) {
+  public function error($message = 'There is a error on page', $title = 'Internal Error', $httpCode = 500, $dump = true) {
     global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
 
     if(empty(SN::$db->connected)) {

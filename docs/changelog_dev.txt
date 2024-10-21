@@ -314,6 +314,9 @@ DROP INDEX `I_test`;
 * `unit` - `unit_location_type`/`unit_location_id` - развязать, что бы работали констрейнты?
 
 
+* Экстраординарные (экзотические) ядра - можно только найти.
+* // if (defined('DEBUG_SQL_ONLINE'))
+
 * Get all highspots and activities once at start
 array (
   0 => 'SELECT * FROM `game_festival_highspot_activity` WHERE `highspot_id` = 1445 ORDER BY `start`, `finish`, `id`',
@@ -359,20 +362,11 @@ array (
     UNLOCK TABLES;
 https://thushw.blogspot.com/2010/11/mysql-deadlocks-with-concurrent-inserts.html
 
-DROP INDEX
-    counter_id	`counter_id`	UNIQUE	BTREE
-    que_id	`que_id`	UNIQUE	BTREE	3583	A		0
-
 
 
 Убрать все unique key - потому что это провоцирует gap_lock?
 "UNIQUE KEY `I_festival_config_highspot` (`highspot_id`,`festival_id`,`config_name`) USING BTREE",
 
-2024-04-14 20:50
-* DROP INDEX
-    * counter.counter_id
-    * que.que_id
-    * captain.captain_id
 
 https://www.percona.com/blog/logging-deadlocks-errors/
 pt-deadlock-logger u=user,p=password,h=host
@@ -396,32 +390,96 @@ AddType application/x-font-woff .woff
     </FilesMatch>
 </IfModule>
 
-* Господа и дамы - напомните: в отчёте передислокации КАКИЕ корабли без имён? Понятно, что это из модулей - но какие именно? Расовые? Объектовые? Какие-то еще?
-* Пытаюсь повторить это у себя на лоакльной машине - не получается, а лезть в работающий сервак очень не хочется.
-    * (Сингулярность[БАС])Расовые и объектыне, остальные нормально отображаются.
-* Уведомление о начале и конце Фестиваля
-
 crowdin.com - переводчик всякого встроенного в ПО
+
+
+
+* Охота на дедлоки
+    * {{que}} - расширить индекс I_que_planet_id (`que_planet_id`, `que_player_id`)
+    * {{planets}} - дропнуть индекс `id`
+    * {{users}} - дропнуть индекс I_user_id_name	`id`, `username`	NORMAL	BTREE
+
+* Расписать блокировку во флотах по функциям конкретных миссий
+
+* Убрать класс db_mysql_v5.php
+    * Заменить на db_mysql в описаниях
+    * Если стоит в конфигурации - заменить на db_mysql
+
+* ВНИМАНИЕ!!! ИЗМЕНЕНИЯ В СИГНАТУРАХ ФУНКЦИЙ НАДО ДЕЛАТЬ НА ВЕТКЕ МОДУЛЕЙ!!!
+    * Пройтись по db_deprecated.php
+    * Разобраться с функциями старта транзакций - вынести их в db_mysql
+
+* Перекинуть переменные транзакций в db_mysql.php
+    * И, возможно, в $debug - что бы там было на случай ошибки
 
 #ctv
 
+classes/DBAL/db_mysql.php
+classes/DBAL/db_mysql_v5.php
+classes/debug.php
+docs/changelog_dev.txt
+includes/constants/constants.php
+
+2024-10-21 18:33:01 46a146
+[@] DB
+    * Transaction level for MySQL raised to 'SERIALIZABLE' to reduce deadlocks
+    * Adjusted how SQL queries reported
+
+
+2024-10-21 18:31:30 46a145
+[@] Fleet
+    * Added old fields to Fleet\Fleet to use in low-level functions
+    * Rewrote fleet lock conditions from `?:` to `if`
+    * Replaces some strings with constants
+    * Some code reformatting
+
+
+2024-10-21 18:25:00 46a144
+[@] Code
+    * Now `DEBUG_SQL_XXX` constants ruled by appropriately named records in `config` table:
+        * `DEBUG_SQL_FILE_LOG` replaces `DEBUG_SQL_ONLINE` - implies `DEBUG_SQL_ERROR` and `DEBUG_SQL_COMMENT_LONG`
+        * `DEBUG_SQL_ERROR` - implies `DEBUG_SQL_COMMENT`
+        * `DEBUG_SQL_COMMENT_LONG` - implies `DEBUG_SQL_COMMENT`
+        * `DEBUG_SQL_COMMENT`
+
+
+2024-10-21 18:21:39 46a143
+[@] Code
+    * Added transaction depth counter into `SN` class
+
+
+2024-10-21 18:16:45 46a142
+[~] Admin
+    * Now in log viewer user options stored in `user.options` parsed for better readability
+
+[@] Code
+    * User options separator `|` move to constant `USER_OPTIONS_SPLIT`
+    * `EVENT_FLT_XXX` constants now are strings for better debug
+
+
 2024-05-24 04:56:07 46a134
 [%] Language
-    Fixed not loading module l10n files before user init
+    * Fixed not loading module l10n files before user init
+
+[@] DB
+    * Dropped unneeded indexes to reduce deadlocks
+        * counter.counter_id
+        * que.que_id
+        * captain.captain_id
 
 
 2024-05-21 14:41:12 46a131
 [@] PHP 7
-    More PHP7/MariaDB shenanigans
+    * More PHP7/MariaDB shenanigans
 
 
 2024-04-13 13:04:16 46a127
 [@] PHP 7
-    Added support for `fastcgi_finish_request()` where it supported
+    * Added support for `fastcgi_finish_request()` where it supported
 [@] SQL
-    Added comments to transaction-related statements - to easier found them later in debug/dump
-    Added separate table `festival_config` for festival-specific config
-    Migrated festival config to separate table
+    * Added comments to transaction-related statements - to easier found them later in debug/dump
+    * Added separate table `festival_config` for festival-specific config
+    * Migrated festival config to separate table
 
 
 2024-04-12 08:13:34 46a124
