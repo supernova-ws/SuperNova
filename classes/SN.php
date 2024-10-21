@@ -77,6 +77,8 @@ class SN {
 
   public static $db_in_transaction = false;
   public static $transaction_id = 0;
+  public static $transactionDepth = 0;
+
   public static $user = array();
   /**
    * @var userOptions
@@ -269,6 +271,7 @@ class SN {
     }
 
     static::$db_in_transaction = true;
+    self::$transactionDepth++;
     DBStaticUnit::cache_clear();
 
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
@@ -284,6 +287,7 @@ class SN {
 
     //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
+    self::$transactionDepth--;
 
     return static::$transaction_id++;
   }
@@ -296,7 +300,7 @@ class SN {
 
     //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
-    static::$transaction_id++;
+    self::$transactionDepth--;
 
     return static::$transaction_id;
   }
