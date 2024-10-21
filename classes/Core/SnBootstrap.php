@@ -98,14 +98,24 @@ class SnBootstrap {
     if ($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
       define('BE_DEBUG', true);
     }
-    // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
-    define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
-    // Включаем нужные настройки
-    defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
-    defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
-    defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+
+    // Declaring PHP-constants from server config
+    /** @see \classConfig::$DEBUG_SQL_FILE_LOG */
+    foreach ([
+      'DEBUG_SQL_FILE_LOG'     => ['DEBUG_SQL_ERROR' => true, 'DEBUG_SQL_COMMENT_LONG' => true,],
+      'DEBUG_SQL_ERROR'        => ['DEBUG_SQL_COMMENT' => true,],
+      'DEBUG_SQL_COMMENT_LONG' => ['DEBUG_SQL_COMMENT' => true,],
+      'DEBUG_SQL_COMMENT'      => []
+    ] as $constantName => $implications) {
+      if (!empty(SN::$config->$constantName) && !defined($constantName)) {
+        define($constantName, true);
+      }
+      foreach ($implications as $impliedConstantName => $impliedValue) {
+        if (!defined($impliedConstantName)) {
+          define($impliedConstantName, $impliedValue);
+        }
+      }
+    }
 
     if (defined('BE_DEBUG') || SN::$config->debug) {
       @define('BE_DEBUG', true);

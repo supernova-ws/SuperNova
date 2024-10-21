@@ -10,19 +10,24 @@
  *
  * @package supernova
  *
- * @property string     $db_prefix                     - REMOVE! Just for compatibility!
+ * @property string $db_prefix                     - REMOVE! Just for compatibility!
  *
- * @property int        $debug
+ * @property int    $debug
  *
- * @property string     $db_version
- * @property int        $db_manual_lock_enabled
+ * @property bool   $DEBUG_SQL_FILE_LOG            => 0 // Полный дамп запросов в рил-тайме. Подойдет любое значение
+ * @property bool   $DEBUG_SQL_ERROR               => 0 // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+ * @property bool   $DEBUG_SQL_COMMENT_LONG        => 0 // Добавлять SQL запрос длинные комментарии. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+ * @property bool   $DEBUG_SQL_COMMENT             => 0 // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
  *
- * @property string     $admin_http_key                => '', // Use this key to access some admin functionality via HTTP - say, in script
+ * @property string $db_version
+ * @property int    $db_manual_lock_enabled
  *
- * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
+ * @property string $admin_http_key                => '', // Use this key to access some admin functionality via HTTP - say, in script
  *
- * @property string     $auth_vkontakte_app_id
- * @property string     $auth_vkontakte_app_key
+ * @property string $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
+ *
+ * @property string $auth_vkontakte_app_id
+ * @property string $auth_vkontakte_app_key
  * @property string     $auth_vkontakte_token
  * @property int        $auth_vkontakte_token_expire
  *
@@ -232,6 +237,12 @@ class classConfig extends classPersistent {
     'db_manual_lock_enabled' => 0,
 
     'admin_http_key'  => '',
+
+    // Debug
+    'DEBUG_SQL_FILE_LOG'     => 0, // Полный дамп запросов в отдельный файл. Подойдет любое значение
+    'DEBUG_SQL_ERROR'        => 0, // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+    'DEBUG_SQL_COMMENT_LONG' => 0, // Добавлять SQL запрос длинные комментарии. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+    'DEBUG_SQL_COMMENT'      => 0, // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
 
     // SEO meta
     'adv_conversion_code_payment'  => '',
