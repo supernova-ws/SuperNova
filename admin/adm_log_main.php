@@ -60,10 +60,12 @@ if($detail = sys_get_param_id('detail'))
   {
     foreach ($error_dump as $key => $value)
     {
-//      $v = [
-//        'VAR_NAME' => $key,
-//        'VAR_VALUE' => $key == 'query_log' ? $value : var_export($value, true)
-//      ];
+      // Parsing user options to readable state
+      if($key == 'user' ) {
+        if(!empty($value['options'])) {
+          $value['options'] = explode(USER_OPTIONS_SPLIT, $value['options']);
+        }
+      }
 
       $val = $key == 'query_log' ? $value : admLogRender($value);
 
@@ -73,6 +75,10 @@ if($detail = sys_get_param_id('detail'))
       ]);
     }
   }
+
+  // Replacing LF with HTML <br /> tag for better readability
+  $errorInfo['log_text'] = str_replace("\n", '<br />', $errorInfo['log_text']);
+
   $template->assign_vars($errorInfo);
 }
 else

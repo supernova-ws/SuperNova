@@ -20,7 +20,7 @@ function sys_user_options_pack(&$user) {
       } elseif ($user[$option_name] == '') {
         $user[$option_name] = 0;
       }
-      $options .= "{$option_name}^{$user[$option_name]}|";
+      $options .= "{$option_name}^{$user[$option_name]}" . USER_OPTIONS_SPLIT;
       $option_list[$option_group_id][$option_name] = $user[$option_name];
     }
   }
@@ -35,7 +35,7 @@ function sys_user_options_unpack(&$user) {
   global $user_option_list;
 
   $option_list = array();
-  $option_string_list = explode('|', $user['options']);
+  $option_string_list = explode(USER_OPTIONS_SPLIT, $user['options']);
 
   foreach ($option_string_list as $option_string) {
     list($option_name, $option_value) = explode('^', $option_string);

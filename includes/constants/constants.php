@@ -11,7 +11,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a138');
+define('SN_VERSION', '46a142');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -776,11 +776,11 @@ const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
 const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
 
 // Обязательно оставить, что бы arrive < accomplish < return
-define('EVENT_FLT_ARRIVE', 1); // Fleet arrive to destination
-define('EVENT_FLT_ACOMPLISH', 2); // Fleet ends his mission by timer
-define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
+define('EVENT_FLT_ARRIVE', 'EVENT_FLT_ARRIVE'); // Fleet arrive to destination
+define('EVENT_FLT_ACOMPLISH', 'EVENT_FLT_ACOMPLISH'); // Fleet ends his mission by timer
+define('EVENT_FLT_RETURN', 'EVENT_FLT_RETURN'); // Fleet returns to starting planet
 
-
+define('USER_OPTIONS_SPLIT', '|');
 
 // define('NICK_ID',               -1);
 define('NICK_HTML',              0);
