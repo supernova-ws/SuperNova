@@ -65,7 +65,7 @@ class Schema {
   /**
    * Get names of all tables in this DB
    *
-   * @return \string[]
+   * @return string[]
    */
   public function getAllTables() {
     if (!isset($this->tablesAll)) {
@@ -124,6 +124,10 @@ class Schema {
 
   public function isFieldExists($table, $field) {
     return $this->isSnTableExists($table) && $this->getTableSchema($table)->isFieldExists($field);
+  }
+
+  public function isConstrainExists($table, $constrain) {
+    return $this->isSnTableExists($table) && $this->getTableSchema($table)->isConstrainExists($constrain);
   }
 
 }

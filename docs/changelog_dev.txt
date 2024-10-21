@@ -378,7 +378,6 @@ https://rimzy.net/category/pt-deadlock-logger/
 https://topic.alibabacloud.com/a/monitoring-deadlocks-with-pt-deadlock-logger_8_8_31094333.html
 
 * Analyze all transactions methods
-* sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
 
 AddType application/vnd.ms-fontobject .eot
 AddType font/ttf .ttf
@@ -394,10 +393,15 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 
 
-* Охота на дедлоки
-    * {{que}} - расширить индекс I_que_planet_id (`que_planet_id`, `que_player_id`)
-    * {{planets}} - дропнуть индекс `id`
-    * {{users}} - дропнуть индекс I_user_id_name	`id`, `username`	NORMAL	BTREE
+* Error in key name - `FK_festival_unit_hispot` instead of `FK_festival_unit_highspot`
+    * $updater->upd_create_table('festival_unit',
+        * "CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+    * $updater->upd_create_table('festival_unit_log',
+        * "CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+
+
+
+* sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
 
 * Расписать блокировку во флотах по функциям конкретных миссий
 
@@ -414,11 +418,14 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 #ctv
 
-classes/DBAL/db_mysql.php
-classes/DBAL/db_mysql_v5.php
-classes/debug.php
-docs/changelog_dev.txt
-includes/constants/constants.php
+
+2024-10-21 21:08:03 46a147
+[@] DB
+    * fighting deadlocks
+        * Table `que` - index I_que_planet_id expanded to (`que_planet_id`, `que_player_id`)
+        * Table `planets` - index `id` dropped
+        * Table `users` - index `I_user_id_name` dropped
+
 
 2024-10-21 18:33:01 46a146
 [@] DB

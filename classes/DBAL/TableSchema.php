@@ -52,4 +52,8 @@ class TableSchema {
     return isset($this->indexes[$index]);
   }
 
+  public function isConstrainExists($index) {
+    return isset($this->constraints[$index]);
+  }
+
 }

@@ -68,6 +68,11 @@ class db_mysql_v5 {
     return true;
   }
 
+  /**
+   * @param $query_string
+   *
+   * @return bool|mysqli_result
+   */
   public function mysql_query($query_string) {
     return $this->link->query($query_string);
   }

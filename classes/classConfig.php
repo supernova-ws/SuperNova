@@ -216,6 +216,8 @@
  * @property int    $eco_scale_storage       => 1,
  * @property int    $game_mode               => 0,           // 0 - SuperNova, 1 - oGame
  *
+ *
+ * @property string $cache_prefix Temporary for updater
  */
 class classConfig extends classPersistent {
   const DATE_TYPE_UNIX = 0;

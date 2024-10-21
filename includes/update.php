@@ -1,6 +1,4 @@
-<?php
-
-/** @noinspection SqlResolve */
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use Core\Updater;
 
@@ -20,7 +18,7 @@ if (defined('IN_UPDATE')) {
   die('Update already started');
 }
 
-define('IN_UPDATE', true);
+const IN_UPDATE = true;
 
 global $sn_cache, $debug, $sys_log_disabled;
 
@@ -69,7 +67,7 @@ switch ($updater->new_version) {
           "`type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Тип активити: 1 - триггер, 2 - хук'",
           "`start` datetime NOT NULL COMMENT 'Запланированное время запуска'",
           "`finish` datetime DEFAULT NULL COMMENT 'Реальное время запуска'",
-          "`params` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Параметры активити в виде сериализованного архива'",
+          "`params` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Параметры активити в виде сериализированного архива'",
           "PRIMARY KEY (`id`)",
           "KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE",
           "KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE",
@@ -78,6 +76,7 @@ switch ($updater->new_version) {
         "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
       );
 
+      /** @noinspection SpellCheckingInspection */
       $updater->upd_create_table('festival_unit',
         [
           "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
@@ -94,6 +93,7 @@ switch ($updater->new_version) {
         "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
 
+      /** @noinspection SpellCheckingInspection */
       $updater->upd_create_table('festival_unit_log',
         [
           "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
@@ -223,11 +223,15 @@ switch ($updater->new_version) {
       $query = $updater->upd_do_query("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
       while ($row = db_fetch($query)) {
         $skinName = '';
+        /** @noinspection SpellCheckingInspection */
         if (!$row['dpath']) {
           $skinName = 'EpicBlue';
-        } elseif (substr($row['dpath'], 0, 6) == 'skins/') {
+        } /** @noinspection SpellCheckingInspection */
+        elseif (substr($row['dpath'], 0, 6) == 'skins/') {
+          /** @noinspection SpellCheckingInspection */
           $skinName = substr($row['dpath'], 6, -1);
         } else {
+          /** @noinspection SpellCheckingInspection */
           $skinName = $row['dpath'];
         }
         if ($skinName) {
@@ -237,6 +241,7 @@ switch ($updater->new_version) {
       }
     }
 
+    /** @noinspection SpellCheckingInspection */
     $updater->upd_alter_table('users', ["DROP COLUMN `dpath`",], $updater->isFieldExists('users', 'dpath'));
 
     // 2017-06-12 13:47:36 42c1
@@ -319,6 +324,7 @@ switch ($updater->new_version) {
         }
 
         try {
+          /** @noinspection SpellCheckingInspection */
           $updater->upd_do_query(
             "UPDATE `{{chat}}` SET `user` = '" . SN::$db->db_escape(
               json_encode(
@@ -626,7 +632,7 @@ switch ($updater->new_version) {
       $updater->upd_alter_table('config', [
         "ADD COLUMN `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
         "ADD COLUMN `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
-      ], ! $updater->isFieldExists('config', 'created_at'));
+      ], !$updater->isFieldExists('config', 'created_at'));
 
       if (!$updater->isTableExists('festival_config')) {
         $updater->upd_create_table(
@@ -680,15 +686,11 @@ switch ($updater->new_version) {
                   `config_value` = {$matches[4]}
                 ;");
               $patched++;
-            } elseif(empty($festival->num_rows)) {
+            } elseif (empty($festival->num_rows)) {
               $updater->upd_log_message("Warning! Festival ID {$matches[1]} not found");
-            } elseif(empty($highspot->num_rows)) {
+            } elseif (empty($highspot->num_rows)) {
               $updater->upd_log_message("Warning! Highspot ID {$matches[2]} not found");
             }
-//          pdump($matches);
-//          pdump($festival);
-//          pdump($highspot);
-//          break;
           }
         }
 
@@ -698,10 +700,33 @@ switch ($updater->new_version) {
       $updater->upd_alter_table('que', ['DROP KEY `que_id`',], $updater->isIndexExists('que', 'que_id'));
       $updater->upd_alter_table('counter', ['DROP KEY `counter_id`',], $updater->isIndexExists('counter', 'counter_id'));
       $updater->upd_alter_table('captain', ['DROP KEY `captain_id`',], $updater->isIndexExists('captain', 'captain_id'));
+    }, PATCH_REGISTER);
+
+    // 2024-10-21 21:08:03 46a147
+    $updater->updPatchApply(13, function () use ($updater) {
+      $updater->indexDropIfExists('planets', 'id');
+      $updater->indexDropIfExists('users', 'I_user_id_name');
+
+      $updater->indexReplace(
+        'que',
+        'I_que_planet_id',
+        ['que_planet_id', 'que_player_id',],
+        function () use ($updater) {
+          $updater->constraintDropIfExists('que', 'FK_que_planet_id');
+        },
+        function () use ($updater) {
+          //    CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          $updater->upd_alter_table(
+            'que',
+            ['ADD CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE',],
+            true
+          );
+        }
+      );
     }, PATCH_PRE_CHECK);
 
 //    // #ctv
-//    $updater->updPatchApply(12, function() use ($updater) {
+//    $updater->updPatchApply(14, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
 //   TODO - UNCOMMENT ON RELEASE!

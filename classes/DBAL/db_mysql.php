@@ -431,6 +431,11 @@ class db_mysql {
   }
 
 
+  /**
+   * @param $query_string
+   *
+   * @return bool|mysqli_result
+   */
   public function db_sql_query($query_string) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_query($query_string);
