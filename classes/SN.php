@@ -1,4 +1,7 @@
-<?php /** @noinspection SqlResolve */
+<?php
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection SqlResolve */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use DBAL\db_mysql;
 use Player\userOptions;
@@ -21,11 +24,6 @@ class SN {
    * @var bool
    */
   public static $gSomethingWasRendered = false;
-
-  /**
-   * @var SN $_sn
-   */
-  protected static $_sn;
 
   /**
    * @var GlobalContainer $gc
@@ -100,6 +98,9 @@ class SN {
    */
   public static $headerRendered = false;
 
+  /** @var bool $sys_user_logged_in Is user logged in? TODO - move to user-related */
+  public static $sys_user_logged_in = false;
+
   /*
   TODO Кэш:
   1. Всегда дешевле использовать процессор, чем локальную память
@@ -107,11 +108,11 @@ class SN {
   3. Всегда дешевле использовать общую память всех процессов, чем обращаться к БД
 
   Кэш - многоуровневый: локальная память-общая память-БД
-  БД может быть сверхкэширующей - см. HyperNova. Это реализуется на уровне СН-драйвера БД
-  Предусмотреть вариант, когда уровни кэширования совпадают, например когда нет xcache и используется общая память
+  БД может быть сверх-кэширующей - см. HyperNova. Это реализуется на уровне СН-драйвера БД
+  Предусмотреть вариант, когда уровни кэширования совпадают, например когда нет xCache и используется общая память
   */
-  //public static $cache; // Объект-кэшер - либо встроенная память, либо мемкэш с блокировками - находится внутри $db!!!!
-  //public static $db; // Объект-БД - либок кэшер с блокировками, либо БД
+  //public static $cache; // Кэширующий объект - либо встроенная память, либо кэш в памяти с блокировками - находится внутри $db!!!!
+  //public static $db; // Объект-БД - либо кэширующий объект с блокировками, либо БД
 
   // protected static $info = array(); // Кэш информации - инфо о юнитах, инфо о группах итд
 
@@ -198,17 +199,6 @@ class SN {
    */
   public static $afterInit = [];
 
-//  /**
-//   * @return SN
-//   */
-//  public static function sn() {
-//    if (!isset(self::$_sn)) {
-//      self::$_sn = new self();
-//    }
-//
-//    return self::$_sn;
-//  }
-
   public function __construct() {
 
   }
@@ -232,9 +222,9 @@ class SN {
    * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
    *
    * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
-   *   <p>null - транзакция НЕ должна быть запущена</p>
-   *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
-   *   <p>false - всё равно - для совместимости с $for_update</p>
+   *                                <p>null - транзакция НЕ должна быть запущена</p>
+   *                                <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
+   *                                <p>false - всё равно - для совместимости с $for_update</p>
    *
    * @return bool Текущий статус транзакции
    */
@@ -259,7 +249,7 @@ class SN {
   }
 
   public static function db_transaction_start($level = '') {
-    static::db_transaction_check(null);
+    static::db_transaction_check(SN::DB_TRANSACTION_SHOULD_NOT_BE);
 
     static::$gc->db->transactionStart($level);
 
@@ -280,7 +270,7 @@ class SN {
   }
 
   public static function db_transaction_commit() {
-    static::db_transaction_check(true);
+    static::db_transaction_check(SN::DB_TRANSACTION_SHOULD_BE);
 
     DBStaticUnit::cache_clear();
     SN::$gc->db->transactionCommit();
@@ -309,8 +299,8 @@ class SN {
    * Блокирует указанные таблицу/список таблиц
    *
    * @param string|array $tables Таблица/список таблиц для блокировки. Названия таблиц - без префиксов
-   * <p>string - название таблицы для блокировки</p>
-   * <p>array - массив, где ключ - имя таблицы, а значение - условия блокировки элементов</p>
+   *                             <p>string - название таблицы для блокировки</p>
+   *                             <p>array - массив, где ключ - имя таблицы, а значение - условия блокировки элементов</p>
    */
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
@@ -333,11 +323,9 @@ class SN {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
     $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && !$skip_lock && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
+    $query .= $select && !$skip_lock && static::db_transaction_check(SN::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
 
-    $result = self::$db->doquery($query, $fetch);
-
-    return $result;
+    return self::$db->doquery($query, $fetch);
   }
 
   /**
@@ -383,63 +371,28 @@ class SN {
    *    <p>array - запись</p>
    */
   public static function db_get_record_by_id($location_type, $record_id_unsafe) {
-    $id_field = static::$location_info[$location_type][P_ID];
+    $id_field       = static::$location_info[$location_type][P_ID];
     $record_id_safe = idval(is_array($record_id_unsafe) && isset($record_id_unsafe[$id_field]) ? $record_id_unsafe[$id_field] : $record_id_unsafe);
 
-    return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true, false);
+    return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true);
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
     $location_info = &static::$location_info[$location_type];
-    $id_field = $location_info[P_ID];
-//    $query_cache = [];
-//
-//    // Always - disabled query cache
-//    {
-//      if (static::db_transaction_check(false)) {
-//        // Проходим по всем родителям данной записи
-//        foreach ($location_info[P_OWNER_INFO] as $owner_data) {
-//          $owner_location_type = $owner_data[P_LOCATION];
-//          $parent_id_list = [];
-//          // Выбираем родителей данного типа и соответствующие ИД текущего типа
-//          $query = static::db_query_select(
-//            "SELECT
-//              distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
-//            FROM {{{$location_info[P_TABLE_NAME]}}}" .
-//            ($filter ? ' WHERE ' . $filter : '') .
-//            ($fetch ? ' LIMIT 1' : ''),
-//            false,
-//            true
-//          );
-//
-//          while ($row = db_fetch($query)) {
-//            // Исключаем из списка родительских ИД уже заблокированные записи
-//            if (!_SnCacheInternal::cache_lock_get($owner_location_type, $row['parent_id'])) {
-//              $parent_id_list[$row['parent_id']] = $row['parent_id'];
-//            }
-//          }
-//
-//          // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
-//          if ($indexes_str = implode(',', $parent_id_list)) {
-//            $parent_id_field = static::$location_info[$owner_location_type][P_ID];
-//            static::db_get_record_list($owner_location_type,
-//              $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
-//          }
-//        }
-//      }
+    $id_field      = $location_info[P_ID];
+    $tableName     = $location_info[P_TABLE_NAME];
 
-      $result = false;
+    $result = false;
 
-      $query = static::db_query_select(
-        "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
-      );
-      while ($row = db_fetch($query)) {
-        $result[$row[$id_field]] = $row;
-        if ($fetch) {
-          break;
-        }
+    $query = static::db_query_select(
+      "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+    );
+    while ($row = db_fetch($query)) {
+      $result[$row[$id_field]] = $row;
+      if ($fetch) {
+        break;
       }
-//    }
+    }
 
     if ($no_return) {
       return true;
@@ -454,8 +407,8 @@ class SN {
     }
 
     $location_info = &static::$location_info[$location_type];
-    $id_field = $location_info[P_ID];
-    $table_name = $location_info[P_TABLE_NAME];
+    $id_field      = $location_info[P_ID];
+    $table_name    = $location_info[P_TABLE_NAME];
     if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
       if (static::$db->db_affected_rows()) {
@@ -472,7 +425,7 @@ class SN {
       return false;
     }
 
-    $condition = trim($condition);
+    $condition  = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
     if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
@@ -487,7 +440,7 @@ class SN {
   }
 
   public static function db_ins_record($location_type, $set) {
-    $set = trim($set);
+    $set        = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if ($result = static::db_query_insert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
@@ -509,8 +462,8 @@ class SN {
     }
 
     $location_info = &static::$location_info[$location_type];
-    $id_field = $location_info[P_ID];
-    $table_name = $location_info[P_TABLE_NAME];
+    $id_field      = $location_info[P_ID];
+    $table_name    = $location_info[P_TABLE_NAME];
     if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
@@ -545,7 +498,7 @@ class SN {
    *
    * $que_type
    *   !$que_type - все очереди
-   *   QUE_XXXXXX - конкретная очередь по планете
+   *   QUE_XXX - конкретная очередь по планете
    * $user_id - ID пользователя
    * $planet_id
    *   $que_type == QUE_RESEARCH - игнорируется
@@ -556,9 +509,10 @@ class SN {
    * $for_update - true == нужно блокировать записи
    *
    * TODO Работа при !$user_id
-   * TODO Переформатировать вывод данных, что бы можно было возвращать данные по всем планетам и юзерам в одном запросе: добавить подмассивы 'que', 'planets', 'players'
+   * TODO Переформатировать вывод данных, что бы можно было возвращать данные по всем планетам и юзерам в одном запросе: добавить под-массивы 'que', 'planets', 'players'
    *
    */
+  /** @noinspection PhpUnusedParameterInspection */
   public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false) {
     if (!$user_id) {
       pdump(debug_backtrace());
@@ -588,88 +542,14 @@ class SN {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public static function loadFileSettings() {
     $dbsettings = array();
 
     require(SN_CONFIG_PATH);
     //self::$db_prefix = $dbsettings['prefix'];
     self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $dbsettings['prefix'];
-    self::$db_name = $dbsettings['name'];
+    self::$db_name      = $dbsettings['name'];
+    /** @noinspection SpellCheckingInspection */
     self::$sn_secret_word = $dbsettings['secretword'];
 
     self::services();
@@ -680,7 +560,7 @@ class SN {
   public static function init_global_objects() {
     global $sn_cache, $config, $debug;
 
-    $debug = self::$debug = self::$gc->debug;
+    $debug    = self::$debug = self::$gc->debug;
     self::$db = self::$gc->db;
     self::$db->sn_db_connect();
 
@@ -688,7 +568,7 @@ class SN {
 
     // Initializing global `cache` object
     $sn_cache = static::$cache = self::$gc->cache;
-    $tables = SN::$db->schema()->getSnTables();
+    $tables   = SN::$db->schema()->getSnTables();
     empty($tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global `config` object
@@ -710,17 +590,20 @@ class SN {
    * @param string $newMessage
    *
    * @return int
+   * @noinspection PhpUnusedParameterInspection
    */
   public static function gameDisable($newStatus = GAME_DISABLE_REASON, $newMessage = '') {
+    /** @noinspection PhpCastIsUnnecessaryInspection */
     $old_server_status = intval(self::$config->pass()->game_disable);
+
     self::$config->pass()->game_disable = $newStatus;
 
     return $old_server_status;
   }
 
-  public static function gameEnable() {
-    self::$config->pass()->game_disable = GAME_DISABLE_NONE;
-  }
+//  public static function gameEnable() {
+//    self::$config->pass()->game_disable = GAME_DISABLE_NONE;
+//  }
 
   /**
    * Is game disabled?

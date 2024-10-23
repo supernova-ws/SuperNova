@@ -30,19 +30,19 @@ if($info_action)
     switch($info_action)
     {
       case MARKET_INFO_PLAYER:
-        $user_info_name_unsafe = sys_get_param_str_unsafe('user_info_name');
-        if(!$user_info_name_unsafe)
+        $user_info_name_or_id_unsafe = sys_get_param_str_unsafe('user_info_name');
+        if(!$user_info_name_or_id_unsafe)
         {
           throw new Exception(MARKET_INFO_PLAYER_WRONG, ERR_ERROR);
         }
 
-        if(is_id($user_info_name_unsafe))
+        if(is_id($user_info_name_or_id_unsafe))
         {
-          $user_info = db_user_by_id($user_info_name_unsafe, true, '`id`, `username`', true);
+          $user_info = db_user_by_id($user_info_name_or_id_unsafe, true, '`id`, `username`', true);
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_by_username($user_info_name_unsafe, true);
+          $user_info = db_user_by_username($user_info_name_or_id_unsafe, true);
         }
         if(!is_array($user_info))
         {

@@ -65,13 +65,12 @@ class debug {
     }
 
     if (!$logFileName) {
-      $logFileName = SN_ROOT_PHYSICAL . "/.logs/supernova.mysql." . date('Y-m-d-H-i-s.') . sprintf("%06d", gettimeofday()["usec"]) . ".log";
-//      file_put_contents($logFileName, "\n\n", FILE_APPEND);
+      $dbName = SN::$db->dbName;
+      $logFileName = SN_ROOT_PHYSICAL . "/.logs/{$dbName}.mysql." . date('Y-m-d-H-i-s.') . sprintf("%06d", gettimeofday()["usec"]) . ".log";
     }
     if ($ident_change < 0) {
       $ident += $ident_change * 2;
     }
-//    file_put_contents($logFileName, date('s', time()) . str_repeat(' ', $ident + 1) . $message . "\n\n", FILE_APPEND);
     file_put_contents($logFileName, str_repeat(' ', $ident) . $message . "\n\n", FILE_APPEND);
     if ($ident_change > 0) {
       $ident += $ident_change * 2;

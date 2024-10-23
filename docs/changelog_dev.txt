@@ -401,7 +401,9 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 
 
-* sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
+* Версионирование отдельно для модулей
+
+
 
 * Расписать блокировку во флотах по функциям конкретных миссий
 
@@ -416,7 +418,30 @@ crowdin.com - переводчик всякого встроенного в ПО
 * Перекинуть переменные транзакций в db_mysql.php
     * И, возможно, в $debug - что бы там было на случай ошибки
 
+#765 - код ошибки для 46a147
+#832 - код ошибки для 46a147+ 2024-10-23-02-34
+
+* Настройки уровня транзакции в базе (?)
+    * Не, в конфиге
+
+* /annonce.php - целая незалинкованная система объявлений!
+
+
+* sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
+    * db_user_by_id() - убрать
+        * SN::db_get_record_by_id - убрать
+        * db_user_list - убрать
+
 #ctv
+
+2024-10-23 01:09:59 46a148
+[@] Code
+    * `$sys_user_logged_in` => `SN::$sys_user_logged_in`
+    * Debug - now prepends sql log filename with current instance DB name
+    * `sys_o_get_updated` - simplified error reporting on empty user
+    * Removed `db_queries_user.php` -> `db_get_user_by_where`
+    * `db_queries_user.php` -> `db_user_by_id` now accepts only userId as first param
+    * Streamlined and formatted code a bit
 
 
 2024-10-21 21:08:03 46a147

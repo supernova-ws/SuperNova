@@ -20,7 +20,7 @@ unset($disable_reason);
 
 if(defined('IN_ADMIN') && IN_ADMIN === true) {
   lng_include('admin');
-} elseif($sys_user_logged_in) {
+} elseif(SN::$sys_user_logged_in) {
   sys_user_vacation($user);
 
   $planet_id = SetSelectedPlanet($user);

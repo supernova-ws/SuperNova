@@ -294,7 +294,7 @@ $template_result += $result;
 unset($result);
 // В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
 
-$template_result[F_ACCOUNT_IS_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
+$template_result[F_ACCOUNT_IS_AUTHORIZED] = SN::$sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
 
 if(!empty($user['id'])) {
   SN::$user_options->user_change($user['id']);
@@ -358,7 +358,7 @@ if($template_result[F_GAME_DISABLE] = SN::$config->game_disable) {
     }
 
     // If user not logged in AND we are not on login page - redirect user there
-    if(!$sys_user_logged_in && !defined('LOGIN_LOGOUT')) {
+    if(!SN::$sys_user_logged_in && !defined('LOGIN_LOGOUT')) {
       header('Location: login.php');
       die();
     }
@@ -403,10 +403,10 @@ global $allow_anonymous;
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
 
-if($sys_user_logged_in && INITIAL_PAGE == 'login') {
+if(SN::$sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
-} elseif($account_logged_in && !$sys_user_logged_in) { // empty(core_auth::$user['id'])
-} elseif(!$allow_anonymous && !$sys_user_logged_in && !defined('IN_API')) {
+} elseif($account_logged_in && !SN::$sys_user_logged_in) { // empty(core_auth::$user['id'])
+} elseif(!$allow_anonymous && !SN::$sys_user_logged_in && !defined('IN_API')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
