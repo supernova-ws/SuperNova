@@ -90,7 +90,8 @@ else
   while($u = db_fetch($query))
   {
     $i++;
-    $v = array();
+    $v = [];
+    $u['log_text'] = str_replace("\n", "<br />", $u['log_text']);
     foreach($u as $key => $value)
     {
       $v[strtoupper($key)] = $value;

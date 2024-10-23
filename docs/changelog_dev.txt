@@ -434,6 +434,11 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 #ctv
 
+
+2024-10-23 01:45:56 46a149
+[~] Logs
+    * In log text "\n" replaced with "<br />" on output
+
 2024-10-23 01:09:59 46a148
 [@] Code
     * `$sys_user_logged_in` => `SN::$sys_user_logged_in`
