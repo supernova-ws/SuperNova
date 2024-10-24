@@ -502,3 +502,29 @@ function backtrace_no_arg() {
   array_shift($trace);
   return $trace;
 }
+
+/**
+ * @param mixed        $var
+ * @param ?string|bool $die If string - message would be output on DIE()
+ *
+ * @return void
+ */
+function pre($var = null, $die = false)
+{
+  print "<pre>";
+  if ($var !== null) {
+    print_r($var);
+    $p = debug_backtrace()[0];
+    print("\n{$p['file']}@{$p['line']}<br />\n" . (is_string($die) ? 'Die message: ' . $die . "<br />\n" : ''));
+    echo '</pre>';
+  }
+
+  if ($die) {
+    die();
+  }
+}
+
+function pred($var = null, $die = false)
+{
+  pre($var, $die ?: 1);
+}

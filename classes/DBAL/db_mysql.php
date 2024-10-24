@@ -3,6 +3,7 @@
 namespace DBAL;
 
 use debug;
+use mysqli;
 use mysqli_result;
 use SN;
 
@@ -16,6 +17,13 @@ class db_mysql {
   const DB_MYSQL_TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
   const DB_MYSQL_TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
   const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+
+  const TRANSACTION_LEVELS_ALLOWED = [
+    self::DB_MYSQL_TRANSACTION_SERIALIZABLE,
+    self::DB_MYSQL_TRANSACTION_REPEATABLE_READ,
+    self::DB_MYSQL_TRANSACTION_READ_COMMITTED,
+    self::DB_MYSQL_TRANSACTION_READ_UNCOMMITTED,
+  ];
 
   /**
    * DB schemes
@@ -43,12 +51,12 @@ class db_mysql {
    * @var array
    */
   protected $dbsettings = [];
-  /**
-   * Драйвер для прямого обращения к MySQL
-   *
-   * @var db_mysql_v5 $driver
-   */
-  public $driver = null;
+//  /**
+//   * Драйвер для прямого обращения к MySQL
+//   *
+//   * @var db_mysql_v5 $driver
+//   */
+//  public $driver = null;
 
   /**
    * Общее время запросов
@@ -61,6 +69,15 @@ class db_mysql {
    * @var bool $inTransaction
    */
   protected $inTransaction = false;
+
+
+  /**
+   * Соединение с MySQL
+   *
+   * @var mysqli $link
+   */
+  public $link;
+
 
   /**
    * DBAL\db_mysql constructor.
@@ -105,11 +122,11 @@ class db_mysql {
 
     // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны
     if (!empty($this->dbsettings)) {
-      $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
-      $this->driver = new $driver_name();
+      // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
+      // $this->driver = new $driver_name();
       $this->db_prefix = $this->dbsettings['prefix'];
 
-      $this->connected = $this->connected || $this->driver_connect();
+      $this->connected = $this->connected || $this->mysql_connect_driver($this->dbsettings);
 
       if ($this->connected && empty($this->schema()->getSnTables())) {
         die('DB error - cannot find any table. Halting...');
@@ -123,18 +140,36 @@ class db_mysql {
     return $this->connected;
   }
 
-  public function driver_connect() {
+  public function mysql_connect_driver($settings) {
     global $debug;
 
-    if (!is_object($this->driver)) {
-      $debug->error_fatal('DB Error - No driver for MySQL found!');
+    static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
+
+    if ($this->connected) {
+      return true;
     }
 
-    if (!method_exists($this->driver, 'mysql_connect')) {
-      $debug->error_fatal('DB Error - WRONG MySQL driver!');
+    if (empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
+      $debug->error_fatal('There is missconfiguration in your config.php. Check it again');
     }
 
-    return $this->driver->mysql_connect($this->dbsettings);
+    @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
+    if (!is_object($this->link) || $this->link->connect_error) {
+      $debug->error_fatal('DB Error - cannot connect to server error #' . $this->link->connect_errno, $this->link->connect_error);
+    }
+
+    $this->db_sql_query("/*!40101 SET NAMES 'utf8' */")
+    or $debug->error_fatal('DB error - cannot set names 1 error #' . $this->link->errno, $this->link->error);
+    $this->db_sql_query("SET NAMES 'utf8';")
+    or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
+
+    //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
+    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE . ';')
+    or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
+
+    $this->connected = true;
+
+    return true;
   }
 
   public function db_disconnect() {
@@ -182,7 +217,7 @@ class db_mysql {
 
   public function doquery($query, $fetch = false, $skip_query_check = false) {
     /**
-     * @var debug $debug
+     * @var debug        $debug
      * @var \classConfig $config
      */
     global $numqueries, $debug, $config;
@@ -196,12 +231,6 @@ class db_mysql {
     $skip_query_check or $this->security_query_check_bad_words($query);
 
     $sql = $this->prefixReplace($query);
-//    $sql = $query;
-//    if (strpos($sql, '{{') !== false) {
-//      foreach ($this->schema()->getSnTables() as $tableName) {
-//        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
-//      }
-//    }
 
     if ($config->debug) {
       $numqueries++;
@@ -218,7 +247,7 @@ class db_mysql {
 
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql);
-    if(!$sqlquery) {
+    if (!$sqlquery) {
       $debug->error(SN::$db->db_error() . "\n$sql\n", 'SQL Error');
     }
     restore_error_handler();
@@ -279,7 +308,7 @@ class db_mysql {
     if (!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array)) {
       if (!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
         $is_watching = true;
-        $msg = "\$query = \"{$query}\"\n\r";
+        $msg         = "\$query = \"{$query}\"\n\r";
         if (!empty($_POST)) {
           $msg .= "\n\r" . dump($_POST, '$_POST');
         }
@@ -343,7 +372,7 @@ class db_mysql {
 
         $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
         die($message);
-      /** @noinspection PhpUnreachableStatementInspection */
+        /** @noinspection PhpUnreachableStatementInspection */
       break;
     }
   }
@@ -365,7 +394,7 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1 = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
+    $q1                     = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
     while ($r1 = db_fetch($q1)) {
       $dbf = new DbFieldDescription();
       $dbf->fromMySqlDescription($r1);
@@ -388,10 +417,10 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1 = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
+    $q1                     = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['Key_name'];
-      if(empty($result[$indexName])) {
+      if (empty($result[$indexName])) {
         $result[$indexName] = new DbIndexDescription();
       }
       $result[$indexName]->addField($r1);
@@ -416,10 +445,10 @@ class db_mysql {
 
       $table_referenced = str_replace($this->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
-      $result[$indexName]['name'] = $indexName;
-      $result[$indexName]['signature'][] = "{$r1['COLUMN_NAME']}=>{$table_referenced}.{$r1['REFERENCED_COLUMN_NAME']}";
-      $r1['REFERENCED_TABLE_NAME'] = $table_referenced;
-      $r1['TABLE_NAME'] = $tableName_unsafe;
+      $result[$indexName]['name']                       = $indexName;
+      $result[$indexName]['signature'][]                = "{$r1['COLUMN_NAME']}=>{$table_referenced}.{$r1['REFERENCED_COLUMN_NAME']}";
+      $r1['REFERENCED_TABLE_NAME']                      = $table_referenced;
+      $r1['TABLE_NAME']                                 = $tableName_unsafe;
       $result[$indexName]['fields'][$r1['COLUMN_NAME']] = $r1;
     }
 
@@ -437,8 +466,8 @@ class db_mysql {
    * @return bool|mysqli_result
    */
   public function db_sql_query($query_string) {
-    $microtime = microtime(true);
-    $result = $this->driver->mysql_query($query_string);
+    $microtime              = microtime(true);
+    $result                 = $this->link->query($query_string);
     $this->time_mysql_total += microtime(true) - $microtime;
 
     return $result;
@@ -451,59 +480,64 @@ class db_mysql {
    * @return array|null
    */
   public function db_fetch(&$query_result) {
-    $microtime = microtime(true);
-    $result = $this->driver->mysql_fetch_assoc($query_result);
+    $microtime              = microtime(true);
+    $result                 = mysqli_fetch_assoc($query_result);
     $this->time_mysql_total += microtime(true) - $microtime;
 
     return $result;
-//    return $this->driver->mysql_fetch_assoc($query);
   }
 
-  public function db_fetch_row(&$query) {
-    return $this->driver->mysql_fetch_row($query);
-  }
+//  public function db_fetch_row(&$query) {
+//    return mysqli_fetch_row($query);
+//  }
 
   public function db_escape($unescaped_string) {
-    return $this->driver->mysql_real_escape_string($unescaped_string);
+    return mysqli_real_escape_string($this->link, $unescaped_string);
   }
 
   public function driver_disconnect() {
-    return $this->driver->mysql_close_link();
+    if (is_object($this->link)) {
+      $this->link->close();
+      $this->connected = false;
+      unset($this->link);
+    }
+
+    return true;
   }
 
   public function db_error() {
-    return $this->driver->mysql_error();
+    return mysqli_error($this->link);
   }
 
   /**
    * @return int|string
    */
   public function db_insert_id() {
-    return $this->driver->mysql_insert_id();
+    return mysqli_insert_id($this->link);
   }
 
   public function db_num_rows(&$result) {
-    return $this->driver->mysql_num_rows($result);
+    return mysqli_num_rows($result);
   }
 
   public function db_affected_rows() {
-    return $this->driver->mysql_affected_rows();
+    return mysqli_affected_rows($this->link);
   }
 
   public function getClientInfo() {
-    return $this->driver->mysql_get_client_info();
+    return mysqli_get_client_info($this->link);
   }
 
   public function getServerInfo() {
-    return $this->driver->mysql_get_server_info();
+    return mysqli_get_server_info($this->link);
   }
 
   public function getHostInfo() {
-    return $this->driver->mysql_get_host_info();
+    return mysqli_get_host_info($this->link);
   }
 
   public function getServerStat() {
-    return $this->driver->mysql_stat();
+    return mysqli_stat($this->link);
   }
 
   /**
@@ -511,7 +545,7 @@ class db_mysql {
    */
   public function setDbSettings($dbSettings) {
     $this->dbsettings = $dbSettings;
-    $this->dbName = $this->dbsettings['name'];
+    $this->dbName     = $this->dbsettings['name'];
 
     return $this;
   }
@@ -520,21 +554,32 @@ class db_mysql {
     return $this->dbsettings;
   }
 
+  /**
+   * @param $level
+   *
+   * @return void
+   */
   public function transactionStart($level = '') {
     $this->inTransaction = true;
 
-    if ($level) {
+    if ($level && in_array($level, self::TRANSACTION_LEVELS_ALLOWED)) {
       $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};");
     }
 
     $this->doquery('START TRANSACTION; /* transaction start */', false);
   }
 
+  /**
+   * @return void
+   */
   public function transactionCommit() {
     $this->doquery('COMMIT; /* transaction commit */');
     $this->inTransaction = false;
   }
 
+  /**
+   * @return void
+   */
   public function transactionRollback() {
     $this->doquery('ROLLBACK; /* transaction rollback */');
     $this->inTransaction = false;

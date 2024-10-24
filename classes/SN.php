@@ -1,6 +1,7 @@
 <?php
 /** @noinspection PhpDeprecationInspection */
 /** @noinspection SqlResolve */
+
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use DBAL\db_mysql;
@@ -264,8 +265,6 @@ class SN {
     self::$transactionDepth++;
     DBStaticUnit::cache_clear();
 
-    //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
-
     return static::$transaction_id;
   }
 
@@ -275,7 +274,6 @@ class SN {
     DBStaticUnit::cache_clear();
     SN::$gc->db->transactionCommit();
 
-    //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     self::$transactionDepth--;
 
@@ -288,7 +286,6 @@ class SN {
 
     SN::$gc->db->transactionRollback();
 
-    //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     self::$transactionDepth--;
 
