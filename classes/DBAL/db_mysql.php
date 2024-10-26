@@ -1,7 +1,12 @@
-<?php
+<?php /** @noinspection PhpRedundantOptionalArgumentInspection */
+
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 namespace DBAL;
 
+use classConfig;
+use Core\GlobalContainer;
 use debug;
 use mysqli;
 use mysqli_result;
@@ -40,7 +45,7 @@ class db_mysql {
   protected static $schema = null;
 
   /**
-   * Статус соеднения с MySQL
+   * Статус соединения с MySQL
    *
    * @var bool
    */
@@ -89,7 +94,7 @@ class db_mysql {
   /**
    * DBAL\db_mysql constructor.
    *
-   * @param \Core\GlobalContainer $gc
+   * @param GlobalContainer $gc
    */
   public function __construct($gc) {
 //    $this->transaction = new \DBAL\DbTransaction($gc, $this);
@@ -127,7 +132,7 @@ class db_mysql {
       $this->load_db_settings();
     }
 
-    // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны
+    // TODO - фатальные (?) ошибки на каждом шагу
     if (!empty($this->dbsettings)) {
       // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
       // $this->driver = new $driver_name();
@@ -157,7 +162,7 @@ class db_mysql {
     }
 
     if (empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
-      $debug->error_fatal('There is missconfiguration in your config.php. Check it again');
+      $debug->error_fatal('There is miss-configuration in your config.php. Check it again');
     }
 
     @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
@@ -191,12 +196,14 @@ class db_mysql {
 
   /**
    * @param int    $errno
-   * @param string $errstr
-   * @param string $errfile
-   * @param int    $errline
-   * @param array  $errcontext
+   * @param string $errStr
+   * @param string $errFile
+   * @param int    $errLine
+   * @param array  $errContext
+   *
+   * @noinspection PhpUnusedParameterInspection
    */
-  public function handlerQueryWarning($errno, $errstr, $errfile, $errline, $errcontext) {
+  public function handlerQueryWarning($errno, $errStr, $errFile, $errLine, $errContext) {
     static $alreadyHandled;
 
     // Error was suppressed with the @-operator
@@ -222,10 +229,11 @@ class db_mysql {
     return $sql;
   }
 
+  /** @noinspection SpellCheckingInspection */
   public function doquery($query, $fetch = false, $skip_query_check = false) {
     /**
-     * @var debug        $debug
-     * @var \classConfig $config
+     * @var debug       $debug
+     * @var classConfig $config
      */
     global $numqueries, $debug, $config;
 
@@ -270,10 +278,10 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     set_error_handler([$this, 'handlerQueryWarning']);
-    $sqlquery = $this->db_sql_query($sql) or SN::$debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
+    $sqlQuery = $this->db_sql_query($sql) or SN::$debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
-    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+    return $fetch ? $this->db_fetch($sqlQuery) : $sqlQuery;
   }
 
   /**
@@ -299,11 +307,11 @@ class db_mysql {
   }
 
   /**
-   * @param \DBAL\DbQuery $dbQuery
+   * @param DbQuery $dbQuery
    *
    * @return array|null
    */
-  public function dbqSelectAndFetch(\DBAL\DbQuery $dbQuery) {
+  public function dbqSelectAndFetch(DbQuery $dbQuery) {
     return $this->doQueryAndFetch($dbQuery->select());
   }
 
@@ -329,6 +337,7 @@ class db_mysql {
   }
 
 
+  /** @noinspection SpellCheckingInspection */
   public function security_query_check_bad_words($query) {
     global $user, $dm_change_legit, $mm_change_legit;
 
@@ -473,9 +482,11 @@ class db_mysql {
    * @return bool|mysqli_result
    */
   public function db_sql_query($query_string) {
-    $microtime              = microtime(true);
-    $result                 = $this->link->query($query_string);
-    $this->time_mysql_total += microtime(true) - $microtime;
+    $mt = microtime(true);
+
+    $result = $this->link->query($query_string);
+
+    $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
 //    return $this->driver->mysql_query($query_string);
@@ -486,10 +497,12 @@ class db_mysql {
    *
    * @return array|null
    */
-  public function db_fetch(&$query_result) {
-    $microtime              = microtime(true);
-    $result                 = mysqli_fetch_assoc($query_result);
-    $this->time_mysql_total += microtime(true) - $microtime;
+  public function db_fetch($query_result) {
+    $mt = microtime(true);
+
+    $result = mysqli_fetch_assoc($query_result);
+
+    $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
   }
@@ -523,7 +536,7 @@ class db_mysql {
     return mysqli_insert_id($this->link);
   }
 
-  public function db_num_rows(&$result) {
+  public function db_num_rows($result) {
     return mysqli_num_rows($result);
   }
 
@@ -620,11 +633,11 @@ class db_mysql {
   public static function db_transaction_start($level = '') {
     self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_NOT_BE);
 
-    self::$gc->db->transactionStart($level);
+    SN::$gc->db->transactionStart($level);
 
     self::$transaction_id++;
 
-    if (self::$config->db_manual_lock_enabled) {
+    if (SN::$config->db_manual_lock_enabled) {
       SN::$config->db_loadItem('var_db_manually_locked');
       SN::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
