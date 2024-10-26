@@ -6,6 +6,7 @@
 namespace Fleet;
 
 use Core\Scheduler\Lock;
+use DBAL\db_mysql;
 use SN;
 use debug;
 use classConfig;
@@ -86,7 +87,7 @@ class FleetDispatcher {
    * @deprecated
    */
   protected function getLockOld() {
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
 
     // Watchdog timer
     if ($this->gameConfig->db_loadItem('fleet_update_lock')) {
@@ -94,7 +95,7 @@ class FleetDispatcher {
 //      var_dump(SN_TIME_NOW - strtotime($this->gameConfig->fleet_update_lock));
 //      if (SN_TIME_NOW - strtotime($this->gameConfig->fleet_update_lock) <= mt_rand(90, 120)) {
       if (SN_TIME_NOW - strtotime($this->gameConfig->fleet_update_lock) <= mt_rand(20, 40)) {
-        SN::db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
 
         return false;
       } else {
@@ -104,7 +105,7 @@ class FleetDispatcher {
 
     $this->gameConfig->db_saveItem('fleet_update_last', SN_TIME_SQL);
     $this->gameConfig->db_saveItem('fleet_update_lock', SN_TIME_SQL);
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     return true;
   }
@@ -113,9 +114,9 @@ class FleetDispatcher {
    * @deprecated
    */
   protected function releaseLock() {
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     $this->gameConfig->db_saveItem('fleet_update_lock', '');
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
   }
 
   /**
@@ -198,9 +199,9 @@ class FleetDispatcher {
     //log_file('Начинаем обсчёт флотов');
 
 //    $this->log_file('Обсчёт ракет');
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     coe_o_missile_calculate();
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     $fleet_list       = array();
     $fleet_event_list = array();
@@ -301,7 +302,7 @@ class FleetDispatcher {
       $result['eventsProcessed'] = $eventsProcessed;
 
       // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       // а текущее время
       SN::$gc->config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
 
@@ -316,21 +317,21 @@ class FleetDispatcher {
       $fleet_row = DbFleetStatic::db_fleet_get($fleet_row['fleet_id']);
       if (!$fleet_row || empty($fleet_row)) {
         // Fleet was destroyed in course of previous actions
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
         continue;
       }
 
       if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_RETURN) {
         // Fleet returns to planet
         RestoreFleetToPlanet($fleet_row, true, false, true);
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
         continue;
       }
 
       if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
         // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
         // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
         continue;
       }
 
@@ -418,7 +419,7 @@ class FleetDispatcher {
 //        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
 //      break;
       }
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
     }
 
 //    set_time_limit(30); // TODO - Optimize
@@ -444,7 +445,7 @@ class FleetDispatcher {
    * @deprecated
    */
   public function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
-    SN::db_transaction_check(true);
+    db_mysql::db_transaction_check(true);
 
     $result = CACHE_NOTHING;
     if (!is_array($fleet_row)) {

@@ -13,16 +13,16 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #46a148#
+ * version #46a151#
  */
 class core_auth extends sn_module {
-  public $versionCommitted = '#46a148#';
+  public $versionCommitted = '#46a151#';
 
   public $manifest = [
     'package'   => 'core',
     'name'      => 'auth',
     'version'   => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #46a148# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a151# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 
@@ -202,9 +202,9 @@ class core_auth extends sn_module {
 
       // Проверить наличие такого имени в истории имён
       do {
-        SN::db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
         $this->player_suggested_name = 'Emperor ' . mt_rand($max_user_id + 1, $max_user_id + 1000);
-        SN::db_transaction_start();
+        db_mysql::db_transaction_start();
       } while (db_player_name_exists($this->player_suggested_name));
 
     }
@@ -550,7 +550,7 @@ class core_auth extends sn_module {
       // Проверить корректность имени
       $this->register_player_name_validate($player_name_unsafe);
 
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       // Проверить наличие такого имени в истории имён
 
       if (db_player_name_exists($player_name_unsafe)) {
@@ -591,10 +591,10 @@ class core_auth extends sn_module {
       // Установить куку игрока
       self::cookie_set(self::$user['id']);
 
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
       $this->register_status = LOGIN_SUCCESS;
     } catch (Exception $e) {
-      SN::db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
 
       // Если старое имя занято
       self::$user = null;

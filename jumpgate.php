@@ -7,6 +7,7 @@
  * Jump Gate interface, I presume
  */
 
+use DBAL\db_mysql;
 use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
 
@@ -18,7 +19,7 @@ lng_include('fleet');
 
 /** @noinspection SpellCheckingInspection */
 if ($TargetPlanet = sys_get_param_id('jmpto')) {
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   db_user_by_id($user['id'], true, 'id');
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
   if (!($NextJumpTime = uni_get_time_to_jump($planetrow))) {
@@ -63,7 +64,7 @@ if ($TargetPlanet = sys_get_param_id('jmpto')) {
   } else {
     $RetMessage = $lang['gate_wait_star'] . " - " . pretty_time($NextJumpTime);
   }
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
   SnTemplate::messageBox($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $template = SnTemplate::gettemplate('jumpgate', true);

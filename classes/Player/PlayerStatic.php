@@ -5,6 +5,7 @@
 
 namespace Player;
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
 use SN;
 use Planet\DBStaticPlanet;
@@ -44,8 +45,8 @@ class PlayerStatic {
    */
   public static function DeleteSelectedUser($UserID) {
     $internalTransaction = false;
-    if (!SN::db_transaction_check(false)) {
-      SN::db_transaction_start();
+    if (!db_mysql::db_transaction_check(false)) {
+      db_mysql::db_transaction_start();
 
       $internalTransaction = true;
     }
@@ -53,7 +54,7 @@ class PlayerStatic {
     $TheUser = db_user_by_id($UserID);
 
     if (!empty($TheUser['ally_id'])) {
-      $TheAlly = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
+      $TheAlly                 = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
       $TheAlly['ally_members'] -= 1;
       doquery("UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
 
@@ -92,7 +93,7 @@ class PlayerStatic {
     dbUpdateUsersCount(SN::$config->pass()->users_amount - 1);
 
     if ($internalTransaction) {
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
     }
   }
 

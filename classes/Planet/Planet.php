@@ -8,6 +8,7 @@ namespace Planet;
 
 
 use Core\EntityDb;
+use DBAL\db_mysql;
 use Unit\Governor;
 use Exception;
 use HelperString;
@@ -127,7 +128,7 @@ class Planet extends EntityDb {
       return;
     }
 
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     $user = db_user_by_id($this->id_owner, true, '*');
     $this->setForUpdate()->dbLoadRecord($this->id);
 
@@ -149,10 +150,10 @@ class Planet extends EntityDb {
         $this->field_max++;
         $this->update();
       } else {
-        SN::db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
       }
     }
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     sys_redirect($redirect);
   }
@@ -179,7 +180,7 @@ class Planet extends EntityDb {
         throw new exception(SN::$lang['ov_core_err_same_density'], ERR_WARNING);
       }
 
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       $user = db_user_by_id($user['id'], true, '*');
       $this->setForUpdate()->dbLoadRecord($this->id);
 
@@ -222,7 +223,7 @@ class Planet extends EntityDb {
       );
 
       DBStaticPlanet::db_planet_set_by_id($this->id, "`density` = {$new_density}, `density_index` = {$new_density_index}");
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
 
       $this->density = $new_density;
       $this->density_index = $new_density_index;
@@ -231,7 +232,7 @@ class Planet extends EntityDb {
         'MESSAGE' => sprintf(SN::$lang['ov_core_err_none'], SN::$lang['uni_planet_density_types'][$planet_density_index], SN::$lang['uni_planet_density_types'][$new_density_index], $new_density),
       );
     } catch (Exception $e) {
-      SN::db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
       $result = array(
         'STATUS'  => $e->getCode(),
         'MESSAGE' => $e->getMessage(),

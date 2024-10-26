@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use Planet\DBStaticPlanet;
 use Unit\DBStaticUnit;
 
@@ -29,7 +30,7 @@ $username_unsafe = sys_get_param_str_unsafe('username');
 $username = sys_get_param_escaped('username');
 
 if ($galaxy_src) {
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   $errors = array();
 
   $owner = db_user_by_username($username_unsafe, true);
@@ -102,7 +103,7 @@ if ($galaxy_src) {
       $template->assign_var('CHECK', 2);
     }
   }
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
 }
 
 $template->assign_vars(array(

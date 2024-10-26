@@ -1,6 +1,7 @@
 <?php
 
 use Alliance\DBStaticAlly;
+use DBAL\db_mysql;
 use \DBAL\DbQuery;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
@@ -127,7 +128,7 @@ else
 
 if($accept_offer)
 {
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
 
   DbQuery::build()
     ->setTable('alliance_diplomacy')
@@ -182,7 +183,7 @@ if($accept_offer)
   msg_ali_send($messages['own'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
   msg_ali_send($messages['other'], "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
 
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
 }
 
 foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_relation)

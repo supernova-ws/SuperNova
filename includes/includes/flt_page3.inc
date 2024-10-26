@@ -3,6 +3,7 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+use DBAL\db_mysql;
 use DBAL\OldDbChangeSet;
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
@@ -48,7 +49,7 @@ function sn_fleet_page3() {
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
 
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
 
   $user = db_user_by_id($user['id'], true);
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
@@ -105,7 +106,7 @@ function sn_fleet_page3() {
   }
 
   if ($errorlist) {
-    SN::db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     SnTemplate::messageBox("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
@@ -299,7 +300,7 @@ function sn_fleet_page3() {
     'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
   ));
 
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);

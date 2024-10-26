@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\DbSqlPaging;
 use General\Helpers\PagingRenderer;
 
@@ -156,7 +157,7 @@ function survey_vote(&$user) {
     return true;
   }
 
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
   $is_voted = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
   if (empty($is_voted)) {
@@ -167,7 +168,7 @@ function survey_vote(&$user) {
       doquery("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
     }
   }
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
 
   return true;
 }

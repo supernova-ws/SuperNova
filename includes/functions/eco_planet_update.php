@@ -13,6 +13,7 @@
  *
  */
 
+use DBAL\db_mysql;
 use Meta\Economic\ResourceCalculations;
 use Planet\DBStaticPlanet;
 
@@ -26,7 +27,7 @@ use Planet\DBStaticPlanet;
  * @return array|false[]|void
  */
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
-  SN::db_transaction_check(true);
+  db_mysql::db_transaction_check(true);
 
   $no_data = ['user' => false, 'planet' => false, 'que' => false];
 

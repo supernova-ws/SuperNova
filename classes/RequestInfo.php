@@ -6,6 +6,8 @@
  * Time: 16:49
  */
 
+use DBAL\db_mysql;
+
 /**
  * Подробности о запросе
  */
@@ -97,7 +99,7 @@ class RequestInfo {
     $this->write_full_url = !SN::$config->security_write_full_url_disabled;
 
     // Инфа об устройстве и браузере - общая для всех
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
     if ($this->device_cypher) {
       $cypher_safe = SN::$db->db_escape($this->device_cypher);
@@ -119,7 +121,7 @@ class RequestInfo {
       $this->device_id = SN::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     $this->user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $this->browser_id = db_get_set_unique_id_value('security_browser', 'browser_id', ['browser_user_agent' => $this->user_agent,]);

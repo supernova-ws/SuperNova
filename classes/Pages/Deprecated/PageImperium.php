@@ -5,6 +5,7 @@
 
 namespace Pages\Deprecated;
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
 use SN;
 use SnTemplate;
@@ -137,11 +138,11 @@ class PageImperium {
     $ques = array();
     $planet_row_list = DBStaticPlanet::db_planet_list_sorted($user);
     foreach ($planet_row_list as $planet) {
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       $global_data = sys_o_get_updated($user, $planet['id'], SN_TIME_NOW, false, true);
       $planets[$planet['id']] = $global_data['planet'];
       $ques[$planet['id']] = $global_data['que'];
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
     }
 
     return array($planets, $ques);

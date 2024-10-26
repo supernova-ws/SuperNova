@@ -6,6 +6,7 @@
 namespace Core;
 
 use Common\Interfaces\IContainer;
+use DBAL\db_mysql;
 use Exception;
 use Fleet\Fleet;
 use Planet\Planet;
@@ -101,7 +102,7 @@ class RepoV2 implements IContainer {
       $entity = $this->get($className, $objectId);
 
       // If in transaction and version missmatch - record should be refreshed just for a case
-      if (SN::db_transaction_check(false) && $this->version($className, $objectId) < SN::$transaction_id) {
+      if (db_mysql::db_transaction_check(false) && $this->version($className, $objectId) < db_mysql::$transaction_id) {
         // Entity will care by itself - should it be really reloaded or not
         $entity->reload();
       }
@@ -164,7 +165,7 @@ class RepoV2 implements IContainer {
    */
   public function set($value) {
     $className = $this->getClassStoreName(get_class($value));
-    $objectId = $value->id;
+    $objectId  = $value->id;
 
     if (empty($value->id)) {
       throw new Exception("Trying to add in registry entity [" . implode(',', [$className, $objectId]) . "] with zero objectId");
@@ -174,8 +175,8 @@ class RepoV2 implements IContainer {
       throw new Exception("Trying to overwrite entity [" . implode(',', [$className, $objectId]) . "] which already set. Unset it first!");
     }
 
-    $this->repo[$className][$objectId] = $value;
-    $this->versionId[$className][$objectId] = SN::$transaction_id;
+    $this->repo[$className][$objectId]      = $value;
+    $this->versionId[$className][$objectId] = db_mysql::$transaction_id;
 
     return true;
   }
@@ -218,7 +219,7 @@ class RepoV2 implements IContainer {
    */
   public function unsetByEntity($entity) {
     $className = $this->getClassStoreName($entity);
-    $objectId = $entity->id;
+    $objectId  = $entity->id;
 
     unset($this->repo[$className][$objectId]);
     unset($this->versionId[$className][$objectId]);
@@ -237,7 +238,7 @@ class RepoV2 implements IContainer {
    * Clears container contents
    */
   public function clear() {
-    $this->repo = [];
+    $this->repo      = [];
     $this->versionId = [];
   }
 

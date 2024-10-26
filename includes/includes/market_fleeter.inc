@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
 
@@ -20,7 +21,7 @@ if(is_array($shipList)) {
     $intError = MARKET_NO_DM;
   }
 
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   // Здесь не надо апдейтить планету - очередь мы посчитали глобально
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //  $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
@@ -115,14 +116,14 @@ if(is_array($shipList)) {
     $stock = $newstock;
     $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_NONE,
       'MESSAGE' => $message,
     ));
   } else {
-    SN::db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_ERROR,
       'MESSAGE' => $lang['eco_mrk_errors'][$intError],

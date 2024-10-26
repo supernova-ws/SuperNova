@@ -3,6 +3,7 @@
  * Created by Gorlum 24.09.2017 17:15
  */
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
 
 /**
@@ -49,7 +50,7 @@ class StatUpdateLauncher {
 
     if ($ts_scheduled_update > $ts_var_stat_update) {
       lng_include('admin');
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       $ts_var_stat_update_end = strtotime($config->pass()->var_stat_update_end);
       if (SN_TIME_NOW > $ts_var_stat_update_end) {
         $old_server_status = $config->pass()->game_disable;
@@ -58,7 +59,7 @@ class StatUpdateLauncher {
         $statMinimalInterval = intval($config->pass()->stats_minimal_interval);
         $config->pass()->var_stat_update_end= date(FMT_DATE_TIME_SQL, SN_TIME_NOW + ($statMinimalInterval ? $statMinimalInterval : STATS_RUN_INTERVAL_MINIMUM));
         $config->pass()->var_stat_update_msg = 'Update started';
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
 
         $msg = $is_admin_request ? 'admin request' : 'scheduler';
         $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run($config->stats_schedule, $config->pass()->var_stat_update, true));
@@ -93,7 +94,7 @@ class StatUpdateLauncher {
         $msg = $config->pass()->var_stat_update_msg;
         $msg = "{$msg} ETA {$timeout} seconds. Please wait...";
       }
-      SN::db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
     } elseif ($is_admin_request) {
       $msg = 'Stat is up to date';
     }

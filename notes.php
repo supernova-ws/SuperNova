@@ -8,6 +8,8 @@
  *     [!] Wrote from scratch
  */
 
+use DBAL\db_mysql;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('notes');
@@ -55,13 +57,13 @@ if(sys_get_param('note_delete')) {
       break;
     }
 
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     doquery("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
     throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   } catch(exception $e) {
     $note_id_edit = 0;
-    SN::db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $lang[$e->getMessage()],
@@ -84,7 +86,7 @@ if(sys_get_param('note_delete')) {
     $note_planet_type = max(1, min(sys_get_param_id('note_planet_type', 1), count($lang['sys_planet_type'])));
     $note_sticky = intval(sys_get_param_id('note_sticky')) ? 1 : 0;
 
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     if($note_id_edit) {
       $check_note_id = doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
       if(!$check_note_id) {
@@ -105,12 +107,12 @@ if(sys_get_param('note_delete')) {
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky};");
     }
 
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
     sys_redirect('notes.php?STATUS=' . ERR_NONE . '&MESSAGE=' . ($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added'));
 //    throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   } catch(exception $e) {
     $note_id_edit = 0;
-    SN::db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $lang[$e->getMessage()],

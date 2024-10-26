@@ -3,6 +3,7 @@
  * Created by Gorlum 24.09.2017 18:09
  */
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Que\DBStaticQue;
@@ -90,10 +91,10 @@ class StatCalculator {
 
     static::sta_set_time_limit('calculating players stats');
 
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     $i = 0;
     // Блокируем всех пользователей
-    SN::db_lock_tables('users');
+    db_mysql::db_lock_tables('users');
     $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
     $row_num = count($user_list);
     // while($player = db_fetch($query))
@@ -338,7 +339,7 @@ class StatCalculator {
     // Counting real user count and updating values
     dbUpdateUsersCount(db_user_count());
 
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
   }
 
 }

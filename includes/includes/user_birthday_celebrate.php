@@ -1,10 +1,12 @@
 <?php
 
+use DBAL\db_mysql;
+
 function sn_user_birthday_celebrate()
 {
   global $config, $lang;
 
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
 
   $query = db_user_list_to_celebrate($config->user_birthday_range);
 
@@ -17,5 +19,5 @@ function sn_user_birthday_celebrate()
   }
 
   $config->db_saveItem('user_birthday_celebrate', SN_TIME_NOW);
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
 }

@@ -7,6 +7,8 @@
  * @version 1.1 Security checks by Gorlum for http://supernova.ws
  */
 
+use DBAL\db_mysql;
+
 require_once('includes/init.php');
 
 global $debug, $template_result, $user, $lang, $planetrow;
@@ -27,7 +29,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
 
   // TODO НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!!
   if($user['ally_id']) {
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     \Alliance\Alliance::sn_ali_fill_user_ally($user);
     if(!$user['ally']['player']['id']) {
       // sn_sys_logout(false, true);
@@ -38,14 +40,14 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     // TODO UNCOMMENT
     que_process($user['ally']['player']);
     db_user_set_by_id($user['ally']['player']['id'], '`onlinetime` = ' . SN_TIME_NOW);
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
   }
 
 
   // TODO - в режиме эмуляции, на самом деле!
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   $global_data = sys_o_get_updated($user['id'], $planet_id, SN_TIME_NOW);
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
 
   $planetrow = $global_data['planet'];
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id'])) {

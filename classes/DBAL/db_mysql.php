@@ -6,6 +6,7 @@ use debug;
 use mysqli;
 use mysqli_result;
 use SN;
+use Unit\DBStaticUnit;
 
 /**
  * User: Gorlum
@@ -13,17 +14,23 @@ use SN;
  * Time: 15:58
  */
 class db_mysql {
-  const DB_MYSQL_TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
-  const DB_MYSQL_TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
-  const DB_MYSQL_TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
-  const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+  const TRANSACTION_LEVEL_SERIALIZABLE = 'SERIALIZABLE';
+  const TRANSACTION_LEVEL_REPEATABLE_READ = 'REPEATABLE READ';
+  const TRANSACTION_LEVEL_READ_COMMITTED = 'READ COMMITTED';
+  const TRANSACTION_LEVEL_READ_UNCOMMITTED = 'READ UNCOMMITTED';
 
   const TRANSACTION_LEVELS_ALLOWED = [
-    self::DB_MYSQL_TRANSACTION_SERIALIZABLE,
-    self::DB_MYSQL_TRANSACTION_REPEATABLE_READ,
-    self::DB_MYSQL_TRANSACTION_READ_COMMITTED,
-    self::DB_MYSQL_TRANSACTION_READ_UNCOMMITTED,
+    self::TRANSACTION_LEVEL_SERIALIZABLE,
+    self::TRANSACTION_LEVEL_REPEATABLE_READ,
+    self::TRANSACTION_LEVEL_READ_COMMITTED,
+    self::TRANSACTION_LEVEL_READ_UNCOMMITTED,
   ];
+  const DB_TRANSACTION_WHATEVER = false;
+  const DB_TRANSACTION_SHOULD_BE = true;
+  const DB_TRANSACTION_SHOULD_NOT_BE = null;
+  public static $transaction_id = 0;
+  public static $db_in_transaction = false;
+  public static $transactionDepth = 0;
 
   /**
    * DB schemes
@@ -132,7 +139,7 @@ class db_mysql {
         die('DB error - cannot find any table. Halting...');
       }
 
-      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE);
+      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE);
     } else {
       $this->connected = false;
     }
@@ -164,7 +171,7 @@ class db_mysql {
     or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
 
     //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
-    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE . ';')
+    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE . ';')
     or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
 
     $this->connected = true;
@@ -608,6 +615,97 @@ class db_mysql {
     $this->transactionCommit();
 
     return $result;
+  }
+
+  public static function db_transaction_start($level = '') {
+    self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_NOT_BE);
+
+    self::$gc->db->transactionStart($level);
+
+    self::$transaction_id++;
+
+    if (self::$config->db_manual_lock_enabled) {
+      SN::$config->db_loadItem('var_db_manually_locked');
+      SN::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
+    }
+
+    self::$db_in_transaction = true;
+    self::$transactionDepth++;
+    DBStaticUnit::cache_clear();
+
+    return self::$transaction_id;
+  }
+
+  public static function db_transaction_rollback() {
+    // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
+    DBStaticUnit::cache_clear();
+
+    SN::$gc->db->transactionRollback();
+
+    self::$db_in_transaction = false;
+    self::$transactionDepth--;
+
+    return self::$transaction_id;
+  }
+
+  /**
+   * Блокирует указанные таблицу/список таблиц
+   *
+   * @param string|array $tables Таблица/список таблиц для блокировки. Названия таблиц - без префиксов
+   *                             <p>string - название таблицы для блокировки</p>
+   *                             <p>array - массив, где ключ - имя таблицы, а значение - условия блокировки элементов</p>
+   */
+  public static function db_lock_tables($tables) {
+    $tables = is_array($tables) ? $tables : array($tables => '');
+    foreach ($tables as $table_name => $condition) {
+      SN::$db->doquery(
+        "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
+      );
+    }
+  }
+
+  public static function db_transaction_commit() {
+    self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_BE);
+
+    DBStaticUnit::cache_clear();
+    SN::$gc->db->transactionCommit();
+
+    self::$db_in_transaction = false;
+    self::$transactionDepth--;
+
+    return self::$transaction_id++;
+  }
+
+  /**
+   * Эта функция проверяет статус транзакции
+   *
+   * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
+   *
+   * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
+   *                                <p>null - транзакция НЕ должна быть запущена</p>
+   *                                <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
+   *                                <p>false - всё равно - для совместимости с $for_update</p>
+   *
+   * @return bool Текущий статус транзакции
+   */
+  public static function db_transaction_check($status = self::DB_TRANSACTION_WHATEVER) {
+    $error_msg = false;
+    if ($status && !self::$db_in_transaction) {
+      $error_msg = 'No transaction started for current operation';
+    } elseif ($status === null && self::$db_in_transaction) {
+      $error_msg = 'Transaction is already started';
+    }
+
+    if ($error_msg) {
+      // TODO - Убрать позже
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
+      $backtrace = debug_backtrace();
+      array_shift($backtrace);
+      pdump($backtrace);
+      die($error_msg);
+    }
+
+    return self::$db_in_transaction;
   }
 
 }

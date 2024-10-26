@@ -2,6 +2,7 @@
 
 use Alliance\AllianceHelper;
 use Alliance\DBStaticAlly;
+use DBAL\db_mysql;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
@@ -19,10 +20,10 @@ if($mode == 'exit')
 
   if (sys_get_param_int('ali_info_leave_confirm'))
   {
-    SN::db_transaction_start();
+    db_mysql::db_transaction_start();
     db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
     DBStaticAlly::db_ally_list_recalc_counts();
-    SN::db_transaction_commit();
+    db_mysql::db_transaction_commit();
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
     SnTemplate::messageBox(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
   }

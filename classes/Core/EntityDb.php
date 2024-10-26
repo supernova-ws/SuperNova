@@ -7,6 +7,7 @@ namespace Core;
 
 
 use Common\Interfaces\IContainer;
+use DBAL\db_mysql;
 use \DBAL\DbQuery;
 use \DBAL\ActiveRecord;
 use Common\Traits\TContainer;
@@ -73,7 +74,7 @@ class EntityDb extends Entity implements IContainer {
 //    unset($this->_container); // Strange thing - after this string it is not possible to set _container property again!
     $this->_container = new $this->_activeClass();
 
-    $this->_isNew = true;
+    $this->_isNew     = true;
     $this->_forUpdate = DbQuery::DB_SHARED;
 
     return $this;
@@ -129,7 +130,7 @@ class EntityDb extends Entity implements IContainer {
   public function dbLoadRecord($id) {
     $this->reset();
 
-    if (SN::db_transaction_check(false)) {
+    if (db_mysql::db_transaction_check(false)) {
       $this->setForUpdate();
     }
 
@@ -137,7 +138,7 @@ class EntityDb extends Entity implements IContainer {
     $className = $this->_activeClass;
     $container = $className::findById($id);
     if (!empty($container)) {
-      $this->_isNew = false;
+      $this->_isNew     = false;
       $this->_container = $container;
     }
 

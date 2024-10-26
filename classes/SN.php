@@ -16,9 +16,6 @@ use Unit\DBStaticUnit;
  * Singleton
  */
 class SN {
-  const DB_TRANSACTION_SHOULD_NOT_BE = null;
-  const DB_TRANSACTION_SHOULD_BE = true;
-  const DB_TRANSACTION_WHATEVER = false;
   /**
    * Flag that something was rendered
    *
@@ -73,10 +70,6 @@ class SN {
    */
   public static $auth = null;
 
-
-  public static $db_in_transaction = false;
-  public static $transaction_id = 0;
-  public static $transactionDepth = 0;
 
   public static $user = array();
   /**
@@ -218,97 +211,6 @@ class SN {
   // TODO Вынести в отдельный объект
 
   /**
-   * Эта функция проверяет статус транзакции
-   *
-   * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
-   *
-   * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
-   *                                <p>null - транзакция НЕ должна быть запущена</p>
-   *                                <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
-   *                                <p>false - всё равно - для совместимости с $for_update</p>
-   *
-   * @return bool Текущий статус транзакции
-   */
-  public static function db_transaction_check($status = self::DB_TRANSACTION_WHATEVER) {
-    $error_msg = false;
-    if ($status && !static::$db_in_transaction) {
-      $error_msg = 'No transaction started for current operation';
-    } elseif ($status === null && static::$db_in_transaction) {
-      $error_msg = 'Transaction is already started';
-    }
-
-    if ($error_msg) {
-      // TODO - Убрать позже
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
-      $backtrace = debug_backtrace();
-      array_shift($backtrace);
-      pdump($backtrace);
-      die($error_msg);
-    }
-
-    return static::$db_in_transaction;
-  }
-
-  public static function db_transaction_start($level = '') {
-    static::db_transaction_check(SN::DB_TRANSACTION_SHOULD_NOT_BE);
-
-    static::$gc->db->transactionStart($level);
-
-    static::$transaction_id++;
-
-    if (static::$config->db_manual_lock_enabled) {
-      static::$config->db_loadItem('var_db_manually_locked');
-      static::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
-    }
-
-    static::$db_in_transaction = true;
-    self::$transactionDepth++;
-    DBStaticUnit::cache_clear();
-
-    return static::$transaction_id;
-  }
-
-  public static function db_transaction_commit() {
-    static::db_transaction_check(SN::DB_TRANSACTION_SHOULD_BE);
-
-    DBStaticUnit::cache_clear();
-    SN::$gc->db->transactionCommit();
-
-    static::$db_in_transaction = false;
-    self::$transactionDepth--;
-
-    return static::$transaction_id++;
-  }
-
-  public static function db_transaction_rollback() {
-    // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
-    DBStaticUnit::cache_clear();
-
-    SN::$gc->db->transactionRollback();
-
-    static::$db_in_transaction = false;
-    self::$transactionDepth--;
-
-    return static::$transaction_id;
-  }
-
-  /**
-   * Блокирует указанные таблицу/список таблиц
-   *
-   * @param string|array $tables Таблица/список таблиц для блокировки. Названия таблиц - без префиксов
-   *                             <p>string - название таблицы для блокировки</p>
-   *                             <p>array - массив, где ключ - имя таблицы, а значение - условия блокировки элементов</p>
-   */
-  public static function db_lock_tables($tables) {
-    $tables = is_array($tables) ? $tables : array($tables => '');
-    foreach ($tables as $table_name => $condition) {
-      self::$db->doquery(
-        "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
-      );
-    }
-  }
-
-  /**
    * @param      $query
    * @param bool $fetch
    * @param bool $skip_lock
@@ -320,7 +222,7 @@ class SN {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
     $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && !$skip_lock && static::db_transaction_check(SN::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+    $query .= $select && !$skip_lock && db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
 
     return self::$db->doquery($query, $fetch);
   }
@@ -569,10 +471,10 @@ class SN {
     empty($tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global `config` object
-    $config = static::$config = self::$gc->config;
+    $config = self::$config = self::$gc->config;
 
     // Initializing statics
-    Vector::_staticInit(static::$config);
+    Vector::_staticInit(self::$config);
 
     // After init callbacks
     foreach (static::$afterInit as $callback) {

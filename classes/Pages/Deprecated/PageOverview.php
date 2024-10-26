@@ -5,6 +5,7 @@
 
 namespace Pages\Deprecated;
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use SN;
@@ -41,10 +42,10 @@ class PageOverview extends PageDeprecated {
   public function __construct() {
     parent::__construct();
 
-    $this->lang = SN::$lang;
+    $this->lang   = SN::$lang;
     $this->config = SN::$config;
-    $this->auth = SN::$auth;
-    $this->repo = SN::$gc->repoV2;
+    $this->auth   = SN::$auth;
+    $this->repo   = SN::$gc->repoV2;
 
     lng_include('overview');
     lng_include('mrc_mercenary');
@@ -96,7 +97,7 @@ class PageOverview extends PageDeprecated {
 
     if (sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
-      $new_name_safe = SN::$db->db_escape($new_name);
+      $new_name_safe     = SN::$db->db_escape($new_name);
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
       $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
       $this->planet->reload();
@@ -112,8 +113,8 @@ class PageOverview extends PageDeprecated {
     $template->assign_recursive($this->planet->tpl_planet_density_info($user_dark_matter));
 
     $fleets_to_planet = [];
-    $planet_count = 0;
-    $planets_query = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
+    $planet_count     = 0;
+    $planets_query    = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
     foreach ($planets_query as $an_id => $planetRecord) {
       $fleet_list = flt_get_fleets_to_planet($planetRecord);
       if (!empty($fleet_list['own']['count'])) {
@@ -126,9 +127,9 @@ class PageOverview extends PageDeprecated {
 
       $planet_count++;
 
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
 
       $templatizedPlanet = tpl_parse_planet($user, $updatedData['planet']);
       $templatizedPlanet += tpl_parse_planet_result_fleet($updatedData['planet'], $fleet_list);
@@ -229,7 +230,7 @@ class PageOverview extends PageDeprecated {
       $this->resultMessageList->add($theResult['MESSAGE'], $theResult['STATUS']);
     }
 
-    $template = SnTemplate::gettemplate('planet_manage', true);
+    $template  = SnTemplate::gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
 
     if (sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
@@ -237,8 +238,8 @@ class PageOverview extends PageDeprecated {
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif (sys_get_param_str('action') == 'make_capital') {
       try {
-        SN::db_transaction_start();
-        $user = db_user_by_id($user['id'], true, '*');
+        db_mysql::db_transaction_start();
+        $user      = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 
         if ($planetrow['planet_type'] != PT_PLANET) {
@@ -261,10 +262,10 @@ class PageOverview extends PageDeprecated {
 
         $user['id_planet'] = $planetrow['id'];
         $this->resultMessageList->add($this->lang['ov_capital_err_none'], ERR_NONE);
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
         sys_redirect('overview.php?mode=manage');
       } catch (exception $e) {
-        SN::db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
         $this->resultMessageList->add($e->getMessage(), $e->getCode());
       }
     } elseif (sys_get_param_str('action') == 'planet_teleport') {
@@ -277,9 +278,9 @@ class PageOverview extends PageDeprecated {
           throw new exception($this->lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
-        SN::db_transaction_start();
+        db_mysql::db_transaction_start();
         // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
-        $user = db_user_by_id($user['id'], true, '*');
+        $user      = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 
         $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
@@ -297,14 +298,14 @@ class PageOverview extends PageDeprecated {
         if ($planetrow['id'] == $user['id_planet']) {
           db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
 
-        $user = db_user_by_id($user['id'], true, '*');
+        $user      = db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
         $this->resultMessageList->add($this->lang['ov_teleport_err_none'], ERR_NONE);
         sys_redirect('overview.php?mode=manage');
       } catch (exception $e) {
-        SN::db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
         $this->resultMessageList->add($e->getMessage(), $e->getCode());
       }
     } elseif (sys_get_param_str('action') == 'planet_abandon') {
@@ -339,7 +340,7 @@ class PageOverview extends PageDeprecated {
       }
 
       $governor_level = $planetrow['PLANET_GOVERNOR_ID'] == $governor_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0;
-      $build_data = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
+      $build_data     = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
       $template->assign_block_vars('governors', array(
         'ID'         => $governor_id,
         'NAME'       => $this->lang['tech'][$governor_id],
@@ -386,7 +387,7 @@ class PageOverview extends PageDeprecated {
     $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
     $planet_fill = floor($this->planet->field_current / eco_planet_fields_max($this->planet->asArray()) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
-    $vararray = [
+    $vararray    = [
       'planet_field_current' => $this->planet->field_current,
       'planet_field_max'     => eco_planet_fields_max($this->planet->asArray()),
       'PLANET_FILL'          => floor($this->planet->field_current / eco_planet_fields_max($this->planet->asArray()) * 100),
@@ -434,11 +435,11 @@ class PageOverview extends PageDeprecated {
    * @return array
    */
   protected function templateGridSizes($user, $user_option_list, $planet_count) {
-    $overview_planet_rows = $user['opt_int_overview_planet_rows'];
+    $overview_planet_rows    = $user['opt_int_overview_planet_rows'];
     $overview_planet_columns = $user['opt_int_overview_planet_columns'];
 
     if ($overview_planet_rows <= 0 && $overview_planet_columns <= 0) {
-      $overview_planet_rows = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
+      $overview_planet_rows    = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
       $overview_planet_columns = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_columns'];
     }
 

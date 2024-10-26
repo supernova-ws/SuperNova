@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
 use Que\DBStaticQue;
@@ -14,7 +15,7 @@ function art_use(&$user, &$planetrow, $unit_id)
     return;
   }
 
-  SN::db_transaction_start();
+  db_mysql::db_transaction_start();
   $user = db_user_by_id($user['id'], true);
 
   $unit_level = $artifact_level_old = mrc_get_level($user, array(), $unit_id, true);
@@ -171,7 +172,7 @@ function art_use(&$user, &$planetrow, $unit_id)
     $message = $lang['art_err_no_artifact'];
   }
 
-  SN::db_transaction_commit();
+  db_mysql::db_transaction_commit();
   SnTemplate::messageBox($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}",
     ($request_uri = sys_get_param_str_unsafe('REQUEST_URI')) ? $request_uri : ('artifacts' . DOT_PHP_EX . '#' . $unit_id),
     5);

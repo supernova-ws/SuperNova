@@ -5,6 +5,7 @@
 
 namespace Pages\Deprecated;
 
+use DBAL\db_mysql;
 use Planet\DBStaticPlanet;
 use \HelperString;
 use SN;
@@ -53,11 +54,11 @@ class PageFleet5Gathering {
 
     foreach ($planets_db_list as $planet_id => &$planetRecord) {
       // begin planet loop
-      SN::db_transaction_start();
+      db_mysql::db_transaction_start();
       // Вот тут надо посчитать - отработать очереди и выяснить, сколько ресов на каждой планете
       $planetRecord = sys_o_get_updated($user, $planetRecord, SN_TIME_NOW, true);
       $planetRecord = $planetRecord['planet'];
-      SN::db_transaction_commit();
+      db_mysql::db_transaction_commit();
 
       if ($takeAllResources) {
         $resources_taken[$planet_id] = 1;

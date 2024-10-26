@@ -458,6 +458,16 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 #ctv
 
+2024-10-26 21:25:39 46a151
+[@] Code
+    * Functions moved from `SN` to `db_mysql`
+        * `db_transaction_start()`
+        * `db_transaction_commit()`
+        * `db_transaction_rollback()`
+        * `db_transaction_check()`
+    * `SN::DB_TRANSACTION_XXX` constants moved `db_mysql::TRANSACTION_LEVEL_XXX`
+    * `SN::TRANSACTION_XXX` constants moved `db_mysql::TRANSACTION_XXX`
+    * Variables moved from `SN` to `db_mysql`: `$db_in_transaction`, `$transaction_id`, `$transactionDepth`
 
 
 2024-10-24 19:13:36 46a150

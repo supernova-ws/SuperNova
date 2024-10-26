@@ -7,6 +7,7 @@ namespace Core;
 
 
 use core_auth;
+use DBAL\db_mysql;
 use \SN;
 
 class SnBootstrap {
@@ -145,10 +146,10 @@ class SnBootstrap {
     }
 
     if (defined('IN_ADMIN') || !$config->pass()->game_installed) {
-      SN::db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
+      db_mysql::db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
       if (SN_TIME_NOW >= $config->pass()->var_db_update_end) {
         $config->pass()->var_db_update_end = SN_TIME_NOW + $config->upd_lock_time;
-        SN::db_transaction_commit();
+        db_mysql::db_transaction_commit();
 
         require_once($update_file);
 
@@ -164,7 +165,7 @@ class SnBootstrap {
         Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait..."
         );
       }
-      SN::db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
     } else {
       die(
       'Происходит обновление сервера - пожалуйста, подождите...<br />
