@@ -446,6 +446,7 @@ crowdin.com - переводчик всякого встроенного в ПО
             * С секретным ключем и таймстампом - что бы нельзя было перехватить пакет и хуярить его постоянно и нужно было в браузере рефрешить интерфейс
         * Энкодить Гет и Пост в УРЛ
 
+* Авианосец - ремонтировать малые корабли - фиксированное количество HP за ход
 
 * Развоз ресурсов - сделать горизонтальным
 
@@ -456,7 +457,38 @@ crowdin.com - переводчик всякого встроенного в ПО
 * Расписать
     * doquery()
 
+* coe_o_missile_calculate()
+    * Расшить внутри по транзакциям
+
+
+* $config->db_loadItem($name) и $config->db_saveItem($name) сделать приватными
+    * Использовать метод pass() для прямого чтения/записи
+
+* $mission_data сделать объектом
+    * sn_get_groups('missions') заменить на FleetMissionData
+
+* getRelatedUsers()
+    * Расписать по кейсам
+
+* `fleet_mess` - провесить константы FLEET_STATUS_FLYING
+
+* RestoreFleetToPlanet - переписать под Pimp
+
+* SN::db_query_select - убрать
+* public static function db_get_record_list - убрать
+
 #ctv
+
+#ctv
+* Full rewrite of `FleetDispatcher` class
+    * Added separate class `FleetDispatcherEvent` to handle all fleet event-related stuff
+    * Now for each fleet all related users/planets/fleets are locked
+    * Now missile attacks handled each in own transaction - not in large one. Should reduce probability of deadlocks
+* Now `sys_o_get_updated()` accepts only user/planet IDs as parameters to reduce probability of index/gap DB lock
+
+2025-02-24 13:53:14 46a153
+[@] Code
+    `AwardConstants` now tried to be included in the `init.php` - to allow loading of modules that uses their constants
 
 2024-10-26 21:25:39 46a151
 [@] Code

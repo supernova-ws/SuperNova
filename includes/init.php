@@ -185,6 +185,9 @@ SN::$lang = $lang = new classLocale(SN::$config->server_locale_log_usage);
 
 global $sn_data, $sn_mvc;
 
+// Including here to allow `AwardConstants` use in MM race festival module
+@include_once(SN_ROOT_MODULES . 'player_award/classes/AwardConstants.php');
+
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
