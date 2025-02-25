@@ -141,15 +141,15 @@ require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
 // Some time required to start from cold cache
 set_time_limit(60); // TODO - Optimize
 
-if (BanHammer::checkIpV4($_SERVER["REMOTE_ADDR"])) {
-  die("Server error. Try to connect later...<br />\nСерверная ошибка. Попробуйте подключиться позже...");
-}
-
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
 SnBootstrap::init_debug_state();
 
 SnBootstrap::performUpdate(SN::$config);
+
+if (BanHammer::checkIpV4($_SERVER["REMOTE_ADDR"])) {
+  die("Server error. Try to connect later...<br />\nСерверная ошибка. Попробуйте подключиться позже...");
+}
 
 // init constants from db
 // Moved from SnBootstrap for phpStorm autocomplete

@@ -490,6 +490,11 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 // '89.67.72.87' 1497581655
 
+2025-02-25 13:30:33 46a155
+[%] Admin/Ban
+    Fixed location of ban check
+
+
 2025-02-25 12:29:49 46a154
 [+] Admin/Ban
     * Basic ban-by-ip facility - table `ban_ip`. Supports IPv4 ranges
