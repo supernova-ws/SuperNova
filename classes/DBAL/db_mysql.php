@@ -270,6 +270,26 @@ class db_mysql {
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
 
+  /**
+   * Get all records for a query as array of arrays or objects
+   *
+   * @param string $query          SQL query to execute
+   * @param bool   $skipQueryCheck Should query skip security check
+   * @param bool   $asArray        Should records be returned as array? If false - records would be returned as StdObject
+   *
+   * @return array
+   */
+  public function dbGetAll($query, $skipQueryCheck = false, $asArray = true) {
+    $queryResult = $this->doquery($query, false, $skipQueryCheck);
+
+    $result = [];
+    while ($row = $this->db_fetch($queryResult)) {
+      $result[] = $asArray ? $row : (object)$row;
+    }
+
+    return $result;
+  }
+
   public function doQueryAndFetch($query) {
     return $this->doquery($query, true);
   }

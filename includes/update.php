@@ -723,10 +723,32 @@ switch ($updater->new_version) {
           );
         }
       );
-    }, PATCH_PRE_CHECK);
+    }, PATCH_REGISTER);
+
+    // 2025-02-25 12:29:49 46a154
+    $updater->updPatchApply(14, function() use ($updater) {
+      if (!$updater->isTableExists('ban_ip')) {
+        $updater->upd_create_table(
+          'ban_ip',
+          [
+            "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+            "`ipv4_from` int unsigned COMMENT 'IP v4 range start'",
+            "`ipv4_to` int unsigned COMMENT 'IP v4 range end'",
+
+            "`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When ban was issued'",
+            "`expired_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When ban will expire'",
+
+            "PRIMARY KEY (`id`)",
+
+            "KEY `I_ban_ip_v4` (`ipv4_from`,`ipv4_to`, `expired_at`) USING BTREE",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+      }
+    }, PATCH_REGISTER);
 
 //    // #ctv
-//    $updater->updPatchApply(14, function() use ($updater) {
+//    $updater->updPatchApply(15, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
 //   TODO - UNCOMMENT ON RELEASE!

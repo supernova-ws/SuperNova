@@ -399,7 +399,9 @@ crowdin.com - переводчик всякого встроенного в ПО
     * $updater->upd_create_table('festival_unit_log',
         * "CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
 
-
+* Бан по IP
+    * Добавить в админку на страницу бана возможность банить по IP
+    * Добавить на страницу игрока историю его IP и возможность забанить один/все адреса
 
 * Версионирование отдельно для модулей
 
@@ -485,6 +487,16 @@ crowdin.com - переводчик всякого встроенного в ПО
     * Now for each fleet all related users/planets/fleets are locked
     * Now missile attacks handled each in own transaction - not in large one. Should reduce probability of deadlocks
 * Now `sys_o_get_updated()` accepts only user/planet IDs as parameters to reduce probability of index/gap DB lock
+
+// '89.67.72.87' 1497581655
+
+2025-02-25 12:29:49 46a154
+[+] Admin/Ban
+    * Basic ban-by-ip facility - table `ban_ip`. Supports IPv4 ranges
+
+[%] HTML
+    Fixed vertical scroll bar on main content cell in latest Chrome versions
+
 
 2025-02-24 13:53:14 46a153
 [@] Code

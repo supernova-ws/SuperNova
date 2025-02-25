@@ -473,4 +473,5 @@ tr.highlight.notice:hover {
 #__content_cell
 {
   overflow-x: auto;
+  overflow-y: hidden;
 }
