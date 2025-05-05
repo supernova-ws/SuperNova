@@ -512,6 +512,11 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 #ctv
 
+2025-05-05 12:13:38 46a158
+[!] Language
+    Added translation to Spanish (computer-generated)
+    Added translation to German (computer-generated)
+
 
 2025-05-05 11:56:39 46a157
 [@] Code
