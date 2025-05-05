@@ -495,6 +495,10 @@ crowdin.com - переводчик всякого встроенного в ПО
   const DB_TRANSACTION_SHOULD_BE = true;
   const DB_TRANSACTION_WHATEVER = false;
 * Расписать doquery()
+* На странице покупок Премиума, Капитанов, Массовы операций - при нажатии на кнопку лочить все остальные
+* В переводах позаменять font color на span class
+    * <font color="red"> => <span class="error">
+    * <font color="lime"> => <span class="success">
 
 * Adjusted code to work with new internal API
     * modules/ali_ally_player/ali_ally_player.php
@@ -507,6 +511,11 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 
 #ctv
+
+
+2025-05-05 11:56:39 46a157
+[@] Code
+    Fixed some notices and warnings
 
 
 2025-05-05 10:26:37 46a156

@@ -102,7 +102,7 @@ function flt_mission_explore($fleetEvent) {
 
   $outcome_list = sn_get_groups(GROUP_MISSION_EXPLORE_OUTCOMES);
 
-  $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1 / 1.7));
+  $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / max(0.1, pow($flt_stay_hours, 1 / 1.7)));
 
   $chance_max = 0;
   foreach ($outcome_list as $key => &$value) {
@@ -113,7 +113,7 @@ function flt_mission_explore($fleetEvent) {
     $value['value'] = $chance_max = $value['chance'] + $chance_max;
   }
 
-  $outcome_value = mt_rand(0, $chance_max);
+  $outcome_value = mt_rand(0, ceil($chance_max));
 // $outcome_value = 409;
   $outcome_description = &$outcome_list[$mission_outcome = FLT_EXPEDITION_OUTCOME_NONE];
   foreach ($outcome_list as $key => &$value) {

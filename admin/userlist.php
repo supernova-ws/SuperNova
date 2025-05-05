@@ -5,7 +5,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2025 Gorlum
- * @version #46a156#
+ * @version #46a157#
  **/
 
 use Player\PlayerStatic;
@@ -82,7 +82,7 @@ while ($user_row = db_fetch($query)) {
     $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
   } else {
     $ban_details = [
-      'ban_time'        => '',
+      'ban_time'        => 0,
       'ban_issuer_name' => '',
       'ban_reason'      => '',
     ];
