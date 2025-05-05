@@ -415,7 +415,7 @@ class Chat {
               if ($chat_command_parsed[2] && ($chat_command_parsed[3] || $chat_command_issued == 'unmute' || $chat_command_issued == 'unban')) {
                 $chat_command_parsed[2] = strtolower($chat_command_parsed[2]);
                 if (strpos($chat_command_parsed[2], 'id ') !== false && is_id($player_id = substr($chat_command_parsed[2], 3))) {
-                  $chat_player_subject = db_user_by_id($player_id, false, '`id`, `authlevel`, `username`');
+                  $chat_player_subject = db_user_by_id($player_id, false);
                   if ($chat_player_subject) {
                     if ($chat_player_subject['id'] == $user['id']) {
                       $message = "[c=red]{$lang['chat_advanced_err_player_same']}[/c]";

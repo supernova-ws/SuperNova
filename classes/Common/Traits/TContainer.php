@@ -5,19 +5,20 @@
 
 namespace Common\Traits;
 
+use Common\Interfaces\IContainer;
 
 trait TContainer {
   /**
-   * @return \Common\Interfaces\IContainer
+   * @return ?IContainer
    */
   public function _getContainer() {
     return null;
   }
 
   public function __set($name, $value) {
-    is_object($this->_getContainer())
-      ? $this->_getContainer()->__set($this->_containerTranslatePropertyName($name), $value)
-      : null;
+    if (is_object($this->_getContainer())) {
+      $this->_getContainer()->__set($this->_containerTranslatePropertyName($name), $value);
+    }
   }
 
   public function __isset($name) {
@@ -33,9 +34,9 @@ trait TContainer {
   }
 
   public function __unset($name) {
-    is_object($this->_getContainer())
-      ? $this->_getContainer()->__unset($this->_containerTranslatePropertyName($name))
-      : null;
+    if (is_object($this->_getContainer())) {
+      $this->_getContainer()->__unset($this->_containerTranslatePropertyName($name));
+    }
   }
 
   /**
@@ -51,7 +52,9 @@ trait TContainer {
    * Clears container contents
    */
   public function clear() {
-    is_object($this->_getContainer()) ? $this->_getContainer()->clear() : null;
+    if (is_object($this->_getContainer())) {
+      $this->_getContainer()->clear();
+    }
   }
 
   public function __call($name, $arguments) {

@@ -35,7 +35,7 @@ function eco_mrk_trader($user, $planetrow = null) {
 
     db_mysql::db_transaction_start();
     if($planetrow['id_owner']) {
-      $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
+      $global_data = sys_o_get_updated($planetrow['id_owner'], $planetrow['id'], SN_TIME_NOW);
       $planetrow = $global_data['planet'];
     }
     else {

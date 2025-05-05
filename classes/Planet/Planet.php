@@ -129,7 +129,7 @@ class Planet extends EntityDb {
     }
 
     db_mysql::db_transaction_start();
-    $user = db_user_by_id($this->id_owner, true, '*');
+    $user = db_user_by_id($this->id_owner, true);
     $this->setForUpdate()->dbLoadRecord($this->id);
 
     $sector_cost = eco_get_build_data($user, $this->asArray(), UNIT_SECTOR, mrc_get_level($user, $this->asArray(), UNIT_SECTOR), true);
@@ -181,7 +181,7 @@ class Planet extends EntityDb {
       }
 
       db_mysql::db_transaction_start();
-      $user = db_user_by_id($user['id'], true, '*');
+      $user = db_user_by_id($user['id'], true);
       $this->setForUpdate()->dbLoadRecord($this->id);
 
       $planet_density_index = $this->density_index;

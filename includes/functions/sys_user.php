@@ -57,7 +57,7 @@ function sys_is_multiaccount($user1, $user2) {
  * @param string $reason
  */
 function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
-  $ban_current = db_user_by_id($banned['id'], false, 'banaday');
+  $ban_current = db_user_by_id($banned['id'], false);
   $ban_until   = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
   db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
@@ -183,7 +183,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
       }
       $options['galaxy'] > SN::$config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
 
-      $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
+      $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET);
       if (!$galaxy_row['id']) {
         SN::$config->db_saveItem(array(
           'LastSettedGalaxyPos' => $options['galaxy'],

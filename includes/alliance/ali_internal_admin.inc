@@ -89,7 +89,7 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
     SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
 
-  $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
+  $newLeader = db_user_by_id($idNewLeader, false);
   if($newLeader['ally_id'] == $user['ally_id'])
   {
     db_mysql::db_transaction_start();

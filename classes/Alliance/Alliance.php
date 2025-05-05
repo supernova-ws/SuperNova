@@ -97,7 +97,7 @@ class Alliance extends RecordAlliance {
     }
 
     if (!isset($user['ally']['player'])) {
-      $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
+      $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, false);
     }
   }
 

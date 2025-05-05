@@ -74,7 +74,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = SN::$db->db_escape($comment);
-    $row = db_user_by_id($user_id, false, 'username');
+    $row = db_user_by_id($user_id, false);
     $row['username'] = SN::$db->db_escape($row['username']);
     doquery(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,

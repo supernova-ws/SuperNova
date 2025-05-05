@@ -1,39 +1,59 @@
 <?php
 
 use Fleet\DbFleetStatic;
+use Fleet\FleetDispatcher;
+use Fleet\FleetDispatchEvent;
+use Ube\Ube4_1\Ube4_1Calc;
+use Ube\Ube4_1\Ube4_1Prepare;
 
+/** @noinspection PhpIncludeInspection */
 require_once(SN_ROOT_PHYSICAL . 'includes/includes/ube_attack_calculate.php');
 
 /*
   copyright © 2009-2014 Gorlum for http://supernova.ws
 */
 
-
+/**
+ * @param $fleet_row
+ * @param $combat_data
+ *
+ * @return mixed
+ *
+ * @see sn_flt_planet_capture()
+ */
 function flt_planet_capture(&$fleet_row, &$combat_data) {
   $result = null;
 
   return sn_function_call('flt_planet_capture', array(&$fleet_row, &$combat_data, &$result));
 }
 
-function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) {
+/** @noinspection PhpUnusedParameterInspection */
+function sn_flt_planet_capture(&$fleet_row, &$combat_data, $result) {
   return $result;
 }
 
-function flt_mission_attack($mission_data, $save_report = true) {
-  $fleet_row = $mission_data['fleet'];
-  $destination_user = $mission_data['dst_user'];
-  $destination_planet = $mission_data['dst_planet'];
-
-  if (!$fleet_row) {
+/**
+ * @param FleetDispatchEvent $fleetEvent
+ *
+ * @return array|null
+ * @noinspection PhpUnusedParameterInspection
+ */
+function flt_mission_attack($fleetEvent) {
+  $fleet_row = $fleetEvent->fleet;
+  if (
+    // Nothing to do if fleet row is empty
+    empty($fleet_row)
+    // Also nothing to do if event is not fleet arrival to destination - i.e. actual attack
+    || $fleetEvent->event !== EVENT_FLT_ARRIVE
+  ) {
     return null;
   }
 
   if (
-    // Нет данных о планете назначения или её владельце
-    empty($destination_user) || empty($destination_planet) || !is_array($destination_user) || !is_array($destination_planet)
-    ||
+    // Нет данных о планете назначения
+    empty($fleetEvent->dstPlanetId)
     // "Уничтожение" не на луну
-    ($fleet_row['fleet_mission'] == MT_DESTROY && $destination_planet['planet_type'] != PT_MOON)
+    || ($fleetEvent->missionId == MT_DESTROY && $fleetEvent->dstPlanetRow['planet_type'] != PT_MOON)
   ) {
     DbFleetStatic::fleet_send_back($fleet_row);
 
@@ -41,12 +61,19 @@ function flt_mission_attack($mission_data, $save_report = true) {
   }
 
   $acs_fleet_list = empty($fleet_row['fleet_group']) ? [$fleet_row] : DbFleetStatic::fleet_list_by_group($fleet_row['fleet_group']);
-  $fleet_list_on_hold = DbFleetStatic::fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $fleet_row['fleet_start_time']);
 
-  $ubePrepare = new \Ube\Ube4_1\Ube4_1Prepare();
-  $combat_data = $ubePrepare->prepareFromMissionArray($mission_data, $fleet_list_on_hold, $acs_fleet_list);
+  $fleet_list_on_hold = DbFleetStatic::fleet_list_on_hold(
+    $fleet_row['fleet_end_galaxy'],
+    $fleet_row['fleet_end_system'],
+    $fleet_row['fleet_end_planet'],
+    $fleet_row['fleet_end_type'],
+    $fleetEvent->eventTimeStamp
+  );
 
-  $ubeCalc = new \Ube\Ube4_1\Ube4_1Calc();
+  $ubePrepare  = new Ube4_1Prepare();
+  $combat_data = $ubePrepare->prepareFromMissionArray($fleetEvent, $fleet_list_on_hold, $acs_fleet_list);
+
+  $ubeCalc = new Ube4_1Calc();
   $ubeCalc->sn_ube_combat($combat_data);
 
   flt_planet_capture($fleet_row, $combat_data);

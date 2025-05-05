@@ -102,7 +102,7 @@ class PageImperium {
 
     $sn_group_factories = sn_get_groups('factories');
 
-    foreach (DBStaticPlanet::db_planet_list_sorted($user, false, '*') as $planetId => $planet) {
+    foreach (DBStaticPlanet::db_planet_list_sorted($user, false) as $planetId => $planet) {
       $query = [];
       foreach ($sn_group_factories as $factory_unit_id) {
         $unit_db_name_porcent = pname_factory_production_field_name($factory_unit_id);
@@ -139,7 +139,7 @@ class PageImperium {
     $planet_row_list = DBStaticPlanet::db_planet_list_sorted($user);
     foreach ($planet_row_list as $planet) {
       db_mysql::db_transaction_start();
-      $global_data = sys_o_get_updated($user, $planet['id'], SN_TIME_NOW, false, true);
+      $global_data = sys_o_get_updated($user['id'], $planet['id'], SN_TIME_NOW, false, true);
       $planets[$planet['id']] = $global_data['planet'];
       $ques[$planet['id']] = $global_data['que'];
       db_mysql::db_transaction_commit();

@@ -530,97 +530,54 @@ $sn_data += [
     );
     */
     'missions' => [
+      // For almost all missions lock statuses is for EVENT_FLT_ARRIVE
       MT_ATTACK => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_AKS => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_DESTROY => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_SPY => [
-        'dst_user'   => 1,
-        'dst_planet' => 1,
-        'src_user'   => 1,
-        'src_planet' => 1,
         'transport'  => false,
         'AJAX'       => true,
       ],
 
       MT_HOLD => [
-        'dst_planet' => 0,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 0,
         'transport'  => false,
       ],
 
 
       MT_TRANSPORT => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 1,
-        'src_user'   => 0,
         'transport'  => true,
       ],
 
       MT_RELOCATE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 1,
-        'src_user'   => 0,
         'transport'  => true,
       ],
 
       MT_RECYCLE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 0,
         'transport'  => false,
         'AJAX'       => true,
       ],
 
       MT_EXPLORE => [
-        'dst_planet' => 0,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 1,
         'transport'  => false,
       ],
 
       MT_COLONIZE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 1,
         'transport'  => true,
       ],
 
       MT_MISSILE => [
-        'src_planet' => 0,
-        'src_user'   => 0,
-        'dst_planet' => 0,
-        'dst_user'   => 0,
         'transport'  => false,
         'AJAX'       => true,
       ],

@@ -12,7 +12,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$users = db_user_by_id($user['id'], false, '`username`,`galaxy`,`system`');
+$users = db_user_by_id($user['id'], false);
 $action = sys_get_param_int('action');
 $GET_id = sys_get_param_int('id');
 

@@ -68,7 +68,7 @@ class Autoloader {
     }
     $absoluteClassRoot = str_replace('\\', '/', $absoluteClassRoot) . '/';
 
-    if($classPrefix && strrpos($classPrefix, 1) != '\\') {
+    if($classPrefix && substr($classPrefix, -1) != '\\') {
       $classPrefix .= '\\';
     }
 

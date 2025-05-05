@@ -252,7 +252,7 @@ SN::$gc->worker->registerWorker('dispatchFleets', function () {
 
   $result = SN::$gc->fleetDispatcher->flt_flying_fleet_handler();
 
-  return ['message' => 'Fleets dispatched', ] + $result;
+  return $result + ['message' => 'Fleets dispatched', ];
 });
 
 // TODO Check URL timestamp when checking signature

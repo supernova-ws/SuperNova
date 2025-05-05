@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 46a13
+* @version 46a156
 *
 */
 
@@ -49,6 +49,7 @@ $a_lang_array = (array(
   'tech_fullness' => 'Заполнение',
 
   'type_mission' => array(
+    MT_NONE => '-- неизвестно --',
     MT_ATTACK => 'Атака',
     MT_AKS => 'Совместная атака',
     MT_TRANSPORT => 'Транспорт',

@@ -429,6 +429,7 @@ crowdin.com - переводчик всякого встроенного в ПО
 
 * /annonce.php - целая незалинкованная система объявлений!
 
+* Проверить - учитывается ли множитель скорости добычи в Экспедиции при добыче ТМ - должен уменьшать количество пропорционально рейтам
 
 * sys_o_get_updated - перебить все вызовы что бы уже были ИД пользователя и планеты
     * db_user_by_id() - убрать
@@ -448,47 +449,141 @@ crowdin.com - переводчик всякого встроенного в ПО
             * С секретным ключем и таймстампом - что бы нельзя было перехватить пакет и хуярить его постоянно и нужно было в браузере рефрешить интерфейс
         * Энкодить Гет и Пост в УРЛ
 
-* Авианосец - ремонтировать малые корабли - фиксированное количество HP за ход
 
 * Развоз ресурсов - сделать горизонтальным
 
+* PlayerStatic::getPlayerProduction - прописать правильные коэффициенты конверсии ресурсов
+* admin/planet_compensate.php * Добавить уведомление, что юниты в очереди и нанятые наёмники не будут компенсированы
+* Шадоумьют в чате
+* Поставить количество Удержаний в соответствие со Складом Альянса. Ну и переименовать его
+* На странице выбора планеты сделать отключение функции "Далее", если точки отправки и назначения совпадают
+* Переместить записи о ракетах в таблицу флотов. Нужно много работы - что бы ракеты не обрабатывались как флоты!
+* Поменять работу шпионажа:
+    * Сначала - постройки
+    * Потом - ресурсы (?)
+    * Потом - технологии (??)
+    * Потом - оборона (???)
+    * Потом - флоты на орбите (????)
+* Разобраться с масштабированием иконок спрайтов в навбаре
+* На странице отправки флота показывать так же отправленные ресурсы и приписанного Капитана
+* Добавить во Вселенную на пустое место действие "колонизировать"
+* Переделать все стандартные сообщения в ЛС на генерацию при просмотре - что бы использовался язык просматривающего, а не того, кто сгенерировал сообщение
+* Добавить на странице "Флоты в полёте" на кнопку "Вернуть флот" попап, в котором будет идти таймер, когда флот вернется на планету старта, если её нажать
+* Убрать ссылки на планету назначения, старта и владельца планеты назначения из таблицы `fleets`
+* sys_o_get_updated() распотрошить на подфункции
+    * Сделать более мелкие шаги
+    * Обсчитывать производство ресурсов в зависимости от очереди
+        * Юнит построился/разрушился - это может быть производящее здание
+        * Значит надо обсчитать производство на момент окончания постройки/рарушения юнита
+        * Продолжить очередь
+    * Обсчитывать производство на планете с учётом изменений рейтов игры
+        * Логгировать изменения рейтов в отдельную таблицу
+            * Привязывать запись в логах к Фестивалям, что бы можно было создать записи в будущее на хайспоты, а если составитель ошибся и удалил хайспоты - удалить и привязанные рейты
+            * Делать запись при изменении рейтов игры через админ-консоль
+        * Считать по этим реперным точкам производство ресурсов и построек
+    * Возможно, обсчитывать все планеты раз в сутки/неделю/месяц?
+* Не "прятать" ресурсы в постройки/юниты/исследования
+    * Это надо как-то придумать, что бы нормально работало прогнозирование остатков ресурсов
+        * Галочка "строить с переполнением" - что бы можно было набить очередь, а позже подвести ресурсы?
+* Переписать экспедиции под объекты
+* Версия UBE4.2 - переделать боевую дату под работу с объектами
+* Ошибка в боевом отчёте: если 10 раунд заканчивается полным поражением нападавшего, то результат должен быть "проигрышь", а не "бой закончился ничьёй", как сейчас
+* Софт-делете сообщений
+* Логгирование результатов экспедиций
 * Расписать по константам
   const DB_TRANSACTION_SHOULD_NOT_BE = null;
   const DB_TRANSACTION_SHOULD_BE = true;
   const DB_TRANSACTION_WHATEVER = false;
-* Расписать
-    * doquery()
+* Расписать doquery()
 
-* coe_o_missile_calculate()
-    * Расшить внутри по транзакциям
+* Adjusted code to work with new internal API
+    * modules/ali_ally_player/ali_ally_player.php
+    * modules/core_festival/classes/Core/FestivalBracketPopulate.php
+    * modules/core_festival/classes/FestivalActivityPuzzleExpedition.php
+    * modules/core_festival/classes/FestivalHighspotPuzzleNewYear.php
+    * modules/core_festival/classes/FestivalHighspotSuperBirth.php
+    * modules/interface_batch_operations/interface_batch_operations.php
+    * modules/unit_captain/unit_captain.php
 
-
-* $config->db_loadItem($name) и $config->db_saveItem($name) сделать приватными
-    * Использовать метод pass() для прямого чтения/записи
-
-* $mission_data сделать объектом
-    * sn_get_groups('missions') заменить на FleetMissionData
-
-* getRelatedUsers()
-    * Расписать по кейсам
-
-* `fleet_mess` - провесить константы FLEET_STATUS_FLYING
-
-* RestoreFleetToPlanet - переписать под Pimp
-
-* SN::db_query_select - убрать
-* public static function db_get_record_list - убрать
 
 #ctv
 
-#ctv
-* Full rewrite of `FleetDispatcher` class
-    * Added separate class `FleetDispatcherEvent` to handle all fleet event-related stuff
-    * Now for each fleet all related users/planets/fleets are locked
-    * Now missile attacks handled each in own transaction - not in large one. Should reduce probability of deadlocks
-* Now `sys_o_get_updated()` accepts only user/planet IDs as parameters to reduce probability of index/gap DB lock
 
-// '89.67.72.87' 1497581655
+2025-05-05 10:26:37 46a156
+[+] Brand new Fleet Dispatcher to prevent locks with main thread
+    * Rewrote dispatcher code in `classes/Fleet/FleetDispatcher.php`
+        * Added separate class `FleetDispatcherEvent` to handle all fleet event-related stuff
+        * Now for each fleet all related users/planets/fleets are locked
+        * Now missile attacks handled each in own transaction - not in large one. Should reduce probability of deadlocks
+    * Now `sys_o_get_updated()` accepts only user/planet IDs as parameters to reduce probability of index/gap DB lock
+    * Adjusted code to work with new internal API & FleetDispatcher
+        * includes/includes/flt_mission_relocate.php
+        * includes/includes/flt_mission_colonize.php
+        * includes/includes/flt_mission_transport.php
+    * Renamed internal fields and replaced internal representation from array to fields
+        * classes/Fleet/MissionData.php
+    * Moved transaction and locks into main missile loop
+        * includes/functions/flt_mission_missile.php
+
+[@] Code - minor changes
+    * admin/planet_compensate.php
+        * Added locking mechanism
+        * Fixed notices and warnings
+    * Added 2 new debug function: pre() and pred()
+    * Added record lock function to `classes/DBAL/db_mysql.php`
+    * Relocated db-related functions from god-class `classes/SN.php`
+    * Removed unused params from functions in `classes/Planet/DBStaticPlanet.php`
+    * Adjusted code to pass some IDE checks in `classes/Common/Traits/TContainer.php`
+    * Added some phpDoc to `classes/Fleet/Fleet.php`
+    * Adjusted code to work with new internal API
+        * admin/userlist.php
+        * annonce.php
+        * buddy.php
+        * jumpgate.php
+        * classes/Alliance/Alliance.php
+        * classes/Chat/Chat.php
+        * classes/Fleet/DbFleetStatic.php
+        * classes/Fleet/MissionEspionage.php
+        * classes/Fleet/MissionEspionageReport.php
+        * classes/Fleet/MissionExplore.php
+        * classes/Pages/Deprecated/PageFleet5Gathering.php
+        * classes/Pages/Deprecated/PageImperium.php
+        * classes/Pages/Deprecated/PageOverview.php
+        * classes/Planet/Planet.php
+        * classes/Player/PlayerStatic.php
+        * classes/Ube/Ube4_1/Ube4_1Prepare.php
+        * includes/alliance/ali_internal_admin.inc
+        * includes/constants/constants.php
+        * includes/db/db_helpers.php
+        * includes/db/db_queries_users.php
+        * includes/functions/eco_planet_update.php
+        * includes/functions/int_fleet_events.php
+        * includes/functions/rpg_points.php
+        * includes/functions/sys_user.php
+        * includes/functions/uni_functions.php
+        * includes/general/general_validators.php
+        * includes/includes/flt_functions.php
+        * includes/includes/flt_mission_attack.php
+        * includes/includes/flt_mission_explore.php
+        * includes/includes/flt_mission_hold.php
+        * includes/includes/flt_mission_recycle.php
+        * includes/includes/market_info.inc
+        * includes/includes/market_trader.inc
+        * includes/init.php
+        * includes/vars.php
+    * Replaced deprecated strrpos() call with substr() in `classes/Core/Autoloader.php`
+    * Temporaly moved function `RestoreFleetToPlanet` to `includes/functions/_deprecated.php`
+    * Removed unused code
+        * includes/includes/flt_mission_destroy.php
+        * modules/core_festival/classes/FestivalActivityPuzzleShowTree.php
+
+[@] Language
+    * Changed some language variables
+        * language/en/system.mo.php
+        * language/en/tech.mo.php
+        * language/ru/system.mo.php
+        * language/ru/tech.mo.php
+
 
 2025-02-25 13:30:33 46a155
 [%] Admin/Ban
@@ -506,6 +601,7 @@ crowdin.com - переводчик всякого встроенного в ПО
 2025-02-24 13:53:14 46a153
 [@] Code
     `AwardConstants` now tried to be included in the `init.php` - to allow loading of modules that uses their constants
+
 
 2024-10-26 21:25:39 46a151
 [@] Code

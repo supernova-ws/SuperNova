@@ -489,7 +489,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $resources, $mission, $opt
 
   // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
   $user = db_user_by_id($user['id'], true);
-  $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
+  $from = sys_o_get_updated($user['id'], $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 
 //  $fleet = [

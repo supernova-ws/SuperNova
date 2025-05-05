@@ -205,58 +205,6 @@ class SN {
   }
 
 
-
-
-
-  // TODO Вынести в отдельный объект
-
-  /**
-   * @param      $query
-   * @param bool $fetch
-   * @param bool $skip_lock
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public static function db_query_select($query, $fetch = false, $skip_lock = false) {
-    $select = strpos(strtoupper($query), 'SELECT') !== false;
-
-    $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && !$skip_lock && db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
-
-    return self::$db->doquery($query, $fetch);
-  }
-
-  /**
-   * @param $query
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public static function db_query_update($query) {
-    return self::$db->doquery($query, false);
-  }
-
-  /**
-   * @param $query
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public static function db_query_delete($query) {
-    return self::$db->doquery($query, false);
-  }
-
-  /**
-   * @param $query
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public static function db_query_insert($query) {
-    return self::$db->doquery($query, false);
-  }
-
   /**
    * Возвращает информацию о записи по её ID
    *
@@ -283,10 +231,15 @@ class SN {
 
     $result = false;
 
-    $query = static::db_query_select(
-      "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
-    );
-    while ($row = db_fetch($query)) {
+//    $sqlResult = static::db_query_select(
+//      "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+//    );
+    $query = "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
+    $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+
+    $sqlResult = self::$db->doquery($query, false);
+
+    while ($row = db_fetch($sqlResult)) {
       $result[$row[$id_field]] = $row;
       if ($fetch) {
         break;
@@ -308,7 +261,7 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
+    if ($result = self::$db->doquery("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}", false)) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
@@ -327,7 +280,7 @@ class SN {
     $condition  = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = self::$db->doquery("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
       if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
@@ -341,7 +294,7 @@ class SN {
   public static function db_ins_record($location_type, $set) {
     $set        = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query_insert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+    if ($result = self::$db->doquery("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = SN::$db->db_insert_id();
@@ -363,7 +316,7 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+    if ($result = self::$db->doquery("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         DBStaticUnit::cache_clear();
@@ -380,7 +333,7 @@ class SN {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+    if ($result = self::$db->doquery("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось

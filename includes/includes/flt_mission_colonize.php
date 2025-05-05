@@ -1,64 +1,56 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use Fleet\DbFleetStatic;
+use Fleet\FleetDispatchEvent;
 
 /**
- * MissionCaseColonisation.php
+ * @param FleetDispatchEvent $fleetEvent
  *
- * @version 1
- * @copyright 2008
+ * @return int|mixed
  */
-
-// ----------------------------------------------------------------------------------------------------------------
-// Mission Case 9: -> Coloniser
-//
-function flt_mission_colonize(&$mission_data)
-{
-  $fleet_row          = &$mission_data['fleet'];
-  $src_user_row       = &$mission_data['src_user'];
+function flt_mission_colonize($fleetEvent) {
+  $fleet_row    = $fleetEvent->fleet;
+  /** @noinspection PhpDeprecationInspection */
+  $fleetOwnerRow = db_user_by_id($fleetEvent->fleet['fleet_owner'], true);
 
   global $lang;
 
-  $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
+  $targetAddress = sprintf($lang['sys_address_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
-  if($fleet_array[SHIP_COLONIZER] >= 1)
-  {
-    $TheMessage = $lang['sys_colo_notfree'];
-    if (!$mission_data['dst_planet'] || empty($mission_data['dst_planet']))
-    {
-      $iPlanetCount = get_player_current_colonies($src_user_row);
+  if ($fleet_array[SHIP_COLONIZER] >= 1) {
+    $TheMessage = $lang['sys_colo_not_free'];
+    if (empty($fleetEvent->dstPlanetRow)) {
+      $iPlanetCount = get_player_current_colonies($fleetOwnerRow);
 
       // Can we colonize more planets?
-      $TheMessage = $lang['sys_colo_maxcolo'];
-      if($iPlanetCount < get_player_max_colonies($src_user_row))
-      {
+      $TheMessage = $lang['sys_colo_max_colo'];
+      if ($iPlanetCount < get_player_max_colonies($fleetOwnerRow)) {
         // Yes, we can colonize
-        $TheMessage = $lang['sys_colo_badpos'];
+        $TheMessage     = $lang['sys_colo_bad_pos'];
         $NewOwnerPlanet = uni_create_planet(
           $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'],
-          $fleet_row['fleet_owner'], "{$lang['sys_colo_defaultname']} {$iPlanetCount}", false,
-          array('user_row' => $src_user_row));
-        if ($NewOwnerPlanet)
-        {
-          $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
-          msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
+          $fleet_row['fleet_owner'], "{$lang['sys_colo_default_name']} {$iPlanetCount}", false,
+          array('user_row' => $fleetOwnerRow));
+        if ($NewOwnerPlanet) {
+          $TheMessage = $lang['sys_colo_arrival'] . $targetAddress . $lang['sys_colo_all_is_ok'];
+          msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
           $fleet_array[SHIP_COLONIZER]--;
           $fleet_row['fleet_amount']--;
           $fleet_row['fleet_array'] = sys_unit_arr2str($fleet_array);
 
+          /** @noinspection PhpDeprecationInspection */
           return RestoreFleetToPlanet($fleet_row, false);
         }
       }
     }
   }
 
-//  doquery("UPDATE `{{fleets}}` SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
   DbFleetStatic::fleet_send_back($fleet_row);
-  msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAdress}{$TheMessage}");
+  msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$targetAddress}{$TheMessage}");
 
   return CACHE_FLEET;
 }

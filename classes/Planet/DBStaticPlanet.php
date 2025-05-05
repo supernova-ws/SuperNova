@@ -1,54 +1,39 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 namespace Planet;
 use SN;
 
 class DBStaticPlanet {
-
-
-  public static function db_planets_purge() {
-    doquery("DELETE FROM {{planets}} WHERE id_owner NOT IN (SELECT `id` FROM {{users}});");
-  }
-
-
   /**
-   * @param int    $planet_id
-   * @param bool   $for_update
-   * @param string $fields
+   * @param int  $planet_id
+   * @param bool $for_update
    *
    * @return array|null
    */
-  public static function db_planet_by_id($planet_id, $for_update = false, $fields = '*') {
+  public static function db_planet_by_id($planet_id, $for_update = false) {
     $result = SN::db_get_record_by_id(LOC_PLANET, $planet_id);
 
     return empty($result) ? null : $result;
   }
 
   /**
-   * @param        $galaxy
-   * @param        $system
-   * @param        $planet
-   * @param        $planet_type
-   * @param bool   $for_update
-   * @param string $fields
+   * @param int $galaxy
+   * @param int $system
+   * @param int $planet
+   * @param int $planet_type
    *
    * @return bool|mixed
    */
-  public static function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {
+  public static function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type) {
     return SN::db_get_record_list(LOC_PLANET,
       "{{planets}}.`galaxy` = {$galaxy} AND {{planets}}.`system` = {$system} AND {{planets}}.`planet` = {$planet} AND {{planets}}.`planet_type` = {$planet_type}", true);
   }
 
-  public static function db_planet_by_gspt($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {
-    $galaxy = intval($galaxy);
-    $system = intval($system);
-    $planet = intval($planet);
-    $planet_type = intval($planet_type);
-
-    return DBStaticPlanet::db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update, $fields);
+  public static function db_planet_by_gspt($galaxy, $system, $planet, $planet_type) {
+    return DBStaticPlanet::db_planet_by_gspt_safe(intval($galaxy), intval($system), intval($planet), intval($planet_type));
   }
 
-  public static function db_planet_by_vector($vector, $prefix = '', $for_update = false, $fields = '*') {
+  public static function db_planet_by_vector($vector, $prefix = '') {
     $galaxy = isset($vector[$prefix . 'galaxy']) ? intval($vector[$prefix . 'galaxy']) : 0;
     $system = isset($vector[$prefix . 'system']) ? intval($vector[$prefix . 'system']) : 0;
     $planet = isset($vector[$prefix . 'planet']) ? intval($vector[$prefix . 'planet']) : 0;
@@ -56,7 +41,7 @@ class DBStaticPlanet {
       (isset($vector[$prefix . 'type']) ? intval($vector[$prefix . 'type']) : 0);
     $planet_type = $planet_type == PT_DEBRIS ? PT_PLANET : $planet_type;
 
-    return DBStaticPlanet::db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update, $fields);
+    return DBStaticPlanet::db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type);
   }
 
 //  /**
@@ -109,7 +94,7 @@ class DBStaticPlanet {
       "`galaxy` = {$galaxy} AND `system` = {$system}");
   }
 
-  public static function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list = '', $conditions = '') {
+  public static function db_planet_list_sorted($user_row, $skip_planet_id = false, $conditions = '') {
     if (!is_array($user_row)) {
       return false;
     }
@@ -122,7 +107,9 @@ class DBStaticPlanet {
       SORT_SIZE     => '({{planets}}.`field_max`)',
     );
     $order_by = SN::$user_options[PLAYER_OPTION_PLANET_SORT];
-    empty($sort_orders[$order_by]) ? $order_by = SORT_ID : false;
+    if (empty($sort_orders[$order_by])) {
+      $order_by = SORT_ID;
+    }
     $order_by = $sort_orders[$order_by] . ' ' . (SN::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == SORT_ASCENDING ? 'ASC' : 'DESC');
 
     // Compilating query
@@ -147,7 +134,7 @@ class DBStaticPlanet {
     return SN::db_upd_record_by_id(LOC_PLANET, $planet_id, $set);
   }
 
-  public static function db_planet_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set) {
+  public static function db_planet_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $set, $ui_planet_type = PT_ALL) {
     if (!($set = trim($set))) {
       return false;
     }
@@ -211,10 +198,12 @@ class DBStaticPlanet {
   }
 
   public static function db_planet_list_resources_by_owner() {
+    /** @noinspection SqlResolve */
     return SN::$db->doquery("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM {{planets}} WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
   }
 
   public static function dbDeletePlanetsWithoutUsers() {
+    /** @noinspection SqlResolve */
     SN::$db->doquery("DELETE FROM `{{planets}}` WHERE id_owner NOT IN (SELECT id FROM `{{users}}`)");
   }
 

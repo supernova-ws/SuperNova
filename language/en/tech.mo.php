@@ -17,7 +17,7 @@
 *
 * @package language
 * @system [English]
-* @version 46a13
+* @version 46a156
 *
 */
 
@@ -49,6 +49,7 @@ $a_lang_array = (array(
   'tech_fullness' => 'Fullness',
 
   'type_mission' => array(
+    MT_NONE => '-- unknown --',
     MT_ATTACK => 'Attack',
     MT_AKS => 'Joint Attack',
     MT_TRANSPORT => 'Transport',

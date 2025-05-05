@@ -20,10 +20,10 @@ lng_include('fleet');
 /** @noinspection SpellCheckingInspection */
 if ($TargetPlanet = sys_get_param_id('jmpto')) {
   db_mysql::db_transaction_start();
-  db_user_by_id($user['id'], true, 'id');
+  db_user_by_id($user['id'], true);
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
   if (!($NextJumpTime = uni_get_time_to_jump($planetrow))) {
-    $TargetGate = DBStaticPlanet::db_planet_by_id($TargetPlanet, true, '`id`, `last_jump_time`');
+    $TargetGate = DBStaticPlanet::db_planet_by_id($TargetPlanet, true);
     if (mrc_get_level($user, $TargetGate, STRUC_MOON_GATE) > 0) {
       $NextDestTime = uni_get_time_to_jump($TargetGate);
       if (!$NextDestTime) {

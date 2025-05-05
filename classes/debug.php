@@ -106,7 +106,6 @@ class debug {
       'include', 'include_once', 'require_once', 'require',
       // Excluding query calls/DB wrap functions
       'doquery',
-      'db_query_select', // 'db_query_delete', 'db_query_insert', 'db_query_update',
       'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
       'doSelect', 'doSelectFetch',
       'db_query_update',
@@ -258,7 +257,7 @@ class debug {
       // Converting object instances to object names
 
       foreach ($error_backtrace['backtrace'] as &$backtrace) {
-        if (is_object($backtrace['object'])) {
+        if (!empty($backtrace['object']) && is_object($backtrace['object'])) {
           $backtrace['object'] = get_class($backtrace['object']);
         }
 
@@ -279,7 +278,7 @@ class debug {
       $error_backtrace['$_POST']    = $_POST;
       $error_backtrace['$_REQUEST'] = $_REQUEST;
       $error_backtrace['$_COOKIE']  = $_COOKIE;
-      $error_backtrace['$_SESSION'] = $_SESSION;
+      $error_backtrace['$_SESSION'] = empty($_SESSION) ? [] : $_SESSION;
       $error_backtrace['$_SERVER']  = $_SERVER;
       global $user, $planetrow;
       $error_backtrace['user']      = $user;
@@ -355,7 +354,8 @@ class debug {
       $this->_writeLogMessage($httpCode, $user, $title, $message, $error_backtrace, $fatal_error);
     } else {
 //        // TODO Здесь надо писать в файло
-      print("<hr>User ID {$user['id']} made log entry with code {$httpCode} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
+      $id = !empty($user['id']) ? $user['id'] : 0;
+      print("<hr>User ID {$id} made log entry with code {$httpCode} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
   }
 
@@ -373,8 +373,8 @@ class debug {
     /** @noinspection SqlResolve */
     $query = "INSERT INTO `{{logs}}` SET
         `log_time` = '" . time() . "', `log_code` = '" . SN::$db->db_escape($httpCode) . "', " .
-      "`log_sender` = '" . ($user['id'] ? SN::$db->db_escape($user['id']) : 0) . "', " .
-      "`log_username` = '" . SN::$db->db_escape($user['user_name']) . "', " .
+      "`log_sender` = '" . (!empty($user['id']) ? SN::$db->db_escape($user['id']) : 0) . "', " .
+      "`log_username` = '" . SN::$db->db_escape(!empty($user['user_name']) ? $user['user_name'] : '') . "', " .
       "`log_title` = '" . SN::$db->db_escape($title) . "',  `log_text` = '" . SN::$db->db_escape($message) . "', " .
       "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
       "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
@@ -505,26 +505,49 @@ function backtrace_no_arg() {
   return $trace;
 }
 
-/**
- * @param mixed        $var
- * @param ?string|bool $die If string - message would be output on DIE()
- *
- * @return void
- */
-function pre($var = null, $die = false) {
-  print "<pre>";
-  if ($var !== null) {
-    print_r($var);
-    $p = debug_backtrace()[0];
-    print("\n{$p['file']}@{$p['line']}<br />\n" . (is_string($die) ? 'Die message: ' . $die . "<br />\n" : ''));
-    echo '</pre>';
+if (!function_exists('pre')) {
+  define('START', microtime(true)); // SHOULD NEVER BE REMOVED!
+
+  /**
+   * @param mixed $value     <p>
+   *                         The variable you want to export.
+   *                         </p>
+   * @param mixed ...$values [optional]
+   *
+   * @return void
+   */
+  function pre() {
+    if (func_num_args() <= 0) {
+      return;
+    }
+
+    foreach (func_get_args() ?: [] as $var) {
+      print "<pre>";
+      print_r(
+        $var === null ? 'null' :
+          (($type = gettype($var)) == 'object' || $type == 'array'
+            ? $var :
+            ($type === 'string'
+              ? $type . '(' . strlen($var) . ') `' . $var . '`' :
+              ($type == 'boolean'
+                ? ($var ? 'true' : 'false')
+                : $type . ' ' . print_r($var, true)
+              )
+            )
+          )
+      );
+      print "</pre>";
+    }
+
+    $trace = debug_backtrace();
+
+    $p     = $trace[1]['function'] == 'pred' ? $trace[1] : $trace[0];
+//            print("\n{$p['file']}@{$p['line']}<br />\n" . (is_string($die) ? 'Die message: ' . $die . "<br />\n" : ''));
+    print("\n{$p['file']}@{$p['line']}<br />\n");
   }
 
-  if ($die) {
+  function pred() {
+    call_user_func_array('pre', func_get_args());
     die();
   }
-}
-
-function pred($var = null, $die = false) {
-  pre($var, $die ?: 1);
 }

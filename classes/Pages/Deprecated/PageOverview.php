@@ -99,7 +99,7 @@ class PageOverview extends PageDeprecated {
       $planetrow['name'] = $new_name;
       $new_name_safe     = SN::$db->db_escape($new_name);
       DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
-      $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+      $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
       $this->planet->reload();
     }
 
@@ -114,7 +114,7 @@ class PageOverview extends PageDeprecated {
 
     $fleets_to_planet = [];
     $planet_count     = 0;
-    $planets_query    = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
+    $planets_query    = DBStaticPlanet::db_planet_list_sorted($user, false);
     foreach ($planets_query as $an_id => $planetRecord) {
       $fleet_list = flt_get_fleets_to_planet($planetRecord);
       if (!empty($fleet_list['own']['count'])) {
@@ -128,7 +128,7 @@ class PageOverview extends PageDeprecated {
       $planet_count++;
 
       db_mysql::db_transaction_start();
-      $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
+      $updatedData = sys_o_get_updated($user['id'], $planetRecord['id'], SN_TIME_NOW, false, true);
       db_mysql::db_transaction_commit();
 
       $templatizedPlanet = tpl_parse_planet($user, $updatedData['planet']);
@@ -239,8 +239,8 @@ class PageOverview extends PageDeprecated {
     } elseif (sys_get_param_str('action') == 'make_capital') {
       try {
         db_mysql::db_transaction_start();
-        $user      = db_user_by_id($user['id'], true, '*');
-        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+        $user      = db_user_by_id($user['id'], true);
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
 
         if ($planetrow['planet_type'] != PT_PLANET) {
           throw new exception($this->lang['ov_capital_err_not_a_planet'], ERR_ERROR);
@@ -280,8 +280,8 @@ class PageOverview extends PageDeprecated {
 
         db_mysql::db_transaction_start();
         // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
-        $user      = db_user_by_id($user['id'], true, '*');
-        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+        $user      = db_user_by_id($user['id'], true);
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
 
         $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
         if ($can_teleport['result'] != ERR_NONE) {
@@ -292,16 +292,16 @@ class PageOverview extends PageDeprecated {
           array($this->lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = SN_TIME_NOW + $this->config->planet_teleport_timeout;
-        DBStaticPlanet::db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
-          "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
+        DBStaticPlanet::db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}",
+          PT_ALL);
 
         if ($planetrow['id'] == $user['id_planet']) {
           db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
         db_mysql::db_transaction_commit();
 
-        $user      = db_user_by_id($user['id'], true, '*');
-        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+        $user      = db_user_by_id($user['id'], true);
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
         $this->resultMessageList->add($this->lang['ov_teleport_err_none'], ERR_NONE);
         sys_redirect('overview.php?mode=manage');
       } catch (exception $e) {

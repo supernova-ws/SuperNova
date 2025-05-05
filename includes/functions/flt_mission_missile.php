@@ -100,27 +100,41 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
  */
 
 function coe_o_missile_calculate() {
-  db_mysql::db_transaction_check(true);
+//  db_mysql::db_transaction_check(true);
 
   global $lang;
 
   $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
   while ($fleetRow = db_fetch($iraks)) {
+    $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_');
+    $target_planet_row = DBStaticPlanet::db_planet_by_gspt(
+      $fleetRow['fleet_end_galaxy'],
+      $fleetRow['fleet_end_system'],
+      $fleetRow['fleet_end_planet'],
+      PT_PLANET
+    );
+    $targetUser = db_user_by_id($target_planet_row['id_owner'], true);
+    $rowAttacker = db_user_by_id($fleetRow['fleet_owner'], true);
+
+    db_mysql::db_transaction_start();
     set_time_limit(15);
+    SN::$gc->db->lockRecords([
+      'users'   => [$targetUser['id'], $rowAttacker['id'],],
+      'planets' => [$target_planet_row['id'], $sourcePlanet['id'],],
+      'iraks'   => [$fleetRow['id'],],
+    ]);
+    $fleetRow = doquery("SELECT * FROM `{{iraks}}` WHERE `id` = {$fleetRow['id']} FOR UPDATE;", '', true);
+    if (empty($fleetRow)) {
+      db_mysql::db_transaction_rollback();
+      continue;
+    }
+
     $db_changeset = array();
 
-    $targetUser = db_user_by_id($fleetRow['fleet_target_owner'], true);
-
-    $target_planet_row = sys_o_get_updated($targetUser, array(
-      'galaxy'      => $fleetRow['fleet_end_galaxy'],
-      'system'      => $fleetRow['fleet_end_system'],
-      'planet'      => $fleetRow['fleet_end_planet'],
-      'planet_type' => PT_PLANET
-    ), SN_TIME_NOW);
+    $target_planet_row = sys_o_get_updated($targetUser['id'], $target_planet_row['id'], SN_TIME_NOW);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = db_user_by_id($fleetRow['fleet_owner'], true);
 
     if ($target_planet_row['id']) {
       $planetDefense = array();
@@ -160,7 +174,6 @@ function coe_o_missile_calculate() {
       OldDbChangeSet::db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
-      $sourcePlanet                 = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
 
       $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['fleet_amount'],
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],
@@ -171,6 +184,10 @@ function coe_o_missile_calculate() {
       msg_send_simple_message($fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message);
       msg_send_simple_message($fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message);
     }
+
     doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
+
+    db_mysql::db_transaction_commit();
   }
+
 }

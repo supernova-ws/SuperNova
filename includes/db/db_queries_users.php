@@ -3,13 +3,14 @@
 /** @noinspection SqlResolve */
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
+use Player\PlayerStatic;
+
 /**
  * Возвращает информацию о пользователе по его ID
  *
- * @param int    $user_id_unsafe ID пользователя
- * @param bool   $for_update     @deprecated
- * @param string $fields         @deprecated список полей или '*'/'' для всех полей
- * @param ?bool  $player         Признак выбора записи пользователь типа "игрок"
+ * @param int   $user_id_unsafe  ID пользователя
+ * @param bool  $for_update      @deprecated
+ * @param ?bool $player          Признак выбора записи пользователь типа "игрок"
  *                               <p>null - Можно выбрать запись любого типа</p>
  *                               <p>true - Выбирается только запись типа "игрок"</p>
  *                               <p>false - Выбирается только запись типа "альянс"</p>
@@ -20,10 +21,8 @@
  * @deprecated
  * @noinspection PhpUnusedParameterInspection
  */
-function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-  $record_id_safe = idval($user_id_unsafe);
-
-  $user = SN::db_get_record_list(LOC_USER, "`id` = {$record_id_safe}", true);
+function db_user_by_id($user_id_unsafe, $for_update = false, $player = null) {
+  $user  = PlayerStatic::dbSelectOne("SELECT * FROM {{users}} WHERE `id` = " . idval($user_id_unsafe));
 
   return (is_array($user) &&
     (
@@ -49,10 +48,9 @@ function db_user_by_username($username_unsafe, $like = false) {
   // Вытаскиваем запись
   $operand = $like ? 'LIKE' : '=';
 
-  return SN::db_query_select(
-    "SELECT * FROM {{users}} WHERE `username` $operand '{$username_safe}'",
-    true
-  );
+   $user  = PlayerStatic::dbSelectOne("SELECT * FROM {{users}} WHERE `username` {$operand} '{$username_safe}'");
+
+  return $user;
 }
 
 /**
@@ -64,7 +62,7 @@ function db_user_by_username($username_unsafe, $like = false) {
  * @deprecated
  */
 function dbPlayerByIdOrName($playerIdOrName, $player = null, $like = false) {
-  $row = db_user_by_id($playerIdOrName, false, '*', $player);
+  $row = db_user_by_id($playerIdOrName, false, $player);
   if (empty($row['id'])) {
     $row = db_user_by_username($playerIdOrName, $like);
   }
@@ -123,10 +121,7 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
  * TODO - это вообще-то надо хранить в конфигурации
  */
 function db_user_last_registered_username() {
-  $user = SN::db_query_select(
-    'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
-    true
-  );
+  $user = PlayerStatic::dbSelectOne('SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC');
 
   return isset($user['username']) ? $user['username'] : '';
 }

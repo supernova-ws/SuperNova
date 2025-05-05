@@ -49,14 +49,16 @@ class PageFleet5Gathering {
       $query = " AND `destruyed` = 0 AND `id` IN ({$query})";
     }
 
-    $planets_db_list = DBStaticPlanet::db_planet_list_sorted($user, $planetCurrent['id'], '*', $query);
-    !is_array($planets_db_list) ? $planets_db_list = [] : false;
+    $planets_db_list = DBStaticPlanet::db_planet_list_sorted($user, $planetCurrent['id'], $query);
+    if (!is_array($planets_db_list)) {
+      $planets_db_list = [];
+    }
 
     foreach ($planets_db_list as $planet_id => &$planetRecord) {
       // begin planet loop
       db_mysql::db_transaction_start();
       // Вот тут надо посчитать - отработать очереди и выяснить, сколько ресов на каждой планете
-      $planetRecord = sys_o_get_updated($user, $planetRecord, SN_TIME_NOW, true);
+      $planetRecord = sys_o_get_updated($user['id'], $planetRecord['id'], SN_TIME_NOW, true);
       $planetRecord = $planetRecord['planet'];
       db_mysql::db_transaction_commit();
 

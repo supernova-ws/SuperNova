@@ -23,7 +23,7 @@ if(is_array($shipList)) {
 
   db_mysql::db_transaction_start();
   // Здесь не надо апдейтить планету - очередь мы посчитали глобально
-  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
 //  $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
 //  $planetrow = $global_data['planet'];
 

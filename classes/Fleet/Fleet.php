@@ -40,11 +40,12 @@ use SN;
  * @property int        $status                   - int        - Current fleet status: flying to destination; returning
  *
  * Old fields for direct access
+ * @property int        $fleet_id
  * @property int        $fleet_owner
- * @property int        $start_time
- * @property int        $fleet_start_time
- * @property int        $fleet_end_stay
- * @property int        $fleet_end_time
+ * @property int        $start_time               Time when fleet launched from source
+ * @property int        $fleet_start_time         Time when fleet will arrive to destination point. Wrong name - should be `fleet_dst_arrive`
+ * @property int        $fleet_end_stay           Time when fleet will end its mission on destination point. Should be `fleet_dst_stay_until`
+ * @property int        $fleet_end_time           Time when fleet will return to source point. Should be `fleet_return_to_src`
  * @property int        $fleet_mess
  *
  */

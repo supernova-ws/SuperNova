@@ -83,39 +83,39 @@ class MissionEspionageReport {
     $this->reportTime = microtime(true);
     $this->fleetTime = $missionData->fleet['fleet_end_time'];
 
-    $this->attackerPlayerId = $missionData->src_user['id'];
-    $this->attackerPlayerName = $missionData->src_user['username'];
-    $this->attackerPlayerAllyTag = $missionData->src_user['ally_tag'];
-    $this->attackerPlanetId = $missionData->src_planet['id'];
-    $this->attackerPlanetName = $missionData->src_planet['name'];
-    $this->attackerPlanetGalaxy = intval($missionData->src_planet['galaxy']);
-    $this->attackerPlanetSystem = intval($missionData->src_planet['system']);
-    $this->attackerPlanetPlanet = intval($missionData->src_planet['planet']);
-    $this->attackerPlanetPlanetType = intval($missionData->src_planet['planet_type']);
+    $this->attackerPlayerId = $missionData->fleetOwnerRow['id'];
+    $this->attackerPlayerName = $missionData->fleetOwnerRow['username'];
+    $this->attackerPlayerAllyTag = $missionData->fleetOwnerRow['ally_tag'];
+    $this->attackerPlanetId = $missionData->srcPlanetRow['id'];
+    $this->attackerPlanetName = $missionData->srcPlanetRow['name'];
+    $this->attackerPlanetGalaxy = intval($missionData->srcPlanetRow['galaxy']);
+    $this->attackerPlanetSystem = intval($missionData->srcPlanetRow['system']);
+    $this->attackerPlanetPlanet = intval($missionData->srcPlanetRow['planet']);
+    $this->attackerPlanetPlanetType = intval($missionData->srcPlanetRow['planet_type']);
 
-    $this->targetPlayerId = $missionData->dst_user['id'];
-    $this->targetPlayerName = $missionData->dst_user['username'];
-    $this->targetPlayerAllyTag = $missionData->dst_user['ally_tag'];
-    $this->targetPlanetId = $missionData->dst_planet['id'];
-    $this->targetPlanetName = $missionData->dst_planet['name'];
-    $this->targetPlanetGalaxy = intval($missionData->dst_planet['galaxy']);
-    $this->targetPlanetSystem = intval($missionData->dst_planet['system']);
-    $this->targetPlanetPlanet = intval($missionData->dst_planet['planet']);
-    $this->targetPlanetPlanetType = intval($missionData->dst_planet['planet_type']);
+    $this->targetPlayerId = $missionData->dstUserRow['id'];
+    $this->targetPlayerName = $missionData->dstUserRow['username'];
+    $this->targetPlayerAllyTag = $missionData->dstUserRow['ally_tag'];
+    $this->targetPlanetId = $missionData->dstPlanetRow['id'];
+    $this->targetPlanetName = $missionData->dstPlanetRow['name'];
+    $this->targetPlanetGalaxy = intval($missionData->dstPlanetRow['galaxy']);
+    $this->targetPlanetSystem = intval($missionData->dstPlanetRow['system']);
+    $this->targetPlanetPlanet = intval($missionData->dstPlanetRow['planet']);
+    $this->targetPlanetPlanetType = intval($missionData->dstPlanetRow['planet_type']);
 
-    $this->targetSpyLevel = intval(GetSpyLevel($missionData->dst_user));
-    $this->attackerSpyLevel = intval(GetSpyLevel($missionData->src_user));
+    $this->targetSpyLevel = intval(GetSpyLevel($missionData->dstUserRow));
+    $this->attackerSpyLevel = intval(GetSpyLevel($missionData->fleetOwnerRow));
 
     $this->fleetUnits = sys_unit_str2arr($missionData->fleet['fleet_array']);
 
-    $this->spiedUnits[RES_METAL] = floor($missionData->dst_planet['metal']);
-    $this->spiedUnits[RES_CRYSTAL] = floor($missionData->dst_planet['crystal']);
-    $this->spiedUnits[RES_DEUTERIUM] = floor($missionData->dst_planet['deuterium']);
-    $this->spiedUnits[RES_ENERGY] = floor($missionData->dst_planet['energy_max']);
+    $this->spiedUnits[RES_METAL] = floor($missionData->dstPlanetRow['metal']);
+    $this->spiedUnits[RES_CRYSTAL] = floor($missionData->dstPlanetRow['crystal']);
+    $this->spiedUnits[RES_DEUTERIUM] = floor($missionData->dstPlanetRow['deuterium']);
+    $this->spiedUnits[RES_ENERGY] = floor($missionData->dstPlanetRow['energy_max']);
 
     $this->enemyShips = 0;
     foreach (sn_get_groups('fleet') as $unit_id) {
-      $this->enemyShips += max(0, mrc_get_level($missionData->dst_user, $missionData->dst_planet, $unit_id, false, true));
+      $this->enemyShips += max(0, mrc_get_level($missionData->dstUserRow, $missionData->dstPlanetRow, $unit_id, false, true));
     }
 
   }

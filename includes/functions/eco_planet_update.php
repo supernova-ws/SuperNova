@@ -3,30 +3,20 @@
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 /** @noinspection SqlResolve */
 
-/*
- * PlanetResourceUpdate.php
- *
- * 2.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
- *     [+] Bit more optimization
- * 2.0 - copyright (c) 2009-2010 by Gorlum for http://supernova.ws
- *     [+] Full rewrote and optimization
- *
- */
-
 use DBAL\db_mysql;
 use Meta\Economic\ResourceCalculations;
 use Planet\DBStaticPlanet;
 
 /**
- * @param array|int|string $user
- * @param                  $planet
- * @param                  $UpdateTime
- * @param                  $simulation
- * @param                  $no_user_update
+ * @param ?int       $userId
+ * @param ?int|array $planet
+ * @param int        $UpdateTime
+ * @param bool       $simulation
+ * @param bool       $no_user_update
  *
- * @return array|false[]|void
+ * @return array[]|false[]|void
  */
-function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
+function sys_o_get_updated($userId, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
   db_mysql::db_transaction_check(true);
 
   $no_data = ['user' => false, 'planet' => false, 'que' => false];
@@ -35,24 +25,20 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
     return $no_data;
   }
 
-  $userId = intval(is_array($user) && $user['id'] ? $user['id'] : $user);
   if (!$no_user_update) {
     if (!$userId) {
       SN::$debug->error('sys_o_get_updated() - USER пустой!');
       die();
     }
-
-    $user = db_user_by_id($userId, !$simulation, '*', true);
   }
-
-  $user = SN::db_query_select("SELECT * FROM `{{users}}`  WHERE `id` = " . SN::$db->db_escape($user['id']), true);
+  $user = db_user_by_id($userId, !$simulation, true);
 
   if (empty($user['id'])) {
     return $no_data;
   }
 
   if (is_array($planet) && isset($planet['galaxy']) && $planet['galaxy']) {
-    $planet = DBStaticPlanet::db_planet_by_vector($planet, '', !$simulation);
+    $planet = DBStaticPlanet::db_planet_by_vector($planet, '');
   } else {
     $planet = intval(is_array($planet) && isset($planet['id']) ? $planet['id'] : $planet);
     $planet = DBStaticPlanet::db_planet_by_id($planet, !$simulation);

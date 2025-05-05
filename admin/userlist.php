@@ -4,10 +4,8 @@
 /** @noinspection PhpDeprecationInspection */
 
 /**
- * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #46a148#
- *
- * userlist.php v2
+ * Project "SuperNova.WS" copyright (c) 2009-2025 Gorlum
+ * @version #46a156#
  **/
 
 use Player\PlayerStatic;
@@ -48,7 +46,7 @@ $sort_fields = array(
 $sort = sys_get_param_int('sort', SORT_ID);
 $sort = $sort_fields[$sort] ? $sort : SORT_ID;
 
-if (($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid')) && ($user_selected = db_user_by_id($user_id, false, 'id, username, authlevel'))) {
+if (($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid')) && ($user_selected = db_user_by_id($user_id, false))) {
   if ($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3) {
     switch ($action) {
       case ACTION_DELETE:

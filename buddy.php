@@ -91,7 +91,7 @@ try {
   // New request?
   // Checking for user ID - in case if it was request from outside buddy system
   if ($new_friend_id = sys_get_param_id('request_user_id')) {
-    $new_friend_row = db_user_by_id($new_friend_id, true, '`id`, `username`');
+    $new_friend_row = db_user_by_id($new_friend_id, true);
   } elseif ($new_friend_name = sys_get_param_str_unsafe('request_user_name')) {
     $new_friend_row  = db_user_by_username($new_friend_name);
     $new_friend_name = SN::$db->db_escape($new_friend_name);

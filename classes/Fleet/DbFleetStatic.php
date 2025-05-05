@@ -111,40 +111,6 @@ class DbFleetStatic {
   }
 
   /**
-   * Get all fleet-related IDs
-   *
-   * @param array $fleetRow
-   *
-   * @return array
-   */
-  public static function getRelatedUsers($fleetRow) {
-    $obj = (object)$fleetRow;
-    /** @var Fleet $obj */
-
-    if ($obj->fleet_mess == FLEET_STATUS_FLYING) {
-      $userIds = [
-        $obj->fleet_owner ?: 0        => true,
-        $obj->fleet_target_owner ?: 0 => true,
-      ];
-
-      $fleetsOnHold = self::fleet_list_on_hold($obj->fleet_end_galaxy, $obj->fleet_end_system, $obj->fleet_end_planet, $obj->fleet_end_type, SN_TIME_NOW);
-      foreach ($fleetsOnHold as $aFleet) {
-        $userIds[$aFleet['fleet_owner'] ?: 0] = true;
-      }
-
-    } elseif ($obj->fleet_mess == FLEET_STATUS_RETURNING) {
-      // We need only fleet owner - because in most cases fleet owner would be owner of planet fleet to return
-      $userIds = [
-        $obj->fleet_owner ?: 0 => true,
-      ];
-    }
-
-    unset($userIds[0]);
-
-    return array_keys($userIds);
-  }
-
-  /**
    * DELETE
    *
    * @param $fleet_id
@@ -161,92 +127,6 @@ class DbFleetStatic {
     }
 
     return $result;
-  }
-
-
-  /**
-   * LOCK - Lock all records which can be used with mission
-   *
-   * @param       $mission_data
-   * @param       $fleet_id
-   * @param int[] $usersToLock
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public static function db_fleet_lock_flying($fleet_id, &$mission_data, $usersToLock) {
-    // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
-    // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
-    $fleet_id_safe = idval($fleet_id);
-
-    $query = [];
-    /** @noinspection SqlResolve */
-    $query[] = "SELECT 1 FROM `{{fleets}}` AS f";
-    // Блокировка всех прилетающих и улетающих флотов, если нужно
-
-    if ($mission_data['dst_fleets']) {
-      $query[] = 'LEFT JOIN `{{fleets}}` AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id';
-    }
-
-    if ($mission_data['dst_user'] || $mission_data['dst_planet']) {
-      $query[] = 'LEFT JOIN `{{users}}` AS ud ON ud.id = f.fleet_target_owner';
-    }
-    if ($mission_data['dst_planet']) {
-      $query[] = 'LEFT JOIN `{{planets}}` AS pd ON pd.id = f.fleet_end_planet_id';
-    }
-
-    if ($mission_data['src_user'] || $mission_data['src_planet']) {
-      $query[] = 'LEFT JOIN `{{users}}` AS us ON us.id = f.fleet_owner';
-    }
-    if ($mission_data['src_planet']) {
-      $query[] = 'LEFT JOIN `{{planets}}` AS ps ON ps.id = f.fleet_start_planet_id';
-    }
-
-    $query[] = "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE";
-
-    return doquery(implode(' ', $query));
-
-//    // ВАРИАНТ: А здесь объединили все ?: в одну строку
-//    /** @noinspection SqlResolve */
-//    $sql = "SELECT 1 FROM `{{fleets}}` AS f" .
-//      // Блокировка всех прилетающих и улетающих флотов, если нужно
-//      ($mission_data['dst_fleets'] ? ' LEFT JOIN `{{fleets}}` AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id' : '') .
-//
-//      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? ' LEFT JOIN `{{users}}` AS ud ON ud.id = f.fleet_target_owner' : '') .
-//      ($mission_data['dst_planet'] ? ' LEFT JOIN `{{planets}}` AS pd ON pd.id = f.fleet_end_planet_id' : '') .
-//
-//      ($mission_data['src_user'] || $mission_data['src_planet'] ? ' LEFT JOIN `{{users}}` AS us ON us.id = f.fleet_owner' : '') .
-//      ($mission_data['src_planet'] ? ' LEFT JOIN `{{planets}}` AS ps ON ps.id = f.fleet_start_planet_id' : '') .
-//
-//      " WHERE f.fleet_id = {$fleet_id_safe}" .
-//      " GROUP BY 1 FOR UPDATE";
-//
-//    return doquery($sql);
-
-//    // ВАРИАНТ: А это новый запрос - всё в одном
-//    return empty($usersToLock)
-//      ? doquery("
-//          SELECT 1
-//          FROM `{{fleets}}` AS f
-//              LEFT JOIN `{{users}}` AS user_fleet_owner ON user_fleet_owner.id = f.fleet_owner
-//              LEFT JOIN `{{users}}` AS user_target_owner ON user_target_owner.id = f.fleet_target_owner
-//
-//              LEFT JOIN `{{planets}}` AS planet_start ON planet_start.id = f.fleet_start_planet_id
-//              LEFT JOIN `{{planets}}` AS planet_target ON planet_target.id = f.fleet_end_planet_id
-//              LEFT JOIN `{{users}}` AS usp ON usp.id = planet_start.id_owner
-//              LEFT JOIN `{{users}}` AS usd ON usd.id = planet_target.id_owner
-//              /*
-//              LEFT JOIN `{{fleets}}` AS fleets_goes_to_start ON fleets_goes_to_start.fleet_start_planet_id = f.fleet_end_planet_id
-//              LEFT JOIN `{{fleets}}` AS fleets_goes_to_target ON fleets_goes_to_target.fleet_end_planet_id = f.fleet_end_planet_id
-//
-//              LEFT JOIN `{{users}}` AS user_fleets_on_start_owner ON user_fleets_on_start_owner.id = fleets_goes_to_start.fleet_owner
-//              LEFT JOIN `{{users}}` AS user_fleets_on_target_owner ON user_fleets_on_target_owner.id = fleets_goes_to_target.fleet_owner
-//               */
-//          WHERE f.fleet_id = {$fleet_id_safe}
-//          /* GROUP BY 1 */
-//          FOR UPDATE
-//        ")
-//      : doquery("SELECT 1 FROM `{{users}}` WHERE id IN (" . implode(',', $usersToLock) . ") FOR UPDATE");
-
   }
 
 
@@ -445,15 +325,19 @@ class DbFleetStatic {
   /**
    * Fleets on hold on planet orbit
    *
-   * @param $fleet_row
-   * @param $ube_time
+   * @param int $galaxy
+   * @param int $system
+   * @param int $planet
+   * @param int $planet_type
+   * @param int $ube_time
    *
    * @return array
    *
    * TODO - safe params
    */
   public static function fleet_list_on_hold($galaxy, $system, $planet, $planet_type, $ube_time) {
-    return static::db_fleet_list(
+    /** @noinspection PhpRedundantOptionalArgumentInspection */
+    return DbFleetStatic::db_fleet_list(
       "`fleet_end_galaxy` = {$galaxy}
     AND `fleet_end_system` = {$system}
     AND `fleet_end_planet` = {$planet}

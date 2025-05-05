@@ -1,5 +1,8 @@
 <?php
 
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+/** @noinspection PhpUnused */
+
 if(defined('__SN_CONSTANTS_DEFINED') && __SN_CONSTANTS_DEFINED === true) {
   return;
 }
@@ -11,7 +14,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a155');
+define('SN_VERSION', '46a156');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -117,7 +120,7 @@ define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
 
 define('UNIVERSE_RANDOM_PLANET_START', 16); // Позиция начала рандомизации планет
-define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг тзменения минимальной температуры рандомной планеты
+define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг изменения минимальной температуры случайной планеты
 
 define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
@@ -141,9 +144,8 @@ define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
 
-// Mot qui sont interdit a la saisie !
-global $ListCensure;
-$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
+//global $ListCensure;
+//$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // Confirmation record types
 define('CONFIRM_REGISTRATION'  , 1);
@@ -246,11 +248,32 @@ define('CACHE_ALL'       , CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURC
 
 define('CACHE_NONE'      , CACHE_NOTHING); // Alias for me
 
+// Fleet status aka `fleet_mess`
+const FLEET_STATUS_FLYING = 0;
+const FLEET_STATUS_RETURNING = 1;
+
 // *** Event types
-define('EVENT_FLEET_NONE', 0);
-define('EVENT_FLEET_ARRIVE', 1);
-define('EVENT_FLEET_STAY'  , 2);
-define('EVENT_FLEET_RETURN', 3);
+const EVENT_FLEET_NONE   = 0;
+const EVENT_FLEET_ARRIVE = 1;
+const EVENT_FLEET_STAY   = 2;
+const EVENT_FLEET_RETURN = 3;
+
+// Обязательно оставить, что бы arrive < accomplish < return
+const EVENT_FLT_ARRIVE     = 'EVENT_FLT_ARRIVE'; // Fleet arrive to destination
+const EVENT_FLT_ACCOMPLISH = 'EVENT_FLT_ACCOMPLISH'; // Fleet ends his mission by timer
+const EVENT_FLT_RETURN     = 'EVENT_FLT_RETURN'; // Fleet returns to starting planet
+
+const FLT_EXPEDITION_OUTCOME_NONE = 0;
+const FLT_EXPEDITION_OUTCOME_LOST_FLEET = 1;
+const FLT_EXPEDITION_OUTCOME_FOUND_FLEET = 2;
+const FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES = 3;
+const FLT_EXPEDITION_OUTCOME_FOUND_DM = 4;
+const FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT = 5;
+const FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL = 6;
+
+const FLT_EXPEDITION_OUTCOME_TYPE_BAD = -1;
+const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
+const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
 
 
 // Log system codes
@@ -763,23 +786,6 @@ define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
 
 
 
-define('FLT_EXPEDITION_OUTCOME_NONE', 0);
-define('FLT_EXPEDITION_OUTCOME_LOST_FLEET', 1);
-define('FLT_EXPEDITION_OUTCOME_FOUND_FLEET', 2);
-define('FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES', 3);
-define('FLT_EXPEDITION_OUTCOME_FOUND_DM', 4);
-define('FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT', 5);
-define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);
-
-const FLT_EXPEDITION_OUTCOME_TYPE_BAD = -1;
-const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
-const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
-
-// Обязательно оставить, что бы arrive < accomplish < return
-define('EVENT_FLT_ARRIVE', 'EVENT_FLT_ARRIVE'); // Fleet arrive to destination
-define('EVENT_FLT_ACOMPLISH', 'EVENT_FLT_ACOMPLISH'); // Fleet ends his mission by timer
-define('EVENT_FLT_RETURN', 'EVENT_FLT_RETURN'); // Fleet returns to starting planet
-
 define('USER_OPTIONS_SPLIT', '|');
 
 // define('NICK_ID',               -1);
@@ -1058,9 +1064,6 @@ const TPL_BLOCK_REQUIRE = 'require';
 
 const PAGE_OPTION_FLEET_UPDATE_SKIP = 'fleet_update_skip';
 const PAGE_OPTION_ADMIN = 'admin_page';
-
-const FLEET_STATUS_FLYING = 0;
-const FLEET_STATUS_RETURNING = 1;
 
 const MENU_FIELD_AUTH_LEVEL = 'AUTH_LEVEL';
 

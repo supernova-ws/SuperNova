@@ -97,10 +97,10 @@ class MissionExplore extends MissionData {
   /**
    * MissionExplore constructor.
    *
-   * @param array $missionArray
+   * @param ?FleetDispatchEvent $fleetEvent
    */
-  public function __construct($missionArray) {
-    parent::__construct($missionArray);
+  public function __construct($fleetEvent) {
+    parent::__construct($fleetEvent);
 
     if (empty(static::$rates)) {
       static::$rates = SN::$gc->economicHelper->getResourcesExchange();
@@ -255,10 +255,10 @@ class MissionExplore extends MissionData {
   }
 
   /**
-   * @param array $mission_data
+   * @throws \Exception
    */
   public function process() {
-    if (!isset($this->fleet_event) || $this->fleet_event != EVENT_FLT_ACOMPLISH) {
+    if (!isset($this->fleet_event) || $this->fleet_event != EVENT_FLT_ACCOMPLISH) {
       return;
     }
 

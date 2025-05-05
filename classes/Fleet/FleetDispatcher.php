@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+/** @noinspection PhpDeprecationInspection */
+
 /**
  * Created by Gorlum 15.06.2017 4:12
  */
@@ -11,7 +13,6 @@ use SN;
 use debug;
 use classConfig;
 use Core\GlobalContainer;
-use DBAL\OldDbChangeSet;
 use Planet\DBStaticPlanet;
 
 /**
@@ -21,10 +22,15 @@ use Planet\DBStaticPlanet;
 class FleetDispatcher {
   const TASK_COMPLETE = 0;
   const TASK_TERMINATED = 1;
-  const TASK_ALREADY_LOCKED = -1;
 
-  const FLEET_EVENT = 'fleet_event';
-  const FLEET_MISSION = 'fleet_mission';
+  const F_FLEET_EVENT = 'fleet_event';
+  const F_FLEET_MISSION = 'fleet_mission';
+  /** @var array[] $fleet_list */
+  public static $fleet_list = [];
+  /** @var FleetDispatchEvent[] $fleet_event_list */
+  public static $fleet_event_list = [];
+  /** @var int[] $missions_used */
+  public $missions_used = [];
   /**
    * @var GlobalContainer $gc
    */
@@ -39,19 +45,6 @@ class FleetDispatcher {
    * @var debug $debug
    */
   protected $debug;
-
-  /**
-   * List of timed events
-   *
-   * [
-   *   'start'
-   *   'finish'
-   * ]
-   *
-   * @var float[] $timers
-   */
-  protected $timers;
-
 
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
@@ -119,23 +112,6 @@ class FleetDispatcher {
     db_mysql::db_transaction_commit();
   }
 
-  /**
-   * Gets active fleets on current tick for Flying Fleet Handler
-   *
-   * @return array
-   */
-  protected function fleet_list_current_tick() {
-    return DbFleetStatic::db_fleet_list(
-      "
-    (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_time` <= " . SN_TIME_NOW . ")"
-      , DB_SELECT_PLAIN
-    );
-  }
-
 
   // ------------------------------------------------------------------
 
@@ -171,224 +147,89 @@ class FleetDispatcher {
 
     */
 //    $this->log_file('Dispatch started');
-
-    // Trying to acquire lock for current task
-    $runLock = $this->buildLock();
-    if (!$runLock->attemptLock()) {
-//      $this->log_file('Dispatch stopped: lock ' . $runLock->isLocked() .'s' );
-      return self::TASK_ALREADY_LOCKED;
+    $watchdog = new FleetWatchdog();
+    if (($result = $watchdog->acquireLock()) == FleetWatchdog::TASK_ALREADY_LOCKED) {
+      return $result;
     }
-    register_shutdown_function(function () use ($runLock) {
-//      $this->log_file('Shutting down');
-      $timeLock = $runLock->isLocked();
-      if ($timeLock > 0 || $timeLock === 0) {
-        $runLock->unLock(true);
-        $this->logTermination(0, 0, 0, 0, 0, 0);
-//        $this->log_file('UNLOCKING');
-      }
-
-//      $this->log_file(SN::$gc->config->pass()->fleet_update_run_lock);
-//      $this->log_file('ALL RELEASED');
-    });
 
     $result = ['code' => self::TASK_COMPLETE];
 
     set_time_limit(max(3, SN::$gc->config->fleet_update_max_run_time - 3));
 
-    $workBegin = microtime(true);
     //log_file('Начинаем обсчёт флотов');
 
 //    $this->log_file('Обсчёт ракет');
-    db_mysql::db_transaction_start();
     coe_o_missile_calculate();
-    db_mysql::db_transaction_commit();
 
-    $fleet_list       = array();
-    $fleet_event_list = array();
-    $missions_used    = array();
-
-    $fleet_list_current_tick = $this->fleet_list_current_tick();
-    foreach ($fleet_list_current_tick as $fleet_row) {
-//      set_time_limit(15);
-
-      // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
-      $fleet_list[$fleet_row['fleet_id']]             = $fleet_row;
-      $missions_used[$fleet_row[self::FLEET_MISSION]] = 1;
-      if ($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
-        $fleet_event_list[] = array(
-          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
-          self::FLEET_EVENT => EVENT_FLT_ARRIVE,
-        );
-      }
-
-      if ($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
-        $fleet_event_list[] = array(
-          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
-          self::FLEET_EVENT => EVENT_FLT_ACOMPLISH,
-        );
-      }
-
-      if ($fleet_row['fleet_end_time'] <= SN_TIME_NOW) {
-        $fleet_event_list[] = array(
-          'fleet_row'       => &$fleet_list[$fleet_row['fleet_id']],
-          'fleet_time'      => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
-          self::FLEET_EVENT => EVENT_FLT_RETURN,
-        );
-      }
-    }
-
-    //log_file('Сортировка и подгрузка модулей');
-    uasort($fleet_event_list, array($this, 'flt_flyingFleetsSort'));
-
-// TODO: Грузить только используемые модули из $missions_used
-    $mission_files = array(
-      MT_ATTACK  => 'flt_mission_attack',
-      MT_AKS     => 'flt_mission_attack',
-      // MT_DESTROY => 'flt_mission_destroy.php',
-      MT_DESTROY => 'flt_mission_attack',
-
-      MT_TRANSPORT => 'flt_mission_transport',
-      MT_RELOCATE  => 'flt_mission_relocate',
-      MT_HOLD      => 'flt_mission_hold',
-      MT_SPY       => '',
-      MT_COLONIZE  => 'flt_mission_colonize',
-      MT_RECYCLE   => 'flt_mission_recycle',
-//    MT_MISSILE => 'flt_mission_missile.php',
-      MT_EXPLORE   => 'flt_mission_explore',
-    );
-    foreach ($missions_used as $mission_id => $cork) {
-      if (empty($mission_files[$mission_id])) {
-        continue;
-      }
-
-      require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
-    }
-
-    $lastEventBegin  = microtime(true);
-    $lastMission     = MT_NONE;
-    $eventsProcessed = 0;
-    $lastEvent       = EVENT_FLEET_NONE;
+    // Filling self::$fleet_event_list with FleetDispatchEvent
+    self::$fleet_event_list = $this->getFleetEvents();
+    $this->loadMissionFiles();
 
     $sn_groups_mission = sn_get_groups('missions');
-    foreach ($fleet_event_list as $fleet_event) {
-      $lastEventEnd = microtime(true);
-      // Watchdog timer
-      // If flying fleet handler works more than `fleet_update_dispatch_time` seconds - stopping it
-      // Let next run handle rest of fleets
-      $workTime = microtime(true) - $workBegin;
-      if ($workTime >= SN::$config->fleet_update_dispatch_time) {
-        $this->logTermination($workTime, $eventsProcessed, $lastMission, $lastEvent, $lastEventEnd - $lastEventBegin, count($fleet_event_list));
-
-        $result['code'] = self::TASK_TERMINATED;
+    foreach (self::$fleet_event_list as $fleetEvent) {
+      $result['code'] = $watchdog->begin($fleetEvent);
+      if ($result['code'] === FleetWatchdog::TASK_TOO_LONG) {
+        $result['message'] = $watchdog->getTerminationMessage();
         break;
-      }
-
-      // TODO: Указатель тут потом сделать
-      // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
-      $fleet_row = $fleet_event['fleet_row'];
-      if (!$fleet_row) {
-        // Fleet was destroyed in course of previous actions
+      } elseif ($result['code'] === FleetWatchdog::FLEET_IS_EMPTY) {
         continue;
       }
 
-      $usersToLock = DbFleetStatic::getRelatedUsers($fleet_row);
-
-      $lastEventBegin = microtime(true);
-      $lastMission    = $fleet_row[self::FLEET_MISSION];
-      $lastEvent      = $fleet_event[self::FLEET_EVENT];
-      $eventsProcessed++;
-      $result['eventsProcessed'] = $eventsProcessed;
-
-      // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
       db_mysql::db_transaction_start();
-      // а текущее время
-      SN::$gc->config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
+      // Locking further fleet dispatcher tasks
+      SN::$gc->config->pass()->fleet_update_last = date(FMT_DATE_TIME_SQL, time());
 
-      $mission_data = $sn_groups_mission[$fleet_row[self::FLEET_MISSION]];
-      // Adding real event happens
-      $mission_data[self::FLEET_EVENT] = $fleet_event[self::FLEET_EVENT];
+      // Locking all event-related records
+      $fleetEvent->lockEventRecords();
 
-      // Формируем запрос, блокирующий сразу все нужные записи
-      DbFleetStatic::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data, $usersToLock);
-
-//    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
-      $fleet_row = DbFleetStatic::db_fleet_get($fleet_row['fleet_id']);
-      if (!$fleet_row || empty($fleet_row)) {
+      // Refreshing fleet record
+      if (empty($fleetEvent->refreshFleet())) {
         // Fleet was destroyed in course of previous actions
         db_mysql::db_transaction_commit();
         continue;
-      }
-
-      if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_RETURN) {
+      } elseif ($fleetEvent->event == EVENT_FLT_RETURN && $fleetEvent->fleet['fleet_mess'] == FLEET_STATUS_RETURNING) {
         // Fleet returns to planet
-        RestoreFleetToPlanet($fleet_row, true, false, true);
+        RestoreFleetToPlanet($fleetEvent->fleet, true, false, true);
         db_mysql::db_transaction_commit();
         continue;
-      }
-
-      if ($fleet_event[self::FLEET_EVENT] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
-        // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
+      } elseif ($fleetEvent->event == EVENT_FLT_ARRIVE && $fleetEvent->fleet['fleet_mess'] != FLEET_STATUS_FLYING) {
+        // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0 / FLEET_STATUS_FLYING
         // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
         db_mysql::db_transaction_commit();
         continue;
       }
 
-      // TODO: Здесь тоже указатели
-      // TODO: Кэширование
-      // TODO: Выбирать только нужные поля
+      // From now on we have only events of types [EVENT_FLT_ARRIVE, EVENT_FLT_ACCOMPLISH] and $fleet_row['fleet_mess'] == FLEET_STATUS_FLYING (0)
 
-      // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
-      $mission_data = array(
-        'fleet'           => &$fleet_row,
-        'dst_user'        => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
-        // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-        'dst_planet'      => $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
-        'src_user'        => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true) : null,
-        // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-        'src_planet'      => $mission_data['src_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
-        self::FLEET_EVENT => $fleet_event[self::FLEET_EVENT],
-      );
+      // Here we refresh dstPlanetRow (by calling sys_o_get_updated() and using its result - so below this call we will have actual dst planet/dst user records
+      // In same vein we refresh srcPlanetRow
+      $fleetEvent->refreshMissionData();
 
-      if ($mission_data['dst_planet']) {
-        if ($mission_data['dst_planet']['id_owner']) {
-          $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
-        }
-        $mission_data['dst_user']   = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
-        $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
-      }
-
-      switch ($fleet_row[self::FLEET_MISSION]) {
+      switch ($fleetEvent->missionId) {
         // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
-        case MT_AKS:
         case MT_ATTACK:
+        case MT_AKS:
         case MT_DESTROY:
-          $attack_result  = flt_mission_attack($mission_data);
-          $mission_result = CACHE_COMBAT;
+          flt_mission_attack($fleetEvent);
         break;
-
-        /*
-        case MT_DESTROY:
-          $attack_result = flt_mission_destroy($mission_data);
-          $mission_result = CACHE_COMBAT;
-        break;
-        */
 
         case MT_TRANSPORT:
-          $mission_result = flt_mission_transport($mission_data);
+          flt_mission_transport($fleetEvent);
         break;
 
         case MT_HOLD:
-          $mission_result = flt_mission_hold($mission_data);
+          flt_mission_hold($fleetEvent);
         break;
 
         case MT_RELOCATE:
-          $mission_result = flt_mission_relocate($mission_data);
+          flt_mission_relocate($fleetEvent);
         break;
 
         case MT_EXPLORE:
-          $mission_result = flt_mission_explore($mission_data);
+          // TODO - THIS NEED TO BE ADRESSED!
+          flt_mission_explore($fleetEvent);
+          // TODO - there is untested class below !!!
+
 //          $theMission = \Fleet\MissionExplore::buildFromArray($mission_data);
 //          $theMission->process();
 //
@@ -396,17 +237,17 @@ class FleetDispatcher {
         break;
 
         case MT_RECYCLE:
-          $mission_result = flt_mission_recycle($mission_data);
+          flt_mission_recycle($fleetEvent);
         break;
 
         case MT_COLONIZE:
-          $mission_result = flt_mission_colonize($mission_data);
+          flt_mission_colonize($fleetEvent);
         break;
 
         case MT_SPY:
           require_once(SN_ROOT_PHYSICAL . 'includes/includes/coe_simulator_helpers.php');
 
-          $theMission = MissionEspionage::buildFromArray($mission_data);
+          $theMission = MissionEspionage::buildFromArray($fleetEvent);
           $theMission->flt_mission_spy();
 
           unset($theMission);
@@ -422,96 +263,9 @@ class FleetDispatcher {
       db_mysql::db_transaction_commit();
     }
 
-//    set_time_limit(30); // TODO - Optimize
-
-    $runLock->unLock(true);
+    $watchdog->unlock();
 
 //    $that->log_file('Dispatch finished - NORMAL SHUTDOWN');
-
-    return $result;
-
-//  log_file('Закончили обсчёт флотов');
-  }
-
-
-  /**
-   * @param array $fleet_row
-   * @param bool  $start
-   * @param bool  $only_resources
-   * @param bool  $safe_fleet
-   * @param mixed $result
-   *
-   * @return int
-   * @deprecated
-   */
-  public function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
-    db_mysql::db_transaction_check(true);
-
-    $result = CACHE_NOTHING;
-    if (!is_array($fleet_row)) {
-      return $result;
-    }
-
-    $prefix = $start ? 'start' : 'end';
-
-    // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
-    // TODO Проеверить от многократного срабатывания !!!
-    // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
-    // Узнаем ИД владельца планеты - без блокировки
-    // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
-    $user_id = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
-    $user_id = $user_id['id_owner'];
-    // Блокируем пользователя
-    $user = db_user_by_id($user_id, true);
-    // Блокируем планету
-    $planet_arrival = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
-    // Блокируем флот
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
-
-    // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if (!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources)) {
-      return $result;
-    }
-
-    // Флот, который возвращается на захваченную планету, пропадает
-    if ($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
-      DbFleetStatic::db_fleet_delete($fleet_row['fleet_id']);
-
-      return $result;
-    }
-
-    $db_changeset = array();
-    if (!$only_resources) {
-      DbFleetStatic::db_fleet_delete($fleet_row['fleet_id']);
-
-      if ($fleet_row['fleet_owner'] == $planet_arrival['id_owner']) {
-        $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
-        foreach ($fleet_array as $ship_id => $ship_count) {
-          if ($ship_count) {
-            $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($ship_id, $ship_count, $user, $planet_arrival['id']);
-          }
-        }
-      } else {
-        return CACHE_NOTHING;
-      }
-    } else {
-      $fleet_set = array(
-        'fleet_resource_metal'     => 0,
-        'fleet_resource_crystal'   => 0,
-        'fleet_resource_deuterium' => 0,
-        'fleet_mess'               => 1,
-      );
-      DbFleetStatic::fleet_update_set($fleet_row['fleet_id'], $fleet_set);
-    }
-
-    if (!empty($db_changeset)) {
-      OldDbChangeSet::db_changeset_apply($db_changeset);
-    }
-
-    DBStaticPlanet::db_planet_set_by_id($planet_arrival['id'],
-      "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'");
-    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
     return $result;
   }
@@ -522,6 +276,7 @@ class FleetDispatcher {
    * @param $lastMissionId
    * @param $lastEventId
    * @param $lastEventLength
+   * @param $totalEvents
    */
   public function logTermination($workTime, $eventsProcessed, $lastMissionId, $lastEventId, $lastEventLength, $totalEvents) {
     SN::$debug->warning(sprintf(
@@ -543,44 +298,75 @@ class FleetDispatcher {
    * @return Lock
    */
   public function buildLock() {
-    $runLock = new Lock($this->gc, classConfig::FLEET_UPDATE_RUN_LOCK, SN::$gc->config->fleet_update_max_run_time, 1, classConfig::DATE_TYPE_UNIX);
-
-    return $runLock;
+    return new Lock($this->gc, classConfig::FLEET_UPDATE_RUN_LOCK, SN::$gc->config->fleet_update_max_run_time, 1, classConfig::DATE_TYPE_UNIX);
   }
 
+  public function getFleetEvents() {
+    $fleet_event_list = [];
+
+    // Gets active fleets on current tick for Flying Fleet Handler
+    $fleet_list_current_tick = DbFleetStatic::db_fleet_list(
+      "
+        (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
+        OR
+        (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
+        OR
+        (`fleet_end_time` <= " . SN_TIME_NOW . ")
+      ", DB_SELECT_PLAIN
+    );
+
+    foreach ($fleet_list_current_tick as $fleet_row) {
+      if ($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
+        $fleet_event_list[] = new FleetDispatchEvent($fleet_row, EVENT_FLT_ARRIVE);
+      }
+
+      if ($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
+        $fleet_event_list[] = new FleetDispatchEvent($fleet_row, EVENT_FLT_ACCOMPLISH);
+      }
+
+      if ($fleet_row['fleet_end_time'] <= SN_TIME_NOW) {
+        $fleet_event_list[] = new FleetDispatchEvent($fleet_row, EVENT_FLT_RETURN);
+      }
+
+      $this->missions_used[$fleet_row[self::F_FLEET_MISSION]] = 1;
+    }
+
+    FleetDispatchEvent::sortEvents($fleet_event_list);
+
+    return $fleet_event_list;
+  }
 
   /**
-   * Sort flying fleets events by time+event
-   *
-   * @param $a
-   * @param $b
-   *
-   * @return int
+   * @return void
    */
-  protected function flt_flyingFleetsSort($a, $b) {
-    return
-      // Сравниваем время флотов - кто раньше, тот и первый обрабатывается
-      $a['fleet_time'] > $b['fleet_time'] ? 1 : ($a['fleet_time'] < $b['fleet_time'] ? -1 :
-        // Если время - одинаковое, сравниваем события флотов
-        // Если события - одинаковые, то флоты равны
-        ($a[self::FLEET_EVENT] == $b[self::FLEET_EVENT] ? 0 :
-          // Если события разные - первыми считаем прибывающие флоты
-          ($a[self::FLEET_EVENT] == EVENT_FLT_ARRIVE ? 1 : ($b[self::FLEET_EVENT] == EVENT_FLT_ARRIVE ? -1 :
-            // Если нет прибывающих флотов - дальше считаем флоты, которые закончили миссию
-            ($a[self::FLEET_EVENT] == EVENT_FLT_ACOMPLISH ? 1 : ($b[self::FLEET_EVENT] == EVENT_FLT_ACOMPLISH ? -1 :
-              // Если нет флотов, закончивших задание - остались возвращающиеся флоты, которые равны между собой
-              // TODO: Добавить еще проверку по ID флота и/или времени запуска - что бы обсчитывать их в порядке запуска
-              (
-              0 // Вообще сюда доходить не должно - будет отсекаться на равенстве событий
-              )
-            ))
-          ))
-        )
-      );
+  public function loadMissionFiles() {
+    $mission_files = [
+      MT_ATTACK  => 'flt_mission_attack',
+      MT_AKS     => 'flt_mission_attack',
+      MT_DESTROY => 'flt_mission_attack',
+
+      MT_TRANSPORT => 'flt_mission_transport',
+      MT_RELOCATE  => 'flt_mission_relocate',
+      MT_HOLD      => 'flt_mission_hold',
+      MT_SPY       => '',
+      MT_COLONIZE  => 'flt_mission_colonize',
+      MT_RECYCLE   => 'flt_mission_recycle',
+      // MT_MISSILE => 'flt_mission_missile.php',
+      MT_EXPLORE   => 'flt_mission_explore',
+    ];
+    foreach ($this->missions_used as $mission_id => $cork) {
+      if (empty($mission_files[$mission_id])) {
+        continue;
+      }
+
+      require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
+    }
   }
 
   /**
    * @param string $msg
+   *
+   * @noinspection PhpUnused
    */
   public function log_file($msg) {
     file_put_contents(__DIR__ . '/../../.ffh-event.log', date(FMT_DATE_TIME_SQL, time()) . ' ' . $msg . "\r\n", FILE_APPEND);

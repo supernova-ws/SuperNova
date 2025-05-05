@@ -37,6 +37,12 @@ class db_mysql {
   public static $db_in_transaction = false;
   public static $transactionDepth = 0;
 
+  const TABLE_USERS = 'users';
+
+  const TABLE_ID_FIELD = [
+    'fleets' => 'fleet_id',
+  ];
+
   /**
    * DB schemes
    *
@@ -739,6 +745,30 @@ class db_mysql {
     }
 
     return self::$db_in_transaction;
+  }
+
+  /**
+   * Lock specified records in specified tables
+   *
+   * @param array[] $locks ['$tableName' => [$idToLock, ...],],
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function lockRecords($locks) {
+    $query = [];
+
+    foreach ($locks as $tableName => $lockedIds) {
+      if (!empty($lockedIds)) {
+        // Detecting primary key name
+        $idFieldName = !empty(static::TABLE_ID_FIELD[$tableName]) ? static::TABLE_ID_FIELD[$tableName] : 'id';
+        // Making ID mysql-safe
+        array_walk($lockedIds, function (&$id) { $id = idval($id); });
+        /** @noinspection SqlResolve */
+        $query[] = "SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE";
+      }
+    }
+
+    return !empty($query) ? doquery(implode(' UNION ', $query)) : false;
   }
 
 }

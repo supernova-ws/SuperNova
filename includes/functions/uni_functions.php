@@ -66,7 +66,7 @@ function uni_create_planet_get_density($position_data, $user_row, $planet_sector
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = []) {
   $Position = intval($Position);
 
-  if (!isset($options['skip_check']) && DBStaticPlanet::db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
+  if (!isset($options['skip_check']) && DBStaticPlanet::db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET)) {
     return false;
   }
 
@@ -106,7 +106,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
     ($user_row['username'] . ' ' . (
       $HomeWorld
         ? SN::$lang['sys_capital']
-        : ($planet_name_unsafe ? $planet_name_unsafe : SN::$lang['sys_colo_defaultname'])
+        : ($planet_name_unsafe ?: SN::$lang['sys_colo_default_name'])
       )
     );
 
@@ -183,14 +183,16 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $size 
   global $lang;
 
   $moon_row = [];
-  $moon = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
+  $moon = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON);
   if (empty($moon['id'])) {
-    $moon_planet = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET, true, '`id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal`');
+    $moon_planet = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET);
 
     if ($moon_planet['id']) {
       $base_storage_size = BASE_STORAGE_SIZE;
 
-      empty($size) ? $size = Universe::moonSizeRandom() : false;
+      if (empty($size)) {
+        $size = Universe::moonSizeRandom();
+      }
 
       $temp_min = $moon_planet['temp_min'] - rand(10, 45);
       $temp_max = $temp_min + 40;
@@ -399,7 +401,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
 
     if (is_array($new_coordinates)) {
       $new_coordinates['planet_type'] = PT_PLANET;
-      $incoming = DBStaticPlanet::db_planet_by_vector($new_coordinates, '', true, 'id');
+      $incoming = DBStaticPlanet::db_planet_by_vector($new_coordinates, '');
       if ($incoming['id']) {
         throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
       }
