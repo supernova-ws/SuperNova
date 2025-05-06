@@ -431,6 +431,32 @@ class SnTemplate {
     $standard_css = self::addFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
     $standard_css = self::addFileName('design/css/global_override', $standard_css);
 
+    // Trying to add extra CSS to cache file
+    foreach ($sn_mvc['css'][''] as $css => $cork) {
+      $cssOriginal = $css;
+
+      // At first - removing minimization flag from file name
+      if(($rPos = strrpos($css, '.min.css')) !== false) {
+        // 4 - string length of substring to cut `.min`
+        $css = substr_replace($css, '', $rPos, 4);
+      }
+      // Also we don't need `.css` extension
+      if(($rPos = strrpos($css, '.css')) !== false) {
+        // 4 - string length of substring to cut `.css`
+        $css = substr_replace($css, '', $rPos, 4);
+      }
+
+      // Memorizing size of css filename array
+      $cssWas = count($standard_css);
+      // Trying to add newly found filename
+      $standard_css = self::addFileName($css, $standard_css);
+      if(count($standard_css) > $cssWas) {
+        // Removing file from extra CSS list only if everything went well and records was added to list of CSS to cache
+        // Otherwise something went wrong - so we don't touch this
+        unset($sn_mvc['css'][''][$cssOriginal]);
+      }
+    }
+
     // Trying to cache CSS files
     $standard_css = self::cacheFiles($standard_css);
 

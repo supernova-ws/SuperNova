@@ -499,16 +499,28 @@ crowdin.com - переводчик всякого встроенного в ПО
 * В переводах позаменять font color на span class
     * <font color="red"> => <span class="error">
     * <font color="lime"> => <span class="success">
-
-*  Не попадает в глобальный JS кэш /modules/core_festival/design/core_festival.min.css?1740490166
+* Не попадает в глобальный JS кэш /modules/core_festival/design/core_festival.min.css?1740490166
 * Переписать TSingleton с использованием __callStatic()
 * ? Перестало работать отключение чата? Или просто не появляется сообщение?
 * Избавиться от глобальных переменных:
     * $sn_mvc - заодно переделать её в класс
     * $user
     * $planet
+* mailgun
+* `unit.unit_location_id` - расписать по локациям: `user_id`, `planet_id`, `fleet_id`, убрать `unit_Location_type`
+* Переместить `design/cache` => `cache/css`
+* cache/.gitkeep
+* Обработка на случай если каталога таки не существует
+* //   @import url("modules/core_festival/design/templates/OpenGame/march8.min.css?{C_var_db_update}");
+  //   search for other imports
+
 
 #ctv
+
+
+2025-05-06 17:50:22 46a161
+[~] CSS cacher now caches module's CSS files regardless of supplied extension (`.min.css`, `.css` or no extension)
+
 
 2025-05-06 14:20:56 46a160
 [~] Chat

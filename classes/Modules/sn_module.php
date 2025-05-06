@@ -15,11 +15,13 @@ class sn_module {
   const M_ROOT_RELATIVE = 'root_relative';
   const M_LOAD_ORDER = 'load_order';
 
+  const MANIFEST_CSS = 'css';
+
   /**
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#46a95#';
+  public $versionCommitted = '#46a161#';
   /**
    * Is module currently active?
    *
@@ -39,7 +41,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #46a95# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46a161# copyright © 2009-2018 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
