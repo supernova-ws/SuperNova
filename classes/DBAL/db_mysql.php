@@ -764,7 +764,7 @@ class db_mysql {
         // Making ID mysql-safe
         array_walk($lockedIds, function (&$id) { $id = idval($id); });
         /** @noinspection SqlResolve */
-        $query[] = "SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE";
+        $query[] = "(SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE)";
       }
     }
 
