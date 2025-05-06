@@ -500,17 +500,20 @@ crowdin.com - переводчик всякого встроенного в ПО
     * <font color="red"> => <span class="error">
     * <font color="lime"> => <span class="success">
 
-* Adjusted code to work with new internal API
-    * modules/ali_ally_player/ali_ally_player.php
-    * modules/core_festival/classes/Core/FestivalBracketPopulate.php
-    * modules/core_festival/classes/FestivalActivityPuzzleExpedition.php
-    * modules/core_festival/classes/FestivalHighspotPuzzleNewYear.php
-    * modules/core_festival/classes/FestivalHighspotSuperBirth.php
-    * modules/interface_batch_operations/interface_batch_operations.php
-    * modules/unit_captain/unit_captain.php
-
+*  Не попадает в глобальный JS кэш /modules/core_festival/design/core_festival.min.css?1740490166
+* Переписать TSingleton с использованием __callStatic()
+* ? Перестало работать отключение чата? Или просто не появляется сообщение?
+* Избавиться от глобальных переменных:
+    * $sn_mvc - заодно переделать её в класс
+    * $user
+    * $planet
 
 #ctv
+
+2025-05-06 14:20:56 46a160
+[~] Chat
+    Enchanced URL parsing/replacement in chat messages (for appropriate ACCESS_LEVELS)
+
 
 2025-05-06 09:16:26 46a159
 [%] SQL

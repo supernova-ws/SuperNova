@@ -27,41 +27,55 @@ $sn_menu_admin_extra = array();
 global $sn_mvc;
 $sn_mvc = [
   FIELD_MODEL => [
+    /** @see AjaxController::controller() */
     'ajax' => [AjaxController::class . '::controller'],
 
     'options'  => ['sn_options_model'],
 
 //    'chat'     => ['sn_chat_model'],
 //    'chat_add' => ['sn_chat_add_model'],
+    /** @see Chat::chatModel() */
     'chat'     => [Chat::class  . '::' . 'chatModel'],
+    /** @see Chat::chatAddModel() */
     'chat_add' => [Chat::class  . '::' . 'chatAddModel'],
 
+    /** @see PageImperium::modelStatic() */
     'imperium' => [PageImperium::class . '::' . 'modelStatic'],
 
+    /** @see PageAdminUserView::modelStatic() */
     'admin/user_view'  => [PageAdminUserView::class . '::' . 'modelStatic'],
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
+    /** @see AjaxController::view() */
     'ajax' => [AjaxController::class . '::view'],
 
     'options'       => ['sn_options_view'],
 
 //    'chat'          => ['sn_chat_view'],
 //    'chat_msg'      => ['sn_chat_msg_view'],
+    /** @see Chat::chatView() */
     'chat'          => [Chat::class  . '::' . 'chatView'],
+    /** @see Chat::chatMsgView() */
     'chat_msg'      => [Chat::class  . '::' . 'chatMsgView'],
+    /** @see Chat::chatFrameView() */
     'chat_frame'      => [Chat::class  . '::' . 'chatFrameView'],
 
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
+    /** @see PageImperium::viewStatic() */
     'imperium'      => [PageImperium::class . '::' . 'viewStatic'],
     'techtree'      => ['sn_techtree_view'],
 
+    /** @see PageAdminUserView::viewStatic() */
     'admin/user_view'     => [PageAdminUserView::class . '::viewStatic'],
     'admin/admin_ally'    => ['sn_admin_ally_view'],
+    /** @see PageAdminMining::viewStatic() */
     'admin/admin_mining'  => [PageAdminMining::class . '::' . 'viewStatic'],
+    /** @see PageAdminModules::viewStatic() */
     'admin/admin_modules' => [PageAdminModules::class . '::' . 'viewStatic'],
+    /** @see PageAdminPayment::viewStatic() */
     'admin/admin_payment' => [PageAdminPayment::class . '::' . 'viewStatic'],
   ],
 
@@ -1453,34 +1467,50 @@ global $sn_data_bbCodes;
 $sn_data_bbCodes = array(
   AUTH_LEVEL_REGISTERED => array(
     // Prefix sn:// resolves to current server URL
+    /** @lang RegExp */
     '#sn://#isU'                                                                        => SN_ROOT_VIRTUAL,
     // news://ID resolves to news BBCode
+    /** @lang RegExp */
     '#news:\/\/(\d+)#is'                                                                => "[news=$1]",
     // [news=ID] resolves to link to news
+    /** @lang RegExp */
     '#\[news\=(\d+)\]#is'                                                               => "<a href=\"announce.php?id=$1\" class=\"link zero\">news://$1</a>",
     // [ube=ID] resolves to link to battle report
+    /** @lang RegExp */
     '#\[ube\=([0-9a-zA-Z]{32})\]#isU'                                                   => "<a href=\"index.php?page=battle_report&cypher=$1\"><span class=\"battle_report_link link\">($1)</span></a>",
     // Battle report's URL from current server also resolves to special link
+    /** @lang RegExp */
     "#" . SN_ROOT_VIRTUAL . "index.php?page=battle_report&cypher=([0-9a-zA-Z]{32})#isU" => "<a href=\"index.php?page=battle_report&cypher=$1\"><span class=\"battle_report_link link\">($1)</span></a>",
 
+    /** @lang RegExp */
     '#\[(c|color)=(white|cyan|yellow|green|pink|red|lime|maroon|orange)\](.+)\[/\1\]#isU' => "<span style=\"color: $2\">$3</span>",
+    /** @lang RegExp */
     '#\[b\](.+)\[/b\]#isU'                                                                => "<b>$1</b>",
+    /** @lang RegExp */
     '#\[i\](.+)\[/i\]#isU'                                                                => "<i>$1</i>",
+    /** @lang RegExp */
     '#\[u\](.+)\[/u\]#isU'                                                                => '<span class="underline">$1</span>',
+    /** @lang RegExp */
     '#\[s\](.+)\[/s\]#isU'                                                                => '<span class="strike">$1</span>',
   ),
 
   AUTH_LEVEL_ADMINISTRATOR => array(
     // Plain URL on string start
-    "#^((?:ftp|https?|sn|faq)://[^\s\[]+)#i"                => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$1$2</a>",
+    /** @lang RegExp */
+    "#^((?:ftps?|https?|sn|faq):\/\/[^\s\[]+)#i"                => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$1$2</a>",
     // Plain URL in the string
-    "#([\s\)\]\}])((?:ftp|https?|sn|faq)://[^\s\[]+)#i"     => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link_external\">$2$3</a>",
+    /** @lang RegExp */
+    '#([\s\)\]\}\>])((?:ftps?|https?|sn|faq):\/\/[^\s\[\<]+)#i' => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link_external\">$2$3</a>",
 
     // [urlw=URL]DESCRIPTION[urlw] - opens link in current window
-    "#\[urlw=(ft|https?://)(.+)\](.+)\[/urlw\]#isU"         => "<a href=\"$1$2\" class=\"link\">$3</a>",
+    /** @lang RegExp */
+    "#\[urlw=(ftps?|https?://)(.+)\](.+)\[/urlw\]#isU"        => "<a href=\"$1$2\" class=\"link\">$3</a>",
     // [url=URL]DESCRIPTION[url] - opens link in new window
-    '#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU'           => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$3</a>",
+    /** @lang RegExp */
+    '#\[url=(ftps?|https?://)(.+)\](.+)\[/url\]#isU'          => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$3</a>",
+
     // Admins can use color codes and special PURPLE color
+    /** @lang RegExp */
     '#\[(c|color)=(\#[0-9A-Fa-f]+|purple)\](.+)\[/\1\]#isU' => "<span style=\"color: $2\">$3</span>",
   ),
 );

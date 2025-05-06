@@ -15,6 +15,8 @@ class Chat {
 
   use TSingleton;
 
+  const CHAT_DEFAULT_LINES_PER_PAGE = 20;
+
   protected $_chat_aliases = array(
     'h'         => 'help',
     '?'         => 'help',
@@ -142,7 +144,7 @@ class Chat {
     } else {
       $alliance = sys_get_param_str('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
 
-      $page_limit = sys_get_param_id('line_per_page', 20); // Chat rows Limit
+      $page_limit = sys_get_param_id('line_per_page', self::CHAT_DEFAULT_LINES_PER_PAGE); // Chat rows Limit
 
       $where_add    = '';
       $last_message = 0;
@@ -533,7 +535,7 @@ class Chat {
         $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
 
         // Replacing news://xxx link with BBCode
-        $message = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $message);
+        $message = preg_replace("#news\:\/\/(\d+)#i", "[news=$1]", $message);
         // Replacing news URL with BBCode
         $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $message);
         $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
