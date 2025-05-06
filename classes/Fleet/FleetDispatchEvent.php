@@ -196,14 +196,14 @@ class FleetDispatchEvent {
   /**
    */
   public function refreshMissionData() {
-    if (!empty($this->srcPlanetId)) {
+    if (!empty($this->srcPlanetId) && !empty($this->srcPlanetOwnerId)) {
 //       $this->srcPlanetRow = DBStaticPlanet::db_planet_by_vector($this->fleet, 'fleet_start_');
       $updateResult = sys_o_get_updated($this->srcPlanetOwnerId, $this->srcPlanetId, $this->eventTimeStamp);
 
       $this->updateSrcPlanetRow($updateResult['planet']);
     }
 
-    if (!empty($this->dstPlanetId)) {
+    if (!empty($this->dstPlanetId) && !empty($this->dstPlanetOwnerId)) {
       $updateResult = sys_o_get_updated($this->dstPlanetOwnerId, $this->dstPlanetId, $this->eventTimeStamp);
 
       $this->updateDstPlanetRow($updateResult['planet']);
@@ -239,7 +239,7 @@ class FleetDispatchEvent {
     $this->srcPlanetId = !empty($this->srcPlanetRow[self::F_PLANET_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_ID] : 0;
     // Starting planet can change owner while fleet mission - and even change planet ID
     // It can happen due to teleport shenanigans or because of planet capturing (in certain game modes)
-    $this->srcPlanetOwnerId = !empty($this->srcPlanetRow[self::F_PLANET_OWNER_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_OWNER_ID] : 0;
+    $this->srcPlanetOwnerId = !empty($this->srcPlanetRow[self::F_PLANET_OWNER_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_OWNER_ID] : $this->srcPlanetOwnerId;
 
     return $this->srcPlanetRow;
   }

@@ -522,6 +522,11 @@ crowdin.com - переводчик всякого встроенного в ПО
 #ctv
 
 
+2025-05-06 18:41:30 46a163
+[%] Fleet Dispatcher
+    Fixed error when fleet arrived/returned to deleted planet: planet owner ID rewrote with `0` - current planet "owner" so `sys_o_get_updated()` calls becomes invalid
+
+
 2025-05-06 18:10:02 46a162
 [%] Fixed error - FleetDispatchEvent::srcPlanetOwnerId does not filled
 
