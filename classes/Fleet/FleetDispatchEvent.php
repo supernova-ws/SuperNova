@@ -64,6 +64,8 @@ class FleetDispatchEvent {
     $this->fleet = $fleetRow;
     $this->event = $eventType;
 
+    $this->srcPlanetOwnerId = $fleetRow[self::F_FLEET_OWNER_ID];
+
     $this->missionId      = (int)$this->fleet[FleetDispatcher::F_FLEET_MISSION];
     $this->missionInfoNew = self::$MISSIONS[$this->missionId];
 
@@ -195,6 +197,7 @@ class FleetDispatchEvent {
    */
   public function refreshMissionData() {
     if (!empty($this->srcPlanetId)) {
+//       $this->srcPlanetRow = DBStaticPlanet::db_planet_by_vector($this->fleet, 'fleet_start_');
       $updateResult = sys_o_get_updated($this->srcPlanetOwnerId, $this->srcPlanetId, $this->eventTimeStamp);
 
       $this->updateSrcPlanetRow($updateResult['planet']);

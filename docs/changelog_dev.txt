@@ -515,7 +515,15 @@ crowdin.com - переводчик всякого встроенного в ПО
   //   search for other imports
 
 
+
+* FleetEvent->srcPlanetOwnerId - вообще неправильно и надо переписать!
+
+
 #ctv
+
+
+2025-05-06 18:10:02 46a162
+[%] Fixed error - FleetDispatchEvent::srcPlanetOwnerId does not filled
 
 
 2025-05-06 17:50:22 46a161
