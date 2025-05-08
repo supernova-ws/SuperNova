@@ -77,9 +77,7 @@ class SN {
    */
   public static $user_options;
 
-  /**
-   * @var debug $debug
-   */
+  /** @var ?debug $debug */
   public static $debug = null;
 
 

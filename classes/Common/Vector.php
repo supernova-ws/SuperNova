@@ -70,8 +70,10 @@ class Vector {
   /**
    * Vector constructor.
    *
-   * @param int|string       $galaxy
-   * @param int|Vector|array $system
+   * @param int|string       $galaxy Vector::READ_VECTOR or Vector::READ_PARAMS_FLEET or integer `galaxy` coordinate
+   * @param int|Vector|array $system If `galaxy` = Vector::READ_VECTOR - instance of Vector class to copy values from
+   *                                 If `galaxy` = Vector::READ_PARAMS_FLEET - array representing `fleet` table record
+   *                                 Otherwise - integer `system` coordinate
    * @param int              $planet
    * @param int              $type
    */

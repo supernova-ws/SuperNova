@@ -43,6 +43,15 @@ class db_mysql {
     'fleets' => 'fleet_id',
   ];
 
+  // Order in which tables should be locked
+  const TABLE_LOCK_ORDER = [
+    'users',
+    'planets',
+    'que',
+    'unit',
+    'fleets',
+  ];
+
   /**
    * DB schemes
    *
@@ -755,20 +764,36 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function lockRecords($locks) {
-    $query = [];
+    // Reordering lock order for known tables
+    $newLocks = [];
+    foreach (self::TABLE_LOCK_ORDER as $tableName) {
+      if (array_key_exists($tableName, $locks)) {
+        $newLocks[$tableName] = $locks[$tableName];
+        unset($locks[$tableName]);
+      }
+    }
+    // Adding tables left - their lock order is not important
+    $newLocks += $locks;
 
-    foreach ($locks as $tableName => $lockedIds) {
+    // Compiling SQL queries to lock records
+    $queries = [];
+    foreach ($newLocks as $tableName => $lockedIds) {
       if (!empty($lockedIds)) {
         // Detecting primary key name
         $idFieldName = !empty(static::TABLE_ID_FIELD[$tableName]) ? static::TABLE_ID_FIELD[$tableName] : 'id';
         // Making ID mysql-safe
         array_walk($lockedIds, function (&$id) { $id = idval($id); });
         /** @noinspection SqlResolve */
-        $query[] = "(SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE)";
+        $queries[] = "(SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE)";
       }
     }
 
-    return !empty($query) ? doquery(implode(' UNION ', $query)) : false;
+//    return !empty($query) ? doquery(implode(' UNION ', $query)) : false;
+    foreach ($queries as $query) {
+      doquery($query);
+    }
+
+    return true;
   }
 
 }

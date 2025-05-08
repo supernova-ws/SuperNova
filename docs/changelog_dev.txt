@@ -495,25 +495,47 @@ crowdin.com - переводчик всякого встроенного в ПО
 * //   @import url("modules/core_festival/design/templates/OpenGame/march8.min.css?{C_var_db_update}");
   //   search for other imports
 * FleetEvent->srcPlanetOwnerId - вообще неправильно и надо переписать!
+* Присмотреться к дедлокам и вызовам в flotenajax.php
 
 * ? Перестало работать отключение чата? Или просто не появляется сообщение?
-* Расписать пока UNION по этапам - и посмотреть, где выбивает дедлок
-
 * При создании списка эвентов флотов - кэшировать уже прочитанные планеты, что бы не читать второй раз прочитанное
     * Не выбирать планеты > maxplanet - там всё равно ничего нет
         * Это вообще можно поставить в базовые процедуры
-* Лочат так же выборы по координатам
-    * SELECT * FROM game_planets WHERE game_planets.`galaxy` = 7 AND game_planets.`system` = 270 AND game_planets.`planet` = 16 AND game_planets.`planet_type` = 1 FOR UPDATE
+* FleetDispatch пересекаются?! (\'fleet_update_run_lock\', \'2025-05-07 19:43:28\') - должен быть до миллисекунд
+    * А вообще - это должен быть флаг?
+* https://dev.mysql.com/doc/refman/5.7/en/timestamp-lookups.html
+    * Либо вешать индексы на все TIMESTAMP поля - либо писать сразу UNIXTIME
+    * И избавляться от всех полей/значений с датой/временем в виде строки...
+* Переделать Vector::__constructor - добавить два статических метода для инициализации вектора из вектора и из флота
+    * Vector -> Coordinates
+* Перенести логгирование запросов в db_sql_query();
 
-!!!!!!! Похоже просто не устанавливается уровень транзакций для соединения !!!!!
-    * SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-    * In addition, SET TRANSACTION can include an optional GLOBAL or SESSION keyword to indicate the scope of the statement.
-    * The default isolation level is REPEATABLE READ
 
+* SELECT @@tx_isolation;
+* УРЛ на флоты искать в TaskDispatchFleets::task()
+
+
+37495953 0x23C2491
+7206490 0x6df65a
+
+
+2025-05-07 21:42:52 6455509
+*** (1) TRANSACTION:
+(1) (Core\Worker)Core\Worker->__call() - 'includes/init.php'@267
+REPLACE INTO `delta_config` (`config_name`, `config_value`) VALUES ('fleet_update_last', '2025-05-07 21:42:52')
+*** (2) TRANSACTION:
+(Core\Worker)Core\Worker->__call() - 'includes/init.php'@267
+REPLACE INTO `delta_config` (`config_name`, `config_value`) VALUES ('fleet_update_last', '2025-05-07 21:42:52')
+*** WE ROLL BACK TRANSACTION (1)
 
 
 #ctv
 
+
+2025-05-08 16:29:20 46a165
+[@] Code DBAL: Now lockRecords locks rows not with UNION but by one query per table
+
+[%] Deadlock fixed: sn_fleet_page3() - 'fleet.php'@228: "SELECT * FROM `game_fleets` WHERE `fleet_end_galaxy` = G AND `fleet_end_system` = S AND `fleet_end_planet` = P AND `fleet_end_type` = T AND `fleet_owner` = FO AND `fleet_mission` IN (1,2,9) AND `fleet_mess` = 0 FOR UPDATE"
 
 
 2025-05-08 11:23:47 46a164
