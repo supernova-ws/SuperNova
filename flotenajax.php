@@ -46,16 +46,29 @@ if (!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$
   die($lang['gs_c00']);
 }
 
+$target_planet_type  = sys_get_param_int('planet_type');
+$target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
+$target_coord['planet_type'] = $target_planet_check;
+
+// Now gathering info on db records we should lock
+$target_row = DBStaticPlanet::db_planet_by_vector($target_coord);
+// Finding enemy player record - if target planet exists
+$enemy = !empty($target_row['id_owner']) ? db_user_by_id($target_row['id_owner']) : null;
+
 db_mysql::db_transaction_start();
+// Locking all necessary user/planet records
+SN::$gc->db->lockRecords([
+  'users'   => [$user['id'],] + (!empty($enemy['id']) ? [1 => $enemy['id'],] : []),
+  'planets' => [$user['current_planet'],] + (!empty($target_row['id']) ? [1 => $target_row['id'],] : []),
+]);
 
 $user      = db_user_by_id($user['id'], true);
 $planetrow = DBStaticPlanet::db_planet_by_id($user['current_planet'], true);
 
-$target_planet_type  = sys_get_param_int('planet_type');
-$target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
-
-$target_coord['planet_type'] = $target_planet_check;
-$target_row                  = DBStaticPlanet::db_planet_by_vector($target_coord);
+// If target row is present - refreshing records to be absolutely sure that nothing happens with it
+if (!empty($target_row)) {
+  $target_row = DBStaticPlanet::db_planet_by_id($target_row['id']);
+}
 
 if (empty($target_row)) {
   $target_row = array(

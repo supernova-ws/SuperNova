@@ -144,28 +144,17 @@ class FleetDispatchEvent {
    * @return array|bool|mysqli_result|null
    */
   public function lockEventRecords() {
-    // $query = [];
     $locks = [];
 
     if (!empty($this->userIdsToLock)) {
       $locks['users'] = $this->userIdsToLock;
-//      /** @noinspection SqlResolve */
-//      $query[] = "SELECT 1 FROM `{{users}}` WHERE `id` IN (" . implode(',', $this->userIdsToLock) . ") FOR UPDATE";
     }
     if (!empty($this->planetIdsToLock)) {
       $locks['planets'] = $this->planetIdsToLock;
-//      /** @noinspection SqlResolve */
-//      $query[] = "SELECT 1 FROM `{{planets}}` WHERE `id` IN (" . implode(',', $this->planetIdsToLock) . ") FOR UPDATE";
     }
     if (!empty($this->fleetIdsToLock)) {
       $locks['fleets'] = $this->fleetIdsToLock;
-//      /** @noinspection SqlResolve */
-//      $query[] = "SELECT 1 FROM `{{fleets}}` WHERE `fleet_id` IN (" . implode(',', $this->fleetIdsToLock) . ") FOR UPDATE";
     }
-
-    // Really - no checks here. We should lock at least flying fleet and fleet owner
-
-//    return doquery(implode(' UNION ', $query));
     return SN::$gc->db->lockRecords($locks);
   }
 

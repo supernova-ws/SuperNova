@@ -66,11 +66,6 @@ NULL
 
 
 #wip
-SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = 5 AND fleet_start_system = AND fleet_mess = 1) OR ( fleet_end_galaxy = 5 AND fleet_end_system = AND fleet_mess = 0)
-=>
-SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = 5 AND fleet_start_system = 1 AND fleet_mess = 1)
-UNION
-SELECT * FROM `game_fleets` WHERE  ( fleet_end_galaxy = 5 AND fleet_end_system = 1 AND fleet_mess = 0)
 
 ???
  SET profiling = 1;
@@ -269,21 +264,6 @@ DROP INDEX `I_test`;
 
 * Если нет конфигов модулей - сыпится куча ошибок
 
-* Переделать в UNION
-    * SELECT * FROM `game_fleets` WHERE ( fleet_start_galaxy = ? AND fleet_start_system = ? AND fleet_start_planet = 16 AND fleet_start_type = 3 AND fleet_mess = 1) OR ( fleet_end_galaxy = ? AND fleet_end_system = ? AND fleet_end_planet = 16 AND fleet_end_type = 3 AND fleet_mess = 0)\G
-    * WHERE
-        * fleet_start_galaxy = ?
-        * fleet_start_system = ?
-        * fleet_start_planet = 16
-        * fleet_start_type = 3
-        * fleet_mess = 1
-    * OR
-        * fleet_end_galaxy = ?
-        * fleet_end_system = ?
-        * fleet_end_planet = 16
-        * fleet_end_type = 3
-        * fleet_mess = 0
-
 * ube_report_unit
     * decimal 64 -> decimal 32 или даже 16-20 - 32 МАЛО!!!
     * SELECT max(ube_report_unit_attack) FROM `game_ube_report_unit`
@@ -449,6 +429,9 @@ crowdin.com - переводчик всякого встроенного в ПО
             * С секретным ключем и таймстампом - что бы нельзя было перехватить пакет и хуярить его постоянно и нужно было в браузере рефрешить интерфейс
         * Энкодить Гет и Пост в УРЛ
 
+* Cron
+    * https://habr.com/ru/articles/255245/
+    * https://code.tutsplus.com/managing-cron-jobs-with-php--net-19428t
 
 * Развоз ресурсов - сделать горизонтальным
 
@@ -499,9 +482,7 @@ crowdin.com - переводчик всякого встроенного в ПО
 * В переводах позаменять font color на span class
     * <font color="red"> => <span class="error">
     * <font color="lime"> => <span class="success">
-* Не попадает в глобальный JS кэш /modules/core_festival/design/core_festival.min.css?1740490166
 * Переписать TSingleton с использованием __callStatic()
-* ? Перестало работать отключение чата? Или просто не появляется сообщение?
 * Избавиться от глобальных переменных:
     * $sn_mvc - заодно переделать её в класс
     * $user
@@ -513,13 +494,30 @@ crowdin.com - переводчик всякого встроенного в ПО
 * Обработка на случай если каталога таки не существует
 * //   @import url("modules/core_festival/design/templates/OpenGame/march8.min.css?{C_var_db_update}");
   //   search for other imports
-
-
-
 * FleetEvent->srcPlanetOwnerId - вообще неправильно и надо переписать!
+
+* ? Перестало работать отключение чата? Или просто не появляется сообщение?
+* Расписать пока UNION по этапам - и посмотреть, где выбивает дедлок
+
+* При создании списка эвентов флотов - кэшировать уже прочитанные планеты, что бы не читать второй раз прочитанное
+    * Не выбирать планеты > maxplanet - там всё равно ничего нет
+        * Это вообще можно поставить в базовые процедуры
+* Лочат так же выборы по координатам
+    * SELECT * FROM game_planets WHERE game_planets.`galaxy` = 7 AND game_planets.`system` = 270 AND game_planets.`planet` = 16 AND game_planets.`planet_type` = 1 FOR UPDATE
+
+!!!!!!! Похоже просто не устанавливается уровень транзакций для соединения !!!!!
+    * SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+    * In addition, SET TRANSACTION can include an optional GLOBAL or SESSION keyword to indicate the scope of the statement.
+    * The default isolation level is REPEATABLE READ
+
 
 
 #ctv
+
+
+
+2025-05-08 11:23:47 46a164
+[%] Deadlock fixed: flotenajax.php@97: "SELECT * FROM {{users}} WHERE `id` = X LIMIT 1 FOR UPDATE"
 
 
 2025-05-06 18:41:30 46a163
