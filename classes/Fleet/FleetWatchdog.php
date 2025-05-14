@@ -22,6 +22,8 @@ class FleetWatchdog {
   public static $eventsProcessed = 0;
   /** @var int $currentEvent */
   public static $currentEvent = EVENT_FLEET_NONE;
+  /** @var int $processedIPR Processed IPR on this run */
+  public static $processedIPR = -1;
 
   const TASK_COMPLETE = 0;
   const CONTINUE_EXECUTION = 2;
@@ -86,6 +88,8 @@ class FleetWatchdog {
       return FleetWatchdog::FLEET_IS_EMPTY;
     }
 
+    self::$processedIPR = $fleetEvent::$processedIPR;
+
     self::$eventStartedAt = microtime(true);
     self::$currentMission = !empty($fleetEvent->fleet[FleetDispatcher::F_FLEET_MISSION]) ? $fleetEvent->fleet[FleetDispatcher::F_FLEET_MISSION] : MT_NONE;
     self::$currentEvent   = !empty($fleetEvent->event) ? $fleetEvent->event : MT_NONE;
@@ -113,14 +117,15 @@ class FleetWatchdog {
    */
   public function getTerminationMessage() {
     return sprintf(
-      'Flying fleet handler works %1$s seconds (> %2$s) - skipping rest. Processed %3$d / %7$d events. Last event: mission %4$s event %6$s (%5$ss)',
+      'Flying fleet handler works %1$s seconds (> %2$s) - skipping rest. Processed %8$d IPRs, %3$d / %7$d events. Last event: mission %4$s event %6$s (%5$ss)',
       number_format(microtime(true) - self::$workBegin, 4),
       SN::$config->fleet_update_dispatch_time,
       self::$eventsProcessed,
       !empty(SN::$lang['type_mission'][self::$currentMission]) ? SN::$lang['type_mission'][self::$currentMission] : '!TERMINATED BY TIMEOUT!',
       number_format(microtime(true) - self::$eventStartedAt, 4),
       !empty(SN::$lang['fleet_events'][self::$currentEvent]) ? SN::$lang['fleet_events'][self::$currentEvent] : '!TERMINATED BY TIMEOUT!',
-      count(FleetDispatcher::$fleet_event_list)
+      count(FleetDispatcher::$fleet_event_list),
+      self::$processedIPR
     );
   }
 

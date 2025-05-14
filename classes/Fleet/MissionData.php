@@ -68,7 +68,7 @@ class MissionData {
     $this->fleet         = $fleetEvent->fleet;
     $this->dstUserRow    = $fleetEvent->dstPlanetOwnerId ? db_user_by_id($fleetEvent->dstPlanetOwnerId) : null;
     $this->dstPlanetRow  = $fleetEvent->dstPlanetId ? $fleetEvent->dstPlanetRow : null;
-    $this->fleetOwnerRow = $fleetEvent->srcPlanetOwnerId ? db_user_by_id($fleetEvent->fleet['fleet_owner']) : null;
+    $this->fleetOwnerRow = $fleetEvent->fleetOwnerId ? db_user_by_id($fleetEvent->fleet['fleet_owner']) : null;
     $this->srcPlanetRow  = $fleetEvent->srcPlanetId ? $fleetEvent->srcPlanetRow : null;
     $this->fleet_event   = $fleetEvent->event;
 

@@ -16,13 +16,15 @@
 *
 * @package language
 * @system [Deutsch]
-* @version #46a158#
+* @version #46a166#
 *
 */
 
 /**
 * NICHT ÄNDERN
 */
+
+use Fleet\Constants;
 
 if (!defined('INSIDE'))
 {
@@ -370,29 +372,25 @@ $a_lang_array = [
     'msg_sender' => 'Expeditionsbericht',
     'msg_title' => 'Expeditionsbericht',
 
-    'found_dark_matter_new' => 'DM erhalten:',
-    'found_resources_new' => "Ressourcen gefunden:",
-    'found_fleet_new' => "Schiffe gefunden:",
-    'lost_fleet_new' => "Folgende Schiffe verloren:",
-
     'found_dark_matter' => '%1$d Einheiten DM erhalten',
     'found_resources' => "Ressourcen gefunden:\r\n",
     'found_fleet' => "Schiffe gefunden:\r\n",
     'lost_fleet' => "Folgende Schiffe verloren:\r\n",
+
     'outcomes' => [
-      FLT_EXPEDITION_OUTCOME_NONE => [
+      Constants::OUTCOME_NONE => [
         'messages' => [
           'Ihre Forscher haben nichts entdeckt',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET => [
         'messages' => [
           'Die Flotte ist in ein schwarzes Loch geraten und teilweise verloren gegangen',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
         'messages' => [
           'Wenn Sie das nur sehen könnten! Es ist so schön... Es ruft... (Verbindung zur Flotte verloren)',
           'Flottenbericht %1$s. Wir haben die Sektorerforschung abgeschlossen. Die Crew ist unzufrieden. Hey, was machst du auf der Brücke?! (Verbindung zur Flotte verloren)',
@@ -402,7 +400,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => [
+      Constants::EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'Leider reichte die kombinierte Leistung aller Flottencomputer nicht einmal aus, um das kleinste Schiff zu kontrollieren. Versuchen Sie, mehr Schiffe und/oder größere Schiffe zu senden',
         'messages' => [
           0 => [
@@ -417,7 +415,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => [
+      Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES => [
         'no_result' => 'Die Laderäume Ihrer Flotte waren nicht in der Lage, auch nur einen Ressourcencontainer aufzunehmen. Versuchen Sie, eine Flotte mit mehr Transportern zu senden',
         'messages' => [
           0 => [
@@ -432,7 +430,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => [
+      Constants::EXPEDITION_OUTCOME_FOUND_DM => [
         'no_result' => 'Leider reichten alle Flottenspeicher nicht aus, um auch nur eine einzige DM zu sammeln. Versuchen Sie, eine größere Flotte zu senden',
         'messages' => 'Ihre Flotte war Zeuge der Geburt einer SuperNova',
       ],

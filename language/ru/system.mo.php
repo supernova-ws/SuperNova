@@ -16,13 +16,15 @@
 *
 * @package language
 * @system [Russian]
-* @version #46a156#
+* @version #46a166#
 *
 */
 
 /**
 * DO NOT CHANGE
 */
+
+use Fleet\Constants;
 
 if (!defined('INSIDE'))
 {
@@ -371,29 +373,25 @@ $a_lang_array = [
     'msg_sender' => 'Отчет экспедиции',
     'msg_title' => 'Отчет экспедиции',
 
-    'found_dark_matter_new' => 'Получена ТМ:',
-    'found_resources_new' => "Найдены ресурсы:",
-    'found_fleet_new' => "Найдены корабли:",
-    'lost_fleet_new' => "Потеряны следующие корабли:",
-
     'found_dark_matter' => 'Получено %1$d единиц ТМ',
     'found_resources' => "Найдены ресурсы:\r\n",
     'found_fleet' => "Найдены корабли:\r\n",
     'lost_fleet' => "Потеряны следующие корабли:\r\n",
+
     'outcomes' => [
-      FLT_EXPEDITION_OUTCOME_NONE => [
+      Constants::OUTCOME_NONE => [
         'messages' => [
           'Ваши исследователи ничего не обнаружили',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET => [
         'messages' => [
           'Флот попал в черную дыру и частично утерян',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
         'messages' => [
           'Если бы вы только это видели! Оно такое красивое... Оно зовёт к себе... (связь с флотом утеряна)',
           // 'Отчёт флота %1$s. Мы завершили исследование сектора. Команда недовольна Эй, ты что делаешь на мостике?! (связь с флотом утеряна)',
@@ -403,7 +401,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => [
+      Constants::EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'К сожалению, совокупной мощности всех компьютеров флота не хватило даже на контроль самого мелкого корабля. Попробуйте отправлять больше кораблей и/или более крупные корабли',
         'messages' => [
           0 => [
@@ -418,7 +416,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => [
+      Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES => [
         'no_result' => 'Трюмы вашего флота оказались неспособны вместить хоть один контейнер с ресурсами. Попробуйте отправлять флот с большим количеством транспортников',
         'messages' => [
           0 => [
@@ -433,7 +431,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => [
+      Constants::EXPEDITION_OUTCOME_FOUND_DM => [
         'no_result' => 'К сожалению, всех накопителей флота не хватило что бы собрать одну-единственую ТМ. Попробуйте отправлять флот побольше',
         'messages' => 'Ваш флот стал свидетелем рождения СуперНовы',
         // 'messages' => array(

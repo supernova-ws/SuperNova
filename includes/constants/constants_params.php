@@ -73,9 +73,6 @@ define('P_TIME_RAW', 'P_TIME_RAW');
 
 define('P_MINING_IS_MANAGED', 'P_MINING_IS_MANAGED'); // Флаг, означающий что добычей ресурсов можно управлять
 
-const P_MISSION_EXPEDITION_OUTCOME = 'outcome';
-const P_MISSION_EXPEDITION_OUTCOME_TYPE = 'outcome_type';
-const P_MISSION_EXPEDITION_OUTCOME_SECONDARY = 'secondary';
 const P_MULTIPLIER = 'multiplier';
 const P_MESSAGE_ID = 'messageId';
 

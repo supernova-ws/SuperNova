@@ -487,7 +487,6 @@ crowdin.com - переводчик всякого встроенного в ПО
     * $sn_mvc - заодно переделать её в класс
     * $user
     * $planet
-* mailgun
 * `unit.unit_location_id` - расписать по локациям: `user_id`, `planet_id`, `fleet_id`, убрать `unit_Location_type`
 * Переместить `design/cache` => `cache/css`
 * cache/.gitkeep
@@ -495,9 +494,7 @@ crowdin.com - переводчик всякого встроенного в ПО
 * //   @import url("modules/core_festival/design/templates/OpenGame/march8.min.css?{C_var_db_update}");
   //   search for other imports
 * FleetEvent->srcPlanetOwnerId - вообще неправильно и надо переписать!
-* Присмотреться к дедлокам и вызовам в flotenajax.php
 
-* ? Перестало работать отключение чата? Или просто не появляется сообщение?
 * При создании списка эвентов флотов - кэшировать уже прочитанные планеты, что бы не читать второй раз прочитанное
     * Не выбирать планеты > maxplanet - там всё равно ничего нет
         * Это вообще можно поставить в базовые процедуры
@@ -508,16 +505,34 @@ crowdin.com - переводчик всякого встроенного в ПО
     * И избавляться от всех полей/значений с датой/временем в виде строки...
 * Переделать Vector::__constructor - добавить два статических метода для инициализации вектора из вектора и из флота
     * Vector -> Coordinates
-* Перенести логгирование запросов в db_sql_query();
 
+* Сделать ракетную атаку частью башинга
+* Таймаут на вступление/выход из Альянса. И на создание нового Альянса после роспуска
+
+* Добавить в чате в дропдаун стилей болд италик и страйкаут
+
+* Вообще-то сейчас лучше разгружать код SN от хуйни, а не делать второстепенные изменения.
+    * Так и запишем
+
+
+* Когда будет переход на 7.4:
+    * Заменить mt_rand() на random_int()
+        * https://php.watch/articles/testing-php-rand-functions
+        * https://www.php.net/manual/en/function.random-int.php
+            * !!! It throws an Exception if it could not yield a senescence of numbers with sufficient randomness, and does not fallback to any insecure RNG source.
+* Переход на 8.0
+    * Насыпали сахара: object?->method()
+        * https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.nullsafe
+* 8.1.0
+    * Closure::fromCallable - типа, можно генерить кложуры из методов внутри класса?!
+        * https://www.php.net/manual/en/closure.fromcallable.php
+        * Не, смотреть вот это: https://www.php.net/manual/en/functions.first_class_callable_syntax.php
 
 * SELECT @@tx_isolation;
 * УРЛ на флоты искать в TaskDispatchFleets::task()
 
-
 37495953 0x23C2491
 7206490 0x6df65a
-
 
 2025-05-07 21:42:52 6455509
 *** (1) TRANSACTION:
@@ -529,7 +544,139 @@ REPLACE INTO `delta_config` (`config_name`, `config_value`) VALUES ('fleet_updat
 *** WE ROLL BACK TRANSACTION (1)
 
 
+* Deadlock found when trying to get lock; try restarting transaction
+    /* 2025-05-12 04:00:01.597516
+    StatUpdateLauncher::scheduler_process() - 'includes/init.php'@444
+    StatCalculator::sys_stat_calculate() - 'classes/StatUpdateLauncher.php'@72
+    db_user_list() - 'classes/StatCalculator.php'@98 */ SELECT * FROM game_users FOR UPDATE
+* Deadlock found when trying to get lock; try restarting transaction
+  /* 2025-05-12 00:32:32.747069
+  (Core\Worker)Core\Worker->__call() - 'includes/init.php'@267
+  call_user_func_array() - 'classes/Core/Worker.php'@51
+  {closure}() - ''
+  (Fleet\FleetDispatcher)Fleet\FleetDispatcher->flt_flying_fleet_handler() - 'includes/init.php'@253
+  */ REPLACE INTO `delta_config` (`config_name`, `config_value`) VALUES ('fleet_update_last', '2025-05-12 00:32:32');
+
+
+
+* "Экстракция ТМ/Компрессия дейтерия" - шанс превратить часть найденного дейтерия в ТМ
+    * Опция в экспе? Абилка? Юнит?
+* Роллить экспу, даже если флот отзывается из экспедиции более чем через час пребывания
+    * А не будут ли злоупотреблять? Ограничить минимальное время 1 часом
+* Бонус или пити? Специальный триггер по накоплению статистики в экспедиции:
+    * Статистику можно копить по:
+        * Количество проведенных часов - могут злоупотреблять отправляя мелкие флоты для накопления часов, а потом крупный - для гарантированного выигрыша
+            * Способ борьбы - рандомайз момента, когда срабатывает триггер
+        * Количество утраченного металла
+            * Ну тут не вижу злоупотреблений
+        * Количество металла, побывавшего в экспедициях
+        * Масштабировать в зависимости от скорости добычи!
+    * Бонус - удваивать добычу?
+        * Разные майлстоуны - 1.000, 10.000 итд - разные коэффициенты?
+    * Пити:
+        * отменять негативное событие - опять же, что бы не злоупотребляли
+
+* SELECT NOW(6) - microseconds precission, timestamp(6)
+    * You need to be at MySQL version 5.6.4 or later to declare columns with fractional-second time datatypes.
+        * И тест и прод - ОК
+* Перепрятать в класс функции типа
+    * sn_sys_handler_add($functions, $this->manifest['functions'], $this);
+    * sys_handler_add_one($functions, $functionName, $callable, static::class, '');
+* Добавить флаги в описание экспедиций ???:
+    * Может ли быть найден флот
+    * Может ли быть найдена ТМ
+    * Может ли быть потерян флот
+
+* Экспы считаются ОЧЕНЬ долго!
+    * Flying fleet handler works 4.8590 seconds (> 1) - skipping rest. Processed 1 / 58 events. Last event: mission Экспедиция event !TERMINATED BY TIMEOUT! (4.8373s)
+    * Flying fleet handler works 5.2726 seconds (> 1) - skipping rest. Processed 3 / 50 events. Last event: mission Экспедиция event !TERMINATED BY TIMEOUT! (5.2533s)
+    * А это - удержание или экспа внутри?
+        * Flying fleet handler works 5.1873 seconds (> 1) - skipping rest. Processed 6 / 36 events. Last event: mission Удержание event !TERMINATED BY TIMEOUT! (5.1473s)
+    * Выяснить - это ракеты или что вообще?
+
+* https://mariadb.com/kb/en/mariadb-dumpslow/
+
+
+[*] Экспедиция
+    - Новый Наёмник - Экспедитор / Перебежчик (?) - позволяет находить корабли других рас в экспе
+    * Прибавлять количество экспоочков в зависимости от часов (?)
+    * Экспа-квазар: потерять часть (?) флота и привезти больше ТМ
+        * Черная Дыра - сбросить ресурсы и получить ТМ
+            * При виде такого люки ваших кораблей непроизвольно расслабились и все ресурсы улетели в Дыру. Зато получили ТМ (или не получили)
+
+
+* И вообще - объединять Астрокартографию и Колонизацию в одну теху по примеру Огейма - это был идиотизм
+    * Надо разнести обратно - но уже в новой версии
+* Впрочем, вы так активно рассказываете, как у вас много ТМ - что я реально задумался перепроверить свою матмодель.
+    * Чем больше ТМ - тем меньше её будет в экспах ?
+
+* Разрешить отправлять "Транспорт" и "Передислокацию" на пустые координаты
+    * Тогда все проверки на возможность выгрузки ресурсов/приземлению флота проводить уже в Диспетчере Флотов
+        * ВООБЩЕ=ТО это ВСЕГДА надо проверять! А ВДРУГ Планета поменялась? (телепортация, захват итд)
+
+* Обломки должны быть отдельной сущностью по типу Планеты и Луны
+* Советники - на игрока
+* Губернаторы - на планету, Секретарь - второй губернатор
+* Возврат боевого флота не отменяет башинг? Переписать, кстате
+* Тёмная энергия - производится в одном месте, но доступна везде, где не хватает
+    * Как ЭТО считать?!
+* Позволять упаковывать ресурсы в корабли на орбите?
+    * Специальный перк "Плюшкин"?
+    * Специальная технология?
+    * Спеиальный советник?
+    * А игроки не лопнут?
+        * А давать только мелким?
+* Блюющий смайлик вместо кофе - "Поставить автомат с разливным нескафе"
+    * Снимать деньги?
+
 #ctv
+
+#ctv MVP3
+
+* Логи экспедиций - и давать ссылку на них в сообщениях
+    * Чистить логи
+* Логи ракетных атак - и давать ссылку на них в сообщениях
+    * Чистить логи
+* Избавиться от require_once(SN_ROOT_PHYSICAL . 'includes/includes/flt_mission_explore.php');
+
+#ctv MVP2
+
+* Переключатель в конфигурации - что бы логировались и удачные циклы диспатчера
+    * Ну, посмотреть как там количество IPR
+
+#ctv MVP1
+
+* Вернуть
+    * [~] МПР Теперь можно атаковать ракетами свои же планеты. Таким образом можно избавится от излишних ракет или перехватчиков в шахтах, а так же уничтожать свои защитные сооружения
+* ? Перестало работать отключение чата? Или просто не появляется сообщение?
+* Сделать функцию, которая считают рандом по процентам по основанию (1 млн, например) и возвращает [0,1] - нормализированный коэффициент
+    * Использовать её в Экспедициях
+* mailgun
+* Починить иконку "Премиума"
+
+
+
+#ctv MVP0
+
+* Пройтись по TODO
+    * // TODO - THIS NEED TO BE ADDRESSED!
+    * // TODO DEBUG -------------------------------------------------------------------------------------------
+
+* Зающать FleetRowObject в экспедициях
+* Перенести логгирование запросов в db_sql_query();
+* Вариант 2: В экспу отправляли флотов больше, чем то позволяют техи - пофиксить как-то
+
+* Изолировать ауткомы
+
+* Протестировать MissionExploreResult::flt_mission_explore_addon()
+
+#ctv
+
+2025-05-14 19:50:37 46a166
+[!] Fleet/Mission/Expedition
+    * Refactored mission code to class
+    * Now fleet dispatcher internal messages also contains count of processed IPRs
+    * Mission Explore constants moved to Fleet/Constants
 
 
 2025-05-08 16:29:20 46a165

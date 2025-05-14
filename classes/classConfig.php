@@ -114,7 +114,7 @@
  * @property float      $resource_multiplier           => 1, // aka Mining speed
  * @property float      $game_speed                    => 1, // Game speed aka Building/Research speed
  * @property float      $fleet_speed                   => 1, // Fleet speed
- * @property float      $game_speed_expedition         => 1, // Game expedition speed
+ * @property float      $game_speed_expedition         => 1, // Game expedition rate aka Game expedition speed
  *
  * @property int        $tpl_minifier                  => 0, // Template minifier
  * @property int        $tpl_allow_php                 => 0, // PTL allow INCLUDEPHP and PHP tags
@@ -207,17 +207,19 @@
  * @property string $advGoogleLeftMenuCode   => '(Place here code for banner)',
  * @property int    $uni_price_galaxy        => 10000,
  * @property int    $uni_price_system        => 1000,
- * @property int    $fleet_bashing_attacks   => 3,      // Max amount of attack per wave - 3 by default
- * @property int    $fleet_bashing_interval  => 1800,   // Maximum interval between attacks when they still count as one wave - 30m by default
- * @property int    $fleet_bashing_scope     => 86400,  // Interval on which bashing waves counts - 24h by default
- * @property int    $fleet_bashing_war_delay => 43200,  // Delay before start bashing after declaring war to alliance - 12h by default
- * @property int    $fleet_bashing_waves     => 3,      // Max amount of waves per day - 3 by default
- * @property int    $player_max_colonies     => -1, // Max player planet count (NOT including main planet)
- * @property int    $eco_scale_storage       => 1,
- * @property int    $game_mode               => 0,           // 0 - SuperNova, 1 - oGame
+ * @property int               $fleet_bashing_attacks   => 3,      // Max amount of attack per wave - 3 by default
+ * @property int               $fleet_bashing_interval  => 1800,   // Maximum interval between attacks when they still count as one wave - 30m by default
+ * @property int               $fleet_bashing_scope     => 86400,  // Interval on which bashing waves counts - 24h by default
+ * @property int               $fleet_bashing_war_delay => 43200,  // Delay before start bashing after declaring war to alliance - 12h by default
+ * @property int               $fleet_bashing_waves     => 3,      // Max amount of waves per day - 3 by default
+ * @property int               $player_max_colonies     => -1, // Max player planet count (NOT including main planet)
+ * @property int               $eco_scale_storage       => 1,
+ * @property int               $game_mode               => 0,           // 0 - SuperNova, 1 - oGame
  *
  *
- * @property string $cache_prefix Temporary for updater
+ * @property string            $cache_prefix Temporary for updater
+ *
+ * @property mixed|string|null $rpg_cost_exchange => 1000, // Exchange allows resource trade between players
  */
 class classConfig extends classPersistent {
   const DATE_TYPE_UNIX = 0;

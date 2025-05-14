@@ -17,13 +17,15 @@
 *
 * @package language
 * @system [English]
-* @version 46a156
+* @version 46a166
 *
 */
 
 /**
 * DO NOT CHANGE
 */
+
+use Fleet\Constants;
 
 if (!defined('INSIDE')) {
 	die('Hack attempt!');
@@ -367,29 +369,25 @@ $a_lang_array = (array(
     'msg_sender' => 'Отчет экспедиции',
     'msg_title' => 'Отчет экспедиции',
 
-    'found_dark_matter_new' => 'Получена ТМ:',
-    'found_resources_new' => "Найдены ресурсы:",
-    'found_fleet_new' => "Найдены корабли:",
-    'lost_fleet_new' => "Потеряны следующие корабли:",
-
     'found_dark_matter' => 'Получено %1$d единиц ТМ',
     'found_resources' => "Найдены ресурсы:\r\n",
     'found_fleet' => "Найдены корабли:\r\n",
     'lost_fleet' => "Потеряны следующие корабли:\r\n",
+
     'outcomes' => array(
-      FLT_EXPEDITION_OUTCOME_NONE => array(
+      Constants::OUTCOME_NONE => array(
         'messages' => array(
           'Ваши исследователи ничего не обнаружили',
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET => array(
         'messages' => array(
           'Флот попал в черную дыру и частично утерян',
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
         'messages' => array(
           'Если бы вы только это видели! Оно такое красивое... Оно зовёт к себе... (связь с флотом утеряна)',
           // 'Отчёт флота %1$s. Мы завершили исследование сектора. Команда недовольна Эй, ты что делаешь на мостике?! (связь с флотом утеряна)',
@@ -399,22 +397,22 @@ $a_lang_array = (array(
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'К сожалению, совокупной мощности всех компьютеров флота не хватило даже на контроль самого мелкого корабля. Попробуйте отправлять больше кораблей и/или более крупные корабли',
-        'messages' => array(
-          0 => array(
+        'messages' => [
+          0 => [
             'Вы нашли абсолютно новый флот',
-          ),
-          1 => array(
+          ],
+          1 => [
             'Вы нашли флот',
-          ),
-          2 => array(
+          ],
+          2 => [
             'Вы нашли б/у флот',
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
         'no_result' => 'Трюмы вашего флота оказались неспособны вместить хоть один контейнер с ресурсами. Попробуйте отправлять флот с большим количеством транспортников',
         'messages' => array(
           0 => array(
@@ -429,7 +427,7 @@ $a_lang_array = (array(
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_DM => array(
         'no_result' => 'К сожалению, всех накопителей флота не хватило что бы собрать одну-единственую ТМ. Попробуйте отправлять флот побольше',
         'messages' => 'Ваш флот стал свидетелем рождения СуперНовы',
         /*

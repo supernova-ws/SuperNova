@@ -14,7 +14,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a165');
+define('SN_VERSION', '46a166');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -259,22 +259,25 @@ const EVENT_FLEET_STAY   = 2;
 const EVENT_FLEET_RETURN = 3;
 
 // Обязательно оставить, что бы arrive < accomplish < return
-const EVENT_FLT_ARRIVE     = 'EVENT_FLT_ARRIVE'; // Fleet arrive to destination
-const EVENT_FLT_ACCOMPLISH = 'EVENT_FLT_ACCOMPLISH'; // Fleet ends his mission by timer
-const EVENT_FLT_RETURN     = 'EVENT_FLT_RETURN'; // Fleet returns to starting planet
+/** @var string Fleet arrived to destination */
+const EVENT_FLT_ARRIVE     = 'EVENT_FLT_ARRIVE';
+/** @var string Fleet ended his mission by timer */
+const EVENT_FLT_ACCOMPLISH = 'EVENT_FLT_ACCOMPLISH'; //
+/** @var string Fleet returned to starting planet */
+const EVENT_FLT_RETURN     = 'EVENT_FLT_RETURN'; //
 
-const FLT_EXPEDITION_OUTCOME_NONE = 0;
-const FLT_EXPEDITION_OUTCOME_LOST_FLEET = 1;
-const FLT_EXPEDITION_OUTCOME_FOUND_FLEET = 2;
-const FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES = 3;
-const FLT_EXPEDITION_OUTCOME_FOUND_DM = 4;
-const FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT = 5;
-const FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL = 6;
 
-const FLT_EXPEDITION_OUTCOME_TYPE_BAD = -1;
-const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
-const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
-
+/** @formatter:off */
+const CONST_1K    = 1000;
+const CONST_10K   = 10000;
+const CONST_100K  = 100000;
+const CONST_1M    = 1000000;
+const CONST_10M   = 10000000;
+const CONST_100M  = 100000000;
+const CONST_1B    = 1000000000;
+const CONST_10B   = 10000000000;
+const CONST_100B  = 100000000000;
+/** @formatter:on */
 
 // Log system codes
 define('LOG_DEFAULT', 0); // Код по умолчанию

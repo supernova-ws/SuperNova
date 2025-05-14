@@ -13,7 +13,6 @@ use SN;
 use debug;
 use classConfig;
 use Core\GlobalContainer;
-use Planet\DBStaticPlanet;
 
 /**
  * Class Fleet\FleetDispatcher
@@ -21,12 +20,12 @@ use Planet\DBStaticPlanet;
  */
 class FleetDispatcher {
   const TASK_COMPLETE = 0;
-  const TASK_TERMINATED = 1;
+//  const TASK_TERMINATED = 1;
 
-  const F_FLEET_EVENT = 'fleet_event';
+//  const F_FLEET_EVENT = 'fleet_event';
   const F_FLEET_MISSION = 'fleet_mission';
-  /** @var array[] $fleet_list */
-  public static $fleet_list = [];
+//  /** @var array[] $fleet_list */
+//  public static $fleet_list = [];
   /** @var FleetDispatchEvent[] $fleet_event_list */
   public static $fleet_event_list = [];
   /** @var int[] $missions_used */
@@ -53,26 +52,26 @@ class FleetDispatcher {
     $this->debug      = $gc->debug;
   }
 
-  /**
-   * @deprecated
-   */
-  public function dispatch() {
-    if (
-      SN::$options[PAGE_OPTION_FLEET_UPDATE_SKIP]
-      ||
-      SN::gameIsDisabled()
-      ||
-      !$this->getLockOld()
-    ) {
-      return;
-    }
-
-    $this->flt_flying_fleet_handler();
-
-    $this->releaseLock();
-
-    set_time_limit(60);
-  }
+//  /**
+//   * @deprecated
+//   */
+//  public function dispatch() {
+//    if (
+//      SN::$options[PAGE_OPTION_FLEET_UPDATE_SKIP]
+//      ||
+//      SN::gameIsDisabled()
+//      ||
+//      !$this->getLockOld()
+//    ) {
+//      return;
+//    }
+//
+//    $this->flt_flying_fleet_handler();
+//
+//    $this->releaseLock();
+//
+//    set_time_limit(60);
+//  }
 
 
   /**
@@ -119,33 +118,6 @@ class FleetDispatcher {
    * @return int|int[]
    */
   public function flt_flying_fleet_handler() {
-    /*
-
-    [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
-        С одной стороны - да, что бы данные были гарантированно на момент снапшота
-        С другой стороны - нет, потому что при большой активности это все будет блокировать слишком много рядов, да и таймаут будет большой для ожидания всего разлоченного
-        Стоит завернуть каждую миссию отдельно? Это сильно увеличит количество запросов, зато так же сильно снизит количество блокировок.
-
-        Resume: НЕТ! Надо оставить все в одной транзакции! Так можно будет поддерживать consistency кэша. Там буквально сантисекунды блокировки
-
-    [*] Убрать кэшированние данных о пользователях и планета. Офигенно освободит память - проследить!
-        НЕТ! Считать, скольким флотам нужна будет инфа и кэшировать только то, что используется больше раза!
-        Заодно можно будет исключить перересчет очередей/ресурсов - сильно ускорит дело!
-        Особенно будет актуально, когда все бонусы будут в одной таблице
-        Ну и никто не заставляет как сейчас брать ВСЕ из таблицы - только по полям. Гемор, но не сильный - сделать запрос по группам sn_data
-        И писать в БД только один раз результат
-
-    [*] Нужно ли на этом этапе знать полную информацию о флотах?
-        Заблокировать флоты можно и неполным запросом. Блокировка флотов - это не страшно. Ну, не пройдет одна-две отмены - так никто и не гарантировал реалтайма!
-        С одной стороны - да, уменьшит количество запросов
-        С другой стооны - расход памяти
-        Все равно надо будет знать полную инфу о флоте в момент обработки
-
-    [*] Сделать тестовую БД для расчетов
-
-    [*] Но не раньше, чем переписать все миссии
-
-    */
 //    $this->log_file('Dispatch started');
     $watchdog = new FleetWatchdog();
     if (($result = $watchdog->acquireLock()) == FleetWatchdog::TASK_ALREADY_LOCKED) {
@@ -159,7 +131,7 @@ class FleetDispatcher {
     //log_file('Начинаем обсчёт флотов');
 
 //    $this->log_file('Обсчёт ракет');
-    coe_o_missile_calculate();
+    FleetDispatchEvent::$processedIPR = coe_o_missile_calculate();
 
     // Filling self::$fleet_event_list with FleetDispatchEvent
     self::$fleet_event_list = $this->getFleetEvents();
@@ -226,14 +198,8 @@ class FleetDispatcher {
         break;
 
         case MT_EXPLORE:
-          // TODO - THIS NEED TO BE ADRESSED!
-          flt_mission_explore($fleetEvent);
-          // TODO - there is untested class below !!!
-
-//          $theMission = \Fleet\MissionExplore::buildFromArray($mission_data);
-//          $theMission->process();
-//
-//          unset($theMission);
+          $outcome = new MissionExploreResult();
+          $outcome->flt_mission_explore($fleetEvent);
         break;
 
         case MT_RECYCLE:
@@ -352,14 +318,12 @@ class FleetDispatcher {
       MT_COLONIZE  => 'flt_mission_colonize',
       MT_RECYCLE   => 'flt_mission_recycle',
       // MT_MISSILE => 'flt_mission_missile.php',
-      MT_EXPLORE   => 'flt_mission_explore',
+      // MT_EXPLORE   => 'flt_mission_explore',
     ];
     foreach ($this->missions_used as $mission_id => $cork) {
-      if (empty($mission_files[$mission_id])) {
-        continue;
+      if (!empty($mission_files[$mission_id])) {
+        require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
       }
-
-      require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
     }
   }
 

@@ -64,7 +64,7 @@ class TaskDispatchFleets extends TaskPeriodic {
       ->parseUrl(SN_ROOT_VIRTUAL)
       ->addPath('index.php')
       ->addParams(['page' => 'worker', 'mode' => 'dispatchFleets',]);
-
+pred($url->urlSigned());
     sn_get_url_contents($url->urlSigned());
 
 //    invokeUrl($url);

@@ -16,13 +16,15 @@
 *
 * @package language
 * @system [Spanish]
-* @version #46a158#
+* @version #46a166#
 *
 */
 
 /**
 * DO NOT CHANGE
 */
+
+use Fleet\Constants;
 
 if (!defined('INSIDE'))
 {
@@ -371,29 +373,25 @@ $a_lang_array = [
     'msg_sender' => 'Informe de expedición',
     'msg_title' => 'Informe de expedición',
 
-    'found_dark_matter_new' => 'MO obtenida:',
-    'found_resources_new' => "Recursos encontrados:",
-    'found_fleet_new' => "Naves encontradas:",
-    'lost_fleet_new' => "Se perdieron las siguientes naves:",
-
     'found_dark_matter' => 'Obtenidas %1$d unidades de MO',
     'found_resources' => "Recursos encontrados:\r\n",
     'found_fleet' => "Naves encontradas:\r\n",
     'lost_fleet' => "Se perdieron las siguientes naves:\r\n",
+
     'outcomes' => [
-      FLT_EXPEDITION_OUTCOME_NONE => [
+      Constants::OUTCOME_NONE => [
         'messages' => [
           'Tus investigadores no encontraron nada',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET => [
         'messages' => [
           'La flota entró en un agujero negro y se perdió parcialmente',
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL => [
         'messages' => [
           'Si solo lo hubieras visto... ¡Es tan hermoso... Te llama... (se perdió el contacto con la flota)',
           // 'Informe de la flota %1$s. Hemos completado la exploración del sector. La tripulación está descontenta ¡Eh, ¿qué haces en el puente?! (se perdió el contacto con la flota)',
@@ -403,7 +401,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => [
+      Constants::EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'Desafortunadamente, la potencia combinada de todas las computadoras de la flota no fue suficiente ni para controlar la nave más pequeña. Intenta enviar más naves y/o naves más grandes',
         'messages' => [
           0 => [
@@ -418,7 +416,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => [
+      Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES => [
         'no_result' => 'Las bodegas de tu flota no pudieron contener ni un solo contenedor de recursos. Intenta enviar una flota con más transportes',
         'messages' => [
           0 => [
@@ -433,7 +431,7 @@ $a_lang_array = [
         ],
       ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => [
+      Constants::EXPEDITION_OUTCOME_FOUND_DM => [
         'no_result' => 'Desafortunadamente, todos los acumuladores de la flota no fueron suficientes para recolectar ni una sola MO. Intenta enviar una flota más grande',
         'messages' => 'Tu flota fue testigo del nacimiento de una SuperNova',
         // 'messages' => array(
@@ -871,7 +869,7 @@ $a_lang_array = [
   'ube_report_damage' => 'Daño',
   'ube_report_loss' => 'Pérdidas',
 
- 
+
   'ube_report_info_restored' => 'Estructuras defensivas restauradas',
   'ube_report_info_loss_final' => 'Pérdidas finales de unidades',
   'ube_report_info_loss_resources' => 'Pérdidas en recursos',

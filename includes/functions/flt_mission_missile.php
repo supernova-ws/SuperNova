@@ -99,10 +99,15 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
  * V2 2009-10-10
  */
 
+/**
+ * @return int IPR fleets processed
+ */
 function coe_o_missile_calculate() {
 //  db_mysql::db_transaction_check(true);
 
   global $lang;
+
+  $processedIPR = 0;
 
   $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
@@ -183,11 +188,14 @@ function coe_o_missile_calculate() {
 
       msg_send_simple_message($fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message);
       msg_send_simple_message($fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message);
+
     }
 
     doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
 
+    $processedIPR++;
     db_mysql::db_transaction_commit();
   }
 
+  return $processedIPR;
 }

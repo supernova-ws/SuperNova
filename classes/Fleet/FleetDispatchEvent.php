@@ -13,9 +13,10 @@ use SN;
  * @property string     $eventTimeStamp When event happened in timeline
  * @property string     $event          Event type
  *
+ * @property int        $fleetId
  * @property ?int       $srcPlanetId
  * @property bool|array $srcPlanetRow
- * @property ?int       $srcPlanetOwnerId
+ * @property ?int       $fleetOwnerId
  * @property ?int       $dstPlanetId
  * @property bool|array $dstPlanetRow
  * @property ?int       $dstPlanetOwnerId
@@ -41,6 +42,8 @@ class FleetDispatchEvent {
   public $planetIdsToLock = [];
   /** @var int[] $fleetIdsToLock */
   public $fleetIdsToLock = [];
+  /** @var int $processedIPR Processed IPR on this run */
+  public static $processedIPR = -1;
 
   public static $MISSIONS = [
     MT_ATTACK    => [self::IS_TRANSPORT => false, self::IS_ATTACK => true,],
@@ -61,10 +64,12 @@ class FleetDispatchEvent {
       self::$sn_groups_mission = sn_get_groups('missions');
     }
 
-    $this->fleet = $fleetRow;
     $this->event = $eventType;
+    $this->fleet = $fleetRow;
 
-    $this->srcPlanetOwnerId = $fleetRow[self::F_FLEET_OWNER_ID];
+    $this->fleetId = $fleetRow[self::F_FLEET_ID];
+
+    $this->fleetOwnerId = $fleetRow[self::F_FLEET_OWNER_ID];
 
     $this->missionId      = (int)$this->fleet[FleetDispatcher::F_FLEET_MISSION];
     $this->missionInfoNew = self::$MISSIONS[$this->missionId];
@@ -111,8 +116,8 @@ class FleetDispatchEvent {
 
     if ($isLockSource) {
       $this->getSrcPlanetRowFromFleet();
-      $this->planetIdsToLock[$this->srcPlanetId]    = true;
-      $this->userIdsToLock[$this->srcPlanetOwnerId] = true;
+      $this->planetIdsToLock[$this->srcPlanetId] = true;
+      $this->userIdsToLock[$this->fleetOwnerId]  = true;
     }
 
     if (!empty($this->missionInfoNew[self::IS_ATTACK])) {
@@ -185,9 +190,9 @@ class FleetDispatchEvent {
   /**
    */
   public function refreshMissionData() {
-    if (!empty($this->srcPlanetId) && !empty($this->srcPlanetOwnerId)) {
+    if (!empty($this->srcPlanetId) && !empty($this->fleetOwnerId)) {
 //       $this->srcPlanetRow = DBStaticPlanet::db_planet_by_vector($this->fleet, 'fleet_start_');
-      $updateResult = sys_o_get_updated($this->srcPlanetOwnerId, $this->srcPlanetId, $this->eventTimeStamp);
+      $updateResult = sys_o_get_updated($this->fleetOwnerId, $this->srcPlanetId, $this->eventTimeStamp);
 
       $this->updateSrcPlanetRow($updateResult['planet']);
     }
@@ -203,9 +208,7 @@ class FleetDispatchEvent {
    * @return array|false
    */
   public function refreshFleet() {
-    $this->fleet = DbFleetStatic::db_fleet_get($this->fleet[self::F_FLEET_ID]);
-
-    return $this->fleet;
+    return $this->fleet = DbFleetStatic::db_fleet_get($this->fleetId);
   }
 
   public function getSrcPlanetRowFromFleet() {
@@ -228,7 +231,7 @@ class FleetDispatchEvent {
     $this->srcPlanetId = !empty($this->srcPlanetRow[self::F_PLANET_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_ID] : 0;
     // Starting planet can change owner while fleet mission - and even change planet ID
     // It can happen due to teleport shenanigans or because of planet capturing (in certain game modes)
-    $this->srcPlanetOwnerId = !empty($this->srcPlanetRow[self::F_PLANET_OWNER_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_OWNER_ID] : $this->srcPlanetOwnerId;
+    $this->fleetOwnerId = !empty($this->srcPlanetRow[self::F_PLANET_OWNER_ID]) ? (int)$this->srcPlanetRow[self::F_PLANET_OWNER_ID] : $this->fleetOwnerId;
 
     return $this->srcPlanetRow;
   }
