@@ -17,6 +17,8 @@ class MissionExploreResult {
   public $valueRolled = Constants::OUTCOME_NOT_CALCULATED;
   /** @var int $outcome Expedition outcome */
   public $outcome = Constants::OUTCOME_NOT_CALCULATED;
+  /**@var array $currentOutcomeConfig Current outcome config */
+  public $currentOutcomeConfig = [];
 
   // Outcomes with variants - sub-outcomes
   /** @var float $subOutcomeProbability Normalized probability [0,1] of sub-outcome */
@@ -161,23 +163,29 @@ class MissionExploreResult {
     if ($this->outcome == Constants::OUTCOME_NOT_CALCULATED) {
       $this->outcome = Constants::OUTCOME_NONE;
     }
-    $currentOutcomeConfig = $outcomeConfigs[$this->outcome];
+    $this->currentOutcomeConfig = $outcomeConfigs[$this->outcome];
 
     // Вычисляем вероятность выпадения данного числа в общем пуле
-    $this->subOutcomeProbability = ($currentOutcomeConfig[self::K_ROLL_VALUE] - $this->valueRolled) / $currentOutcomeConfig[P_CHANCE];
+    $this->subOutcomeProbability = ($this->currentOutcomeConfig[self::K_ROLL_VALUE] - $this->valueRolled) / $this->currentOutcomeConfig[P_CHANCE];
     $this->subOutcome = $this->subOutcomeProbability >= 0.99 ? 0 : ($this->subOutcomeProbability >= 0.90 ? 1 : 2);
-    $this->gainShare  = !empty($currentOutcomeConfig['percent'][$this->subOutcome])
-      ? $currentOutcomeConfig['percent'][$this->subOutcome]
+    $this->gainShare  = !empty($this->currentOutcomeConfig['percent'][$this->subOutcome])
+      ? $this->currentOutcomeConfig['percent'][$this->subOutcome]
       : Constants::OUTCOME_NOT_CALCULATED;
 
     // Outcome CAN change ONLY object properties and SHOULD NOT mess with real fleet values
     switch ($this->outcome) {
+      case Constants::OUTCOME_NONE:
+        $this->subOutcome = Constants::OUTCOME_NOT_CALCULATED;
+      break;
+
       case Constants::EXPEDITION_OUTCOME_LOST_FLEET:
         $this->outcomeShipsLostPartially();
+        $this->subOutcome = Constants::OUTCOME_NOT_CALCULATED;
       break;
 
       case Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL:
         $this->outcomeLostFleetAll();
+        $this->subOutcome = Constants::OUTCOME_NOT_CALCULATED;
       break;
 
       case Constants::EXPEDITION_OUTCOME_FOUND_FLEET:
@@ -212,31 +220,6 @@ class MissionExploreResult {
     $this->sendReport($this->fleetEvent->fleet);
 
     return CACHE_FLEET | CACHE_USER_SRC;
-  }
-
-  /**
-   * Outcome - ships partially lost
-   *
-   * @return void
-   */
-  protected function outcomeShipsLostPartially() {
-    // 1-3 pack of 20-30%% -> 20-90%% lost totally
-    // Calculating lost share per fleet to maintain mathematical consistency for math model
-    $lostShare = mt_rand(1, 3) * (mt_rand(200000, 300000) / CONST_1M);
-    foreach ($this->ships as $shipId => $shipCount) {
-      $this->shipsLost[$shipId] = ceil($shipCount * $lostShare);
-    }
-  }
-
-  /**
-   * Outcome - lost all fleet
-   *
-   * @return void
-   */
-  protected function outcomeLostFleetAll() {
-    foreach ($this->ships as $shipsId => $shipCount) {
-      $this->shipsLost[$shipsId] += $this->ships[$shipsId];
-    }
   }
 
   /**
@@ -417,12 +400,23 @@ class MissionExploreResult {
     }
 
     $messages = $langExpeditions['outcomes'][$this->outcome]['messages'];
-    if ($this->subOutcome >= 0 && is_array($messages)) {
+    if (
+      // Outcome have sub-outcomes
+      !empty($this->currentOutcomeConfig['percent'])
+      // Some outcome rolled
+      && $this->subOutcome >= 0
+      // Messages are different for different outcomes
+      && is_array($messages)
+    ) {
+      // Selecting messages for specific outcome
       $messages = &$messages[$this->subOutcome];
     }
 
-    $msg_text = is_string($messages) ? $messages :
-      (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
+    $msg_text = is_string($messages)
+      // If we have only one variant for message - using it
+      ? $messages
+      // If we have several message variations - selecting one randomly
+      : (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
 
     $msg_text = sprintf(
         $msg_text,
@@ -532,7 +526,31 @@ class MissionExploreResult {
   }
 
   /**
+   * Outcome - ships partially lost
    *
+   * @return void
+   */
+  protected function outcomeShipsLostPartially() {
+    // 1-3 pack of 20-30%% -> 20-90%% lost totally
+    // Calculating lost share per fleet to maintain mathematical consistency for math model
+    $lostShare = mt_rand(1, 3) * (mt_rand(200000, 300000) / CONST_1M);
+    foreach ($this->ships as $shipId => $shipCount) {
+      $this->shipsLost[$shipId] = ceil($shipCount * $lostShare);
+    }
+  }
+
+  /**
+   * Outcome - lost all fleet
+   *
+   * @return void
+   */
+  protected function outcomeLostFleetAll() {
+    foreach ($this->ships as $shipsId => $shipCount) {
+      $this->shipsLost[$shipsId] += $this->ships[$shipsId];
+    }
+  }
+
+  /**
    * @return void
    */
   protected function outcomeFoundResources() {

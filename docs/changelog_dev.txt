@@ -696,6 +696,12 @@ REPLACE INTO `delta_config` (`config_name`, `config_value`) VALUES ('fleet_updat
 
 #ctv
 
+
+2025-05-15 13:16:27 46a168
+[%] Fleet/Mission/Expedition
+    Fixed error when generation expedition result messages
+
+
 2025-05-15 09:33:09 46a175
 [@] Fleet/Mission/Expedition
     * Isolated outcomes to separate methods
