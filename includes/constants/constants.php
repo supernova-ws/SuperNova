@@ -14,7 +14,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '46a166');
+define('SN_VERSION', '46a167');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1069,7 +1069,5 @@ const PAGE_OPTION_FLEET_UPDATE_SKIP = 'fleet_update_skip';
 const PAGE_OPTION_ADMIN = 'admin_page';
 
 const MENU_FIELD_AUTH_LEVEL = 'AUTH_LEVEL';
-
-const REQUIRE_HIGHSPOT = 'festival_highspot';
 
 const UNIVERSE_GALAXY_DISTANCE = 20000;

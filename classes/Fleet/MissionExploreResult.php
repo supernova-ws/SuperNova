@@ -4,24 +4,23 @@
 
 namespace Fleet;
 
-/** @noinspection PhpIncludeInspection */
-// TODO - THIS NEED TO BE ADDRESSED!
-require_once(SN_ROOT_PHYSICAL . 'includes/includes/flt_mission_explore.php');
-
 use SN;
 
 class MissionExploreResult {
   /** @var string Key in outcome config for roll value */
   const K_ROLL_VALUE = 'value';
 
+  /** @var int Max DM can be found in 1 expedition */
+  const MAX_DM = CONST_10K;
+
   /** @var int $valueRolled mt_rand() value rolled [0,max_chance] that determine current expedition outcome */
-  public $valueRolled = -1;
+  public $valueRolled = Constants::OUTCOME_NOT_CALCULATED;
   /** @var int $outcome Expedition outcome */
   public $outcome = Constants::OUTCOME_NOT_CALCULATED;
 
   // Outcomes with variants - sub-outcomes
   /** @var float $subOutcomeProbability Normalized probability [0,1] of sub-outcome */
-  public $subOutcomeProbability = -1;
+  public $subOutcomeProbability = Constants::OUTCOME_NOT_CALCULATED;
   /** @var int $subOutcome Secondary outcome (sub-outcome) for variable outcomes */
   public $subOutcome = Constants::OUTCOME_NOT_CALCULATED;
   /** @var float $gainShare Share of total resources to gain - depends on sub-outcome */
@@ -47,6 +46,9 @@ class MissionExploreResult {
 
   /** @var ?FleetDispatchEvent $fleetEvent Event currently processed */
   public $fleetEvent = null;
+
+  /** @var float $timeStart Timestamp with ms when started expedition processing */
+  protected $timeStart = 0;
 
   /** @var array[] $configs */
   public static $configs = [
@@ -125,7 +127,7 @@ class MissionExploreResult {
     }
 
     // Preparing for expedition
-    $mtStart = microtime(true);
+    $this->timeStart = microtime(true);
 
     $this->resetExpedition($fleetEvent);
 
@@ -136,26 +138,15 @@ class MissionExploreResult {
     // Making a copy of outcome configs to tamper with
     $outcomeConfigs = static::$configs;
 
-    // Calculating how many hours spent in expedition
-    $flt_stay_hours =
-      ($this->fleetEvent->fleet['fleet_end_stay'] - $this->fleetEvent->fleet['fleet_start_time']) / 3600
-      * (SN::$config->game_speed_expedition ?: 1);
-    // Adjusting chance for empty outcome - expedition found nothing
-    $outcomeConfigs[Constants::OUTCOME_NONE][P_CHANCE] = ceil(Constants::OUTCOME_EXPEDITION_NOTHING_DEFAULT_CHANCE / max(0.1, pow($flt_stay_hours, 1 / 1.7)));
+    $outcomeConfigs = $this->adjustNoneChance($outcomeConfigs);
 
-    // Calculating max chance can be rolled for current expedition
-    $chance_max = 0;
-    foreach ($outcomeConfigs as $key => &$outcomeConfig) {
-      // Removing invalid outcomes - with no chances set or zero chances
-      if (empty($outcomeConfig[P_CHANCE])) {
-        unset($outcomeConfigs[$key]);
-        continue;
-      }
-      $outcomeConfig[self::K_ROLL_VALUE] = $chance_max = $outcomeConfig[P_CHANCE] + $chance_max;
-    }
+    list($outcomeConfigs, $chance_max) = $this->calculateRollValues($outcomeConfigs);
+
 
     // Rolling value which wil determine outcome
-    $this->valueRolled = mt_rand(0, ceil($chance_max)); // $this->valueRolled = 409; // DEBUG
+    $this->valueRolled = mt_rand(0, ceil($chance_max));
+    // NOTHING => 200, LOST_FLEET => 209, LOST_FLEET_ALL => 212, FOUND_FLEET => 412, RESOURCES => 712, FOUND_DM => 812
+    // $this->valueRolled = 409; // DEBUG  comment!
     // Determining outcome
     foreach ($outcomeConfigs as $key1 => $config) {
       if (!$config[P_CHANCE]) {
@@ -174,8 +165,12 @@ class MissionExploreResult {
 
     // Вычисляем вероятность выпадения данного числа в общем пуле
     $this->subOutcomeProbability = ($currentOutcomeConfig[self::K_ROLL_VALUE] - $this->valueRolled) / $currentOutcomeConfig[P_CHANCE];
+    $this->subOutcome = $this->subOutcomeProbability >= 0.99 ? 0 : ($this->subOutcomeProbability >= 0.90 ? 1 : 2);
+    $this->gainShare  = !empty($currentOutcomeConfig['percent'][$this->subOutcome])
+      ? $currentOutcomeConfig['percent'][$this->subOutcome]
+      : Constants::OUTCOME_NOT_CALCULATED;
 
-    // Outcome CAN change local variables and SHOULD NOT mess with real fleet values
+    // Outcome CAN change ONLY object properties and SHOULD NOT mess with real fleet values
     switch ($this->outcome) {
       case Constants::EXPEDITION_OUTCOME_LOST_FLEET:
         $this->outcomeShipsLostPartially();
@@ -186,98 +181,15 @@ class MissionExploreResult {
       break;
 
       case Constants::EXPEDITION_OUTCOME_FOUND_FLEET:
-        $this->subOutcome = $this->subOutcomeProbability >= 0.99 ? 0 : ($this->subOutcomeProbability >= 0.90 ? 1 : 2);
-        $this->gainShare  = $currentOutcomeConfig['percent'][$this->subOutcome];
-        // Рассчитываем эквивалент найденного флота в метале
-        $found_in_metal = min($this->gainShare * $this->shipsCostInMetal, game_resource_multiplier(true) * CONST_10M);
-        //  13 243 754 000 g x1
-        //  60 762 247 000 a x10
-        // 308 389 499 488 000 b x500
-
-        // Рассчитываем стоимость самого дорого корабля в металле
-        $max_metal_cost = 0;
-        foreach ($this->ships as $ship_id => $ship_amount) {
-          $max_metal_cost = max($max_metal_cost, static::$shipData[$ship_id][P_COST_METAL]);
-        }
-
-        // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
-        $can_be_found = [];
-        foreach (static::$shipData as $ship_id => $ship_info) {
-          if (
-            $ship_info[P_COST_METAL] < $max_metal_cost
-            // and not race ship
-            && empty(get_unit_param($ship_id, 'player_race'))
-            // and not event-related ship
-            && empty(get_unit_param($ship_id, REQUIRE_HIGHSPOT))
-          ) {
-            $can_be_found[$ship_id] = $ship_info[P_COST_METAL];
-          }
-        }
-        // Убираем колонизаторы и шпионов - миллиарды шпионов и колонизаторов нам не нужны
-        unset($can_be_found[SHIP_COLONIZER]);
-        unset($can_be_found[SHIP_SPY]);
-
-        while (count($can_be_found) && $found_in_metal >= max($can_be_found)) {
-          $found_index     = mt_rand(1, count($can_be_found)) - 1;
-          $found_ship      = array_slice($can_be_found, $found_index, 1, true);
-          $found_ship_cost = reset($found_ship);
-          $found_ship_id   = key($found_ship);
-
-          if ($found_ship_cost > $found_in_metal) {
-            unset($can_be_found[$found_ship_id]);
-          } else {
-            $found_ship_count                 = mt_rand(1, floor($found_in_metal / $found_ship_cost));
-            $this->shipsFound[$found_ship_id] += $found_ship_count;
-            $found_in_metal                   -= $found_ship_count * $found_ship_cost;
-          }
-        }
+        $this->outcomeFoundShips();
       break;
 
       case Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES:
-        $this->subOutcome = $this->subOutcomeProbability >= 0.99 ? 0 : ($this->subOutcomeProbability >= 0.90 ? 1 : 2);
-        $this->gainShare  = $currentOutcomeConfig['percent'][$this->subOutcome];
-
-        // Calculating found resources amount in metal
-        $found_in_metal = ceil(
-          min(
-            $this->gainShare * $this->shipsCostInMetal,
-            game_resource_multiplier(true) * CONST_10M, $this->fleetCapacityFree
-          )
-          * (
-            mt_rand(95 * 10000, 105 * 10000) / CONST_1M
-          )
-        ); // game_speed
-
-        // 30-70%% of resources found are found in metal. Large numbers used to add more variability
-        $this->resourcesFound[RES_METAL] = floor($found_in_metal * mt_rand(3 * CONST_100K, 7 * CONST_100K) / CONST_1M);
-        // Deducing found metal from pool
-        $found_in_metal -= $this->resourcesFound[RES_METAL];
-
-        // Converting rest of found metal to crystals. Large numbers used to add more variability
-        $found_in_metal = floor($found_in_metal * static::$rates[RES_METAL] / static::$rates[RES_CRYSTAL]);
-        // 50-100%% of rest resources are found in crystals
-        $this->resourcesFound[RES_CRYSTAL] = floor($found_in_metal * mt_rand(5 * CONST_100K, 10 * CONST_100K) / CONST_1M);
-        // Deducing found crystals from pool
-        $found_in_metal -= $this->resourcesFound[RES_CRYSTAL];
-
-        // Converting rest of found crystals to deuterium
-        $found_in_metal = floor($found_in_metal * static::$rates[RES_CRYSTAL] / static::$rates[RES_DEUTERIUM]);
-        // 100% of resources rest are in deuterium
-        $this->resourcesFound[RES_DEUTERIUM] = $found_in_metal;
+        $this->outcomeFoundResources();
       break;
 
       case Constants::EXPEDITION_OUTCOME_FOUND_DM:
-        $this->subOutcome = $this->subOutcomeProbability >= 0.99 ? 0 : ($this->subOutcomeProbability >= 0.90 ? 1 : 2);
-        $this->gainShare  = $currentOutcomeConfig['percent'][$this->subOutcome];
-        // Рассчитываем количество найденной ТМ
-        $this->darkMatterFound = floor(
-          min(
-            $this->gainShare * $this->shipsCostInMetal / static::$rates[RES_DARK_MATTER],
-            10000
-          )
-          // 75-100%% of calculated value
-          * mt_rand(750000, CONST_1M) / CONST_1M
-        );
+        $this->outcomeFoundDm();
       break;
 
       //case FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT:
@@ -289,12 +201,6 @@ class MissionExploreResult {
 
     // Calling extra
     $this->flt_mission_explore_addon($this);
-
-///** @formatter:off */
-//// TODO DEBUG -------------------------------------------------------------------------------------------
-//pre(number_format(microtime(true) - $mtStart, 6));
-//pred($this);
-///** @formatter:on */
 
     // Applying expedition changes to real fleet data
     $this->applyFleetChanges();
@@ -353,7 +259,6 @@ class MissionExploreResult {
    * @return static
    */
   protected function flt_mission_explore_addon(MissionExploreResult $outcome) {
-    /** @see sn_flt_mission_explore_addon() */
     /** @see core_festival::expedition_result_adjust(), FestivalActivityPuzzleExpedition::fleet_explore_adjust_result() */
     return sn_function_call(Constants::HOOK_MISSION_EXPLORE_ADDON, [$outcome]);
   }
@@ -394,14 +299,16 @@ class MissionExploreResult {
    * @return array[]
    */
   protected static function getShipData() {
-    foreach (sn_get_groups('fleet') as $unit_id) {
-      $unit_info = get_unit_param($unit_id);
-      if ($unit_info[P_UNIT_TYPE] != UNIT_SHIPS || empty($unit_info['engine'][0]['speed'])) {
-        continue;
-      }
-      $unit_info[P_COST_METAL] = get_unit_cost_in($unit_info[P_COST]);
+    if (empty(static::$shipData)) {
+      foreach (sn_get_groups('fleet') as $unit_id) {
+        $unit_info = get_unit_param($unit_id);
+        if ($unit_info[P_UNIT_TYPE] != UNIT_SHIPS || empty($unit_info['engine'][0]['speed'])) {
+          continue;
+        }
+        $unit_info[P_COST_METAL] = get_unit_cost_in($unit_info[P_COST]);
 
-      static::$shipData[$unit_id] = $unit_info;
+        static::$shipData[$unit_id] = $unit_info;
+      }
     }
 
     return static::$shipData;
@@ -585,6 +492,139 @@ class MissionExploreResult {
       - $this->fleetEvent->fleet['fleet_resource_metal']
       - $this->fleetEvent->fleet['fleet_resource_crystal']
       - $this->fleetEvent->fleet['fleet_resource_deuterium']
+    );
+  }
+
+  /**
+   * @param array $outcomeConfigs
+   *
+   * @return array
+   */
+  protected function adjustNoneChance(array $outcomeConfigs) {
+    // Calculating how many hours spent in expedition
+    $flt_stay_hours =
+      ($this->fleetEvent->fleet['fleet_end_stay'] - $this->fleetEvent->fleet['fleet_start_time']) / 3600
+      * (SN::$config->game_speed_expedition ?: 1);
+    // Adjusting chance for empty outcome - expedition found nothing
+    $outcomeConfigs[Constants::OUTCOME_NONE][P_CHANCE] = ceil(Constants::OUTCOME_EXPEDITION_NOTHING_DEFAULT_CHANCE / max(0.1, pow($flt_stay_hours, 1 / 1.7)));
+
+    return $outcomeConfigs;
+  }
+
+  /**
+   * @param array $outcomeConfigs
+   *
+   * @return array{0: int, 1: array}
+   */
+  protected function calculateRollValues(array $outcomeConfigs) {
+    // Calculating max chance can be rolled for current expedition
+    $chance_max = 0;
+    foreach ($outcomeConfigs as $key => &$outcomeConfig) {
+      // Removing invalid outcomes - with no chances set or zero chances
+      if (empty($outcomeConfig[P_CHANCE])) {
+        unset($outcomeConfigs[$key]);
+        continue;
+      }
+      $outcomeConfig[self::K_ROLL_VALUE] = $chance_max = $outcomeConfig[P_CHANCE] + $chance_max;
+    }
+
+    return [$outcomeConfigs, $chance_max];
+  }
+
+  /**
+   *
+   * @return void
+   */
+  protected function outcomeFoundResources() {
+    // Calculating found resources amount in metal
+    $found_in_metal = ceil(
+      min($this->gainShare * $this->shipsCostInMetal, game_resource_multiplier(true) * CONST_10M, $this->fleetCapacityFree)
+      // 95-105%% [0.95 - 1.05]
+      * (mt_rand(95 * 10000, 105 * 10000) / CONST_1M)
+    ); // game_speed
+
+    // 30-70%% of resources found are found in metal. Large numbers used to add more variability
+    $this->resourcesFound[RES_METAL] = floor($found_in_metal * mt_rand(3 * CONST_100K, 7 * CONST_100K) / CONST_1M);
+    // Deducing found metal from pool
+    $found_in_metal -= $this->resourcesFound[RES_METAL];
+
+    // Converting rest of found metal to crystals. Large numbers used to add more variability
+    $found_in_metal = floor($found_in_metal * static::$rates[RES_METAL] / static::$rates[RES_CRYSTAL]);
+    // 50-100%% of rest resources are found in crystals
+    $this->resourcesFound[RES_CRYSTAL] = floor($found_in_metal * mt_rand(5 * CONST_100K, 10 * CONST_100K) / CONST_1M);
+    // Deducing found crystals from pool
+    $found_in_metal -= $this->resourcesFound[RES_CRYSTAL];
+
+    // Converting rest of found crystals to deuterium
+    $found_in_metal = floor($found_in_metal * static::$rates[RES_CRYSTAL] / static::$rates[RES_DEUTERIUM]);
+    // 100% of resources rest are in deuterium
+    $this->resourcesFound[RES_DEUTERIUM] = $found_in_metal;
+  }
+
+  /**
+   *
+   * @return void
+   */
+  protected function outcomeFoundShips() {
+    // Рассчитываем эквивалент найденного флота в метале
+    $found_in_metal = min($this->gainShare * $this->shipsCostInMetal, game_resource_multiplier(true) * CONST_10M);
+    //  13 243 754 000 g x1
+    //  60 762 247 000 a x10
+    // 308 389 499 488 000 b x500
+
+    // Рассчитываем стоимость самого дорого корабля в металле
+    $shipMaxCostInMetal = 0;
+    foreach ($this->ships as $ship_id => $ship_amount) {
+      $shipMaxCostInMetal = max($shipMaxCostInMetal, static::$shipData[$ship_id][P_COST_METAL]);
+    }
+
+    // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
+    $can_be_found = [];
+
+    foreach (static::$shipData as $ship_id => $ship_info) {
+      if (
+        $ship_info[P_COST_METAL] <= $shipMaxCostInMetal
+        // and not race ship
+        && empty($ship_info[P_RACE_SHIP])
+        // and not event-related ship
+        && empty($ship_info[P_REQUIRE_HIGHSPOT])
+      ) {
+        $can_be_found[$ship_id] = $ship_info[P_COST_METAL];
+      }
+    }
+
+    // Убираем колонизаторы и шпионов - миллиарды шпионов и колонизаторов нам не нужны
+    unset($can_be_found[SHIP_COLONIZER]);
+    unset($can_be_found[SHIP_SPY]);
+
+    while (count($can_be_found) && $found_in_metal >= max($can_be_found)) {
+      $found_index     = mt_rand(1, count($can_be_found)) - 1;
+      $found_ship      = array_slice($can_be_found, $found_index, 1, true);
+      $found_ship_cost = reset($found_ship);
+      $found_ship_id   = key($found_ship);
+
+      if ($found_ship_cost > $found_in_metal) {
+        unset($can_be_found[$found_ship_id]);
+      } else {
+        $found_ship_count                 = mt_rand(1, floor($found_in_metal / $found_ship_cost));
+        $this->shipsFound[$found_ship_id] += $found_ship_count;
+        $found_in_metal                   -= $found_ship_count * $found_ship_cost;
+      }
+    }
+  }
+
+  /**
+   * @return void
+   */
+  protected function outcomeFoundDm() {
+    // Рассчитываем количество найденной ТМ
+    $this->darkMatterFound = floor(
+      min(
+        $this->gainShare * $this->shipsCostInMetal / static::$rates[RES_DARK_MATTER],
+        self::MAX_DM
+      )
+      // 75-100%% of calculated value
+      * mt_rand(750000, CONST_1M) / CONST_1M
     );
   }
 

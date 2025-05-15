@@ -49,6 +49,8 @@ function sn_unit_relocate($unit_id, $from, $to) { }
  * @param bool  $plain      (false)
  *
  * @return int|float|bool
+ *
+ * @see sn_mrc_get_level()
  */
 function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false) {
   $result = null;
@@ -56,6 +58,18 @@ function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $pla
   return sn_function_call(__FUNCTION__, [&$user, $planet, $unit_id, $for_update, $plain, &$result]);
 }
 
+/**
+ * @param $user
+ * @param $planet
+ * @param $unit_id
+ * @param $for_update
+ * @param $plain
+ * @param $result
+ *
+ * @return int|mixed
+ *
+ * @see mrc_get_level()
+ */
 function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false, &$result) {
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
@@ -204,12 +218,33 @@ function getUnitInfo($unitSnId) {
   return get_unit_param($unitSnId);
 }
 
+/**
+ * @param $unit_id
+ * @param $param_name
+ * @param $user
+ * @param $planet
+ *
+ * @return mixed|null
+ *
+ * @see sn_get_unit_param()
+ */
 function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) {
   $result = null;
 
   return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result));
 }
 
+/**
+ * @param $unit_id
+ * @param $param_name
+ * @param $user
+ * @param $planet
+ * @param $result
+ *
+ * @return array|mixed
+ *
+ * @see get_unit_param()
+ */
 function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result) {
   global $sn_data;
 

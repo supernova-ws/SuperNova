@@ -961,7 +961,7 @@ class SnTemplate {
       'USER_AVATAR'   => $user['avatar'],
       'USER_AVATARID' => $user['id'],
       'USER_PREMIUM'  => $premium_lvl,
-      'USER_RACE'     => $user['player_race'],
+      'USER_RACE'     => $user[P_RACE],
 
       'TOPNAV_CURRENT_PLANET'       => $user['current_planet'],
       'TOPNAV_CURRENT_PLANET_NAME'  => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),

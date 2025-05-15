@@ -113,7 +113,7 @@ class PageAdminUserView extends PageDeprecated {
       'dark_matter_total',
       'metamatter',
       'metamatter_total',
-      'player_race',
+      P_RACE,
     ],
     'Альянс'                        => [
       'ally_id',
