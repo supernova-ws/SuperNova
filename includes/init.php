@@ -24,6 +24,8 @@ define('SN_MEM_START', memory_get_usage());
 !defined('INSTALL') && define('INSTALL', false);
 !defined('IN_PHPBB') && define('IN_PHPBB', true);
 
+require_once __DIR__ . '/debug.tools.php';
+
 call_user_func(function () {
   if (file_exists($fileName = realpath(__DIR__ . '/../.env.ini'))) {
     define('SN_ENV_PROD', 'production');

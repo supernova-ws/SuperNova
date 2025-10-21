@@ -437,42 +437,6 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
   return $dumper;
 }
 
-function pdump($value, $varname = null) {
-  $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-//  print_rr($backtrace);
-//  $backtrace = $backtrace[1];
-
-  $caller = '';
-  if (defined('SN_DEBUG_PDUMP_CALLER') && SN_DEBUG_PDUMP_CALLER) {
-    $caller = (!empty($backtrace[1]['class']) ? $backtrace[1]['class'] : '') .
-      (!empty($backtrace[1]['type']) ? $backtrace[1]['type'] : '') .
-      $backtrace[1]['function'] .
-      (!empty($backtrace[0]['file'])
-        ? (
-          ' (' . substr($backtrace[0]['file'], SN_ROOT_PHYSICAL_STR_LEN) .
-          (!empty($backtrace[0]['line']) ? ':' . $backtrace[0]['line'] : '') .
-          ')'
-        )
-        : ''
-      );
-    $caller = "\r\n" . $caller;
-  }
-
-  if (php_sapi_name() == "cli") {
-    print("\n" .
-      dump($value, $varname) .
-      $caller .
-      "\n\n"
-    );
-  } else {
-    print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
-      dump($value, $varname) .
-      $caller .
-      '</pre>'
-    );
-  }
-}
-
 function debug($value, $varname = null) {
   pdump($value, $varname);
 }
@@ -503,51 +467,4 @@ function backtrace_no_arg() {
   array_shift($trace);
 
   return $trace;
-}
-
-if (!function_exists('pre')) {
-  define('START', microtime(true)); // SHOULD NEVER BE REMOVED!
-
-  /**
-   * @param mixed $value     <p>
-   *                         The variable you want to export.
-   *                         </p>
-   * @param mixed ...$values [optional]
-   *
-   * @return void
-   */
-  function pre() {
-    if (func_num_args() <= 0) {
-      return;
-    }
-
-    foreach (func_get_args() ?: [] as $var) {
-      print "<pre>";
-      print_r(
-        $var === null ? 'null' :
-          (($type = gettype($var)) == 'object' || $type == 'array'
-            ? $var :
-            ($type === 'string'
-              ? $type . '(' . strlen($var) . ') `' . $var . '`' :
-              ($type == 'boolean'
-                ? ($var ? 'true' : 'false')
-                : $type . ' ' . print_r($var, true)
-              )
-            )
-          )
-      );
-      print "</pre>";
-    }
-
-    $trace = debug_backtrace();
-
-    $p     = $trace[1]['function'] == 'pred' ? $trace[1] : $trace[0];
-//            print("\n{$p['file']}@{$p['line']}<br />\n" . (is_string($die) ? 'Die message: ' . $die . "<br />\n" : ''));
-    print("\n{$p['file']}@{$p['line']}<br />\n");
-  }
-
-  function pred() {
-    call_user_func_array('pre', func_get_args());
-    die();
-  }
 }

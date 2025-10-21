@@ -148,6 +148,7 @@ class db_mysql {
     }
 
     // TODO - фатальные (?) ошибки на каждом шагу
+    try {
     if (!empty($this->dbsettings)) {
       // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
       // $this->driver = new $driver_name();
@@ -162,6 +163,15 @@ class db_mysql {
       $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE);
     } else {
       $this->connected = false;
+    }
+    } catch (\Exception $e) {
+      $this->connected = false;
+
+      if($e->getCode() == 1044) {
+        die('Access denied for specified DB user to specified database. Check DB settings in game and user privileges on DB server');
+      } else {
+        die('Error happens while connecting to DB. Check DB settings in game and DB accessibility');
+      }
     }
 
     return $this->connected;

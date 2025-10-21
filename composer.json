@@ -1,11 +1,22 @@
 {
+  "config": {
+    "platform": {
+      "php": "7.4"
+    },
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  },
   "require": {
     "ext-json": "*",
     "ext-mysqli": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
     "ext-gd": "*",
-    "stil/gif-endec": "^0.2.0"
+    "stil/gif-endec": "^0.2.0",
+    "mailgun/mailgun-php": "^3.0",
+    "symfony/http-client": "^5.4",
+    "nyholm/psr7": "^1.8"
   },
   "require-dev": {
     "ext-json": "*",
