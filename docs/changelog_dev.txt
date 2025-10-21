@@ -756,8 +756,19 @@ CREATE INDEX idx_counter_entry_id_counter_id  ON game_counter(player_entry_id, c
 
 Сделать проверку на файлы, которые уже не используются (картинки и эмблемы)
 
+Ништяки появляются на странице логина! Надо проверять - залогинен ли текущий пользователь
+
 
 #ctv
+
+
+2025-10-21 23:34:21 46a172
+[@] Debug
+    Config `debug` option now can be customized
+    * if it set to `1` then `error_reporting` would be set to `E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING`
+    * if it set to different value - then `error_reporting` would be set for this value
+        * Example: `debug` value for `E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING` is `32767 ^ 8 ^ 8192 ^ 2` = 24565
+
 
 2025-10-21 18:30:01 46a171
 [@] Updated debug tools

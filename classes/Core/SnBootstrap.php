@@ -121,7 +121,11 @@ class SnBootstrap {
     if (defined('BE_DEBUG') || SN::$config->debug) {
       @define('BE_DEBUG', true);
       @ini_set('display_errors', 1);
-      @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+      if(SN::$config->debug == 1) {
+        @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+      } else {
+        @error_reporting(SN::$config->debug);
+      }
     } else {
       @define('BE_DEBUG', false);
       @ini_set('display_errors', 0);
