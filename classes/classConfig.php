@@ -1,4 +1,10 @@
 <?php
+
+/** @noinspection PhpMissingFieldTypeInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+
 /**
  * Created by Gorlum 29.10.2016 10:16
  */
@@ -215,6 +221,8 @@
  * @property int               $player_max_colonies     => -1, // Max player planet count (NOT including main planet)
  * @property int               $eco_scale_storage       => 1,
  * @property int               $game_mode               => 0,           // 0 - SuperNova, 1 - oGame
+ * @property int $festival_gather_log_enabled => 0, // Is Festival Gather log enabled?
+ * @property int $festival_gather_autobalance  => 0, // Is Festival Gather auto-balancer enabled?
  *
  *
  * @property string            $cache_prefix Temporary for updater
@@ -313,6 +321,9 @@ class classConfig extends classPersistent {
     'crystal_basic_income'         => 20,
     'deuterium_basic_income'       => 0,
     'energy_basic_income'          => 0,
+
+    'festival_gather_log_enabled'  => 0, // Is Festival Gather log enabled?
+    'festival_gather_autobalance'  => 0, // Is Festival Gather auto-balancer enabled?
 
     // Bashing protection settings
     'fleet_bashing_attacks'        => 3,      // Max amount of attack per wave - 3 by default
