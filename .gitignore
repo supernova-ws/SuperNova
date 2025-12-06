@@ -12,6 +12,9 @@ badqrys.txt
 # Ignore override CSS files
 /desing/css/*override*
 
+# Ignore uploaded files
+/files
+
 # Ignore local folder, test folder and test files
 /test/
 /.local/

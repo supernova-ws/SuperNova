@@ -48,6 +48,8 @@ const SN_CONFIG_NAME = 'config.php';
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 
+const SN_ROOT_FILES = SN_ROOT_PHYSICAL . 'files' . '/';
+
 // Getting relative HTTP root to game resources and executable pages (.php)
 // I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
 // It needed to make game work on sub-folders and do not mess with cookies
