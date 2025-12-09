@@ -13,11 +13,7 @@
     "ext-curl": "*",
     "ext-iconv": "*",
     "ext-gd": "*",
-    "stil/gif-endec": "^0.2.0",
-    "mailgun/mailgun-php": "^3.0",
-    "symfony/http-client": "^5.4",
-    "nyholm/psr7": "^1.8",
-    "psr/log": "^1.1"
+    "stil/gif-endec": "^0.2.0"
   },
   "require-dev": {
     "ext-json": "*",
@@ -25,6 +21,10 @@
     "ext-curl": "*",
     "ext-iconv": "*",
     "ext-gd": "*",
-    "phpunit/phpunit": "5.*"
+    "phpunit/phpunit": "5.*",
+    "mailgun/mailgun-php": "^3.0",
+    "symfony/http-client": "^5.4",
+    "nyholm/psr7": "^1.8",
+    "psr/log": "^1.1"
   }
 }
