@@ -3482,7 +3482,7 @@ td,
 .spy_table tr.subheader > td, .spy_table tr.subheader > th {
   background-color: #233452;
 }
-.th, .header {
+.th, .header,  .header > th {
   background-color:  #132544; /*rgba(0,0,0,0.35);*/
 }
 
