@@ -1,64 +1,72 @@
 <script type="text/javascript">
-  jQuery(document).on('click', '.i_icon_mail_userlist', function(){
+  jQuery(document).on('click', '.i_icon_mail_userlist', function () {
     document.location = "messages.php?mode=write&id=" + jQuery(this).parent().parent().attr('uid');
   });
 
-  jQuery(document).on('click', '.i_icon_delete_userlist', function(){
-    if(confirm('!{LA_adm_ul_delete_confirm} ' + jQuery(this).parent().parent().attr('uname'))) {
+  jQuery(document).on('click', '.i_icon_delete_userlist', function () {
+    if (confirm('!{LA_adm_ul_delete_confirm} ' + jQuery(this).parent().parent().attr('uname'))) {
       document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_DELETE}&uid=" + jQuery(this).parent().parent().attr('uid');
     }
   });
 
-  jQuery(document).on('click', '.i_icon_impers_userlist', function(){
+  jQuery(document).on('click', '.i_icon_impers_userlist', function () {
     document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_USE}&uid=" + jQuery(this).parent().parent().attr('uid');
   });
 
-  jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function(){
+  jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function () {
     document.location = "index.php?page=admin/user_view&uid=" + jQuery(this).parent().attr('uid');
   });
 
-  jQuery(document).on('click', '.js_admin_ban', function(){
+  jQuery(document).on('click', '.js_admin_ban', function () {
     document.location = "admin/banned.php?name=" + jQuery(this).parent().attr('uname');
   });
 
-  jQuery(document).on('click', '.js_admin_whois', function(){
+  jQuery(document).on('click', '.js_admin_whois', function () {
     openInNewTab("{GEOIP_WHOIS_URL}" + jQuery(this).parent().attr('uip'));
   });
 </script>
 
 <h2>{PAGE_HEADER} ({USER_COUNT})</h2>
 
-<table id="user_list">
-  <tr class="c_c">
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_ID}">{L_sys_id}</a></th>
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
-    <!-- IF METAMATTER -->
-    <th rowspan="2">{L_sys_metamatter_sh}</th>
-    <!-- ENDIF -->
-    <th colspan="2">{L_adm_ul_referral}</th>
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
-    <th rowspan="2">{L_adm_ov_activ}</th>
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
-    <!-- IF ! RESTRICTED -->
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_VACATION}">{L_sys_vacation_in}</a></th>
-    <th rowspan="2">{L_adm_ul_mail}</th>
-    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_IP}">{L_sys_ip}</a></th>
-    <!-- IF GEOIP -->
-    <th rowspan="2">{L_geoip}</th>
-    <!-- ENDIF -->
-    <!-- ENDIF -->
-    <th rowspan="2">{L_adm_sys_actions}</th>
-  </tr>
+<style>
+  #user_list a
+  {
+    text-decoration: underline;
+  }
+</style>
 
-  <tr class="c_c">
-    <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_COUNT}">{L_adm_ul_players}</a></th>
-    <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
-  </tr>
+<table id="user_list">
+  <!-- @formatter:off -->
+  <!-- BEGIN header -->
+    <tr class="c_c" style="border: 1px solid #cccccc;">
+    <!-- BEGIN header_row -->
+      <!-- IF header_row.TITLE -->
+          <!--suppress HtmlUnknownAttribute -->
+          <th colspan="{header_row.COLSPAN}" rowspan="{header_row.ROWSPAN}">
+            <!-- IF header_row.SORT -->
+              <!-- DEFINE $DESC_PARAM = '' -->
+              <!-- IF header_row.SORT == SORT -->
+                <!-- IF DESC -->▼<!-- ELSE --><!-- DEFINE $DESC_PARAM = '&desc=1' -->▲<!-- ENDIF -->
+                <!-- ↑ &#8593; up ▲ ↓ &#8595; down ▼  ⇅ ▲▼ -->
+                <!-- DEFINE $SORT_CHAR = '' -->
+              <!-- ELSE -->
+                <!-- DEFINE $SORT_CHAR = '' -->
+              <!-- ENDIF -->
+              <!--suppress HtmlUnknownTarget -->
+              <a href="{PAGE_URL}?sort={header_row.SORT}{$DESC_PARAM}">{header_row.TITLE} {$SORT_CHAR}</a>
+            <!-- ELSE -->
+              {header_row.TITLE}
+            <!-- ENDIF -->
+          </th>
+      <!-- ENDIF -->
+    <!-- END header_row -->
+    </tr>
+  <!-- END header -->
 
   <!-- IF GEOIP_WHOIS_URL -->
-  <!-- DEFINE $GEOIP_CLASS = 'js_admin_whois' -->
+    <!-- DEFINE $GEOIP_CLASS = 'js_admin_whois' -->
   <!-- ENDIF -->
+  <!-- @formatter:on -->
 
   <!-- BEGIN user -->
   <tr uid="{user.ID}" uname="{user.NAME_HTML}" uip="{user.IP}" class="highlight">
@@ -74,7 +82,10 @@
     <td>{user.ACTIVITY}</td>
     <!-- IF user.BANNED -->
     <!-- DEFINE $BAN_CLASS = ' warning' -->
-    <td class="js_admin_ban {$BAN_CLASS}" title="{user.BAN_ISSUER} {L_adm_ban_msg_issued_date} {user.BAN_DATE}. {L_adm_bn_reas}: '{user.BAN_REASON}'">{user.BANNED}</td>
+    <td class="js_admin_ban {$BAN_CLASS}"
+        title="{user.BAN_ISSUER} {L_adm_ban_msg_issued_date} {user.BAN_DATE}. {L_adm_bn_reas}: '{user.BAN_REASON}'">
+      {user.BANNED}
+    </td>
     <!-- ELSE -->
     <!-- DEFINE $BAN_CLASS = '' -->
     <td class="js_admin_ban">{L_sys_no}</td>
@@ -88,7 +99,7 @@
     <!-- ELSE -->
     <!-- DEFINE $IP_CLASS = '' -->
     <!-- ENDIF -->
-    <td class="{$GEOIP_CLASS}{$IP_CLASS}">{user.IP}<!-- IF user.IP_MULTI -->  ({user.IP_MULTI})<!-- ENDIF --></td>
+    <td class="{$GEOIP_CLASS}{$IP_CLASS}">{user.IP}<!-- IF user.IP_MULTI --> ({user.IP_MULTI})<!-- ENDIF --></td>
     <!-- IF GEOIP -->
     <th>{user.COUNTRY}</th>
     <!-- ENDIF -->

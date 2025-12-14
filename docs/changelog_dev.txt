@@ -814,6 +814,12 @@ npm warn deprecated svgo@0.7.2: This SVGO version is no longer supported. Upgrad
 
 #ctv
 
+2025-12-14 17:03:52 46a223
+
+[+] Admin/userlist
+    Added ability to reverse-sort by all sortable fields
+    Now userlist page opens by default sorted descending last login time
+
 2025-12-14 14:27:31 46a221
 
 [@] Code - templates

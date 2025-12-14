@@ -150,23 +150,11 @@ function db_user_list_to_celebrate($config_user_birthday_range) {
       `days_after_birthday` >= 0 AND `days_after_birthday` < {$config_user_birthday_range} FOR UPDATE;");
 }
 
-//function db_user_list_online_sorted($TypeSort) {
-//  global $config;
-//
-//  return doquery(
-//    "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
-//      `onlinetime` AS `ACTIVITY`
-//    FROM `{{users}}`
-//    WHERE `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) . " ORDER BY user_as_ally, `" . $TypeSort . "`;");
-//}
-
-
 function db_user_list_admin_multi_accounts() {
   return doquery("SELECT COUNT(*) as ip_count, `user_lastip` FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
 }
 
-
-function db_user_list_admin_sorted($sort, $online = false) {
+function db_user_list_admin_sorted($sort, $online = false, $desc = false) {
   global $config;
 
   return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
@@ -174,7 +162,7 @@ function db_user_list_admin_sorted($sort, $online = false) {
     WHERE" .
     ($online ? " `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
     " GROUP BY u.id
-    ORDER BY user_as_ally, {$sort}");
+    ORDER BY user_as_ally, {$sort}" . ($desc ? " DESC" : " ASC"));
 }
 
 /**
