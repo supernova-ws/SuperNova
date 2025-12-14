@@ -798,12 +798,27 @@ CREATE INDEX idx_counter_entry_id_counter_id  ON game_counter(player_entry_id, c
 
 * Интегрировать Illuminate
 
+>npm install -g terser cssnano-cli
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated flatten@1.0.3: flatten is deprecated in favor of utility frameworks such as lodash.
+npm warn deprecated browserslist@1.7.7: Browserslist 2 could fail on reading Browserslist >3.0 config used in other tools.
+npm warn deprecated svgo@0.7.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+
+Мигрировать на более новый jQuery
+
 * Кажется, можно создать алл с тем же тэгом. что уже существует! Проверить!
     * Если да - исправить и написать миграцию, которая к более позднему тегу алла добавит "не"
     * Проверить то же по имени алла
 
 #ctv
 
+2025-12-14 14:27:31 46a221
+
+[@] Code - templates
+    * More robust way to add JS files for compiler
+[@] Replaced JQuery with large version for easier development
 
 2025-10-21 23:34:21 46a172
 [@] Debug

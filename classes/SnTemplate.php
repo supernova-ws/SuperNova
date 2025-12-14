@@ -406,8 +406,8 @@ class SnTemplate {
 
     $standard_js = self::cacheFiles($standard_js, '.js');
 
-    // Prepending standard CSS files
-    $sn_mvc['javascript'][''] = array_merge($standard_js, $sn_mvc['javascript']['']);
+    // Prepending standard JS files
+    $sn_mvc['javascript'][''] = array_merge($standard_js, $sn_mvc['javascript'][''] ?? []);
 
     self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
   }
@@ -1331,11 +1331,15 @@ class SnTemplate {
       // Caching several files into one
       $contentToCache = '';
       foreach ($filesToMerge as $fileName => $temp) {
-        if (file_exists($fName = SN_ROOT_PHYSICAL . $fileName) && !empty($content = file_get_contents($fName))) {
+        $fileExists = file_exists($fName = SN_ROOT_PHYSICAL . $fileName);
+        $notEmpty   = !empty($content = file_get_contents($fName));
+        if ($fileExists && $notEmpty) {
           // Adding content of cached file
           $contentToCache .= $content . "\n";
           // Marking that file was read OK - for future debug purposes if any
           $filesToMerge[$fileName] .= " - OK\n";
+        } else {
+          $filesToMerge[$fileName] .= " - ERROR: fileExists = `$fileExists`, notEmpty = `$notEmpty`!\n";
         }
       }
       // If we have something to cache...
