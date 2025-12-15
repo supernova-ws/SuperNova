@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+<?php /** @noinspection SqlResolve */
+
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use Core\Updater;
 
@@ -530,6 +532,7 @@ switch ($updater->new_version) {
         $updater->upd_drop_table('spe_temp');
 
         // Updating counter to match player entries
+        /** @noinspection SqlWithoutWhere */
         $updater->upd_do_query(
           "UPDATE `{{counter}}` AS c
           LEFT JOIN `{{security_player_entry}}` AS spe
@@ -726,7 +729,7 @@ switch ($updater->new_version) {
     }, PATCH_REGISTER);
 
     // 2025-02-25 12:29:49 46a154
-    $updater->updPatchApply(14, function() use ($updater) {
+    $updater->updPatchApply(14, function () use ($updater) {
       if (!$updater->isTableExists('ban_ip')) {
         $updater->upd_create_table(
           'ban_ip',
@@ -747,8 +750,54 @@ switch ($updater->new_version) {
       }
     }, PATCH_REGISTER);
 
+    // 2025-12-15 12:30:09 46a225
+    $updater->updPatchApply(15, function () use ($updater) {
+      if (!$updater->isTableExists('stories')) {
+        $updater->upd_create_table(
+          'stories',
+          [
+            "`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Story ID'",
+            "`name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'Story name'",
+            "`path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'Path to story files from SN root'",
+
+            "PRIMARY KEY (`id`) USING BTREE",
+
+            "INDEX `I_stories_name`(`name`) USING BTREE"
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+        $updater->upd_do_query("
+                INSERT IGNORE INTO {{stories}} 
+                SET
+                  `id` = 1,
+                  `name` = 'simple_story',
+                  `path` = 'modules/core_stories/stories/simple_story/'
+                ;"
+        );
+      }
+      if (!$updater->isTableExists('story_rewards')) {
+        $updater->upd_create_table(
+          'story_rewards',
+          [
+            "`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT",
+            "`story_id` int(10) UNSIGNED NULL DEFAULT NULL",
+            "`player_id` bigint(20) UNSIGNED NULL DEFAULT NULL",
+            "`reward_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Story\'s internal reward ID'",
+            "`received` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL",
+
+            "PRIMARY KEY (`id`) USING BTREE",
+            "INDEX `I_story_rewards_story`(`story_id`, `player_id`, `reward_id`) USING BTREE",
+            "INDEX `I_story_rewards_player`(`player_id`) USING BTREE",
+            "CONSTRAINT `FK_story_rewards_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+            "CONSTRAINT `FK_story_rewards_story` FOREIGN KEY (`story_id`) REFERENCES `{{stories}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          ],
+          'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+        );
+      }
+    }, PATCH_REGISTER);
+
 //    // #ctv
-//    $updater->updPatchApply(15, function() use ($updater) {
+//    $updater->updPatchApply(16, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
 
 //   TODO - UNCOMMENT ON RELEASE!
