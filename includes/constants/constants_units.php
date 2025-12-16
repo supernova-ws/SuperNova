@@ -427,7 +427,8 @@ define('UNIT_AWARD_PENNANT', 2900); // Переходящий вымпел - и�
 // 3020-3039 - 20 // SuperNova Birthday Units
 // 3040-3099 - 50 // Halloween Units
 // 3100-3149 - 50 // SuperNova Christmas Gather Units
-// 3150-3999 // Reserved for Festival
+// 3150-3899 // Reserved for Festival
+// 3900-3999 // Reserved for Stories
 
 define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 

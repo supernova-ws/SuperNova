@@ -812,7 +812,17 @@ npm warn deprecated svgo@0.7.2: This SVGO version is no longer supported. Upgrad
     * Если да - исправить и написать миграцию, которая к более позднему тегу алла добавит "не"
     * Проверить то же по имени алла
 
+[Mon Dec 15 16:45:10.715047 2025] [php7:error] [pid 1550953:tid 1550953] [client 185.250.45.15:35296] PHP Fatal error:  Uncaught Error: Unsupported operand types in /var/www/alpha.supernova.ws/includes/init.php:259\nStack trace:\n#0 [internal function]: {closure}()\n#1 /var/www/alpha.supernova.ws/classes/Core/Worker.php(51): call_user_func_array()\n#2 /var/www/alpha.supernova.ws/includes/init.php(271): Core\\Worker->__call()\n#3 /var/www/alpha.supernova.ws/common.php(12): require_once('/var/www/alpha....')\n#4 /var/www/alpha.supernova.ws/index.php(10): require_once('/var/www/alpha....')\n#5 {main}\n  thrown in /var/www/alpha.supernova.ws/includes/init.php on line 259
+
+
+FleetDispatchEvent::__construct
+  * Вынести обращения к БД на момент необходимости использовать данные, а не сразу в конструкторе
+
 #ctv
+
+2025-12-16 13:58:06 46a234
+
+[+] FFH now skips FLT_FLEET_ARRIVE events for MT_HOLD/MT_EXPEDITION
 
 2025-12-14 17:03:52 46a223
 

@@ -114,6 +114,20 @@ class FleetDispatcher {
 
   // ------------------------------------------------------------------
 
+  public static $log = [];
+
+  public static function mark($message = '') {
+    static $mt;
+
+    if(empty($mt)) {
+      $mt = microtime(true);
+    }
+
+    $newMt       = microtime(true);
+    self::$log[] = $message . ' ' . number_format($newMt - $mt, 5);
+    $mt = $newMt;
+  }
+
   /**
    * @return int|int[]
    */
@@ -144,6 +158,15 @@ class FleetDispatcher {
         $result['message'] = $watchdog->getTerminationMessage();
         break;
       } elseif ($result['code'] === FleetWatchdog::FLEET_IS_EMPTY) {
+        continue;
+      }
+
+      // TODO crouch
+      if (
+        in_array($fleetEvent->missionId, [MT_HOLD, MT_EXPLORE])
+        && $fleetEvent->event == EVENT_FLT_ARRIVE
+      ) {
+        $this->mark('skipping ' . $fleetEvent->event . ' ' . $fleetEvent->missionId);
         continue;
       }
 
@@ -190,7 +213,10 @@ class FleetDispatcher {
         break;
 
         case MT_HOLD:
+          // TODO - shortcut
+          if ($fleetEvent->event == EVENT_FLT_ACCOMPLISH) {
           flt_mission_hold($fleetEvent);
+          }
         break;
 
         case MT_RELOCATE:
@@ -198,8 +224,11 @@ class FleetDispatcher {
         break;
 
         case MT_EXPLORE:
+          // TODO - shortcut
+          if ($fleetEvent->event == EVENT_FLT_ACCOMPLISH) {
           $outcome = new MissionExploreResult();
           $outcome->flt_mission_explore($fleetEvent);
+          }
         break;
 
         case MT_RECYCLE:
