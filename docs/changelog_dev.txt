@@ -818,6 +818,8 @@ npm warn deprecated svgo@0.7.2: This SVGO version is no longer supported. Upgrad
 FleetDispatchEvent::__construct
   * Вынести обращения к БД на момент необходимости использовать данные, а не сразу в конструкторе
 
+[детект сходных символов](./docs/similar_characters_detect.md)
+
 #ctv
 
 2025-12-16 13:58:06 46a234
