@@ -48,7 +48,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
   background-color: #222D42;
 }
 
-.bg_header {
+.bg_header, tr.bg_header > th, tr.bg_header > td, .header_bg {
   background-color: #13233E;
 }
 
@@ -199,7 +199,7 @@ div .ui-dialog-content table {
 }
 
 div.ui-slider-range {
-  background: #f6a828; !important;
+  background: #f6a828 !important;
 }
 
 /* Unit preview box on build pages */
