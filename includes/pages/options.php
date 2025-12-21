@@ -105,7 +105,13 @@ function sn_options_view($template = null) {
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while (($entry = $dir->read()) !== false) {
-    if (is_dir("skins/{$entry}") && $entry[0] != '.') {
+    if (
+      is_dir("skins/{$entry}")
+      && $entry[0] != '.' && (
+        file_exists("skins/{$entry}/skin.ini")
+        || file_exists("skins/{$entry}/skin.css")
+      )
+    ) {
       $template_result['.']['skin_list'][] = array(
         'VALUE'    => $entry,
         'NAME'     => $entry,

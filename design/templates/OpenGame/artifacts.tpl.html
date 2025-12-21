@@ -20,8 +20,8 @@
   <!-- BEGIN artifact -->
     <tr id="{artifact.ID}">
       <th width=120>
-        <a href="infos.php?gid={artifact.ID}" class="link">{artifact.NAME}</a><br>
-        <img src="{I_[artifact.ID]}" align="top" width="120" height="120" /><br>
+        <a href="infos.php?gid={artifact.ID}" class="link">{artifact.NAME}</a>
+        <div class="tech_image" unit_id="{artifact.ID}"><img src="{I_[artifact.ID]}" align="top" width="120" height="120" /></div>
         <!-- IF artifact.LEVEL -->
           <div><a href="artifacts.php?action={D_ACTION_USE}&unit_id={artifact.ID}" class="warning link">{L_art_use}</a></div>
         <!-- ENDIF -->

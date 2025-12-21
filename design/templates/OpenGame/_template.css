@@ -4116,3 +4116,18 @@ td.error_message {
 .ui-state-error-text .ui-icon {
 	background-image: url("/design/css/images/ui-icons_ff0000_256x240.png");
 }
+
+table.novapedia .unit_description {
+  display: table-row;
+  position: relative;
+  margin: 0.5em;
+}
+table.novapedia .unit_image_large {
+  max-width: 50em;
+}
+table.novapedia .unit_image_small {
+  border: 0;
+  height: 128px;
+  width: 128px;
+  margin-right: 7px;
+}
