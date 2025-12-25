@@ -61,7 +61,7 @@ $options = array();
 $options['fleets_max'] = GetMaxFleets($user);
 
 $MaxFleets = GetMaxFleets($user);
-//$FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", true);
+//$FlyingFleets = doSelect("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", true);
 //$FlyingFleets = $FlyingFleets['Number'];
 $FlyingFleets = DbFleetStatic::fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
@@ -70,7 +70,7 @@ if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
 
 $MaxExpeditions = get_player_max_expeditons($user);
 if($MaxExpeditions) {
-//  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
+//  $FlyingExpeditions  = doSelect("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
 //  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
   $FlyingExpeditions  = DbFleetStatic::fleet_count_flying($user['id'], MT_EXPLORE);
 } else {
@@ -215,21 +215,21 @@ if($missiontype) {
 
 switch($fleet_page) {
   case 1:
-    require('includes/includes/flt_page1.inc');
+    require('includes/includes/flt_page1.php');
   break;
 
   case 2:
-    require_once('includes/includes/flt_page2.inc');
+    require_once('includes/includes/flt_page2.php');
     sn_fleet_page2();
   break;
 
   case 3:
-    require_once('includes/includes/flt_page3.inc');
+    require_once('includes/includes/flt_page3.php');
     sn_fleet_page3();
   break;
 
   case 4:
-    require('includes/includes/flt_page4.inc');
+    require('includes/includes/flt_page4.php');
   break;
 
   case 5:
@@ -243,6 +243,6 @@ switch($fleet_page) {
   default:
     define('SN_RENDER_NAVBAR_PLANET', true);
 
-    require('includes/includes/flt_page0.inc');
+    require('includes/includes/flt_page0.php');
   break;
 }

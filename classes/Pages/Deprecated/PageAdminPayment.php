@@ -196,7 +196,7 @@ class PageAdminPayment extends PageDeprecated {
     $module_list = array(
       '' => SN::$lang['adm_pay_filter_all'],
     );
-    $query = doquery("SELECT distinct payment_module_name FROM `{{payment}}` ORDER BY payment_module_name");
+    $query = doSelect("SELECT distinct payment_module_name FROM `{{payment}}` ORDER BY payment_module_name");
     while ($row = db_fetch($query)) {
       $module_list[$row['payment_module_name']] = $row['payment_module_name'];
     }
@@ -211,7 +211,7 @@ class PageAdminPayment extends PageDeprecated {
     $payer_list = array(
       -1 => SN::$lang['adm_pay_filter_all'],
     );
-    $query = doquery("SELECT payment_user_id, payment_user_name FROM `{{payment}}` GROUP BY payment_user_id ORDER BY payment_user_name");
+    $query = doSelect("SELECT payment_user_id, payment_user_name FROM `{{payment}}` GROUP BY payment_user_id ORDER BY payment_user_name");
     while ($row = db_fetch($query)) {
       $payer_list[$row['payment_user_id']] = '[' . $row['payment_user_id'] . '] ' . $row['payment_user_name'];
     }
@@ -226,7 +226,7 @@ class PageAdminPayment extends PageDeprecated {
     $payer_list = array(
       -1 => SN::$lang['adm_pay_filter_all'],
     );
-    $query = doquery("SELECT distinct payment_external_currency FROM `{{payment}}`");
+    $query = doSelect("SELECT distinct payment_external_currency FROM `{{payment}}`");
     while ($row = db_fetch($query)) {
       $payer_list[$row['payment_external_currency']] = $row['payment_external_currency'];
     }

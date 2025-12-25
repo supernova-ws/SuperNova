@@ -58,7 +58,7 @@ if(sys_get_param('note_delete')) {
     }
 
     db_mysql::db_transaction_start();
-    doquery("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
+    doDelete("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
     db_mysql::db_transaction_commit();
     throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   } catch(exception $e) {
@@ -88,7 +88,7 @@ if(sys_get_param('note_delete')) {
 
     db_mysql::db_transaction_start();
     if($note_id_edit) {
-      $check_note_id = doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
+      $check_note_id = doSelect("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
       if(!$check_note_id) {
         throw new exception('note_err_note_not_found', ERR_ERROR);
       }
@@ -99,11 +99,11 @@ if(sys_get_param('note_delete')) {
         throw new exception('note_err_owner_wrong', ERR_ERROR);
       }
 
-      doquery("UPDATE {{notes}} SET `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
+      doUpdate("UPDATE {{notes}} SET `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky}
         WHERE `id` = {$note_id_edit} LIMIT 1;");
     } else {
-      doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
+      doInsert("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky};");
     }
 
@@ -132,7 +132,7 @@ if(!$note_id_edit) {
 }
 
 $note_exist = false;
-$notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY priority DESC, galaxy ASC, system ASC, planet ASC, planet_type ASC, `time` DESC");
+$notes_query = doSelect("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY priority DESC, galaxy ASC, system ASC, planet ASC, planet_type ASC, `time` DESC");
 while($note_row = db_fetch($notes_query)) {
   \Note\Note::note_assign($template, $note_row);
   $note_exist = $note_exist || $note_row['id'] == $note_id_edit;

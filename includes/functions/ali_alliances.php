@@ -10,7 +10,7 @@ function ali_rank_list_save($ranks) {
     }
   }
 
-  doquery("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
+  doUpdate("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
 
   return $ranklist;
 }
@@ -20,7 +20,7 @@ function ali_relations($ally_from, $ally_to = 0) {
   $ally_to = $ally_to ? " AND alliance_diplomacy_contr_ally_id = {$ally_to}" : '';
 
   $temp_array = array();
-  $query = doquery(
+  $query = doSelect(
     "SELECT b.*
       FROM
         {{alliance_diplomacy}} AS b,

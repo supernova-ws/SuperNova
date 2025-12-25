@@ -228,7 +228,7 @@ function sn_maintenance_pack_user_list($user_list) {
 
   $result = array();
   if(!empty($user_list)) {
-    $query = doquery("SELECT `id` FROM `{{users}}` WHERE `id` in (" . implode(',', $user_list) . ")");
+    $query = doSelect("SELECT `id` FROM `{{users}}` WHERE `id` in (" . implode(',', $user_list) . ")");
     while($row = db_fetch($query)) {
       $result[] = $row['id'];
     }

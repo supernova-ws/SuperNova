@@ -52,7 +52,7 @@ $HavePhalanx = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
 
-//$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
+//$maxfleet       = doSelect("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 //$maxfleet_count = $maxfleet['flying_fleet_count'];
 $flying_fleet_count = DbFleetStatic::fleet_count_flying($user['id']);
 
@@ -153,7 +153,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   } else {
     if ($uni_galaxyRowUser['ally_id'] && !isset($cached['allies'][$uni_galaxyRowUser['ally_id']])) {
       /** @noinspection SqlResolve */
-      $cached['allies'][$uni_galaxyRowUser['ally_id']] = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+      $cached['allies'][$uni_galaxyRowUser['ally_id']] = doSelect("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
     }
   }
 
@@ -326,11 +326,11 @@ $is_missile = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($Curren
 $colspan = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
 
 /** @noinspection SqlResolve */
-$ally_count = doquery("SELECT COUNT(*) AS ally_count FROM `{{alliance}}`;", '', true);
+$ally_count = doSelect("SELECT COUNT(*) AS ally_count FROM `{{alliance}}`;", '', true);
 /** @noinspection SqlResolve */
-$galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
+$galaxy_name = doSelect("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
 /** @noinspection SqlResolve */
-$system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
+$system_name = doSelect("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
 
 $template->assign_vars(array(
 //     'rows'                => $Result,

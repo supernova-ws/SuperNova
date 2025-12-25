@@ -18,13 +18,13 @@ lng_include('alliance');
 $mode = sys_get_param_str('mode');
 
 if ($mode == 'ainfo') {
-  include('includes/alliance/ali_info.inc');
+  include('includes/alliance/ali_info.php');
 }
 
 if (!$user['ally_id']) {
-  $user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
+  $user_request = doSelect("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
   if ($user_request['id_user']) {
-    require('includes/alliance/ali_external_request.inc');
+    require('includes/alliance/ali_external_request.php');
   } else {
     switch ($mode) {
       case 'search':
@@ -32,11 +32,11 @@ if (!$user['ally_id']) {
       break;
 
       case 'apply':
-        require('includes/alliance/ali_external_request.inc');
+        require('includes/alliance/ali_external_request.php');
       break;
 
       case 'make':
-        require('includes/alliance/ali_external_create_ally.inc');
+        require('includes/alliance/ali_external_create_ally.php');
       break;
 
       default:
@@ -49,7 +49,7 @@ if (!$user['ally_id']) {
 }
 
 Alliance::sn_ali_fill_user_ally($user);
-//$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
+//$ally = doSelect("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
 if (!isset($user['ally'])) {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
   SnTemplate::messageBox($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
@@ -121,13 +121,13 @@ switch ($mode) {
   break;
 
   case 'memberslist':
-    require('includes/alliance/ali_internal_members.inc');
+    require('includes/alliance/ali_internal_members.php');
   break;
   case 'circular':
-    require('includes/alliance/ali_internal_admin_mail.inc');
+    require('includes/alliance/ali_internal_admin_mail.php');
   break;
   default:
-    require('includes/alliance/ali_info.inc');
+    require('includes/alliance/ali_info.php');
   break;
 }
 

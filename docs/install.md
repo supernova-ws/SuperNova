@@ -396,13 +396,13 @@ alliance (главная). Когда поле  ally_tag  изменяется  
 В нашем случае (самый сложный) нужно: во-первых обновить все значения  ally_tag
 до текущих:
 ```php
-doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag;");
+doUpdate("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag;");
 ```
 
 во-вторых - для тех записей, для  которых  Альянсы  не  существуют,  установить
 соответствующее поле в NULL
 ```php
-doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL WHERE a.id is NULL;");
+doUpdate("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL WHERE a.id is NULL;");
 ```
 
 Если бы в constraint стояло бы ON DELETE CASCADE, а не ON DELETE SET  NULL,  то
@@ -413,7 +413,7 @@ ADD CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERE
 ```
 Соответствующий запрос:
 ```php
-doquery('DELETE FROM {{shortcut}} WHERE shortcut_planet_id NOT IN (SELECT id FROM {{planets}});');
+doDelete('DELETE FROM {{shortcut}} WHERE shortcut_planet_id NOT IN (SELECT id FROM {{planets}});');
 ```
 
 *??????*

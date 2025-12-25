@@ -32,7 +32,7 @@ class PageHelperAlly {
     if ($ali_search_text) {
       $template->assign_var('SEARCH_TEXT', $ali_search_text);
 
-      $search = doquery("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
+      $search = doSelect("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
       if (SN::$db->db_num_rows($search)) {
         PageHelperAlly::allyFetchFromResult($template, $search, $user['total_points']);
       }

@@ -37,7 +37,7 @@ class Confirmation {
   public function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_unsafe) {
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    return $this->db->doquery(
+    return $this->db->doDelete(
       "DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'"
     );
   }
@@ -48,14 +48,14 @@ class Confirmation {
     do {
       // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
       $confirm_code_safe = $this->db->db_escape($confirm_code_unsafe = $this->make_password_reset_code());
-      // $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
+      // $query = static::$db->doSelect("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
       // Тип не нужен для проверки - код подтверждения должен быть уникален от слова "совсем"
       $query = $this->db->doQueryAndFetch(
         "SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE"
       );
     } while($query);
 
-    $this->db->doquery(
+    $this->db->doReplace(
       "REPLACE INTO {{confirmations}}
         SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';"
     );

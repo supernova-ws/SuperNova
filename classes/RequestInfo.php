@@ -104,7 +104,7 @@ class RequestInfo {
     if ($this->device_cypher) {
       $cypher_safe = SN::$db->db_escape($this->device_cypher);
       /** @noinspection SqlResolve */
-      $device_id = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+      $device_id = doSelect("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       if (!empty($device_id['device_id'])) {
         $this->device_id = $device_id['device_id'];
       }
@@ -115,9 +115,9 @@ class RequestInfo {
         $cypher_safe = SN::$db->db_escape($this->device_cypher = sys_random_string());
 
         /** @noinspection SqlResolve */
-        $row = doquery("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+        $row = doSelect("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
-      doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
+      doInsert("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = SN::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
@@ -202,7 +202,7 @@ class RequestInfo {
     $proxy_safe   = SN::$db->db_escape($this->ip_v4_proxy_chain);
 
     $is_watching = true;
-    doquery(
+    doInsert(
       "INSERT INTO {{counter}} SET
         `visit_time` = '" . SN_TIME_SQL . "',
         `user_id` = {$user_id_safe},

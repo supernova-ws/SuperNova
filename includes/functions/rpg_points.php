@@ -76,7 +76,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     $comment = SN::$db->db_escape($comment);
     $row = db_user_by_id($user_id, false);
     $row['username'] = SN::$db->db_escape($row['username']);
-    doquery(
+    doInsert(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
       VALUES (
@@ -89,10 +89,10 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     }
 
     if($dark_matter > 0) {
-      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
+      $old_referral = doSelect("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
       if($old_referral['id']) {
-        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
-        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
+        doUpdate("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
+        $new_referral = doSelect("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
 
         $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
         if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {

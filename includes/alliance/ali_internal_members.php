@@ -25,7 +25,7 @@ if ($id_kick && $user_can_kick)
   if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner'])
   {
     db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
-    doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
+    doUpdate("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
   }
 }
 
@@ -168,7 +168,7 @@ foreach($userList as $userRow)
 
 if ($i != $ally['ally_members'])
 {
-  doquery("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
+  doUpdate("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
 }
 
 $template->assign_vars(array(

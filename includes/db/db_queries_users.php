@@ -110,7 +110,7 @@ function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) 
 
 
 function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
-  return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
+  return doUpdate("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
 }
 
 
@@ -127,7 +127,7 @@ function db_user_last_registered_username() {
 }
 
 function db_user_count($online = false) {
-  $result = doquery('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''), true);
+  $result = doSelect('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''), true);
 
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
@@ -135,7 +135,7 @@ function db_user_count($online = false) {
 function db_user_list_to_celebrate($config_user_birthday_range) {
   // TODO
   /** @noinspection SqlAggregates */
-  return doquery(
+  return doSelect(
     "SELECT
       `id`, `username`, `user_birthday`, `user_birthday_celebrated`
       , CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`
@@ -151,13 +151,13 @@ function db_user_list_to_celebrate($config_user_birthday_range) {
 }
 
 function db_user_list_admin_multi_accounts() {
-  return doquery("SELECT COUNT(*) as ip_count, `user_lastip` FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
+  return doSelect("SELECT COUNT(*) as ip_count, `user_lastip` FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
 }
 
 function db_user_list_admin_sorted($sort, $online = false, $desc = false) {
   global $config;
 
-  return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
+  return doSelect("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
     LEFT JOIN {{referrals}} as r on r.id_partner = u.id
     WHERE" .
     ($online ? " `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .

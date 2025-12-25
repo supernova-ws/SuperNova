@@ -23,13 +23,14 @@ abstract class oldArrayAccessNd implements ArrayAccess {
 
   abstract public function __unset($offset);
 
+  /** @noinspection PhpMissingReturnTypeInspection */
   public function __flush() {
     return true;
   }
 
   /**
    * (PHP 5 &gt;= 5.0.0)<br/>
-   * Whether a offset exists
+   * Whether an offset exists
    * @link http://php.net/manual/en/arrayaccess.offsetexists.php
    *
    * @param mixed $offset <p>
@@ -39,10 +40,12 @@ abstract class oldArrayAccessNd implements ArrayAccess {
    * @return boolean true on success or false on failure.
    * </p>
    * <p>
-   * The return value will be casted to boolean if non-boolean was returned.
+   * The return value will be cast to boolean if non-boolean was returned.
    */
-  public function offsetExists($offset) {
-    !is_array($offset) ? $offset = array($offset) : false;
+  public function offsetExists($offset): bool {
+    if (!is_array($offset)) {
+      $offset = array($offset);
+    }
 
     $current_leaf = $this->__get(reset($offset));
     while (($leaf_index = next($offset)) !== false) {
@@ -67,10 +70,13 @@ abstract class oldArrayAccessNd implements ArrayAccess {
    *
    * @return mixed Can return all value types.
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($offset) {
     $result = null;
 
-    !is_array($offset) ? $offset = array($offset) : false;
+    if (!is_array($offset)) {
+      $offset = array($offset);
+    }
 
     if ($this->offsetExists($offset)) {
       $result = $this->__get(reset($offset));
@@ -97,7 +103,7 @@ abstract class oldArrayAccessNd implements ArrayAccess {
    *
    * @return void
    */
-  public function offsetSet($offset, $value = null) {
+  public function offsetSet($offset, $value = null):void {
     // Если нет никакого индекса - значит нечего записывать
     if (!isset($offset) || (is_array($offset) && empty($offset))) {
       return;
@@ -118,7 +124,9 @@ abstract class oldArrayAccessNd implements ArrayAccess {
       $root = $this->__get(reset($offset));
       $current_leaf = &$root;
       while (($leaf_index = next($offset)) !== false) {
-        !is_array($current_leaf[$leaf_index]) ? $current_leaf[$leaf_index] = array() : false;
+        if (!is_array($current_leaf[$leaf_index])) {
+          $current_leaf[$leaf_index] = array();
+        }
         $current_leaf = &$current_leaf[$leaf_index];
       }
       if ($current_leaf != $value) {
@@ -128,14 +136,19 @@ abstract class oldArrayAccessNd implements ArrayAccess {
       }
     } else {
       // Пакетная запись из массива ключ -> значение
-      !is_array($offset) ? $offset = array($offset => $value) : false;
+      if (!is_array($offset)) {
+        /** @noinspection PhpUndefinedVariableInspection */
+        $offset = array($offset => $value);
+      }
 
       foreach ($offset as $key => $value) {
-        $this->__get($key) !== $value ? $this->__set($key, $value) : false;
+        if ($this->__get($key) !== $value) {
+          $this->__set($key, $value);
+        }
       }
     }
 
-    $this->__flush(); // Сбрасывем кэш - если есть его поддержка
+    $this->__flush(); // Сбрасываем кэш - если есть его поддержка
   }
 
   /**
@@ -149,13 +162,15 @@ abstract class oldArrayAccessNd implements ArrayAccess {
    *
    * @return void
    */
-  public function offsetUnset($offset) {
+  public function offsetUnset($offset): void {
     // Если нет никакого индекса - значит нечего записывать
     if (!isset($offset) || (is_array($offset) && empty($offset))) {
       return;
     }
 
-    !is_array($offset) ? $offset = array($offset) : false;
+    if (!is_array($offset)) {
+      $offset = array($offset);
+    }
 
     if ($this->offsetExists($offset)) {
       // Перематываем массив в конец
@@ -175,6 +190,6 @@ abstract class oldArrayAccessNd implements ArrayAccess {
       }
     }
 
-    $this->__flush(); // Сбрасывем кэш - если есть его поддержка
+    $this->__flush(); // Сбрасываем кэш - если есть его поддержка
   }
 }

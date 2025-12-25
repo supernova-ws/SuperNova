@@ -13,7 +13,9 @@
     "ext-curl": "*",
     "ext-iconv": "*",
     "ext-gd": "*",
-    "stil/gif-endec": "^0.2.0"
+    "ext-pdo": "*",
+    "stil/gif-endec": "^0.2.0",
+    "illuminate/database": "^8.83"
   },
   "require-dev": {
     "ext-json": "*",

@@ -131,7 +131,7 @@ class classLocale implements ArrayAccess {
 
     $this->stat_usage = $sn_cache->lng_stat_usage = array(); // TODO for debug
     if (empty($this->stat_usage)) {
-      $query = doquery("SELECT * FROM {{lng_usage_stat}}");
+      $query = doSelect("SELECT * FROM {{lng_usage_stat}}");
       while ($row = db_fetch($query)) {
         $this->stat_usage[$row['lang_code'] . ':' . $row['string_id'] . ':' . $row['file'] . ':' . $row['line']] = $row['is_empty'];
       }
@@ -142,14 +142,14 @@ class classLocale implements ArrayAccess {
     if (!empty($this->stat_usage_new)) {
       global $sn_cache;
       $sn_cache->lng_stat_usage = $this->stat_usage;
-      doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
+      doSelect("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
       foreach ($this->stat_usage_new as &$value) {
         foreach ($value as &$value2) {
           $value2 = '"' . SN::$db->db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) . ')';
       }
-      doquery("REPLACE INTO {{lng_usage_stat}} (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
+      doReplace("REPLACE INTO {{lng_usage_stat}} (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
     }
   }
 

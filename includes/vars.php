@@ -233,27 +233,27 @@ $note_priority_classes = array(
 
 $sn_ali_admin_internal = array(
   'rights'    => array(
-    'include' => 'alliance/ali_internal_admin_rights.inc',
+    'include' => 'alliance/ali_internal_admin_rights.php',
     'title'   => 'ali_adm_rights_title'
   ),
   'members'   => array(
-    'include' => 'alliance/ali_internal_members.inc',
+    'include' => 'alliance/ali_internal_members.php',
     'title'   => 'Members_list'
   ),
   'requests'  => array(
-    'include' => 'alliance/ali_internal_admin_request.inc',
+    'include' => 'alliance/ali_internal_admin_request.php',
     'title'   => 'ali_req_check'
   ),
   'diplomacy' => array(
-    'include' => 'alliance/ali_internal_admin_diplomacy.inc',
+    'include' => 'alliance/ali_internal_admin_diplomacy.php',
     'title'   => 'ali_dip_title'
   ),
   'mail'      => array(
-    'include' => 'alliance/ali_internal_admin_mail.inc',
+    'include' => 'alliance/ali_internal_admin_mail.php',
     'title'   => 'Send_circular_mail'
   ),
   'default'   => array(
-    'include' => 'alliance/ali_internal_admin.inc',
+    'include' => 'alliance/ali_internal_admin.php',
   ),
 );
 

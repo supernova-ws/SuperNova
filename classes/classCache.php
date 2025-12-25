@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43b0#
+ * @version #47a0#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -326,7 +326,7 @@ class classCache implements ArrayAccess {
    * The return value will be casted to boolean if non-boolean was returned.
    * @since 5.0.0
    */
-  public function offsetExists($offset) {
+  public function offsetExists($offset):bool {
     return $this->__isset($offset);
   }
 
@@ -341,6 +341,7 @@ class classCache implements ArrayAccess {
    * @return mixed Can return all value types.
    * @since 5.0.0
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($offset) {
     return $this->__get($offset);
   }
@@ -359,7 +360,7 @@ class classCache implements ArrayAccess {
    * @return void
    * @since 5.0.0
    */
-  public function offsetSet($offset, $value) {
+  public function offsetSet($offset, $value):void {
     $this->__set($offset, $value);
   }
 
@@ -374,7 +375,7 @@ class classCache implements ArrayAccess {
    * @return void
    * @since 5.0.0
    */
-  public function offsetUnset($offset) {
+  public function offsetUnset($offset):void {
     $this->__unset($offset);
   }
 

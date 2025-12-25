@@ -53,10 +53,10 @@ function sn_imperator_view($template = null) {
   }
 
   $template = SnTemplate::gettemplate('imperator', $template);
-  $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
+  $StatRecord = doSelect("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
 
   $stat_array = array();
-  $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
+  $query = doSelect("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
   $stat_count = SN::$db->db_affected_rows();
   while($row = db_fetch($query)) {
     foreach($stat_fields as $field_db_name => $field_template_name) {

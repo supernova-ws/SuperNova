@@ -425,7 +425,7 @@ function sn_options_change_username($user) {
   db_mysql::db_transaction_start();
   $username_safe = SN::$db->db_escape($username);
   /** @noinspection SqlResolve */
-  $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+  $name_check = doSelect("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
   if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
     $user = db_user_by_id($user['id'], true);
     switch ($config->game_user_changename) {
@@ -448,7 +448,7 @@ function sn_options_change_username($user) {
       case SERVER_PLAYER_NAME_CHANGE_FREE:
         db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
         /** @noinspection SqlResolve */
-        doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+        doReplace("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
         // TODO: Change cookie to not force user relogin
         // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
         $result[] = [

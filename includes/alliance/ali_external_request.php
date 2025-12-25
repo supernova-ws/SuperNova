@@ -12,11 +12,11 @@ if ($user['ally_id'])
 
 if ($user_request['id_ally'])
 {
-  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", true);
+  $ally = doSelect("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", true);
 
   if (sys_get_param_str('bcancel'))
   {
-    doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
+    doDelete("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
     sys_redirect('alliance.php');
   }
 
@@ -37,11 +37,11 @@ $id_ally = sys_get_param_id('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
+  doInsert("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
   sys_redirect('alliance.php');
 }
 
-$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
+$ally = doSelect("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
 
 if(!$ally)
 {

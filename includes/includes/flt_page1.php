@@ -66,7 +66,7 @@ if(empty($fleet['fleetarray'])) {
 }
 
 // Building list of shortcuts
-$query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
+$query = doSelect("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
 while($shortcut = db_fetch($query)) {
   $template->assign_block_vars('shortcut', array(
     'NAME'       => $shortcut['title'],

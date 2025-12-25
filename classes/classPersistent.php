@@ -62,7 +62,7 @@ class classPersistent extends classCache {
     $result = null;
     if($index) {
       $index_safe = SN::$db->db_escape($index);
-      $queryResult = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
+      $queryResult = doSelect("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
       if(is_array($queryResult) && !empty($queryResult)) {
         $this->$index = $result = $queryResult[$this->sql_value_field];
       }
@@ -74,7 +74,7 @@ class classPersistent extends classCache {
   public function db_loadAll() {
     $this->loadDefaults();
 
-    $query = doquery("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
+    $query = doSelect("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
     while($row = db_fetch($query)) {
       $this[$row[$this->sql_index_field]] = $row[$this->sql_value_field];
     }
@@ -108,7 +108,7 @@ class classPersistent extends classCache {
         $qry[] = "('{$item_name}', '{$item_value}')";
       }
     }
-    doquery("REPLACE INTO `{{" . $this->table_name . "}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES " . implode(',', $qry) . ";");
+    doReplace("REPLACE INTO `{{" . $this->table_name . "}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES " . implode(',', $qry) . ";");
 
     // И только после взятия блокировок - меняем значения в кэше
     foreach($item_list as $item_name => $item_value) {
@@ -164,7 +164,7 @@ class classPersistent extends classCache {
   }
 
   public function __unset($name) {
-    doquery('DELETE FROM `{{config}}` WHERE `config_name` = "' . SN::$db->db_escape($name) . '"');
+    doDelete('DELETE FROM `{{config}}` WHERE `config_name` = "' . SN::$db->db_escape($name) . '"');
 
     parent::__unset($name);
   }

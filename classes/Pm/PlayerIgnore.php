@@ -24,7 +24,7 @@ class PlayerIgnore {
 
   public function ignore($playerId, $ignoredId, $subsystem = self::IGNORE_PM) {
     if (!$this->isIgnored($playerId, $ignoredId, $subsystem)) {
-      doquery("REPLACE INTO `{{player_ignore}}` SET `player_id` = {$playerId}, `ignored_id` = {$ignoredId}, `subsystem` = {$subsystem}");
+      doReplace("REPLACE INTO `{{player_ignore}}` SET `player_id` = {$playerId}, `ignored_id` = {$ignoredId}, `subsystem` = {$subsystem}");
 
       $this->ignores[$playerId][$ignoredId][$subsystem] = true;
     }
@@ -32,7 +32,7 @@ class PlayerIgnore {
 
   public function unIgnore($playerId, $ignoredId, $subsystem = self::IGNORE_PM) {
     if ($this->isIgnored($playerId, $ignoredId, $subsystem)) {
-      doquery("DELETE FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}");
+      doDelete("DELETE FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}");
 
       $this->ignores[$playerId][$ignoredId][$subsystem] = false;
     }
@@ -40,7 +40,7 @@ class PlayerIgnore {
 
   public function isIgnored($playerId, $ignoredId, $subsystem = self::IGNORE_PM) {
     if (!isset($this->ignores[$playerId][$ignoredId][$subsystem])) {
-      $ignored = doquery("SELECT * FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}", true);
+      $ignored = doSelect("SELECT * FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}", true);
 
       $this->ignores[$playerId][$ignoredId][$subsystem] = !empty($ignored);
     }
@@ -51,7 +51,7 @@ class PlayerIgnore {
   public function getIgnores($playerId, $htmlEncode = true) {
     $result = [];
 
-    $ignores = doquery(
+    $ignores = doSelect(
       "SELECT pi.*, u.username
         FROM `{{player_ignore}}` AS pi
             LEFT JOIN `{{users}}` AS u ON u.id = pi.ignored_id

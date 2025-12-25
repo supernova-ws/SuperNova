@@ -50,7 +50,7 @@ if(sys_get_param('str_delete_selected') && is_array($message_delete = sys_get_pa
 
 if($message_delete)
 {
-  doquery("DELETE FROM {{messages}} WHERE `message_id` in ({$message_delete});");
+  doDelete("DELETE FROM {{messages}} WHERE `message_id` in ({$message_delete});");
   $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['mlst_messages_deleted'], $message_delete)));
 }
 
@@ -58,12 +58,12 @@ if($message_delete)
 if(sys_get_param('str_delete_date') && checkdate($month = sys_get_param_id('delete_month'), $day = sys_get_param_id('delete_day'), $year = sys_get_param_id('delete_year')))
 {
   $delete_date = "{$year}-{$month}-{$day}";
-  doquery("DELETE FROM {{messages}} WHERE message_time <= UNIX_TIMESTAMP('{$delete_date}')" . ($int_type_selected >= 0 ? " AND `message_type` = {$int_type_selected}" : ''));
+  doDelete("DELETE FROM {{messages}} WHERE message_time <= UNIX_TIMESTAMP('{$delete_date}')" . ($int_type_selected >= 0 ? " AND `message_type` = {$int_type_selected}" : ''));
   $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['mlst_messages_deleted_date'], $allowed_types[$int_type_selected]['TEXT'], $delete_date)));
 }
 
 
-$page_max = doquery('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''), true);
+$page_max = doSelect('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''), true);
 $page_max = ceil($page_max['max'] / 25);
 
 $int_page_current = min(sys_get_param_id('int_page_current', 1), $page_max);

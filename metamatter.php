@@ -53,7 +53,7 @@ if (
   ($payment_id = sys_get_param_id('ik_pm_no'))
 ) {
   /** @noinspection PhpDeprecationInspection */
-  $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
+  $payment = doSelect("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if ($payment && $payment['payment_user_id'] == $user['id']) {
     if ($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
       $template->assign_block_vars('result', array('MESSAGE' => sprintf(SN::$lang['pay_msg_mm_purchase_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));

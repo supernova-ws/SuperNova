@@ -92,7 +92,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       $qry = implode(', ', $qry);
       $table = $planetrow['id_owner'] ? 'planets' : 'users';
 
-      doquery("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+      doUpdate("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
       rpg_points_change($user['id'], RPG_MARKET_EXCHANGE, -$operation_cost, "Using Black Market page {$lang['eco_mrk_trader']}");
       db_mysql::db_transaction_commit();
 

@@ -179,6 +179,7 @@ class db_mysql {
 
   public function mysql_connect_driver($settings) {
     global $debug;
+    /** @var ?debug $debug */
 
     static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
 
@@ -272,7 +273,7 @@ class db_mysql {
 
     $sql = $this->prefixReplace($query);
 
-    if ($config->debug) {
+    if ($config->debug ?? null) {
       $numqueries++;
       $arr   = debug_backtrace();
       $array = explode('/', $arr[0]['file']);
@@ -365,7 +366,12 @@ class db_mysql {
     // TODO Заменить это на новый логгер
     global $config, $is_watching, $user, $debug;
 
-    if (!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array)) {
+    if (
+      !$is_watching
+      && !empty($config)
+      && $config->game_watchlist_array
+      && in_array($user['id'], $config->game_watchlist_array)
+    ) {
       if (!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
         $is_watching = true;
         $msg         = "\$query = \"{$query}\"\n\r";
@@ -520,7 +526,6 @@ class db_mysql {
     return $result;
   }
 
-
   /**
    * @param $query_string
    *
@@ -534,7 +539,23 @@ class db_mysql {
     $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
-//    return $this->driver->mysql_query($query_string);
+  }
+
+  /**
+   * Executes statement such as INSERT / UPDATE / DELETE / DDL
+   *
+   * @param string $sql
+   *
+   * @return bool|mysqli_result
+   */
+  public function db_statement($sql) {
+    $mt = microtime(true);
+
+    $result = $this->link->query($sql);
+
+    $this->time_mysql_total += microtime(true) - $mt;
+
+    return $result;
   }
 
   /**
@@ -716,7 +737,7 @@ class db_mysql {
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
     foreach ($tables as $table_name => $condition) {
-      SN::$db->doquery(
+      SN::$db->doSelect(
         "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
       );
     }
@@ -804,6 +825,26 @@ class db_mysql {
     }
 
     return true;
+  }
+
+  public function doSelect(string $string) {
+    return $this->doquery($string);
+  }
+
+  public function doDelete(string $string) {
+    return $this->doquery($string);
+  }
+
+  public function doUpdate(string $string) {
+    return $this->doquery($string);
+  }
+
+  public function doReplace(string $string) {
+    return $this->doquery($string);
+  }
+
+  public function doInsert(string $string) {
+    return $this->doquery($string);
   }
 
 }

@@ -25,7 +25,7 @@ class PlayerStatic {
 
   public static function getPlayerProduction($userId) {
     /** @noinspection SqlResolve */
-    return doquery("       
+    return doSelect("       
        SELECT
          sum(metal_perhour) + sum(crystal_perhour) * 2 + sum(deuterium_perhour) * 4 AS `total`,
          sum(metal_perhour)                                                         AS `metal`,
@@ -61,16 +61,16 @@ class PlayerStatic {
 
     if (!empty($TheUser['ally_id'])) {
       /** @noinspection SqlResolve */
-      $TheAlly                 = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
+      $TheAlly                 = doSelect("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
       $TheAlly['ally_members'] -= 1;
       /** @noinspection SqlResolve */
-      doquery("UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
+      doUpdate("UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
 
 //      if ( $TheAlly['ally_members'] > 0 ) {
-//        doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
+//        doUpdate ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
 //      } else {
-//        doquery ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
-//        doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
+//        doDelete ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
+//        doDelete ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
 //      }
     }
 
@@ -81,17 +81,17 @@ class PlayerStatic {
     DBStaticPlanet::db_planet_list_delete_by_owner($UserID);
 
     // TEMPORARY player messages not deleted
-//    doquery("DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
-//    doquery("DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
+//    doDelete("DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
+//    doDelete("DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
 
-    doquery("DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
+    doDelete("DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
 
-    doquery("DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
-    doquery("DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
+    doDelete("DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
+    doDelete("DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
 
-    doquery("DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
+    doDelete("DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
 
-    doquery("DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
+    doDelete("DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
     // Deleting all units
     SN::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLAYER . " AND `unit_player_id` = " . $UserID);
@@ -106,7 +106,7 @@ class PlayerStatic {
   }
 
   public static function dbUpdateBotStatus($botType, $onlineTime = SN_TIME_NOW) {
-    SN::$db->doquery("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
+    SN::$db->doUpdate("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
   }
 
   /**

@@ -35,11 +35,11 @@ if(strlen($dt_to) == 4)
 {
   $dt_to .= '-01';
 }
-$sql_date = 
+$sql_date =
   ($dt_from ? " AND register_time >= UNIX_TIMESTAMP(STR_TO_DATE('{$dt_from}', '%Y-%m-%d %H:%i:%s')) " : '') .
   ($dt_to ? " AND register_time < UNIX_TIMESTAMP(STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s')) " : '');
 
-$min_max_dates = doquery($q = "SELECT min(register_time) AS min_register, max(register_time) AS max_register, avg(onlinetime - register_time) AS avg_play_time,  STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s') FROM {{users}} WHERE 1 " . $sql_date, true);
+$min_max_dates = doSelect("SELECT min(register_time) AS min_register, max(register_time) AS max_register, avg(onlinetime - register_time) AS avg_play_time,  STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s') FROM {{users}} WHERE 1 " . $sql_date, true);
 
 $interval = $min_max_dates['max_register'] - $min_max_dates['min_register'];
 
@@ -75,7 +75,7 @@ $sql_group_by2 = "DATE_FORMAT(account_register_time, '{$sql_group_format}')";
 $sql_date2 =
   ($dt_from ? " AND account_register_time >= (STR_TO_DATE('{$dt_from}', '%Y-%m-%d %H:%i:%s')) " : '') .
   ($dt_to ? " AND account_register_time < (STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s')) " : '');
-$query = doquery(
+$query = doSelect(
   "SELECT 
     count(*) AS the_count, 
     DATE_FORMAT(account_register_time, '{$sql_group_format}') AS the_date, 
@@ -96,7 +96,7 @@ while($row = db_fetch($query))
 }
 
 $sql_group_by = "DATE_FORMAT(FROM_UNIXTIME(register_time), '{$sql_group_format}')";
-$query = doquery("SELECT count(*) AS the_count, {$sql_group_by} AS the_date, DATE_FORMAT(DATE_ADD(FROM_UNIXTIME(register_time), INTERVAL 1 {$sql_date_add}), '{$sql_group_format}') AS date_next
+$query = doSelect("SELECT count(*) AS the_count, {$sql_group_by} AS the_date, DATE_FORMAT(DATE_ADD(FROM_UNIXTIME(register_time), INTERVAL 1 {$sql_date_add}), '{$sql_group_format}') AS date_next
 FROM {{users}} WHERE user_as_ally IS NULL " . $sql_date . " GROUP BY {$sql_group_by}");
 while($row = db_fetch($query))
 {
@@ -105,7 +105,7 @@ while($row = db_fetch($query))
   $max_registered = max($max_registered, $row['the_count']);
 }
 
-$query = doquery("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
+$query = doSelect("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
 " AND onlinetime <= register_time + " . PERIOD_DAY .
 ' AND UNIX_TIMESTAMP(NOW()) >= register_time  + ' . PERIOD_DAY .
 $sql_date . " GROUP BY {$sql_group_by}");
@@ -114,7 +114,7 @@ while($row = db_fetch($query))
   $stat_date[$row['the_date']]['REJECTED'] = $row['the_count'];
 }
 
-$query = doquery("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
+$query = doSelect("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
 " AND onlinetime > register_time + " . PERIOD_DAY .
 ' AND onlinetime <= register_time + ' . PERIOD_WEEK .
 ' AND UNIX_TIMESTAMP(NOW()) >= register_time + ' . PERIOD_WEEK .
@@ -124,7 +124,7 @@ while($row = db_fetch($query))
   $stat_date[$row['the_date']]['LEAVED'] = $row['the_count'];
 }
 
-$query = doquery("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
+$query = doSelect("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
 ' AND UNIX_TIMESTAMP(NOW()) - onlinetime <= ' . PERIOD_DAY .
 ' AND UNIX_TIMESTAMP(NOW()) - register_time >= ' . PERIOD_DAY .
 $sql_date . " GROUP BY {$sql_group_by}");
@@ -133,7 +133,7 @@ while($row = db_fetch($query))
   $stat_date[$row['the_date']]['ACTIVE'] = $row['the_count'];
 }
 
-$query = doquery("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
+$query = doSelect("SELECT count(*) AS the_count, {$sql_group_by} AS the_date FROM {{users}} WHERE user_as_ally IS NULL " .
 ' AND UNIX_TIMESTAMP(NOW()) - onlinetime > ' . PERIOD_DAY .
 ' AND UNIX_TIMESTAMP(NOW()) - onlinetime <= ' . PERIOD_WEEK .
 ' AND UNIX_TIMESTAMP(NOW()) - register_time >= ' . PERIOD_WEEK .

@@ -22,4 +22,3 @@ RedirectMatch 404 /\..*$
 #    order allow,deny
 #    deny from all
 #</Files>
-

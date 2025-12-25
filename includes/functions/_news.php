@@ -38,7 +38,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
     $survey_complete = strtotime($announce['survey_until']) < SN_TIME_NOW;
 
     if ($announce['survey_id'] && !empty($user['id'])) {
-      $survey_vote = !$survey_complete ? $survey_vote = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
+      $survey_vote = !$survey_complete ? $survey_vote = doSelect("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
     }
 
     $announce_exploded = explode("<br /><br />", SN::$gc->bbCodeParser->expandBbCode($announce['strAnnounce'], intval($announce['authlevel'])));
@@ -67,7 +67,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
     }
 
     if ($announce['survey_id']) {
-      $survey_query = doquery(
+      $survey_query = doSelect(
         "SELECT survey_answer_id AS `ID`, survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
           FROM `{{survey_answers}}` AS sa
             LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id
@@ -85,7 +85,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
       }
 
       if ($mmModuleIsActive && $user['authlevel'] >= AUTH_LEVEL_ADMINISTRATOR) {
-        $mQuery = doquery(
+        $mQuery = doSelect(
           "SELECT
             sa.survey_answer_id,
             sum(acc.account_metamatter_total) AS `mm`,
@@ -159,13 +159,13 @@ function survey_vote(&$user) {
 
   db_mysql::db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
-  $is_voted = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
+  $is_voted = doSelect("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
   if (empty($is_voted)) {
     $survey_vote_id = sys_get_param_id('survey_vote');
-    $is_answer_exists = doquery("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
+    $is_answer_exists = doSelect("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
     if (!empty($is_answer_exists)) {
       $user_name_safe = SN::$db->db_escape($user['username']);
-      doquery("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
+      doInsert("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
     }
   }
   db_mysql::db_transaction_commit();

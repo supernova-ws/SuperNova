@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #45d0#
+ * @version #47a0#
  **/
 
 define('INSIDE', true);
@@ -19,14 +19,14 @@ $delete = sys_get_param_str('delete');
 $deleteall = sys_get_param_str('deleteall');
 
 if ($delete) {
-  doquery("DELETE FROM `{{chat}}` WHERE `messageid` = {$delete};");
+  doDelete("DELETE FROM `{{chat}}` WHERE `messageid` = {$delete};");
 } elseif ($deleteall == 'yes') {
-  doquery("DELETE FROM `{{chat}}`;");
+  doDelete("DELETE FROM `{{chat}}`;");
 }
 
 $template = SnTemplate::gettemplate('admin/admin_chat', true);
 
-$query = doquery("SELECT * FROM `{{chat}}` ORDER BY `messageid` DESC LIMIT 25;");
+$query = doSelect("SELECT * FROM `{{chat}}` ORDER BY `messageid` DESC LIMIT 25;");
 while ($e = db_fetch($query)) {
   $template->assign_block_vars('message', array(
     'ID'          => $e['messageid'],

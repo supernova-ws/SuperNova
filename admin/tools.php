@@ -101,7 +101,7 @@ switch ($mode) {
 
 
     $template->assign_block_vars('table', $lang['adm_tool_sql_table']['params']);
-    $result = doquery('SHOW STATUS;');
+    $result = doShowStatus();
     while ($row = db_fetch($result)) {
       $template->assign_block_vars('table.row', array(
         'VALUE_1' => $row['Variable_name'],

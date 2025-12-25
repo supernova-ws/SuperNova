@@ -64,7 +64,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 
   $banned['username'] = SN::$db->db_escape($banned['username']);
   $banner['username'] = SN::$db->db_escape($banner['username']);
-  doquery(
+  doInsert(
     "INSERT INTO
       `{{banned}}`
     SET
@@ -95,7 +95,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   $banned['username'] = SN::$db->db_escape($banned['username']);
   $banner['username'] = SN::$db->db_escape($banner['username']);
   $reason             = SN::$db->db_escape($reason);
-  doquery(
+  doInsert(
     "INSERT INTO `{{banned}}`
     SET
       `ban_user_id` = '{$banned['id']}',
@@ -203,10 +203,10 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   );
 
   $username_safe = SN::$db->db_escape($username_unsafe);
-  doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
+  doReplace("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
 
   if (!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
-    doquery("INSERT INTO `{{referrals}}` SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+    doInsert("INSERT INTO `{{referrals}}` SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
   }
 
   sys_player_new_adjust($user_new['id'], $new_planet_id);

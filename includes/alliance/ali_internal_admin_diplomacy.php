@@ -33,7 +33,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
     SnTemplate::messageBox($lang['ali_dip_err_same_ally'], $page_title);
   }
 
-  $contr_ally_row = doquery("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;", '', true);
+  $contr_ally_row = doSelect("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;", '', true);
   if(!$contr_ally_row)
   {
     SnTemplate::messageBox($lang['ali_dip_err_no_ally'], $page_title);
@@ -48,7 +48,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
   $alliance_negotiation_propose = sys_get_param_str('alliance_negotiation_propose');
 
   // If there is already offer for this alliance - delete it
-  doquery("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$alliance_negotiation_contr_ally_id} LIMIT 1;");
+  doDelete("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$alliance_negotiation_contr_ally_id} LIMIT 1;");
 
   $relation_new = $sn_diplomacy_relation_list[$alliance_negotiation_relation];
   $relation_current = $sn_diplomacy_relation_list[$relation_current_id];
@@ -90,7 +90,7 @@ else
   {
     $offer_answer = sys_get_param_str('answer');
 
-    $negotiation = doquery("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", '', true);
+    $negotiation = doSelect("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", '', true);
     if(!$negotiation)
     {
       SnTemplate::messageBox($lang['ali_dip_err_offer_none'], $page_title);
@@ -109,7 +109,7 @@ else
       }
       elseif($offer_answer == 'deny')
       {
-        doquery("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
+        doDelete("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
       }
     }
     else
@@ -152,7 +152,7 @@ if($accept_offer)
     ))
     ->doInsert();
 
-  doquery(
+  doDelete(
     "DELETE FROM {{alliance_negotiation}}
   	 WHERE
         (alliance_negotiation_ally_id = {$negotiation['alliance_negotiation_ally_id']} AND alliance_negotiation_contr_ally_id = {$user['ally_id']})
@@ -194,7 +194,7 @@ foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_rela
   ));
 }
 
-$query = doquery("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
+$query = doSelect("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
 while($alliance = db_fetch($query))
 {
   $template->assign_block_vars('alliance', array(
@@ -204,7 +204,7 @@ while($alliance = db_fetch($query))
   ));
 }
 
-$query = doquery(
+$query = doSelect(
   "SELECT
     *,
     if(alliance_negotiation_ally_id = {$user['ally_id']}, 1, 0) AS owner,

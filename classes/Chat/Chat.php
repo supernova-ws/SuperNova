@@ -128,7 +128,7 @@ class Chat {
     if (!$history) {
       $config->array_set('users', $user['id'], 'chat_last_refresh', SN_TIME_MICRO);
       // $chat_player_row = $this->sn_chat_advanced_get_chat_player_record($user['id']);
-      doquery("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
+      doUpdate("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
     }
 
     $page                         = 0;
@@ -149,7 +149,7 @@ class Chat {
       $where_add    = '';
       $last_message = 0;
       if ($history) {
-        $rows       = doquery("SELECT count(1) AS CNT
+        $rows       = doSelect("SELECT count(1) AS CNT
           FROM {{chat}}
           WHERE
           (
@@ -176,7 +176,7 @@ class Chat {
 
       $start_row = ($page - 1) * $page_limit;// OR `chat_message_recipient_id` = {$user['id']}
       $start_row = $start_row < 0 ? 0 : $start_row;
-      $query     = doquery(
+      $query     = doSelect(
         "SELECT c.*, u.authlevel
         FROM
           {{chat}} AS c
@@ -379,7 +379,7 @@ class Chat {
               //$chat_player_row = $this->sn_chat_advanced_get_chat_player_record($user['id'], '`chat_player_invisible`', true);
               $chat_directive = strtolower($chat_command_parsed[2]) == 'on' || $chat_command_parsed[2] == 1 ? 1 : (strtolower($chat_command_parsed[2]) == 'off' || (string)$chat_command_parsed[2] === '0' ? 0 : '');
               if ($chat_directive !== '') {
-                doquery("UPDATE {{chat_player}} SET `chat_player_invisible` = {$chat_directive} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+                doUpdate("UPDATE {{chat_player}} SET `chat_player_invisible` = {$chat_directive} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
               } else {
                 $chat_directive = $chat_player_row['chat_player_invisible'];
               }
@@ -432,7 +432,7 @@ class Chat {
                           sys_admin_player_ban_unset($user, $chat_player_subject, $temp);
                           $message = $lang['chat_advanced_command_unban'];
                         } elseif ($chat_command_issued == 'unmute') {
-                          doquery("UPDATE {{chat_player}} SET `chat_player_muted` = 0, `chat_player_mute_reason` = '{$temp}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+                          doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = 0, `chat_player_mute_reason` = '{$temp}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
                           $message = $lang['chat_advanced_command_unmute'];
                         } else {
                           $message = '';
@@ -458,7 +458,7 @@ class Chat {
                         $date_compiled              = $term + SN_TIME_NOW;
                         $chat_command_parsed_two[4] = SN::$db->db_escape($chat_command_parsed_two[4]);
 
-                        doquery("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+                        doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
                         if ($chat_command_issued == 'ban') {
                           sys_admin_player_ban($user, $chat_player_subject, $term, $chat_command_parsed_two[3] != '!', $chat_command_parsed_two[4]);
                           $message = $chat_command_parsed_two[3] == '!' ? $lang['chat_advanced_command_ban_no_vacancy'] : $lang['chat_advanced_command_ban'];
@@ -552,7 +552,7 @@ class Chat {
       }
       $message = SN::$db->db_escape($message);
 
-      doquery(
+      doInsert(
         "INSERT INTO
           {{chat}}
         SET
@@ -577,21 +577,21 @@ class Chat {
     $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
     $config->array_set('users', $user['id'], 'chat_last_refresh', $refresh ? 0 : SN_TIME_MICRO);
 
-    $activity_row = doquery("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1", true);
+    $activity_row = doSelect("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1", true);
     if (!$activity_row) {
-      doquery("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$user['id']}");
+      doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$user['id']}");
     } else {
-      doquery("UPDATE {{chat_player}} SET `chat_player_activity` = '" . SN::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+      doUpdate("UPDATE {{chat_player}} SET `chat_player_activity` = '" . SN::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
     }
   }
 
   protected function sn_chat_advanced_get_chat_player_record($player_id, $fields = '*', $return_data = true) {
     $result = false;
     if($player_id) {
-      if(!($result = doquery("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true))) {
-        doquery("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
+      if(!($result = doSelect("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true))) {
+        doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
         if($return_data) {
-          $result = doquery("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
+          $result = doSelect("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
         }
       }
     }

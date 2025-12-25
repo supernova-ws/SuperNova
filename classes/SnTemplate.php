@@ -612,7 +612,7 @@ class SnTemplate {
    * @param $user
    */
   public static function tpl_navbar_render_notes(&$template, &$user) {
-    $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
+    $notes_query = doSelect("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
     while ($note_row = db_fetch($notes_query)) {
       Note::note_assign($template, $note_row);
     }
@@ -1221,9 +1221,7 @@ class SnTemplate {
     }
 
     // Flushing all opened buffers
-    while (@ob_end_flush()) {
-      ;
-    }
+    while (@ob_end_flush()) {}
 
 
     // Global footer
@@ -1231,7 +1229,9 @@ class SnTemplate {
       SnTemplate::renderFooter($page, $template_result);
     }
 
-    $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
+    if ($user['authlevel'] >= 3 && $config->debug) {
+      $debug->echo_log();
+    }
 
     SN::$db->db_disconnect();
 

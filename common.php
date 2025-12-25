@@ -11,7 +11,14 @@ use DBAL\db_mysql;
 
 require_once('includes/init.php');
 
-global $debug, $template_result, $user, $lang, $planetrow;
+/**
+ * @var ?debug $debug
+ * @var classLocale $lang
+ * @var array $template_result
+ * @var array $user
+ * @var array $planetrow
+ */
+global $debug, $lang, $template_result, $user, $planetrow;
 
 // Напоминание для Администрации, что игра отключена
 if($template_result[F_GAME_DISABLE]) {

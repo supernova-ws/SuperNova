@@ -32,12 +32,12 @@ if ($user['authlevel'] >= 3) {
 
     if ($mode == 'edit') {
       /** @noinspection SqlResolve */
-      doquery("UPDATE `{{announce}}` SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
+      doUpdate("UPDATE `{{announce}}` SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
       /** @noinspection SqlResolve */
-      doquery("DELETE FROM `{{survey}}` WHERE `survey_announce_id` = {$announce_id};");
+      doDelete("DELETE FROM `{{survey}}` WHERE `survey_announce_id` = {$announce_id};");
     } else {
       /** @noinspection SqlResolve */
-      doquery("INSERT INTO `{{announce}}`
+      doInsert("INSERT INTO `{{announce}}`
         SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
         `user_id` = {$user['id']}, `user_name` = '" . SN::$db->db_escape($user['username']) . "'");
       $announce_id = SN::$db->db_insert_id();
@@ -47,7 +47,7 @@ if ($user['authlevel'] >= 3) {
       /** @noinspection PhpIdempotentOperationInspection */
       $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ?: SN_TIME_NOW + PERIOD_DAY * 1);
       /** @noinspection SqlResolve */
-      doquery("INSERT INTO `{{survey}}` SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+      doInsert("INSERT INTO `{{survey}}` SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
       $survey_id = SN::$db->db_insert_id();
 
       // To remove difference between Linux/Windows/OsX/etc. browsers
@@ -57,7 +57,7 @@ if ($user['authlevel'] >= 3) {
         $survey_answer = SN::$db->db_escape(trim($survey_answer));
         if ($survey_answer) {
           /** @noinspection SqlResolve */
-          doquery("INSERT INTO `{{survey_answers}}` SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
+          doInsert("INSERT INTO `{{survey_answers}}` SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
         }
       }
     }
@@ -81,7 +81,7 @@ if ($user['authlevel'] >= 3) {
   switch ($mode) {
     case 'del':
       /** @noinspection SqlResolve */
-      doquery("DELETE FROM `{{announce}}` WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
+      doDelete("DELETE FROM `{{announce}}` WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
       $mode = '';
     break;
 
@@ -90,14 +90,14 @@ if ($user['authlevel'] >= 3) {
       $template->assign_var('ID', $announce_id);
     case 'copy':
       /** @noinspection SqlResolve */
-      $announce = doquery(
+      $announce = doSelect(
         "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
         FROM `{{announce}}` AS a
         LEFT JOIN `{{survey}}` AS s ON s.survey_announce_id = a.idAnnounce
         WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
       if ($announce['survey_id']) {
         /** @noinspection SqlResolve */
-        $query = doquery("SELECT survey_answer_text FROM `{{survey_answers}}` WHERE survey_parent_id = {$announce['survey_id']};");
+        $query = doSelect("SELECT survey_answer_text FROM `{{survey_answers}}` WHERE survey_parent_id = {$announce['survey_id']};");
         $survey_answers_array = [];
         while ($row = db_fetch($query)) {
           $survey_answers_array[] = $row['survey_answer_text'];

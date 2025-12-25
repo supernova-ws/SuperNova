@@ -175,11 +175,11 @@ class DbQuery {
    * @return bool
    */
   public function doInsert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
-    return doquery($this->insert($replace, $forceSingleInsert));
+    return doInsert($this->insert($replace, $forceSingleInsert));
   }
 
   public function doUpdate() {
-    return doquery($this->update());
+    return doUpdate($this->update());
   }
 
   public function doUpdateDb() {
@@ -191,7 +191,7 @@ class DbQuery {
    * @deprecated
    */
   public function doDelete() {
-    return doquery($this->delete());
+    return doDelete($this->delete());
   }
 
   // TODO - Do something with delete when there is no records
@@ -203,14 +203,14 @@ class DbQuery {
    * @return array|bool|\mysqli_result|null
    */
   public function doSelect() {
-    return doquery($this->select());
+    return doSelect($this->select());
   }
 
   /**
    * @return array|null
    */
   public function doSelectFetch() {
-    return doquery($this->select(), true);
+    return doSelect($this->select(), true);
   }
 
   /**

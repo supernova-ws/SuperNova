@@ -265,6 +265,6 @@ function sn_ube_combat_result_apply(&$combat_data) {
   }
   $bashing_list = implode(',', $bashing_list);
   if ($bashing_list) {
-    doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+    doInsert("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
   }
 }

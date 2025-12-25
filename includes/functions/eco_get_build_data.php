@@ -33,7 +33,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require) {
 
   if (!isset($user['research_effective_level'][$lab_require])) {
     if ($user['user_as_ally']) {
-      $lab_level = doquery("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
+      $lab_level = doSelect("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
     } else {
       $tech_intergalactic           = mrc_get_level($user, false, TECH_RESEARCH) + 1;
       $lab_level['effective_level'] = 0;
@@ -174,7 +174,7 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result) {
       }
     } elseif (($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun) {
       $userId        = floatval($user['id']);
-      $isLabBuilding = doquery(
+      $isLabBuilding = doSelect(
         "SELECT 1 FROM `{{que}}`
         WHERE
             `que_player_id` = {$userId}

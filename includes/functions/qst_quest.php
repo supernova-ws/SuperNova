@@ -123,7 +123,7 @@ function questPageModelManage(classLocale $lang, template $template, &$mode) {
 
   switch ($mode) {
     case 'del':
-      doquery("DELETE FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;");
+      doDelete("DELETE FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;");
       $mode = '';
     break;
 
@@ -132,11 +132,11 @@ function questPageModelManage(classLocale $lang, template $template, &$mode) {
       $template->assign_var('QUEST_ID', $quest_id);
 
     case 'copy':
-      $questManaged = doquery("SELECT * FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+      $questManaged = doSelect("SELECT * FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
     break;
   }
 
-  $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
+  $query = doSelect("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
   SN::$config->pass()->quest_total = $query['count'];
 
   return $questManaged;
@@ -247,7 +247,7 @@ function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL) {
     $query_add_from = "LEFT JOIN {{quest_status}} AS qs ON qs.quest_status_quest_id = q.quest_id AND qs.quest_status_user_id = {$user_id}";
   }
 
-  $query = doquery(
+  $query = doSelect(
     "SELECT q.* {$query_add_select}
       FROM `{{quest}}` AS q {$query_add_from}
       WHERE 1 {$query_add_where}

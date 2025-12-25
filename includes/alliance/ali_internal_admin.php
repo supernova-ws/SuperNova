@@ -72,14 +72,14 @@ if(sys_get_param_str('isSaveOptions')) {
   }
 
   if(!empty($ally_changeset)) {
-    doquery("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
+    doUpdate("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
     sys_redirect('alliance.php?mode=admin&edit=ally');
   }
 }
 elseif(sys_get_param_str('isSaveText'))
 {
   $text = sys_get_param_str_both('text');
-  doquery("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['safe']}' WHERE `id`='{$ally['id']}';");
+  doUpdate("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['safe']}' WHERE `id`='{$ally['id']}';");
   $ally[$text_list[$allyTextID]['db_field']] = $text['unsafe'];
 }
 elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNewLeader'))
@@ -94,7 +94,7 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
   {
     db_mysql::db_transaction_start();
     db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
-    doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
+    doUpdate("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
     db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
     db_mysql::db_transaction_commit();
     sys_redirect('alliance.php');
@@ -107,13 +107,13 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
     SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
   db_mysql::db_transaction_start();
-  doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
+  doDelete("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
   db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
   db_mysql::db_transaction_commit();
   sys_redirect('alliance.php');
 };
 
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+$request = doSelect("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
 
 $template->assign_vars(array(
   'request_count' => $request['request_count'] ? $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'] : $lang['ali_req_emptyList'],

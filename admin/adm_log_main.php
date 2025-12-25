@@ -20,11 +20,11 @@ SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 if($delete = sys_get_param_id('delete'))
 {
-  doquery("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
+  doDelete("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
 }
 elseif(sys_get_param_str('delete_update_info'))
 {
-  doquery("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 180, 191);");
+  doDelete("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 180, 191);");
 }
 elseif(sys_get_param_str('deleteall') == 'yes')
 {
@@ -54,7 +54,7 @@ if($detail = sys_get_param_id('detail'))
 {
   $template = SnTemplate::gettemplate('admin/adm_log_main_detail', true);
 
-  $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
+  $errorInfo = doSelect("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
   $error_dump = json_decode($errorInfo['log_dump'], true);
   if(is_array($error_dump))
   {
@@ -86,7 +86,7 @@ else
   $template = SnTemplate::gettemplate('admin/adm_log_main', true);
 
   $i = 0;
-  $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
+  $query = doSelect("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
   while($u = db_fetch($query))
   {
     $i++;
@@ -98,7 +98,7 @@ else
     }
     $template->assign_block_vars('error', $v);
   }
-  $query = doquery("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;", true);
+  $query = doSelect("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;", true);
 
   $template->assign_vars($query);
 }

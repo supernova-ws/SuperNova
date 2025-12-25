@@ -23,19 +23,19 @@ $current_price = intval(SN::$config->db_loadItem('game_blitz_register_price'));
 if (SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
   db_mysql::db_transaction_start();
   $user          = db_user_by_id($user['id'], true);
-  $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
+  $is_registered = doSelect("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
   if (sys_get_param_str('register_me')) {
     if (empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
-      doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+      doInsert("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
       //mm_points_change($user['id'], RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
       SN::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
     }
   } elseif (sys_get_param_str('register_me_not') && !empty($is_registered)) {
-    doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+    doDelete("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
     // mm_points_change($user['id'], RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
     SN::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
-  $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+  $registered_count = doSelect("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
   SN::$config->db_saveItem('game_blitz_register_users', $registered_count['count']);
   db_mysql::db_transaction_commit();
 }
@@ -49,17 +49,17 @@ $blitz_prize_places         = 0;
 if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if (sys_get_param_str('generate')) {
     $next_id = 0;
-    $query   = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
+    $query   = doSelect("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
     while ($row = db_fetch($query)) {
       $next_id++;
       $blitz_name     = 'Игрок' . $next_id;
       $blitz_password = sys_random_string(8);
-      doquery("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
+      doUpdate("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
     }
   } elseif (sys_get_param_str('import_generated')) {
     // ЭТО НА БЛИЦЕ!!!
-    doquery("DELETE FROM {{users}} WHERE username like 'Игрок%';");
-    doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
+    doDelete("DELETE FROM {{users}} WHERE username like 'Игрок%';");
+    doDelete("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
     shuffle($imported_string);
@@ -97,7 +97,7 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
         $system = $system_step;
       }
     }
-    doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
+    doUpdate('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
 
     SN::$config->db_saveItem('users_amount', SN::$config->users_amount + $new_players);
     // generated_string
@@ -109,7 +109,7 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       $blitz_result_data = explode(',', $blitz_result_data);
       if (count($blitz_result_data) == 5) {
         $blitz_result_data[1] = SN::$db->db_escape($blitz_result_data[1]);
-        doquery(
+        doUpdate(
           "UPDATE `{{blitz_registrations}}` SET
             `blitz_player_id` = '{$blitz_result_data[0]}',
             `blitz_online` = '{$blitz_result_data[2]}',
@@ -123,12 +123,12 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
   if (SN::$config->game_mode == GAME_BLITZ) {
     $blitz_result = array(SN::$config->db_loadItem('var_stat_update'));
-    $query        = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
+    $query        = doSelect("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
     while ($row = db_fetch($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
   } else {
-    $query = doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
+    $query = doSelect("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
     while ($row = db_fetch($query)) {
       $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
       $row['blitz_online'] ? $blitz_prize_players_active++ : false;
@@ -148,7 +148,7 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       // $blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter');
       $blitz_prize_places_actual = sys_get_param_int('blitz_prize_places');
       db_mysql::db_transaction_start();
-      $query = doquery("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
+      $query = doSelect("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
       while ($row = db_fetch($query)) {
         if (!$row['blitz_place']) {
           continue;
@@ -163,7 +163,7 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
           rpg_points_change($row['user_id'], RPG_BLITZ, $reward, sprintf(
             $lang['sys_blitz_reward_log_message'], $row['blitz_place'], $row['blitz_name']
           ));
-          doquery("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
+          doUpdate("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
         }
 
         if (!$blitz_prize_places_actual || $blitz_prize_dark_matter_actual < 1000) {
@@ -180,7 +180,7 @@ if ($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 $template = SnTemplate::gettemplate('blitz_register', true);
 
 $player_registered = false;
-$query             = doquery(
+$query             = doSelect(
   "SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter
     FROM {{blitz_registrations}} AS br
     JOIN {{users}} AS u ON u.id = br.user_id

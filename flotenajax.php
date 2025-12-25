@@ -130,7 +130,7 @@ if ($target_mission == MT_MISSILE) {
   $arrival                    = SN_TIME_NOW + $duration;
   $travel_data['consumption'] = 0;
 
-  doquery(
+  doInsert(
     "INSERT INTO `{{iraks}}` SET
      `fleet_target_owner` = '{$target_row['id_owner']}', `fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}',
      `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',

@@ -13,7 +13,7 @@ function sn_ube_report_save(&$combat_data) {
   // Генерируем уникальный секретный ключ и проверяем наличие в базе
   do {
     $combat_data[UBE_REPORT_CYPHER] = sys_random_string(32);
-  } while (doquery("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$combat_data[UBE_REPORT_CYPHER]}' LIMIT 1 FOR UPDATE", true));
+  } while (doSelect("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$combat_data[UBE_REPORT_CYPHER]}' LIMIT 1 FOR UPDATE", true));
 
   // Инициализация таблицы для пакетной вставки информации
   $sql_perform = array(
@@ -103,7 +103,7 @@ function sn_ube_report_save(&$combat_data) {
       floatval($outcome[UBE_DEBRIS][RES_METAL])
       + floatval($outcome[UBE_DEBRIS][RES_CRYSTAL]) * floatval($config->rpg_exchange_crystal)
     ) / (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1);
-  doquery("INSERT INTO `{{ube_report}}`
+  doInsert("INSERT INTO `{{ube_report}}`
     SET
       `ube_report_cypher` = '{$combat_data[UBE_REPORT_CYPHER]}',
       `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $combat_data[UBE_TIME]) . "',
@@ -259,7 +259,7 @@ function sn_ube_report_save(&$combat_data) {
     }
     $fields = $table_data[0];
     unset($table_data[0]);
-    doquery("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
+    doInsert("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
   }
 
   return $combat_data[UBE_REPORT_CYPHER];
@@ -270,7 +270,7 @@ function sn_ube_report_save(&$combat_data) {
 function sn_ube_report_load($report_cypher) {
   $report_cypher = SN::$db->db_escape($report_cypher);
 
-  $report_row = doquery("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
+  $report_row = doSelect("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
   if (!$report_row) {
     return UBE_REPORT_NOT_FOUND;
   }
@@ -323,7 +323,7 @@ function sn_ube_report_load($report_cypher) {
 
   $outcome = &$combat_data[UBE_OUTCOME];
 
-  $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+  $query = doSelect("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
   while ($player_row = db_fetch($query)) {
     $combat_data[UBE_PLAYERS][$player_row['ube_report_player_player_id']] = array(
       UBE_NAME     => $player_row['ube_report_player_name'],
@@ -337,7 +337,7 @@ function sn_ube_report_load($report_cypher) {
     );
   }
 
-  $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+  $query = doSelect("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
   while ($fleet_row = db_fetch($query)) {
     $combat_data[UBE_FLEETS][$fleet_row['ube_report_fleet_fleet_id']] = array(
       UBE_OWNER => $fleet_row['ube_report_fleet_player_id'],
@@ -370,7 +370,7 @@ function sn_ube_report_load($report_cypher) {
   $combat_data[UBE_ROUNDS] = array();
   $rounds_data = &$combat_data[UBE_ROUNDS];
 
-  $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
+  $query = doSelect("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
   while ($round_row = db_fetch($query)) {
     $round = $round_row['ube_report_unit_round'];
     $fleet_id = $round_row['ube_report_unit_fleet_id'];
@@ -397,7 +397,7 @@ function sn_ube_report_load($report_cypher) {
   }
 
 
-  $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+  $query = doSelect("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
   while ($row = db_fetch($query)) {
     $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
 
@@ -430,7 +430,7 @@ function sn_ube_report_load($report_cypher) {
     $outcome[$side][UBE_FLEETS][$fleet_id] = &$outcome[UBE_FLEETS][$fleet_id];
   }
 
-  $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
+  $query = doSelect("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
   while ($row = db_fetch($query)) {
     $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
     $side = $combat_data[UBE_FLEETS][$fleet_id][UBE_FLEET_TYPE];

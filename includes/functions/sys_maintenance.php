@@ -19,7 +19,7 @@ function sys_maintenance()
 
   foreach($queries as &$query)
   {
-    $query['result'] = doquery($query['query']);
+    $query['result'] = doDelete($query['query']);
     $query['error']  = SN::$db->db_error();
     $query['affected_rows']  = SN::$db->db_affected_rows();
   }

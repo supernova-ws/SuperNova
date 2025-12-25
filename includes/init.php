@@ -103,9 +103,6 @@ foreach ($avatarDirs as $possibleDir) {
     break;
   }
 }
-if (!defined('SN_PATH_AVATAR_RELATIVE')) {
-  die('Can not finding writable folder for player avatars. Check that `/avatars` or `/image/avatar` folder exists and it writable by web-server.');
-}
 
 // Detecting root URL aka Virtual Root
 $_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
@@ -117,6 +114,12 @@ define('SN_HTTP_AVATAR', SN_ROOT_VIRTUAL . SN_PATH_AVATAR_RELATIVE);
 
 
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
+
+if (in_array($_SERVER['HTTP_HOST'], ['trunk.supernova.local', 'modules.supernova.local', ])) {
+  ini_set('display_errors', '1');
+  ini_set('display_startup_errors', '1');
+  error_reporting(E_ALL);
+}
 
 header('Content-type: text/html; charset=utf-8');
 ob_start();
@@ -153,6 +156,10 @@ SnBootstrap::performUpdate(SN::$config);
 
 if (BanHammer::checkIpV4($_SERVER["REMOTE_ADDR"])) {
   die("Server error. Try to connect later...<br />\nСерверная ошибка. Попробуйте подключиться позже...");
+}
+
+if (!defined('SN_PATH_AVATAR_RELATIVE')) {
+  die('Can not finding writable folder for player avatars. Check that `/avatars` or `/image/avatar` folder exists and it writable by web-server.');
 }
 
 // init constants from db
@@ -285,7 +292,7 @@ if(!SN::$config->var_online_user_count || SN::$config->var_online_user_time + SN
   SN::$config->pass()->var_online_user_time = SN_TIME_NOW;
   if(SN::$config->server_log_online) {
     /** @noinspection SqlResolve */
-    doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
+    doInsert("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . SN::$config->var_online_user_count . ";");
   }
 }
 

@@ -18,7 +18,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template = SnTemplate::gettemplate('banned_body', true);
 
-$query = doquery("SELECT * FROM {{banned}} ORDER BY `ban_id` DESC;");
+$query = doSelect("SELECT * FROM {{banned}} ORDER BY `ban_id` DESC;");
 $i=0;
 while($ban_row = db_fetch($query))
 {

@@ -288,6 +288,12 @@ class debug {
     return $error_backtrace;
   }
 
+  /**
+   * @param $die_message
+   * @param $details
+   *
+   * @return void
+   */
   function error_fatal($die_message, $details = 'There is a fatal error on page') {
     // TODO - Записывать детали ошибки в лог-файл
     die($die_message);
@@ -379,7 +385,7 @@ class debug {
       "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
       "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
 
-    doquery($query, '', false, true) or die($fatal_error . SN::$db->db_error());
+    doInsert($query, '', false, true) or die($fatal_error . SN::$db->db_error());
   }
 }
 

@@ -29,7 +29,7 @@ $intError = MARKET_DEAL;
 switch($mode)
 {
   case MARKET_RESOURCES: // Resource trader
-    require('includes/includes/market_trader.inc');
+    require('includes/includes/market_trader.php');
     $template = eco_mrk_trader($user, $planetrow);
   break;
 
@@ -45,7 +45,7 @@ switch($mode)
 
     $array = sn_get_groups('fleet');
 
-    require('includes/includes/market_fleeter.inc');
+    require('includes/includes/market_fleeter.php');
   break;
 
   case MARKET_STOCKMAN: // S/H ship seller
@@ -60,11 +60,11 @@ switch($mode)
 
     $array = &$stock;
 
-    require('includes/includes/market_fleeter.inc');
+    require('includes/includes/market_fleeter.php');
   break;
 
   case MARKET_INFO: // Infotrader
-    require('includes/includes/market_info.inc');
+    require('includes/includes/market_info.php');
   break;
 
   case MARKET_EXCHANGE: // Cross-player resource exchange

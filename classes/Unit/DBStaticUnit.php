@@ -27,7 +27,7 @@ class DBStaticUnit {
    * @return array|bool|mysqli_result|null
    */
   public static function db_unit_by_id($unit_id) {
-    return doquery("SELECT * FROM `{{unit}}` WHERE `unit_id` = " . idval($unit_id), true);
+    return doSelect("SELECT * FROM `{{unit}}` WHERE `unit_id` = " . idval($unit_id), true);
   }
 
   /**
@@ -87,7 +87,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
-    $query  = doquery(
+    $query  = doSelect(
       "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
       ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
       ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
@@ -103,7 +103,7 @@ class DBStaticUnit {
 
 // Used by UNIT_CAPTAIN module TODO
   public static function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update) {
-    return doquery(
+    return doSelect(
       "SELECT *
     FROM {{fleets}} AS f
       JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
@@ -118,7 +118,7 @@ class DBStaticUnit {
 
 
   public static function db_unit_list_laboratories($user_id) {
-    return doquery("SELECT DISTINCT unit_location_id AS `id`
+    return doSelect("SELECT DISTINCT unit_location_id AS `id`
     FROM {{unit}}
     WHERE unit_player_id = {$user_id} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
   }
@@ -145,7 +145,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_list_stat_calculate() {
-    return doquery(
+    return doSelect(
       "SELECT unit_player_id, unit_type, unit_snid, unit_level, count(*) AS unit_amount
     FROM `{{unit}}`
     WHERE unit_level > 0 AND " . self::db_unit_time_restrictions() .
@@ -155,17 +155,17 @@ class DBStaticUnit {
 
 
   public static function db_unit_change_owner($location_type, $location_id, $new_owner_id) {
-    doquery("UPDATE {{unit}} SET `unit_player_id` = {$new_owner_id} WHERE `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id}");
+    doUpdate("UPDATE {{unit}} SET `unit_player_id` = {$new_owner_id} WHERE `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id}");
   }
 
 
   public static function db_unit_list_admin_delete_mercenaries_finished() {
     /** @noinspection SqlWithoutWhere */
-    return doquery("DELETE FROM {{unit}} WHERE unit_time_finish IS NOT NULL AND unit_time_finish < FROM_UNIXTIME(" . SN_TIME_NOW . ") AND unit_type = " . UNIT_MERCENARIES);
+    return doDelete("DELETE FROM {{unit}} WHERE unit_time_finish IS NOT NULL AND unit_time_finish < FROM_UNIXTIME(" . SN_TIME_NOW . ") AND unit_type = " . UNIT_MERCENARIES);
   }
 
   public static function db_unit_list_admin_set_mercenaries_expire_time($default_length) {
-    return doquery(
+    return doUpdate(
       "UPDATE {{unit}}
     SET
       unit_time_start = FROM_UNIXTIME(" . SN_TIME_NOW . "),

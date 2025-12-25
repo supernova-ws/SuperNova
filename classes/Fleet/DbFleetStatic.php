@@ -86,7 +86,7 @@ class DbFleetStatic {
     if (!empty($fleet_id_safe) && !empty($set_safe_string)) {
       /** @noinspection SqlResolve */
       /** @noinspection SqlWithoutWhere */
-      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+      $result = doUpdate("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
       $result = false;
     }
@@ -105,7 +105,7 @@ class DbFleetStatic {
   public static function db_fleet_get($fleet_id) {
     $fleet_id_safe = idval($fleet_id);
     /** @noinspection SqlResolve */
-    $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+    $result = doSelect("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
 
     return is_array($result) ? $result : false;
   }
@@ -121,7 +121,7 @@ class DbFleetStatic {
     $fleet_id_safe = idval($fleet_id);
     if (!empty($fleet_id_safe)) {
       /** @noinspection SqlResolve */
-      $result = doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+      $result = doDelete("DELETE FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
       $result = false;
     }
@@ -141,7 +141,7 @@ class DbFleetStatic {
    */
   public static function db_fleet_count($where_safe) {
     /** @noinspection SqlResolve */
-    $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}", true);
+    $result = doSelect("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}", true);
 
     return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
   }
@@ -190,7 +190,7 @@ class DbFleetStatic {
    * TODO - fleets should be deleted by DB itself via InnoDB FOREIHN KEY
    */
   public static function db_fleet_list_delete_by_owner($owner_id) {
-    return doquery("DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '{$owner_id}';");
+    return doDelete("DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '{$owner_id}';");
   }
 
   /**
@@ -201,7 +201,7 @@ class DbFleetStatic {
    * TODO - deprecated
    */
   public static function db_fleet_list_query_all_stat() {
-    return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
+    return doSelect("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
   }
 
 
@@ -397,7 +397,7 @@ class DbFleetStatic {
     $row_list = [];
 
     /** @noinspection SqlResolve */
-    $query = doquery(
+    $query = doSelect(
       "SELECT * FROM `{{iraks}}`" .
       (!empty($where) ? " WHERE {$where}" : '') .
       ($for_update == DB_SELECT_FOR_UPDATE ? " FOR UPDATE" : '')
@@ -517,7 +517,7 @@ class DbFleetStatic {
       $whereId[] = "'" . SN::$db->db_escape($fleetId) . "'";
     }
 
-    return SN::$db->doquery("DELETE FROM `{{aks}}` WHERE `id` IN (" . implode(',', $whereId) . ")");
+    return SN::$db->doDelete("DELETE FROM `{{aks}}` WHERE `id` IN (" . implode(',', $whereId) . ")");
   }
 
   /**
@@ -527,7 +527,7 @@ class DbFleetStatic {
    * @return array|bool|mysqli_result|null
    */
   public static function dbAcsAddUserByFleetId($userToAddID, $fleetid) {
-    return SN::$db->doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
+    return SN::$db->doUpdate("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
   }
 
   /**
@@ -538,7 +538,7 @@ class DbFleetStatic {
    * @return array|bool|mysqli_result|null
    */
   public static function dbAcsInsert($userId, $fleetid, $fleet) {
-    return doquery("INSERT INTO `{{aks}}` SET
+    return doInsert("INSERT INTO `{{aks}}` SET
           `name` = '" . SN::$db->db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $userId . "',
           `flotten` = '" . $fleetid . "',
@@ -555,7 +555,7 @@ class DbFleetStatic {
    * @return array|bool|mysqli_result|null
    */
   public static function dbAcsGetAll() {
-    return doquery('SELECT * FROM `{{aks}}`;');
+    return doSelect('SELECT * FROM `{{aks}}`;');
   }
 
 

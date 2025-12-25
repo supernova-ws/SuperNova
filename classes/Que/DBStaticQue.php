@@ -10,7 +10,7 @@ class DBStaticQue {
   }
 
   public static function db_que_list_stat() {
-    return doquery("SELECT que_player_id, sum(que_unit_amount) AS que_unit_amount, que_unit_price FROM `{{que}}` GROUP BY que_player_id, que_unit_price;");
+    return doSelect("SELECT que_player_id, sum(que_unit_amount) AS que_unit_amount, que_unit_price FROM `{{que}}` GROUP BY que_player_id, que_unit_price;");
   }
 
   public static function db_que_set_time_left_by_id($que_id, $que_time_left) {
@@ -26,11 +26,11 @@ class DBStaticQue {
   }
 
   public static function db_que_planet_change_owner($planet_id, $new_owner_id) {
-    return doquery("UPDATE {{que}} SET `que_player_id` = {$new_owner_id} WHERE `que_planet_id` = {$planet_id}");
+    return doUpdate("UPDATE {{que}} SET `que_player_id` = {$new_owner_id} WHERE `que_planet_id` = {$planet_id}");
   }
 
   public static function db_que_research_change_origin($planet_id, $new_planet_id) {
-    return doquery("UPDATE {{que}} SET `que_planet_id_origin` = {$new_planet_id} WHERE `que_planet_id_origin` = {$planet_id}");
+    return doUpdate("UPDATE {{que}} SET `que_planet_id_origin` = {$new_planet_id} WHERE `que_planet_id_origin` = {$planet_id}");
   }
 
 }

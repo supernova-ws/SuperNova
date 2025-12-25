@@ -225,7 +225,7 @@ class PageMessage extends PageDeprecated {
     $this->resultTemplatize($template);
 
     $recipientIdSafe = SN::$db->db_escape($this->recipient_id_unsafe);
-    $message_query = doquery(
+    $message_query = doSelect(
       "SELECT * FROM {{messages}}
         WHERE
           `message_type` = '" . MSG_TYPE_PLAYER . "' AND
@@ -287,7 +287,7 @@ class PageMessage extends PageDeprecated {
 
     if ($this->deleteRange && $query_add) {
       $query_add = $query_add === true ? '' : $query_add;
-      doquery("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$this->playerId}'{$query_add};");
+      doDelete("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$this->playerId}'{$query_add};");
     }
   }
 
@@ -409,7 +409,7 @@ class PageMessage extends PageDeprecated {
   protected function viewCategories() {
     $messages_total = [];
 
-    $query = doquery(
+    $query = doSelect(
       "SELECT `message_owner`, `message_type`, COUNT(`message_id`) AS `message_count` 
          FROM `{{messages}}` 
          WHERE `message_owner` = {$this->playerId} 
@@ -421,7 +421,7 @@ class PageMessage extends PageDeprecated {
       $messages_total[MSG_TYPE_NEW] += $message_row['message_count'];
     }
 
-    $query = doquery(
+    $query = doSelect(
       "SELECT COUNT(`message_id`) AS message_count 
          FROM `{{messages}}` 
          WHERE `message_sender` = {$this->playerId} AND `message_type` = " . MSG_TYPE_PLAYER .

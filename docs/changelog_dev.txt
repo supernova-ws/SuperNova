@@ -822,6 +822,13 @@ FleetDispatchEvent::__construct
 
 #ctv
 
+PDO/Laravel migration
+
+2025-12-25 23:36:53 47a0
+
+[@] Decoupled doquery() in main code
+[@] Renamed `.inc` files to `.php`
+
 2025-12-25 16:26:41 46d0
 [!] Project "SuperNova.WS" Release 46 "Совершеннолетие"
     Project "SuperNova.WS" Release 46 "Совершеннолетие"

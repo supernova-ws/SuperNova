@@ -252,7 +252,7 @@ class FleetDispatcher {
         break;
 
 //      default:
-//        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+//        doDelete("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
 //      break;
       }
       db_mysql::db_transaction_commit();

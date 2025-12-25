@@ -109,7 +109,7 @@ function coe_o_missile_calculate() {
 
   $processedIPR = 0;
 
-  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
+  $iraks = doSelect("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
   while ($fleetRow = db_fetch($iraks)) {
     $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_');
@@ -129,7 +129,7 @@ function coe_o_missile_calculate() {
       'planets' => [$target_planet_row['id'], $sourcePlanet['id'],],
       'iraks'   => [$fleetRow['id'],],
     ]);
-    $fleetRow = doquery("SELECT * FROM `{{iraks}}` WHERE `id` = {$fleetRow['id']} FOR UPDATE;", '', true);
+    $fleetRow = doSelect("SELECT * FROM `{{iraks}}` WHERE `id` = {$fleetRow['id']} FOR UPDATE;", '', true);
     if (empty($fleetRow)) {
       db_mysql::db_transaction_rollback();
       continue;
@@ -191,7 +191,7 @@ function coe_o_missile_calculate() {
 
     }
 
-    doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
+    doDelete("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
 
     $processedIPR++;
     db_mysql::db_transaction_commit();

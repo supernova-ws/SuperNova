@@ -12,6 +12,8 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $lang, $user;
+
 $users = db_user_by_id($user['id'], false);
 $action = sys_get_param_int('action');
 $GET_id = sys_get_param_int('id');
@@ -53,7 +55,7 @@ switch ($action) {
     $deutsouhait = sys_get_param_float('deutsouhait');
 
     if (($metalvendre != 0 && $metalsouhait == 0) || ($cristalvendre != 0 && $cristalsouhait == 0) || ($deutvendre != 0 && $deutsouhait == 0)) {
-      doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
+      doInsert("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
       SnTemplate::messageBox($lang['Your_announce_was_recorded'], $lang['announce_status'], "annonce.php");
     } else {
       SnTemplate::messageBox($lang['Your_announce_not_recorded'], $lang['announce_status'], "annonce.php?action=1");
@@ -61,12 +63,12 @@ switch ($action) {
   break;
 
   case 3://Suppression d'annonce
-    doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
+    doDelete("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
     SnTemplate::messageBox($lang['Your_announce_was_deleted'], $lang['announce_status'], "annonce.php");
   break;
 
   default://Sinon on affiche la liste des annonces
-    $annonce = doquery("SELECT * FROM {{annonce}} ORDER BY `id` DESC ");
+    $annonce = doSelect("SELECT * FROM {{annonce}} ORDER BY `id` DESC ");
 
     $page2 = "<HTML><center><br>
     <table width=\"600\">

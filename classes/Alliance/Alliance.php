@@ -93,7 +93,7 @@ class Alliance extends RecordAlliance {
     }
 
     if (!isset($user['ally'])) {
-      $user['ally'] = doquery("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
+      $user['ally'] = doSelect("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
     }
 
     if (!isset($user['ally']['player'])) {
@@ -228,7 +228,7 @@ class Alliance extends RecordAlliance {
 
     $rate = 5;
 
-    $allies = doquery(
+    $allies = doSelect(
       "SELECT * 
       FROM {{alliance}} 
       WHERE 

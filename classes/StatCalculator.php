@@ -56,7 +56,7 @@ class StatCalculator {
     }
 
     if (!empty($data)) {
-      doquery('REPLACE INTO `{{statpoints}}`
+      doReplace('REPLACE INTO `{{statpoints}}`
       (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
        `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`,
        `total_count`, `stat_date`) VALUES ' . implode(',', $data)
@@ -217,9 +217,9 @@ class StatCalculator {
 
     static::sta_set_time_limit('archiving old statistic');
     // Statistic rotation
-    // doquery("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
-    doquery("DELETE FROM `{{statpoints}}` WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$config->stats_history_days} DAY));");
-    doquery("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
+    // doDelete("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
+    doDelete("DELETE FROM `{{statpoints}}` WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$config->stats_history_days} DAY));");
+    doUpdate("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
 
     static::sta_set_time_limit('posting new user stats to DB');
     $data = array();
@@ -256,7 +256,7 @@ class StatCalculator {
 
     // Updating Allie's stats
     static::sta_set_time_limit('posting new Alliance stats to DB');
-    doquery(
+    doInsert(
       "INSERT INTO `{{statpoints}}`
       (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
         `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`,
@@ -280,30 +280,27 @@ class StatCalculator {
     // Удаляем больше не нужные записи о достижении игрока-альянса
     db_stat_list_delete_ally_player();
 
-    // Some variables we need to update ranks
-    $qryResetRowNum = 'SET @rownum=0;';
-    $qryFormat = 'UPDATE `{{statpoints}}` SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = "%2$d" AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
-
     $rankNames = array('tech', 'build', 'defs', 'fleet', 'res', 'total');
-
+    // Some variables we need to update ranks
+    $qryFormat = 'UPDATE `{{statpoints}}` SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = "%2$d" AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
     // Updating player's ranks
     static::sta_set_time_limit("updating ranks for players");
     foreach ($rankNames as $rankName) {
       static::sta_set_time_limit("updating player rank '{$rankName}'", false);
-      doquery($qryResetRowNum);
-      doquery(sprintf($qryFormat, $rankName, 1));
+      doquery('SET @rownum=0;');
+      doUpdate(sprintf($qryFormat, $rankName, 1));
     }
 
     static::sta_set_time_limit("updating ranks for Alliances");
     // --- Updating Allie's ranks
     foreach ($rankNames as $rankName) {
       static::sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
-      doquery($qryResetRowNum);
-      doquery(sprintf($qryFormat, $rankName, 2));
+      doquery('SET @rownum=0;');
+      doUpdate(sprintf($qryFormat, $rankName, 2));
     }
 
     static::sta_set_time_limit('setting previous user stats from archive');
-    doquery(
+    doUpdate(
     "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
@@ -317,7 +314,7 @@ class StatCalculator {
       new.stat_type = 1 AND new.stat_code = 1;");
 
     static::sta_set_time_limit('setting previous allies stats from archive');
-    doquery(
+    doUpdate(
       "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
@@ -331,10 +328,10 @@ class StatCalculator {
       new.stat_type = 2 AND new.stat_code = 1;");
 
     static::sta_set_time_limit('updating players current rank and points');
-    doquery("UPDATE `{{users}}` AS u JOIN `{{statpoints}}` AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
+    doUpdate("UPDATE `{{users}}` AS u JOIN `{{statpoints}}` AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
 
     static::sta_set_time_limit('updating Allys current rank and points');
-    doquery("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+    doUpdate("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
     // Counting real user count and updating values
     dbUpdateUsersCount(db_user_count());

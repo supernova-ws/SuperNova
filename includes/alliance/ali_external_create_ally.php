@@ -19,13 +19,13 @@ if($ally_tag)
     SnTemplate::messageBox($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
+  $query = doSelect("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
   if($query)
   {
     SnTemplate::messageBox(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
-  $ally = doquery("INSERT INTO {{alliance}} SET
+  $ally = doInsert("INSERT INTO {{alliance}} SET
     `ally_name` = '{$ally_name}',
     `ally_tag` = '{$ally_tag}',
     `ally_owner` = '{$user['id']}',
@@ -40,7 +40,7 @@ if($ally_tag)
   $ally_user = SN::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_id}");
   // $ally_user_id = db_insert_id();
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
-  doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
+  doUpdate("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 
   SnTemplate::messageBox(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
 }
