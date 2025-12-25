@@ -89,10 +89,10 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     }
 
     if($dark_matter > 0) {
-      $old_referral = doSelect("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
+      $old_referral = doSelectFetch("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;");
       if($old_referral['id']) {
         doUpdate("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
-        $new_referral = doSelect("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
+        $new_referral = doSelectFetch("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;");
 
         $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
         if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {

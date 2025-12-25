@@ -421,13 +421,12 @@ class PageMessage extends PageDeprecated {
       $messages_total[MSG_TYPE_NEW] += $message_row['message_count'];
     }
 
-    $query = doSelect(
+    $query = doSelectFetch(
       "SELECT COUNT(`message_id`) AS message_count 
          FROM `{{messages}}` 
          WHERE `message_sender` = {$this->playerId} AND `message_type` = " . MSG_TYPE_PLAYER .
       " GROUP BY `message_sender`;",
-      '',
-      true
+      ''
     );
     $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
 

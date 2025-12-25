@@ -251,7 +251,7 @@ class PageAdminUserView extends PageDeprecated {
     }
 
     if (!empty($user_row['user_last_browser_id'])) {
-      $temp = doSelect("SELECT `browser_user_agent` FROM `{{security_browser}}` WHERE `browser_id` = {$user_row['user_last_browser_id']}", true);
+      $temp = doSelectFetch("SELECT `browser_user_agent` FROM `{{security_browser}}` WHERE `browser_id` = {$user_row['user_last_browser_id']}");
       $user_row['browser_user_agent'] = $temp['browser_user_agent'];
     }
 

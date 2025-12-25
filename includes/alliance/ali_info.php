@@ -34,11 +34,11 @@ elseif($mode == 'ainfo')
   $id_ally = sys_get_param_id('a');
   if($tag)
   {
-    $ally = doSelect("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
+    $ally = doSelectFetch("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;");
   }
   elseif($id_ally)
   {
-    $ally = doSelect("SELECT * FROM {{alliance}} WHERE id='{$id_ally}' LIMIT 1;", '', true);
+    $ally = doSelectFetch("SELECT * FROM {{alliance}} WHERE id='{$id_ally}' LIMIT 1;");
   }
 
   if(!$ally)
@@ -74,7 +74,7 @@ else
     $range = $lang['member'];
   }
 
-  $request = doSelect("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+  $request = doSelectFetch("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'");
 
   $template->assign_vars(array(
     'range' => $range,

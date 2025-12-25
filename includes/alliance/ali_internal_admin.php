@@ -113,7 +113,7 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
   sys_redirect('alliance.php');
 };
 
-$request = doSelect("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+$request = doSelectFetch("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'");
 
 $template->assign_vars(array(
   'request_count' => $request['request_count'] ? $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'] : $lang['ali_req_emptyList'],

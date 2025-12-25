@@ -5,7 +5,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2025 Gorlum
- * @version #47a0#
+ * @version #47a1#
  **/
 
 use Player\PlayerStatic;
@@ -86,7 +86,7 @@ $geoIp = geoip_status();
 $query = db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page, $desc);
 while ($user_row = db_fetch($query)) {
   if ($user_row['banaday']) {
-    $ban_details = doSelect("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
+    $ban_details = doSelectFetch("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1");
   } else {
     $ban_details = [
       'ban_time'        => 0,

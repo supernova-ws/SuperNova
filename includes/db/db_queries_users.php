@@ -127,7 +127,7 @@ function db_user_last_registered_username() {
 }
 
 function db_user_count($online = false) {
-  $result = doSelect('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''), true);
+  $result = doSelectFetch('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''));
 
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }

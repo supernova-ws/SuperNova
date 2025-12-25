@@ -40,7 +40,7 @@ class PlayerIgnore {
 
   public function isIgnored($playerId, $ignoredId, $subsystem = self::IGNORE_PM) {
     if (!isset($this->ignores[$playerId][$ignoredId][$subsystem])) {
-      $ignored = doSelect("SELECT * FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}", true);
+      $ignored = doSelectFetch("SELECT * FROM `{{player_ignore}}` WHERE `player_id` = {$playerId} AND `ignored_id` = {$ignoredId} AND `subsystem` = {$subsystem}");
 
       $this->ignores[$playerId][$ignoredId][$subsystem] = !empty($ignored);
     }

@@ -54,7 +54,7 @@ if($detail = sys_get_param_id('detail'))
 {
   $template = SnTemplate::gettemplate('admin/adm_log_main_detail', true);
 
-  $errorInfo = doSelect("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
+  $errorInfo = doSelectFetch("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;");
   $error_dump = json_decode($errorInfo['log_dump'], true);
   if(is_array($error_dump))
   {
@@ -98,7 +98,7 @@ else
     }
     $template->assign_block_vars('error', $v);
   }
-  $query = doSelect("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;", true);
+  $query = doSelectFetch("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;");
 
   $template->assign_vars($query);
 }

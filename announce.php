@@ -90,11 +90,11 @@ if ($user['authlevel'] >= 3) {
       $template->assign_var('ID', $announce_id);
     case 'copy':
       /** @noinspection SqlResolve */
-      $announce = doSelect(
+      $announce = doSelectFetch(
         "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
         FROM `{{announce}}` AS a
         LEFT JOIN `{{survey}}` AS s ON s.survey_announce_id = a.idAnnounce
-        WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
+        WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
       if ($announce['survey_id']) {
         /** @noinspection SqlResolve */
         $query = doSelect("SELECT survey_answer_text FROM `{{survey_answers}}` WHERE survey_parent_id = {$announce['survey_id']};");

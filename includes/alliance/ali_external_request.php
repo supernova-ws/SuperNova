@@ -12,7 +12,7 @@ if ($user['ally_id'])
 
 if ($user_request['id_ally'])
 {
-  $ally = doSelect("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", true);
+  $ally = doSelectFetch("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'");
 
   if (sys_get_param_str('bcancel'))
   {
@@ -41,7 +41,7 @@ if ($POST_text)
   sys_redirect('alliance.php');
 }
 
-$ally = doSelect("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
+$ally = doSelectFetch("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'");
 
 if(!$ally)
 {

@@ -199,12 +199,12 @@ class DBStaticPlanet {
 
   public static function db_planet_list_resources_by_owner() {
     /** @noinspection SqlResolve */
-    return SN::$db->doSelect("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM {{planets}} WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
+    return SN::$db->doDbSelect("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM {{planets}} WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
   }
 
   public static function dbDeletePlanetsWithoutUsers() {
     /** @noinspection SqlResolve */
-    SN::$db->doDelete("DELETE FROM `{{planets}}` WHERE id_owner NOT IN (SELECT id FROM `{{users}}`)");
+    SN::$db->doDbDelete("DELETE FROM `{{planets}}` WHERE id_owner NOT IN (SELECT id FROM `{{users}}`)");
   }
 
 }

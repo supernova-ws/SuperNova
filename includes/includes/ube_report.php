@@ -13,7 +13,7 @@ function sn_ube_report_save(&$combat_data) {
   // Генерируем уникальный секретный ключ и проверяем наличие в базе
   do {
     $combat_data[UBE_REPORT_CYPHER] = sys_random_string(32);
-  } while (doSelect("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$combat_data[UBE_REPORT_CYPHER]}' LIMIT 1 FOR UPDATE", true));
+  } while (doSelectFetch("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$combat_data[UBE_REPORT_CYPHER]}' LIMIT 1 FOR UPDATE"));
 
   // Инициализация таблицы для пакетной вставки информации
   $sql_perform = array(
@@ -270,7 +270,7 @@ function sn_ube_report_save(&$combat_data) {
 function sn_ube_report_load($report_cypher) {
   $report_cypher = SN::$db->db_escape($report_cypher);
 
-  $report_row = doSelect("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
+  $report_row = doSelectFetch("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1");
   if (!$report_row) {
     return UBE_REPORT_NOT_FOUND;
   }

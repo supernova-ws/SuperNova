@@ -53,7 +53,7 @@ function sn_imperator_view($template = null) {
   }
 
   $template = SnTemplate::gettemplate('imperator', $template);
-  $StatRecord = doSelect("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
+  $StatRecord = doSelectFetch("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};");
 
   $stat_array = array();
   $query = doSelect("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");

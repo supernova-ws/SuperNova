@@ -19,7 +19,7 @@ try
       throw new exception($lang['uni_msg_error_wrong_system'], ERR_ERROR);
     }
 
-    $uni_row = doSelect("SELECT * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
+    $uni_row = doSelectFetch("SELECT * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
     $uni_row['universe_price'] += $uni_system ? $config->uni_price_system : $config->uni_price_galaxy;
     $uni_row['universe_name'] = strip_tags($uni_row['universe_name'] ? $uni_row['universe_name'] : ($uni_system ? "{$lang['sys_system']} [{$uni_galaxy}:{$uni_system}]" : "{$lang['sys_galaxy']} {$uni_galaxy}"));
 

@@ -33,7 +33,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
     SnTemplate::messageBox($lang['ali_dip_err_same_ally'], $page_title);
   }
 
-  $contr_ally_row = doSelect("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;", '', true);
+  $contr_ally_row = doSelectFetch("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;");
   if(!$contr_ally_row)
   {
     SnTemplate::messageBox($lang['ali_dip_err_no_ally'], $page_title);
@@ -90,7 +90,7 @@ else
   {
     $offer_answer = sys_get_param_str('answer');
 
-    $negotiation = doSelect("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", '', true);
+    $negotiation = doSelectFetch("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
     if(!$negotiation)
     {
       SnTemplate::messageBox($lang['ali_dip_err_offer_none'], $page_title);

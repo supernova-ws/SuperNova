@@ -18,11 +18,11 @@ class DBStaticAlly {
   }
 
   public static function db_ally_request_get_by_user_id($player_id) {
-    return doSelect("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$player_id}' LIMIT 1;", true);
+    return doSelectFetch("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$player_id}' LIMIT 1;");
   }
 
   public static function db_ally_count() {
-    $result = doSelect('SELECT COUNT(`id`) AS ally_count FROM `{{alliance}}`', true);
+    $result = doSelectFetch('SELECT COUNT(`id`) AS ally_count FROM `{{alliance}}`');
 
     return isset($result['ally_count']) ? $result['ally_count'] : 0;
   }
@@ -33,7 +33,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_id($id_ally) {
-    $ally = doSelect("SELECT * FROM `{{alliance}}` WHERE `id` ='{$id_ally}' LIMIT 1", true);
+    $ally = doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` ='{$id_ally}' LIMIT 1");
 
     return $ally;
   }
@@ -56,7 +56,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_name_or_tag($ally_tag, $ally_name) {
-    $query = doSelect("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
+    $query = doSelectFetch("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;");
 
     return $query;
   }
@@ -67,7 +67,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_name($ally_name) {
-    $query = doSelect("SELECT ally_name FROM {{alliance}} WHERE `ally_name` = '{$ally_name}' LIMIT 1;", true);
+    $query = doSelectFetch("SELECT ally_name FROM {{alliance}} WHERE `ally_name` = '{$ally_name}' LIMIT 1;");
 
     return $query;
   }
@@ -122,7 +122,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_tag($tag) {
-    $ally = doSelect("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
+    $ally = doSelectFetch("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;");
 
     return $ally;
   }
@@ -144,7 +144,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_request_count_by_id($ally) {
-    $request = doSelect("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", true);
+    $request = doSelectFetch("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'");
 
     return $request;
   }
@@ -198,7 +198,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_negotiation_get_by_offer_id($offer_id) {
-    $negotiation = doSelect("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", '', true);
+    $negotiation = doSelectFetch("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
 
     return $negotiation;
   }
@@ -305,7 +305,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_members_by_user_as_ally(&$user) {
-    $alliance = doSelect("SELECT `ally_members` FROM {{alliance}} WHERE `ally_user_id` = {$user['id']}", true);
+    $alliance = doSelectFetch("SELECT `ally_members` FROM {{alliance}} WHERE `ally_user_id` = {$user['id']}");
 
     return $alliance;
   }
@@ -348,7 +348,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_ally_count(&$user) {
-    $lab_level = doSelect("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
+    $lab_level = doSelectFetch("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1");
 
     return $lab_level;
   }

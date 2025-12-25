@@ -275,7 +275,7 @@ class Account {
     $password_salted_safe = $this->db->db_escape($this->password_encode($password_raw, $salt_unsafe));
     $salt_safe = $this->db->db_escape($salt_unsafe);
 
-    $result = $this->db->doInsert(
+    $result = $this->db->doDbInsert(
       "INSERT INTO `{{account}}` SET
         `account_name` = '{$account_name_safe}',
         `account_password` = '{$password_salted_safe}',
@@ -310,7 +310,7 @@ class Account {
     $account_id_safe = $this->db->db_escape($this->account_id);
     $salt_safe = $this->db->db_escape($salt_unsafe);
 
-    $result = $this->db->doUpdate(
+    $result = $this->db->doDbUpdate(
       "UPDATE `{{account}}` SET
         `account_password` = '{$password_encoded_safe}',
         `account_salt` = '{$salt_safe}'
@@ -376,7 +376,7 @@ class Account {
     $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
     $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
 
-    $this->db->doInsert(
+    $this->db->doDbInsert(
       "INSERT INTO `{{log_metamatter}}` 
       SET
         `provider_id` = {$provider_id_safe},
@@ -422,7 +422,7 @@ class Account {
     } else {
       $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
 
-      $result = $this->db->doUpdate(
+      $result = $this->db->doDbUpdate(
         "UPDATE `{{account}}`
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .
@@ -462,11 +462,11 @@ class Account {
     $result = $this->db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe);
 
     if($metamatter > 0 && !empty($user_id_safe)) {
-      $old_referral = doSelect("SELECT * FROM `{{referrals}}` WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;", '', true);
+      $old_referral = doSelectFetch("SELECT * FROM `{{referrals}}` WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;");
       if($old_referral['id']) {
         $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
         doUpdate("UPDATE `{{referrals}}` SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
-        $new_referral = doSelect("SELECT * FROM `{{referrals}}` WHERE `id` = {$user_id_safe} LIMIT 1;", '', true);
+        $new_referral = doSelectFetch("SELECT * FROM `{{referrals}}` WHERE `id` = {$user_id_safe} LIMIT 1;");
 
         $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
         if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {

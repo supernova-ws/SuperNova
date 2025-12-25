@@ -22,7 +22,7 @@ if ($mode == 'ainfo') {
 }
 
 if (!$user['ally_id']) {
-  $user_request = doSelect("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
+  $user_request = doSelectFetch("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;");
   if ($user_request['id_user']) {
     require('includes/alliance/ali_external_request.php');
   } else {

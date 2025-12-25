@@ -44,7 +44,7 @@ class PlayerToAccountTranslate {
     $provider_account_id_safe = static::$db->db_escape($provider_account_id_unsafe);
     $user_id_safe = static::$db->db_escape($user_id_unsafe);
 
-    return static::$db->doInsert(
+    return static::$db->doDbInsert(
       "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
                   ({$provider_id_safe}, {$provider_account_id_safe}, {$user_id_safe});"
     );
@@ -72,7 +72,7 @@ class PlayerToAccountTranslate {
       $provider_account_id_safe = intval($provider_account_id_unsafe);
 
       // TODO - Здесь могут отсутствовать аккаунты - проверять провайдером
-      $query = static::$db->doSelect(
+      $query = static::$db->doDbSelect(
         "SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE"
       );
       while($row = static::$db->db_fetch($query)) {
@@ -97,7 +97,7 @@ class PlayerToAccountTranslate {
 
     $account_translation = array();
 
-    $query = static::$db->doSelect(
+    $query = static::$db->doDbSelect(
       "SELECT * FROM {{account_translate}} WHERE `user_id` = {$user_id_safe} " .
       ($provider_id_unsafe ? "AND `provider_id` = {$provider_id_safe} " : '') .
       "ORDER BY `timestamp` FOR UPDATE"
@@ -113,7 +113,7 @@ class PlayerToAccountTranslate {
     static::init();
 
     $user_id_safe = static::$db->db_escape($user_id_unsafe);
-    return static::$db->doDelete(
+    return static::$db->doDbDelete(
       "DELETE FROM `{{account_translate}}` WHERE `user_id` = {$user_id_safe});"
     );
   }

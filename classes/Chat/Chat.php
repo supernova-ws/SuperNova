@@ -149,7 +149,7 @@ class Chat {
       $where_add    = '';
       $last_message = 0;
       if ($history) {
-        $rows       = doSelect("SELECT count(1) AS CNT
+        $rows       = doSelectFetch("SELECT count(1) AS CNT
           FROM {{chat}}
           WHERE
           (
@@ -158,7 +158,7 @@ class Chat {
             (ally_id = 0 AND `chat_message_sender_id` = {$user['id']} AND `chat_message_recipient_id` IS NOT NULL) OR
             (ally_id = 0 AND `chat_message_sender_id` IS NULL AND `chat_message_recipient_id` IS NULL)
           )
-        ", true);
+        ");
         $page_count = ceil($rows['CNT'] / $page_limit);
 
         for ($i = 1; $i <= $page_count; $i++) {
@@ -577,7 +577,7 @@ class Chat {
     $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
     $config->array_set('users', $user['id'], 'chat_last_refresh', $refresh ? 0 : SN_TIME_MICRO);
 
-    $activity_row = doSelect("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1", true);
+    $activity_row = doSelectFetch("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
     if (!$activity_row) {
       doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$user['id']}");
     } else {
@@ -588,10 +588,10 @@ class Chat {
   protected function sn_chat_advanced_get_chat_player_record($player_id, $fields = '*', $return_data = true) {
     $result = false;
     if($player_id) {
-      if(!($result = doSelect("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true))) {
+      if(!($result = doSelectFetch("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1"))) {
         doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
         if($return_data) {
-          $result = doSelect("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
+          $result = doSelectFetch("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1");
         }
       }
     }

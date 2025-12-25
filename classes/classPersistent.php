@@ -62,7 +62,7 @@ class classPersistent extends classCache {
     $result = null;
     if($index) {
       $index_safe = SN::$db->db_escape($index);
-      $queryResult = doSelect("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
+      $queryResult = doSelectFetch("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE");
       if(is_array($queryResult) && !empty($queryResult)) {
         $this->$index = $result = $queryResult[$this->sql_value_field];
       }

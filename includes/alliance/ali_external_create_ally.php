@@ -19,7 +19,7 @@ if($ally_tag)
     SnTemplate::messageBox($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $query = doSelect("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
+  $query = doSelectFetch("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;");
   if($query)
   {
     SnTemplate::messageBox(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);

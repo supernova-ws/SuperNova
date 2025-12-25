@@ -39,7 +39,7 @@ $sql_date =
   ($dt_from ? " AND register_time >= UNIX_TIMESTAMP(STR_TO_DATE('{$dt_from}', '%Y-%m-%d %H:%i:%s')) " : '') .
   ($dt_to ? " AND register_time < UNIX_TIMESTAMP(STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s')) " : '');
 
-$min_max_dates = doSelect("SELECT min(register_time) AS min_register, max(register_time) AS max_register, avg(onlinetime - register_time) AS avg_play_time,  STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s') FROM {{users}} WHERE 1 " . $sql_date, true);
+$min_max_dates = doSelectFetch("SELECT min(register_time) AS min_register, max(register_time) AS max_register, avg(onlinetime - register_time) AS avg_play_time,  STR_TO_DATE('{$dt_to}', '%Y-%m-%d %H:%i:%s') FROM {{users}} WHERE 1 " . $sql_date);
 
 $interval = $min_max_dates['max_register'] - $min_max_dates['min_register'];
 

@@ -153,7 +153,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   } else {
     if ($uni_galaxyRowUser['ally_id'] && !isset($cached['allies'][$uni_galaxyRowUser['ally_id']])) {
       /** @noinspection SqlResolve */
-      $cached['allies'][$uni_galaxyRowUser['ally_id']] = doSelect("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+      $cached['allies'][$uni_galaxyRowUser['ally_id']] = doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';");
     }
   }
 
@@ -326,11 +326,11 @@ $is_missile = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($Curren
 $colspan = SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + SN::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
 
 /** @noinspection SqlResolve */
-$ally_count = doSelect("SELECT COUNT(*) AS ally_count FROM `{{alliance}}`;", '', true);
+$ally_count = doSelectFetch("SELECT COUNT(*) AS ally_count FROM `{{alliance}}`;");
 /** @noinspection SqlResolve */
-$galaxy_name = doSelect("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
+$galaxy_name = doSelectFetch("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;");
 /** @noinspection SqlResolve */
-$system_name = doSelect("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
+$system_name = doSelectFetch("SELECT `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
 
 $template->assign_vars(array(
 //     'rows'                => $Result,

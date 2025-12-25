@@ -425,7 +425,7 @@ function sn_options_change_username($user) {
   db_mysql::db_transaction_start();
   $username_safe = SN::$db->db_escape($username);
   /** @noinspection SqlResolve */
-  $name_check = doSelect("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+  $name_check = doSelectFetch("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;");
   if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
     $user = db_user_by_id($user['id'], true);
     switch ($config->game_user_changename) {

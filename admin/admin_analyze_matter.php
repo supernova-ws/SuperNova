@@ -23,7 +23,7 @@ foreach($constants['user'] as $constantName => $constantValue) {
 
 $spent = array();
 
-$result = SN::$db->doSelect(
+$result = SN::$db->doDbSelect(
   "SELECT
     CONCAT(log_dark_matter_reason, '_', IF(sign(sum(log_dark_matter_amount)) > 0, 1, -1)) as `BALANCE`,
     log_dark_matter_reason as `REASON`,
@@ -46,7 +46,7 @@ while($row = SN::$db->db_fetch($result)) {
   $spent[$row['BALANCE']] = $row;
 }
 
-$result = SN::$db->doSelect(
+$result = SN::$db->doDbSelect(
   "SELECT
     CONCAT(reason, '_', IF(sign(sum(amount)) > 0, 1, -1)) as `BALANCE`,
     reason as `REASON`,

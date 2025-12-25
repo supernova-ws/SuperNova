@@ -93,7 +93,7 @@ class Alliance extends RecordAlliance {
     }
 
     if (!isset($user['ally'])) {
-      $user['ally'] = doSelect("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
+      $user['ally'] = doSelectFetch("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;");
     }
 
     if (!isset($user['ally']['player'])) {

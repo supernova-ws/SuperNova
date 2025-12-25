@@ -107,7 +107,8 @@ class debug {
       // Excluding query calls/DB wrap functions
       'doquery',
       'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
-      'doSelect', 'doSelectFetch',
+      'doDelete', 'doInsert', 'doUpdate', 'doReplace', 'doSelect', 'doSelectFetch',
+      'doDbSelect', 'doDbInsert', 'doDbUpdate', 'doDbReplace', 'doDbSelect', 'doDbSelectFetch',
       'db_query_update',
       'selectValue',
       // classPersistent
@@ -385,7 +386,7 @@ class debug {
       "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
       "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
 
-    doInsert($query, '', false, true) or die($fatal_error . SN::$db->db_error());
+    doInsert($query, true) or die($fatal_error . SN::$db->db_error());
   }
 }
 

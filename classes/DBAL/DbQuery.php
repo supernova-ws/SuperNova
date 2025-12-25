@@ -210,7 +210,7 @@ class DbQuery {
    * @return array|null
    */
   public function doSelectFetch() {
-    return doSelect($this->select(), true);
+    return doSelectFetch($this->select());
   }
 
   /**

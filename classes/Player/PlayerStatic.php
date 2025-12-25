@@ -25,7 +25,7 @@ class PlayerStatic {
 
   public static function getPlayerProduction($userId) {
     /** @noinspection SqlResolve */
-    return doSelect("       
+    return doSelectFetch("       
        SELECT
          sum(metal_perhour) + sum(crystal_perhour) * 2 + sum(deuterium_perhour) * 4 AS `total`,
          sum(metal_perhour)                                                         AS `metal`,
@@ -39,7 +39,7 @@ class PlayerStatic {
        WHERE
          p.`id_owner` = {$userId}
        GROUP BY
-         id_owner", true);
+         id_owner");
   }
 
   /**
@@ -61,7 +61,8 @@ class PlayerStatic {
 
     if (!empty($TheUser['ally_id'])) {
       /** @noinspection SqlResolve */
-      $TheAlly                 = doSelect("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
+      $TheAlly                 = doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';");
+
       $TheAlly['ally_members'] -= 1;
       /** @noinspection SqlResolve */
       doUpdate("UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
@@ -106,7 +107,7 @@ class PlayerStatic {
   }
 
   public static function dbUpdateBotStatus($botType, $onlineTime = SN_TIME_NOW) {
-    SN::$db->doUpdate("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
+    SN::$db->doDbUpdate("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
   }
 
   /**

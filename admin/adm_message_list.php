@@ -63,7 +63,7 @@ if(sys_get_param('str_delete_date') && checkdate($month = sys_get_param_id('dele
 }
 
 
-$page_max = doSelect('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''), true);
+$page_max = doSelectFetch('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''));
 $page_max = ceil($page_max['max'] / 25);
 
 $int_page_current = min(sys_get_param_id('int_page_current', 1), $page_max);

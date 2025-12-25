@@ -38,7 +38,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
     $survey_complete = strtotime($announce['survey_until']) < SN_TIME_NOW;
 
     if ($announce['survey_id'] && !empty($user['id'])) {
-      $survey_vote = !$survey_complete ? $survey_vote = doSelect("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
+      $survey_vote = !$survey_complete ? $survey_vote = doSelectFetch("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;") : array();
     }
 
     $announce_exploded = explode("<br /><br />", SN::$gc->bbCodeParser->expandBbCode($announce['strAnnounce'], intval($announce['authlevel'])));
@@ -159,10 +159,10 @@ function survey_vote(&$user) {
 
   db_mysql::db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
-  $is_voted = doSelect("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
+  $is_voted = doSelectFetch("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;");
   if (empty($is_voted)) {
     $survey_vote_id = sys_get_param_id('survey_vote');
-    $is_answer_exists = doSelect("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
+    $is_answer_exists = doSelectFetch("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};");
     if (!empty($is_answer_exists)) {
       $user_name_safe = SN::$db->db_escape($user['username']);
       doInsert("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");

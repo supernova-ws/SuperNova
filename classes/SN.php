@@ -259,7 +259,7 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = self::$db->doUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}", false)) // TODO Как-то вернуть может быть LIMIT 1 ?
+    if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
@@ -278,7 +278,7 @@ class SN {
     $condition  = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = self::$db->doUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
       if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
@@ -292,7 +292,7 @@ class SN {
   public static function db_ins_record($location_type, $set) {
     $set        = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = self::$db->doInsert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+    if ($result = self::$db->doDbInsert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = SN::$db->db_insert_id();
@@ -314,7 +314,7 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = self::$db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+    if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         DBStaticUnit::cache_clear();
@@ -331,7 +331,7 @@ class SN {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = self::$db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+    if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось

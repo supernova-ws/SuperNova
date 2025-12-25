@@ -104,7 +104,7 @@ class RequestInfo {
     if ($this->device_cypher) {
       $cypher_safe = SN::$db->db_escape($this->device_cypher);
       /** @noinspection SqlResolve */
-      $device_id = doSelect("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+      $device_id = doSelectFetch("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
       if (!empty($device_id['device_id'])) {
         $this->device_id = $device_id['device_id'];
       }
@@ -115,7 +115,7 @@ class RequestInfo {
         $cypher_safe = SN::$db->db_escape($this->device_cypher = sys_random_string());
 
         /** @noinspection SqlResolve */
-        $row = doSelect("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+        $row = doSelectFetch("SELECT `device_id` FROM `{{security_device}}` WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
       } while (!empty($row));
       doInsert("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = SN::$db->db_insert_id();

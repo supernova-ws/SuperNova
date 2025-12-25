@@ -79,24 +79,24 @@ function db_buddy_list_by_user($user_id) {
 
 
 function db_unit_records_sum($unit_id, $user_skip_list_unit) {
-  return doSelect(
+  return doSelectFetch(
     "SELECT unit_player_id, username, sum(unit_level) as unit_level
           FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
           WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
           GROUP BY unit_player_id
           ORDER BY sum(unit_level) DESC, unit_player_id
           LIMIT 1;"
-    , true);
+    );
 }
 
 function db_unit_records_plain($unit_id, $user_skip_list_unit) {
-  return doSelect(
+  return doSelectFetch(
     "SELECT unit_player_id, username, unit_level
           FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
           WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
           ORDER BY unit_level DESC, unit_id
           LIMIT 1;"
-    , true);
+    );
 }
 
 /**

@@ -112,7 +112,7 @@ print("<td>ID</td><td>Username</td><td>Start</td><td>End</td><td>Length</td>");
 print("<td>Last online</td>");
 print("</tr>");
 foreach($session_list as $user_id => $value) {
-  $user_record = doSelect("SELECT `username`, onlinetime FROM {{users}} WHERE id = {$user_id};", true);
+  $user_record = doSelectFetch("SELECT `username`, onlinetime FROM {{users}} WHERE id = {$user_id};");
   foreach($value as $interval_data) {
     print("<tr>");
     print("<td>{$user_id}</td><td>{$user_record['username']}</td><td>{$interval_data[0]}</td><td>{$interval_data[1]}</td><td>{$interval_data[2]}</td>");

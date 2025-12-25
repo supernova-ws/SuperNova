@@ -88,7 +88,7 @@ if(sys_get_param('note_delete')) {
 
     db_mysql::db_transaction_start();
     if($note_id_edit) {
-      $check_note_id = doSelect("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
+      $check_note_id = doSelectFetch("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE");
       if(!$check_note_id) {
         throw new exception('note_err_note_not_found', ERR_ERROR);
       }

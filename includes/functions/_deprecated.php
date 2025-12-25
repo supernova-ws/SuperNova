@@ -46,7 +46,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
   // TODO Проеверить от многократного срабатывания !!!
   // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-//  $fleet_row = doSelect("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
+//  $fleet_row = doDbSelect("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
   // Узнаем ИД владельца планеты - без блокировки
   // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
   $user_id = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_");
@@ -56,7 +56,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   // Блокируем планету
   $planet_arrival = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_");
   // Блокируем флот
-//  $fleet_row = doSelect("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
+//  $fleet_row = doDbSelect("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
 
   // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
   if (!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources)) {

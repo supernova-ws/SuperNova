@@ -132,11 +132,11 @@ function questPageModelManage(classLocale $lang, template $template, &$mode) {
       $template->assign_var('QUEST_ID', $quest_id);
 
     case 'copy':
-      $questManaged = doSelect("SELECT * FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+      $questManaged = doSelectFetch("SELECT * FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;");
     break;
   }
 
-  $query = doSelect("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
+  $query = doSelectFetch("SELECT count(*) AS count FROM `{{quest}}`;");
   SN::$config->pass()->quest_total = $query['count'];
 
   return $questManaged;

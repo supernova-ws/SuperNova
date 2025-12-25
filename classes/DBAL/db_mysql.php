@@ -737,7 +737,7 @@ class db_mysql {
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
     foreach ($tables as $table_name => $condition) {
-      SN::$db->doSelect(
+      SN::$db->doDbSelect(
         "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
       );
     }
@@ -821,29 +821,40 @@ class db_mysql {
 
 //    return !empty($query) ? doquery(implode(' UNION ', $query)) : false;
     foreach ($queries as $query) {
-      doquery($query);
+      doSelect($query);
     }
 
     return true;
   }
 
-  public function doSelect(string $string) {
+  public function doDbSelect(string $string, $skip_query_check = false) {
+    return $this->doquery($string, false, $skip_query_check);
+  }
+
+  public function doDbSelectFetch(string $string, $skip_query_check = false) {
+    return $this->doquery($string, true, $skip_query_check);
+  }
+
+  /**
+   * doDbDelete - not to miss with doDelete() on replaces
+   *
+   * @param string $string
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDbDelete(string $string) {
     return $this->doquery($string);
   }
 
-  public function doDelete(string $string) {
+  public function doDbUpdate(string $string) {
     return $this->doquery($string);
   }
 
-  public function doUpdate(string $string) {
+  public function doDbReplace(string $string) {
     return $this->doquery($string);
   }
 
-  public function doReplace(string $string) {
-    return $this->doquery($string);
-  }
-
-  public function doInsert(string $string) {
+  public function doDbInsert(string $string) {
     return $this->doquery($string);
   }
 

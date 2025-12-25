@@ -129,7 +129,7 @@ function coe_o_missile_calculate() {
       'planets' => [$target_planet_row['id'], $sourcePlanet['id'],],
       'iraks'   => [$fleetRow['id'],],
     ]);
-    $fleetRow = doSelect("SELECT * FROM `{{iraks}}` WHERE `id` = {$fleetRow['id']} FOR UPDATE;", '', true);
+    $fleetRow = doSelectFetch("SELECT * FROM `{{iraks}}` WHERE `id` = {$fleetRow['id']} FOR UPDATE;");
     if (empty($fleetRow)) {
       db_mysql::db_transaction_rollback();
       continue;

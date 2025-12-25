@@ -23,7 +23,7 @@ $current_price = intval(SN::$config->db_loadItem('game_blitz_register_price'));
 if (SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
   db_mysql::db_transaction_start();
   $user          = db_user_by_id($user['id'], true);
-  $is_registered = doSelect("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
+  $is_registered = doSelectFetch("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;");
   if (sys_get_param_str('register_me')) {
     if (empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
       doInsert("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
@@ -35,7 +35,7 @@ if (SN::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (s
     // mm_points_change($user['id'], RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
     SN::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
-  $registered_count = doSelect("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+  $registered_count = doSelectFetch("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};");
   SN::$config->db_saveItem('game_blitz_register_users', $registered_count['count']);
   db_mysql::db_transaction_commit();
 }

@@ -21,7 +21,7 @@ try {
   db_mysql::db_transaction_start();
 
   if ($buddy_id = sys_get_param_id('buddy_id')) {
-    $buddy_row = doSelect("SELECT BUDDY_SENDER_ID, BUDDY_OWNER_ID, BUDDY_STATUS FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1 FOR UPDATE;", true);
+    $buddy_row = doSelectFetch("SELECT BUDDY_SENDER_ID, BUDDY_OWNER_ID, BUDDY_STATUS FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1 FOR UPDATE;");
     if (!is_array($buddy_row)) {
       throw new exception('buddy_err_not_exist', ERR_ERROR);
     }
@@ -104,12 +104,12 @@ try {
 
   // Checking for user name & request text - in case if it was request to adding new request
   if (isset($new_friend_row['id']) && ($new_request_text = sys_get_param_str('request_text'))) {
-    $check_relation = doSelect("SELECT `BUDDY_ID` FROM {{buddy}} WHERE
+    $check_relation = doSelectFetch("SELECT `BUDDY_ID` FROM {{buddy}} WHERE
       (`BUDDY_SENDER_ID` = {$user['id']} AND `BUDDY_OWNER_ID` = {$new_friend_row['id']})
       OR
       (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
       LIMIT 1 FOR UPDATE;"
-      , true);
+      );
     if (isset($check_relation['BUDDY_ID'])) {
       throw new exception('buddy_err_adding_exists', ERR_WARNING);
     }
@@ -117,7 +117,7 @@ try {
     msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_adding_title'],
       sprintf($lang['buddy_msg_adding_text'], $user['username']));
 
-    doInsert($q = "INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
+    doInsert("INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
     db_mysql::db_transaction_commit();
     throw new exception('buddy_err_adding_none', ERR_NONE);
   }

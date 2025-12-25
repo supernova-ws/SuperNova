@@ -105,7 +105,7 @@ class DbFleetStatic {
   public static function db_fleet_get($fleet_id) {
     $fleet_id_safe = idval($fleet_id);
     /** @noinspection SqlResolve */
-    $result = doSelect("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+    $result = doSelectFetch("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;");
 
     return is_array($result) ? $result : false;
   }
@@ -141,7 +141,7 @@ class DbFleetStatic {
    */
   public static function db_fleet_count($where_safe) {
     /** @noinspection SqlResolve */
-    $result = doSelect("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}", true);
+    $result = doSelectFetch("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}");
 
     return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
   }
@@ -517,7 +517,7 @@ class DbFleetStatic {
       $whereId[] = "'" . SN::$db->db_escape($fleetId) . "'";
     }
 
-    return SN::$db->doDelete("DELETE FROM `{{aks}}` WHERE `id` IN (" . implode(',', $whereId) . ")");
+    return SN::$db->doDbDelete("DELETE FROM `{{aks}}` WHERE `id` IN (" . implode(',', $whereId) . ")");
   }
 
   /**
@@ -527,7 +527,7 @@ class DbFleetStatic {
    * @return array|bool|mysqli_result|null
    */
   public static function dbAcsAddUserByFleetId($userToAddID, $fleetid) {
-    return SN::$db->doUpdate("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
+    return SN::$db->doDbUpdate("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
   }
 
   /**
