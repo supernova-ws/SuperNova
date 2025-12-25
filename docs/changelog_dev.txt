@@ -822,6 +822,11 @@ FleetDispatchEvent::__construct
 
 #ctv
 
+2025-12-25 16:26:41 46d0
+[!] Project "SuperNova.WS" Release 46 "Совершеннолетие"
+    Project "SuperNova.WS" Release 46 "Совершеннолетие"
+    Обновлен docs/changelog.txt
+
 2025-12-21 18:46:54 46a257
 
 [!] Support for overriding skin images via `override.css`
