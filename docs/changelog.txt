@@ -8,6 +8,190 @@
 [%] Исправление-багфикс/Bugfixes
 [@] Эта информация будет интересна только админам и/или разработчикам/This information is only for administrators and/or developers
 
+Project "SuperNova.WS" Release 46 "Совершеннолетие"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[!] Server Instances. Now several servers can work on one copy of SN engine
+    * Instance-specific files located in `/servers/{domainName}[{_port}]/` folders
+        * `_port` part is optional and used only for servers running on ports other then 80 or 443
+        * {domainName} is SN's domain name
+        * I.e. for `sn.domain.com` folder would be `/servers/sn.domain.com/`
+        * I.e. for `sn.other_domain.com:8080` folder would be `/servers/sn.other_domain.com_8080/`
+    * If SN detects `config.php` file in instance-specific folder it would use it instead of `/config.php`
+    * If SN detectes subfolder `avatars` in instance folder writable by web-server - it would be used for player and Alliance avatars
+        * I.e. if for domain `sn.domain.com` there is folder `/servers/sn.domain.com/avatars` and it writable by web server - it would be used as avatar storage
+[!] Brand new Fleet Dispatcher to prevent locks with main thread
+    * Rewrote dispatcher code in `classes/Fleet/FleetDispatcher.php`
+        * Added separate class `FleetDispatcherEvent` to handle all fleet event-related stuff
+        * Now for each fleet all related users/planets/fleets are locked
+        * Now missile attacks handled each in own transaction - not in large one. Should reduce probability of deadlocks
+    * Now `sys_o_get_updated()` accepts only user/planet IDs as parameters to reduce probability of index/gap DB lock
+    * Adjusted code to work with new internal API & FleetDispatcher
+        * includes/includes/flt_mission_relocate.php
+        * includes/includes/flt_mission_colonize.php
+        * includes/includes/flt_mission_transport.php
+    * Renamed internal fields and replaced internal representation from array to fields
+        * classes/Fleet/MissionData.php
+    * Moved transaction and locks into main missile loop
+        * includes/functions/flt_mission_missile.php
+    * Refactored mission code to class
+    * Now fleet dispatcher internal messages also contains count of processed IPRs
+    * Mission Explore constants moved to Fleet/Constants
+    * FFH now skips FLT_FLEET_ARRIVE events for MT_HOLD/MT_EXPEDITION
+    * Deadlock fixed: sn_fleet_page3() - 'fleet.php'@228: "SELECT * FROM `game_fleets` WHERE `fleet_end_galaxy` = G AND `fleet_end_system` = S AND `fleet_end_planet` = P AND `fleet_end_type` = T AND `fleet_owner` = FO AND `fleet_mission` IN (1,2,9) AND `fleet_mess` = 0 FOR UPDATE"
+    * Deadlock fixed: flotenajax.php@97: "SELECT * FROM {{users}} WHERE `id` = X LIMIT 1 FOR UPDATE"
+[!] Support for overriding skin images via `override.css`
+[!] Language
+    Added translation to Spanish (computer-generated)
+    Added translation to German (computer-generated)
+[!] JS cacher - merges all JS files into one and caches results
+[!] CSS cacher
+    Internal subsystem to compact several CSS files into one file and cache it
+    Updated skins to accomodate CSS cacher
+    CSS cacher now caches module's CSS files regardless of supplied extension (`.min.css`, `.css` or no extension)
+[!] Tools - Spritify
+    New tool to create sprite PNG and CSS for it from set of images
+    * Adjusted behavior in case if first frame in A-GIF smaller then largest one
+    * Now Spritify honors offset in first frame of A-GIF
+    * Spritify supports `RESTORE_TO_BACKGROUND_COLOR` disposition method
+    * Now Spritify generates pure CSS animations for extracted A-GIF frames, honoring delay between frames
+    * Animated GIF frame expansion - disposal methods `UNSPECIFIED` and `DO_NOT_DISPOSE`
+    * Basic support for animated GIFs - extract frames into sprite line
+[!] Menu
+    Switched to using sprites as menu icons
+[!] PHP 7-compatibility: SN now compatible with PHP 7.4
+    * Fixed no que items on building pages
+    * Fixed que for mass-operations
+    * Fixed other PHP 7 compatibility issues
+    * Added support for `fastcgi_finish_request()` where it supported
+    * More PHP7/MariaDB shenanigans
+
+[+] Admin/userlist
+    Added ability to reverse-sort by all sortable fields
+    Now userlist page opens by default sorted descending last login time
+[+] Admin/Ban
+    * Basic ban-by-ip facility - table `ban_ip`. Supports IPv4 ranges
+[+] Navbar
+    * Navbar now use sprites
+    * This should speed up page loading due to combining multiple standard navbar buttons into one sprite
+
+[~] Chat
+    Enchanced URL parsing/replacement in chat messages (for appropriate ACCESS_LEVELS)
+[~] Logs
+    * In log text "\n" replaced with "<br />" on output
+[~] Admin
+    * Now in log viewer user options stored in `user.options` parsed for better readability
+[~] Admin
+    * Adjusted log detail output
+[~] Fleets
+    * `fleet_dispatch_max_time` renamed to `fleet_update_dispatch_time` for uniformity
+[~] Fleets
+    * Now length of each fleet dispatch job can be configured via `fleet_dispatch_max_time` config (float). Default: 3 seconds
+    * `GAME_FLEET_HANDLER_MAX_TIME` is obsolete
+[~] Юниты
+    Поддержка Фестиваля "ДР-2023"
+[~] FFH - Added total event amount to FFH timeout message
+[~] Now SN recognize `/avatars` folder in code root as folder for non-instanced servers and prefers it to use before `/image/avatar` folder
+    * It's recommended to move all avatars to this folder because in future `/image/avatar` folder would be deprecated and unsupported
+[~] DB
+    Драйвер db_mysql_v4 удалён
+    Для db_mysql_v5 `TRANSACTION ISOLATION LEVEL` установлен в `REPEATABLE READ`
+[~] Template engine fixes
+    Fixed `error: template->_tpl_load_file()` for module template files loaded on admin page
+    Fixed `error: template->_tpl_load_file()` when module template files tried to load files from core template
+        I.e. alliance manager page tries to load `eco_que` template from core template
+
+[%] HTML
+    Fixed vertical scroll bar on main content cell in latest Chrome versions
+[%] Language
+    * Fixed not loading module l10n files before user init
+[%] HTML
+    Fixed strange jQueryUI behavior on texteareas in new Chrome
+[%] News
+    Now announce editing/copying works again in Chrome
+[%] News
+    Now non-admin users doesn't see announces
+
+[@] Debug
+    Config `debug` option now can be customized
+    * if it set to `1` then `error_reporting` would be set to `E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING`
+    * if it set to different value - then `error_reporting` would be set for this value
+        * Example: `debug` value for `E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING` is `32767 ^ 8 ^ 8192 ^ 2` = 24565
+[@] Code - templates
+    * More robust way to add JS files for compiler
+[@] Replaced JQuery with large version for easier development
+[@] Language
+    * Changed some language variables
+        * language/en/system.mo.php
+        * language/en/tech.mo.php
+        * language/ru/system.mo.php
+        * language/ru/tech.mo.php
+[@] Code
+    `AwardConstants` now tried to be included in the `init.php` - to allow loading of modules that uses their constants
+[@] Code
+    * Functions moved from `SN` to `db_mysql`
+        * `db_transaction_start()`
+        * `db_transaction_commit()`
+        * `db_transaction_rollback()`
+        * `db_transaction_check()`
+    * `SN::DB_TRANSACTION_XXX` constants moved `db_mysql::TRANSACTION_LEVEL_XXX`
+    * `SN::TRANSACTION_XXX` constants moved `db_mysql::TRANSACTION_XXX`
+    * Variables moved from `SN` to `db_mysql`: `$db_in_transaction`, `$transaction_id`, `$transactionDepth`
+[@] Code
+    * `includes/db_deprecated.php` - removed
+    * `classes/DBAL/db_mysql_v5.php` - removed
+    * Addded `pre()` and `pred()` debug functions
+[@] Code
+    * `$sys_user_logged_in` => `SN::$sys_user_logged_in`
+    * Debug - now prepends sql log filename with current instance DB name
+    * `sys_o_get_updated` - simplified error reporting on empty user
+    * Removed `db_queries_user.php` -> `db_get_user_by_where`
+    * `db_queries_user.php` -> `db_user_by_id` now accepts only userId as first param
+    * Streamlined and formatted code a bit
+[@] DB
+    * fighting deadlocks
+        * Table `que` - index I_que_planet_id expanded to (`que_planet_id`, `que_player_id`)
+        * Table `planets` - index `id` dropped
+        * Table `users` - index `I_user_id_name` dropped
+[@] DB
+    * Transaction level for MySQL raised to 'SERIALIZABLE' to reduce deadlocks
+    * Adjusted how SQL queries reported
+[@] Fleet
+    * Added old fields to Fleet\Fleet to use in low-level functions
+    * Rewrote fleet lock conditions from `?:` to `if`
+    * Replaces some strings with constants
+    * Some code reformatting
+[@] Code
+    * Added transaction depth counter into `SN` class
+[@] Code
+    * Now `DEBUG_SQL_XXX` constants ruled by appropriately named records in `config` table:
+        * `DEBUG_SQL_FILE_LOG` replaces `DEBUG_SQL_ONLINE` - implies `DEBUG_SQL_ERROR` and `DEBUG_SQL_COMMENT_LONG`
+        * `DEBUG_SQL_ERROR` - implies `DEBUG_SQL_COMMENT`
+        * `DEBUG_SQL_COMMENT_LONG` - implies `DEBUG_SQL_COMMENT`
+        * `DEBUG_SQL_COMMENT`
+[@] Code
+    * User options separator `|` move to constant `USER_OPTIONS_SPLIT`
+    * `EVENT_FLT_XXX` constants now are strings for better debug
+[@] DB
+    * Dropped unneeded indexes to reduce deadlocks
+        * counter.counter_id
+        * que.que_id
+        * captain.captain_id
+[@] SQL
+    * Added comments to transaction-related statements - to easier found them later in debug/dump
+    * Added separate table `festival_config` for festival-specific config
+    * Migrated festival config to separate table
+[@] Modules
+    * Added support for `javascript_filenames` in `sn_mvc`:
+        * Modules' JS now added to new subarray
+        * Now modules' JS can be cached too
+        * This fixed errors with modules' JS loaded too early and not working
+[@] Tools - `spritify` update
+[@] Code
+    Streamlined `classConfig` - listed all known config keys with types
+[@] HTML
+    Rearranged JS code/file include in `_40_js.tpl.html`
+[@] Code
+    Basic support for different environments - @see: .env.ini.example
 
 Project "SuperNova.WS" Release 45 "11 years anniversary"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

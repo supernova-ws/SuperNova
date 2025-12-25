@@ -796,6 +796,10 @@ switch ($updater->new_version) {
       }
     }, PATCH_REGISTER);
 
+    $updater->new_version = 47;
+    $updater->transactionCommit();
+
+  case 46:
 //    // #ctv
 //    $updater->updPatchApply(16, function() use ($updater) {
 //    }, PATCH_PRE_CHECK);
