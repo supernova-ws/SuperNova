@@ -56,7 +56,7 @@ function sys_get_param_float($param_name, $default = 0.0) {
  * @return string
  */
 function sys_get_param_escaped($param_name, $default = '') {
-  return db_escape(sys_get_param($param_name, $default));
+  return SN::$db->db_escape(sys_get_param($param_name, $default));
 }
 
 /**
@@ -109,7 +109,7 @@ function sys_get_param_str_unsafe($param_name, $default = '') {
  * @return string
  */
 function sys_get_param_str($param_name, $default = '') {
-  return db_escape(sys_get_param_str_unsafe($param_name, $default));
+  return SN::$db->db_escape(sys_get_param_str_unsafe($param_name, $default));
 }
 
 /**
@@ -125,7 +125,7 @@ function sys_get_param_str_both($param_name, $default = '') {
   return array(
     'raw'    => $param,
     'unsafe' => $param_unsafe,
-    'safe'   => db_escape($param_unsafe),
+    'safe'   => SN::$db->db_escape($param_unsafe),
   );
 }
 

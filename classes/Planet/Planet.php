@@ -8,6 +8,7 @@ namespace Planet;
 
 
 use Core\EntityDb;
+use DBAL\db_mysql;
 use Unit\Governor;
 use Exception;
 use HelperString;
@@ -127,8 +128,8 @@ class Planet extends EntityDb {
       return;
     }
 
-    sn_db_transaction_start();
-    $user = db_user_by_id($this->id_owner, true, '*');
+    db_mysql::db_transaction_start();
+    $user = db_user_by_id($this->id_owner, true);
     $this->setForUpdate()->dbLoadRecord($this->id);
 
     $sector_cost = eco_get_build_data($user, $this->asArray(), UNIT_SECTOR, mrc_get_level($user, $this->asArray(), UNIT_SECTOR), true);
@@ -149,10 +150,10 @@ class Planet extends EntityDb {
         $this->field_max++;
         $this->update();
       } else {
-        sn_db_transaction_rollback();
+        db_mysql::db_transaction_rollback();
       }
     }
-    sn_db_transaction_commit();
+    db_mysql::db_transaction_commit();
 
     sys_redirect($redirect);
   }
@@ -179,8 +180,8 @@ class Planet extends EntityDb {
         throw new exception(SN::$lang['ov_core_err_same_density'], ERR_WARNING);
       }
 
-      sn_db_transaction_start();
-      $user = db_user_by_id($user['id'], true, '*');
+      db_mysql::db_transaction_start();
+      $user = db_user_by_id($user['id'], true);
       $this->setForUpdate()->dbLoadRecord($this->id);
 
       $planet_density_index = $this->density_index;
@@ -222,7 +223,7 @@ class Planet extends EntityDb {
       );
 
       DBStaticPlanet::db_planet_set_by_id($this->id, "`density` = {$new_density}, `density_index` = {$new_density_index}");
-      sn_db_transaction_commit();
+      db_mysql::db_transaction_commit();
 
       $this->density = $new_density;
       $this->density_index = $new_density_index;
@@ -231,7 +232,7 @@ class Planet extends EntityDb {
         'MESSAGE' => sprintf(SN::$lang['ov_core_err_none'], SN::$lang['uni_planet_density_types'][$planet_density_index], SN::$lang['uni_planet_density_types'][$new_density_index], $new_density),
       );
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
       $result = array(
         'STATUS'  => $e->getCode(),
         'MESSAGE' => $e->getMessage(),
@@ -364,7 +365,7 @@ class Planet extends EntityDb {
     $resourceCount = ceil($resourceCount);
 
     if ($this->resources[$resourceId] + $resourceCount < 0) {
-      throw new \Exception("PLANET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when planet [{$this->id}] has only {$this->resources[$resourceId]}");
+      throw new \Exception("PLANET ERROR! Trying to deduct more resources [{$resourceId}] '{$resourceCount}' when planet [{$this->id}] has only {$this->resources[$resourceId]} - deficiency " . ($this->resources[$resourceId] + $resourceCount));
     }
 
     $this->resources[$resourceId] += $resourceCount;

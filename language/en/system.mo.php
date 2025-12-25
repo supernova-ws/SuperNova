@@ -17,13 +17,15 @@
 *
 * @package language
 * @system [English]
-* @version 45d0
+* @version 46d0
 *
 */
 
 /**
 * DO NOT CHANGE
 */
+
+use Fleet\Constants;
 
 if (!defined('INSIDE')) {
 	die('Hack attempt!');
@@ -322,20 +324,20 @@ $a_lang_array = (array(
   'sys_stay_mess_back'		=> 'Your fleet is back ',
   'sys_stay_mess_end'		=> ' and delivered:',
   'sys_stay_mess_bend'		=> ' and delivered the following resources:',
-  'sys_adress_planet' 		=> '[%s:%s:%s]',
+  'sys_address_planet' 		=> '[%s:%s:%s]',
   'sys_stay_mess_goods' 		=> '%s : %s, %s : %s, %s : %s',
   'sys_colo_mess_from' 		=> 'Colonization',
   'sys_colo_mess_report' 		=> 'Report about colonization',
-  'sys_colo_defaultname' 		=> 'Colony',
+  'sys_colo_default_name' 		=> 'Colony',
   'sys_colo_arrival' 		=> 'The fleet reaches the coordinates ',
-  'sys_colo_maxcolo' 		=> ', but you cannot colonize the planet has reached the maximum number of colonies for your level of colonization',
-  'sys_colo_allisok' 		=> ', and colonists are beginning to a new planet.',
-  'sys_colo_badpos'  			=> ', and the colonists found little benefit for the environment of your Empire. The mission colonization back to planet submit.',
-  'sys_colo_notfree' 			=> ', the colonists did not find the planet in these coordinates. They have to pave the way back completely discouraged.',
+  'sys_colo_max_colo' 		=> ', but you cannot colonize the planet has reached the maximum number of colonies for your level of colonization',
+  'sys_colo_all_is_ok' 		=> ', and colonists are beginning to a new planet.',
+  'sys_colo_bad_pos'  			=> ', and the colonists found little benefit for the environment of your Empire. The mission colonization back to planet submit.',
+  'sys_colo_not_free' 			=> ', the colonists did not find the planet in these coordinates. They have to pave the way back completely discouraged.',
   'sys_colo_no_colonizer'     => 'In the fleet not colonizer',
   'sys_colo_planet'  		=> ' Planet colonized by!',
   'sys_expe_report' 		=> 'Expedition Report',
-  'sys_recy_report' 		=> 'Recycler information',
+  'sys_recycler_report' 		=> 'Recycler information',
   'sys_expe_blackholl_1' 		=> 'Your fleet hit the black hole and you lost part of your fleet!',
   'sys_expe_blackholl_2' 		=> 'Your fleet hit the black hole and your fleet was completely sucked in!',
   'sys_expe_nothing_1' 		=> 'Your researchers witnessed a Supernova! And your drives are able to take part of the absorption of energy.',
@@ -349,7 +351,7 @@ $a_lang_array = (array(
   'sys_relocate_mess_user'  		=> 'Also following units where relocated:<br />',
   'sys_mess_fleetback' 		=> 'Return',
   'sys_tran_mess_back' 		=> 'One of your fleet returned to planet %s %s.',
-  'sys_recy_gotten' 		=> 'One of your fleets, Nancy a %s %s and %s %s Return to planet.',
+  'sys_recycler_gotten' 		=> 'One of your fleets, Nancy a %s %s and %s %s Return to planet.',
   'sys_notenough_money' 		=> 'You do not have enough resources to build: %s. You now: %s %s , %s %s and %s %s. For construction: %s %s , %s %s and %s %s.',
   'sys_nomore_level'		=> 'You no longer can improve it. It reached Max. level ( %s ).',
   'sys_buildlist' 			=> 'Building list',
@@ -367,29 +369,25 @@ $a_lang_array = (array(
     'msg_sender' => 'Отчет экспедиции',
     'msg_title' => 'Отчет экспедиции',
 
-    'found_dark_matter_new' => 'Получена ТМ:',
-    'found_resources_new' => "Найдены ресурсы:",
-    'found_fleet_new' => "Найдены корабли:",
-    'lost_fleet_new' => "Потеряны следующие корабли:",
-
     'found_dark_matter' => 'Получено %1$d единиц ТМ',
     'found_resources' => "Найдены ресурсы:\r\n",
     'found_fleet' => "Найдены корабли:\r\n",
     'lost_fleet' => "Потеряны следующие корабли:\r\n",
+
     'outcomes' => array(
-      FLT_EXPEDITION_OUTCOME_NONE => array(
+      Constants::OUTCOME_NONE => array(
         'messages' => array(
           'Ваши исследователи ничего не обнаружили',
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET => array(
         'messages' => array(
           'Флот попал в черную дыру и частично утерян',
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
+      Constants::EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
         'messages' => array(
           'Если бы вы только это видели! Оно такое красивое... Оно зовёт к себе... (связь с флотом утеряна)',
           // 'Отчёт флота %1$s. Мы завершили исследование сектора. Команда недовольна Эй, ты что делаешь на мостике?! (связь с флотом утеряна)',
@@ -399,22 +397,22 @@ $a_lang_array = (array(
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_FLEET => [
         'no_result' => 'К сожалению, совокупной мощности всех компьютеров флота не хватило даже на контроль самого мелкого корабля. Попробуйте отправлять больше кораблей и/или более крупные корабли',
-        'messages' => array(
-          0 => array(
+        'messages' => [
+          0 => [
             'Вы нашли абсолютно новый флот',
-          ),
-          1 => array(
+          ],
+          1 => [
             'Вы нашли флот',
-          ),
-          2 => array(
+          ],
+          2 => [
             'Вы нашли б/у флот',
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
 
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
         'no_result' => 'Трюмы вашего флота оказались неспособны вместить хоть один контейнер с ресурсами. Попробуйте отправлять флот с большим количеством транспортников',
         'messages' => array(
           0 => array(
@@ -429,7 +427,7 @@ $a_lang_array = (array(
         ),
       ),
 
-      FLT_EXPEDITION_OUTCOME_FOUND_DM => array(
+      Constants::EXPEDITION_OUTCOME_FOUND_DM => array(
         'no_result' => 'К сожалению, всех накопителей флота не хватило что бы собрать одну-единственую ТМ. Попробуйте отправлять флот побольше',
         'messages' => 'Ваш флот стал свидетелем рождения СуперНовы',
         /*

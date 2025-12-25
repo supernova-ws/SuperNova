@@ -26,12 +26,19 @@ class Worker {
 
     ob_end_clean();
     ignore_user_abort(true);
+
     ob_start();
     header("Connection: close");
+    header('Content-type: text/plain', true);
     header("Content-Length: " . ob_get_length());
     ob_end_flush();
-    flush();
 
+    flush();
+    session_write_close();
+
+    if (function_exists('fastcgi_finish_request')) {
+      fastcgi_finish_request();
+    }
   }
 
   public function __construct(GlobalContainer $gc) {

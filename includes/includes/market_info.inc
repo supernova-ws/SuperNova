@@ -1,5 +1,7 @@
 <?php
 
+use DBAL\db_mysql;
+
 if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
 {
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
@@ -19,7 +21,7 @@ if($info_action)
 {
   try
   {
-    sn_db_transaction_start();
+    db_mysql::db_transaction_start();
 
     $user = db_user_by_id($user['id'], true);
     if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->rpg_cost_info)
@@ -30,19 +32,19 @@ if($info_action)
     switch($info_action)
     {
       case MARKET_INFO_PLAYER:
-        $user_info_name_unsafe = sys_get_param_str_unsafe('user_info_name');
-        if(!$user_info_name_unsafe)
+        $user_info_name_or_id_unsafe = sys_get_param_str_unsafe('user_info_name');
+        if(!$user_info_name_or_id_unsafe)
         {
           throw new Exception(MARKET_INFO_PLAYER_WRONG, ERR_ERROR);
         }
 
-        if(is_id($user_info_name_unsafe))
+        if(is_id($user_info_name_or_id_unsafe))
         {
-          $user_info = db_user_by_id($user_info_name_unsafe, true, '`id`, `username`', true);
+          $user_info = db_user_by_id($user_info_name_or_id_unsafe, true, true);
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_by_username($user_info_name_unsafe, true);
+          $user_info = db_user_by_username($user_info_name_or_id_unsafe, true);
         }
         if(!is_array($user_info))
         {
@@ -77,12 +79,12 @@ if($info_action)
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }
 
-    sn_db_transaction_commit();
+    db_mysql::db_transaction_commit();
     throw new Exception($info_action, ERR_NONE);
   }
   catch (Exception $e)
   {
-    sn_db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
 
     $template->assign_block_vars('result', array(
       'STATUS' => $e->getCode(),

@@ -84,7 +84,7 @@ function planet_edit_model($planet_id, array $unit_list, $mode) {
       } else {
         DBStaticUnit::dbChangeUnit($theUserId, $planet_id, $unit_id, $unit_amount);
 
-        _SnCacheInternal::cache_clear(LOC_UNIT, true);
+        DBStaticUnit::cache_clear();
       }
     }
 

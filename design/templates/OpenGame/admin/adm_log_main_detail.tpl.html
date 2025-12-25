@@ -1,6 +1,6 @@
 <h1>{L_adm_er_ttle}</h1>
 
-<table width="auto">
+<table width="auto" class="c_l vars">
   <tr class="c_l">
     <th nowrap>{L_adm_er_idmsg} {log_id}</th>
     <th nowrap>{L_adm_er_time} {log_timestamp} [{log_time}]</th>
@@ -10,24 +10,47 @@
   </tr>
 
   <tr class="c_l">
-  </tr>
-
-  <tr class="c_l">
     <th>{L_adm_er_text}</th>
     <td colspan="4"><div style="width: 800px">{log_text}</div></td>
   </tr>
 
-  <!-- IF .vars -->
-  <tr class="c_l">
-    <th>{L_adm_er_bktr}</th>
-    <td colspan="4">
-      <div style="width: 800px">
-        <!-- BEGIN vars -->
-        {vars.VAR_VALUE}
-        <!-- END vars -->
-      </div>
-    </td>
-  </tr>
-  <!-- ENDIF -->
+  <style type="text/css">
+    .vars pre {
+      text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 0; margin: 0; font-weight: 800; font-size: 14px;
+    }
+    .vars td:first-child {
+      vertical-align: top;
+    }
+    /*.vars td:nth-child(2) {*/
+    /*  !*horiz-align: left;*!*/
+    /*  background-color: black;*/
+    /*}*/
+    .vars td {
+      /*horiz-align: left;*/
+      background-color: black;
+    }
+    .vars td:nth-child(2) table {
+      margin: 0;
+    }
+  </style>
+
+  <!-- BEGIN vars -->
+  <tr><td>{vars.VAR_NAME}</td><td><pre>{vars.VAR_VALUE}</pre></td></tr>
+  <!-- END vars -->
+
+<!--  &lt;!&ndash; IF .vars &ndash;&gt;-->
+<!--  <tr class="c_l vars">-->
+<!--    <th>{L_adm_er_bktr}</th>-->
+<!--    <td colspan="4">-->
+<!--      <div style="width: 800px">-->
+<!--        <table class="no_border_image">-->
+<!--        &lt;!&ndash; BEGIN vars &ndash;&gt;-->
+<!--          <tr><td>{vars.VAR_NAME}</td><td><pre>{vars.VAR_VALUE}</pre></td></tr>-->
+<!--        &lt;!&ndash; END vars &ndash;&gt;-->
+<!--        </table>-->
+<!--      </div>-->
+<!--    </td>-->
+<!--  </tr>-->
+<!--  &lt;!&ndash; ENDIF &ndash;&gt;-->
 
 </table>

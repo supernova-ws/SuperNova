@@ -15,58 +15,43 @@ class MissionData {
    */
   protected $fleetEntity;
 
-  /**
-   * Fleet row from DB
-   *
-   * @var array|null $fleet
-   */
+  /** @var array|null $fleet Fleet row from DB */
   public $fleet;
-
-  /**
-   * @var array|null
-   */
-  public $dst_user;
-
-  /**
-   * @var array|null
-   */
-  public $dst_planet;
-
-  /**
-   * @var array|null
-   */
-  public $src_user;
-
-  /**
-   * @var array|null
-   */
-  public $src_planet;
-
-  /**
-   * @var array|null
-   */
+  /** @var array|null */
+  public $dstUserRow;
+  /** @var array|null */
+  public $dstPlanetRow;
+  /** @var array|null */
+  public $fleetOwnerRow;
+  /** @var array|null */
+  public $srcPlanetRow;
+  /** @var array|null */
   public $fleet_event;
 
-  /**
-   * @var \General $general
-   */
+  /** @var \General $general */
   protected $general;
+  /** @var \classLocale $lang */
+  protected $lang;
 
   /**
-   * @var \classLocale $lang
+   * @param FleetDispatchEvent $fleetEvent
+   *
+   * @return static
    */
-  protected $lang;
+  public static function buildFromArray($fleetEvent) {
+    return new static($fleetEvent);
+  }
 
   /**
    * MissionData constructor.
    *
-   * @param array $missionArray
+   * @param ?FleetDispatchEvent $fleetEvent
    */
-  public function __construct($missionArray) {
+  public function __construct($fleetEvent) {
     $this->general = $this->getDefaultGeneral();
-    $this->lang = $this->getDefaultLang();
+    $this->lang    = $this->getDefaultLang();
 
-    $this->fromMissionArray($missionArray);
+    $this->fromMissionArray($fleetEvent);
   }
 
   /**
@@ -77,24 +62,15 @@ class MissionData {
   }
 
   /**
-   * @param array $missionArray
-   *
-   * @return static
+   * @param ?FleetDispatchEvent $fleetEvent
    */
-  public static function buildFromArray($missionArray) {
-    return new static($missionArray);
-  }
-
-  /**
-   * @param array $missionArray
-   */
-  protected function fromMissionArray($missionArray) {
-    $this->fleet = is_array($missionArray['fleet']) && !empty($missionArray['fleet']) ? $missionArray['fleet'] : null;
-    $this->dst_user = is_array($missionArray['dst_user']) && !empty($missionArray['dst_user']) ? $missionArray['dst_user'] : null;
-    $this->dst_planet = is_array($missionArray['dst_planet']) && !empty($missionArray['dst_planet']) ? $missionArray['dst_planet'] : null;
-    $this->src_user = is_array($missionArray['src_user']) && !empty($missionArray['src_user']) ? $missionArray['src_user'] : null;
-    $this->src_planet = is_array($missionArray['src_planet']) && !empty($missionArray['src_planet']) ? $missionArray['src_planet'] : null;
-    $this->fleet_event = !empty($missionArray['fleet_event']) ? $missionArray['fleet_event'] : null;
+  protected function fromMissionArray($fleetEvent) {
+    $this->fleet         = $fleetEvent->fleet;
+    $this->dstUserRow    = $fleetEvent->dstPlanetOwnerId ? db_user_by_id($fleetEvent->dstPlanetOwnerId) : null;
+    $this->dstPlanetRow  = $fleetEvent->dstPlanetId ? $fleetEvent->dstPlanetRow : null;
+    $this->fleetOwnerRow = $fleetEvent->fleetOwnerId ? db_user_by_id($fleetEvent->fleet['fleet_owner']) : null;
+    $this->srcPlanetRow  = $fleetEvent->srcPlanetId ? $fleetEvent->srcPlanetRow : null;
+    $this->fleet_event   = $fleetEvent->event;
 
     $this->fleetEntity = new Fleet();
     $this->fleetEntity->dbLoadRecord($this->fleet['fleet_id']);

@@ -338,16 +338,97 @@ const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_1ST = 2386; // Лучший Гос�
 const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_2ND = 2387; // Лучший Гость - День Рождения СН - 2020
 const UNIT_AWARD_MEMORY_SUPER_BORN_2020_BEST_3RD = 2388; // Лучший Гость - День Рождения СН - 2020
 
-define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_SIMPLE   = 2390; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_BRONZE   = 2391; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_SILVER   = 2392; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_GOLD     = 2393; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_PLATINUM = 2394; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_DIAMOND  = 2395; // СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_BEST_1ST = 2396; // Лучший Гость - СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_BEST_2ND = 2397; // Лучший Гость - СуперНовый Год - 2021
+const UNIT_AWARD_MEMORY_NEW_YEAR_2021_BEST_3RD = 2398; // Лучший Гость - СуперНовый Год - 2021
+
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_SIMPLE   = 2400; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_BRONZE   = 2401; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_SILVER   = 2402; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_GOLD     = 2403; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_PLATINUM = 2404; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_DIAMOND  = 2405; // День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_BEST_1ST = 2406; // Лучший Гость - День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_BEST_2ND = 2407; // Лучший Гость - День Рождения СН - 2021
+const UNIT_AWARD_MEMORY_SUPER_BORN_2021_BEST_3RD = 2408; // Лучший Гость - День Рождения СН - 2021
+
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_SIMPLE   = 2410; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_BRONZE   = 2411; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_SILVER   = 2412; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_GOLD     = 2413; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_PLATINUM = 2414; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_DIAMOND  = 2415; // СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_BEST_1ST = 2416; // Лучший Гость - СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_BEST_2ND = 2417; // Лучший Гость - СуперНовый Год - 2022
+const UNIT_AWARD_MEMORY_NEW_YEAR_2022_BEST_3RD = 2418; // Лучший Гость - СуперНовый Год - 2022
+
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_SIMPLE   = 2420; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_BRONZE   = 2421; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_SILVER   = 2422; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_GOLD     = 2423; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_PLATINUM = 2424; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_DIAMOND  = 2425; // День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_BEST_1ST = 2426; // Лучший Гость - День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_BEST_2ND = 2427; // Лучший Гость - День Рождения СН - 2022
+const UNIT_AWARD_MEMORY_SUPER_BORN_2022_BEST_3RD = 2428; // Лучший Гость - День Рождения СН - 2022
+
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_SIMPLE   = 2430; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_BRONZE   = 2431; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_SILVER   = 2432; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_GOLD     = 2433; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_PLATINUM = 2434; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_DIAMOND  = 2435; // СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_BEST_1ST = 2436; // Лучший Гость - СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_BEST_2ND = 2437; // Лучший Гость - СуперНовый Год - 2023
+const UNIT_AWARD_MEMORY_NEW_YEAR_2023_BEST_3RD = 2438; // Лучший Гость - СуперНовый Год - 2023
+
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_SIMPLE   = 2440; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_BRONZE   = 2441; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_SILVER   = 2442; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_GOLD     = 2443; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_PLATINUM = 2444; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_DIAMOND  = 2445; // День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_BEST_1ST = 2446; // Лучший Гость - День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_BEST_2ND = 2447; // Лучший Гость - День Рождения СН - 2023
+const UNIT_AWARD_MEMORY_SUPER_BORN_2023_BEST_3RD = 2448; // Лучший Гость - День Рождения СН - 2023
+
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_SIMPLE   = 2450; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_BRONZE   = 2451; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_SILVER   = 2452; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_GOLD     = 2453; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_PLATINUM = 2454; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_DIAMOND  = 2455; // СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_BEST_1ST = 2456; // Лучший Гость - СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_BEST_2ND = 2457; // Лучший Гость - СуперНовый Год - 2024
+const UNIT_AWARD_MEMORY_NEW_YEAR_2024_BEST_3RD = 2458; // Лучший Гость - СуперНовый Год - 2024
+
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_SIMPLE = 2460;   // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_BRONZE = 2461;   // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_SILVER = 2462;   // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_GOLD = 2463;     // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_PLATINUM = 2464; // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_DIAMOND = 2465;  // День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_BEST_1ST = 2466; // Лучший Гость - День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_BEST_2ND = 2467; // Лучший Гость - День Рождения СН - 2024
+const UNIT_AWARD_MEMORY_SUPER_BORN_2024_BEST_3RD = 2468; // Лучший Гость - День Рождения СН - 2024
+
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
 define('UNIT_AWARD_BADGE_BLITZ', 2601); // Медали за Блиц-сервер
+define('UNIT_AWARD_PENNANT', 2900); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 // 2602-2999 // Reserved for Awards
 
 // 3000-3019 - 20 // Christmas Highspot Units
 // 3020-3039 - 20 // SuperNova Birthday Units
 // 3040-3099 - 50 // Halloween Units
 // 3100-3149 - 50 // SuperNova Christmas Gather Units
-// 3150-3999 // Reserved for Festival
+// 3150-3899 // Reserved for Festival
+// 3900-3999 // Reserved for Stories
 
 define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 
@@ -398,5 +479,4 @@ define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
-const GROUP_MISSION_EXPLORE_OUTCOMES = 'mission_explore_outcome_list';
 const GROUP_UNIT_COMBAT_SORT_ORDER = 'unitCombatSortOrder';

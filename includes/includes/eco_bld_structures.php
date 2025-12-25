@@ -117,7 +117,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $que = &$ques['ques'][$que_type][$user['id']][$planet_id];
   que_tpl_parse($template, $que_type, $user, $planet, $que);
 
-  $que_length = count($que);
+  $que_length = empty($que) ? 0 : count($que);
   $can_que_element = $que_length < que_get_max_que_length($user, $planet, $que_type);
 
   $fleet_list = flt_get_fleets_to_planet($planet);
@@ -383,7 +383,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'FIELDS_CURRENT' => $planet_fields_current,
     'FIELDS_MAX'     => $planet_fields_max,
     'FIELDS_FREE'    => $planet_fields_free,
-    'FIELDS_QUE'     => $planet_fields_que == 0 ? '' : $planet_fields_que > 0 ? "+{$planet_fields_que}" : $planet_fields_que,
+    'FIELDS_QUE'     => $planet_fields_que == 0 ? '' : ($planet_fields_que > 0 ? "+{$planet_fields_que}" : $planet_fields_que),
 
     'QUE_HAS_PLACE'  => $can_que_element,
     'QUE_HAS_FIELDS' => $planet_fields_queable,

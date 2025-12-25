@@ -15,11 +15,13 @@ class sn_module {
   const M_ROOT_RELATIVE = 'root_relative';
   const M_LOAD_ORDER = 'load_order';
 
+  const MANIFEST_CSS = 'css';
+
   /**
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#45d0#';
+  public $versionCommitted = '#46d0#';
   /**
    * Is module currently active?
    *
@@ -39,7 +41,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'Modules\sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #45d0# copyright © 2009-2018 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #46d0# copyright © 2009-2025 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_DEFAULT,
 
@@ -186,9 +188,9 @@ class sn_module {
     // Trying to load configuration from file
     $config_exists = false;
     // Конфигурация может лежать в config_path в манифеста или в корне модуля
-    if (isset($this->manifest['config_path']) && file_exists($config_filename = $this->manifest['config_path'] . '/config.php')) {
+    if (isset($this->manifest['config_path']) && file_exists($config_filename = $this->manifest['config_path'] . '/' . SN_MODULE_CONFIG_NAME)) {
       $config_exists = true;
-    } elseif (file_exists($config_filename = dirname($filename) . '/config.php')) {
+    } elseif (file_exists($config_filename = dirname($filename) . '/' . SN_MODULE_CONFIG_NAME)) {
       $config_exists = true;
     }
 
@@ -437,7 +439,12 @@ class sn_module {
    * @return template
    */
   public function addModuleTemplate($templateName, $template) {
-    return SnTemplate::gettemplate($templateName, $template, $this->getTemplateRootRelative());
+    return SnTemplate::gettemplate(
+      $templateName,
+      $template,
+      SN_ROOT_PHYSICAL . $this->getTemplateRootRelative(),
+      is_object($template) ? $template->root : SnTemplate::getCurrentTemplate()->getPathFull()
+    );
   }
 
   /**
@@ -446,17 +453,12 @@ class sn_module {
    * @return array
    */
   protected function addModuleJavascript($jsName) {
-    global $template_result;
+    global $template_result, $sn_mvc;
 
-    $fName = $this->getRootRelative() . $jsName;
-    if (file_exists($fName . '.min.js')) {
-      $fName = $fName . '.min.js';
-    } elseif (file_exists($fName . '.js')) {
-      $fName = $fName . '.js';
+    if (empty($sn_mvc['javascript_filenames'])) {
+      $sn_mvc['javascript_filenames'] = [];
     }
-
-//    $template_result['.']['js'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
-    $template_result['.']['javascript'][] = ['FILE' => $fName . '?' . str_replace('.', '_', SN_VERSION)];
+    $sn_mvc['javascript_filenames'][] = $this->getRootRelative() . $jsName;
 
     return $template_result;
   }

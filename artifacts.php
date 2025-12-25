@@ -14,6 +14,7 @@
  */
 
 
+use DBAL\db_mysql;
 use Unit\DBStaticUnit;
 
 global $lang, $user, $planetrow;
@@ -37,12 +38,12 @@ $sn_group_artifacts = sn_get_groups('artifacts');
  */
 function art_buy($user, $unit_id, $planetrow, $lang) {
   $Message = '';
-  sn_db_transaction_start();
+  db_mysql::db_transaction_start();
 
-  $user = db_user_by_id($user['id'], true);
+  $user           = db_user_by_id($user['id'], true);
   $artifact_level = mrc_get_level($user, array(), $unit_id, true);
 
-  $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
+  $build_data     = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
   $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
 
   // TODO: more correct check - with "FOR UPDATE"
@@ -53,7 +54,7 @@ function art_buy($user, $unit_id, $planetrow, $lang) {
         $Message = '{Ошибка записи в БД}';
       } else {
         rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
-        sn_db_transaction_commit();
+        db_mysql::db_transaction_commit();
         sys_redirect("artifacts.php#{$unit_id}");
       }
     } else {
@@ -62,7 +63,7 @@ function art_buy($user, $unit_id, $planetrow, $lang) {
   } else {
     $Message = $lang['sys_no_points'];
   }
-  sn_db_transaction_rollback();
+  db_mysql::db_transaction_rollback();
 
   return $Message;
 }
@@ -87,9 +88,9 @@ $user = db_user_by_id($user['id'], true);
 $template = SnTemplate::gettemplate('artifacts', true);
 
 foreach ($sn_group_artifacts as $artifact_id) {
-  $artifact_level = mrc_get_level($user, [], $artifact_id, true);
-  $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
-  $artifact_data = get_unit_param($artifact_id);
+  $artifact_level      = mrc_get_level($user, [], $artifact_id, true);
+  $build_data          = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
+  $artifact_data       = get_unit_param($artifact_id);
   $artifact_data_bonus = SnTemplate::tpl_render_unit_bonus_data($artifact_data);
 
   $template->assign_block_vars('artifact', array(

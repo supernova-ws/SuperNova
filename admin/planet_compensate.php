@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use Planet\DBStaticPlanet;
 use Unit\DBStaticUnit;
 
@@ -29,40 +30,32 @@ $username_unsafe = sys_get_param_str_unsafe('username');
 $username = sys_get_param_escaped('username');
 
 if ($galaxy_src) {
-  sn_db_transaction_start();
   $errors = array();
 
   $owner = db_user_by_username($username_unsafe, true);
-
-  $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), SN_TIME_NOW);
-  $que = $planet['que'];
-  $planet = $planet['planet'];
-  if (!$planet) {
+  $planet = DBStaticPlanet::db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_PLANET);
+  if (empty($planet)) {
     $errors[] = $lang['adm_pl_comp_err_0'];
   }
-
   if ($planet['destruyed']) {
     $errors[] = $lang['adm_pl_comp_err_1'];
   }
-
-  if ($planet['id_owner'] != $owner['id'] || !$username) {
+  if (empty($username) || empty($owner) || $planet['id_owner'] != $owner['id']) {
     $errors[] = $lang['adm_pl_comp_err_4'];
   }
 
-  $destination = sys_o_get_updated($owner, array('galaxy' => $galaxy_dst, 'system' => $system_dst, 'planet' => $planet_dst, 'planet_type' => 1), SN_TIME_NOW);
-  $destination = $destination['planet'];
-  if (!$destination) {
+  $destination = DBStaticPlanet::db_planet_by_gspt($galaxy_dst, $system_dst, $planet_dst, PT_PLANET);
+  if (empty($destination)) {
     $errors[] = $lang['adm_pl_comp_err_2'];
   }
-
   if ($planet['id'] == $destination['id']) {
     $errors[] = $lang['adm_pl_comp_err_5'];
   }
-
   if ($planet['id_owner'] != $destination['id_owner']) {
     $errors[] = $lang['adm_pl_comp_err_3'];
   }
 
+  $moon = DBStaticPlanet::db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_MOON);
   if (!empty($errors)) {
     foreach ($errors as $error) {
       $template->assign_block_vars('error', array(
@@ -70,15 +63,27 @@ if ($galaxy_src) {
       ));
     }
   } else {
+  db_mysql::db_transaction_start();
+  SN::$gc->db->lockRecords([
+    'users'   => [$owner['id'],],
+    'planets' => [$planet['id'], $destination['id'], !empty($moon['id']) ? $moon['id'] : 0],
+  ]);
+
+  $planet = sys_o_get_updated($owner['id'], $planet['id'], SN_TIME_NOW);
+  $que = $planet['que'];
+  $planet = $planet['planet'];
+
+  $destination = sys_o_get_updated($owner['id'], $destination['id'], SN_TIME_NOW);
+  $destination = $destination['planet'];
+
     $template->assign_var('CHECK', 1);
 
-    killer_add_planet($planet);
+    $final_cost = killer_add_planet($planet);
 
-    $moon = DBStaticPlanet::db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_MOON, true);
-    if ($moon) {
-      $moon = sys_o_get_updated($owner, $moon, SN_TIME_NOW);
+    if (!empty($moon)) {
+      $moon = sys_o_get_updated($owner['id'], $moon['id'], SN_TIME_NOW);
       $moon = $moon['planet'];
-      killer_add_planet($moon);
+      $final_cost = killer_add_planet($moon, $final_cost);
     }
 
     foreach (sn_get_groups('resources_loot') as $resource_id) {
@@ -93,7 +98,7 @@ if ($galaxy_src) {
 
       DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $planet['id']);
       DBStaticPlanet::db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
-      if ($moon) {
+      if (!empty($moon)) {
         DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $moon['id']);
         DBStaticPlanet::db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
       }
@@ -101,8 +106,8 @@ if ($galaxy_src) {
       DBStaticPlanet::db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
       $template->assign_var('CHECK', 2);
     }
+    db_mysql::db_transaction_commit();
   }
-  sn_db_transaction_commit();
 }
 
 $template->assign_vars(array(
@@ -121,18 +126,16 @@ $template->assign_vars(array(
 
 SnTemplate::display($template, $lang['adm_pl_comp_title']);
 
-function killer_add_planet($planet) {
-  global $final_cost;
-
-  $final_cost = array();
+/**
+ * @param array $planet
+ * @param array $final_cost
+ *
+ * @return array|mixed
+ */
+function killer_add_planet($planet, $final_cost = []) {
   $sn_group_resources_loot = sn_get_groups('resources_loot');
-  /*
-  foreach($sn_group_resources_loot as &$value)
-  {
-    $value = get_unit_param($value, P_NAME);
-  }
-  */
 
+  // Adding structures cost
   foreach (sn_get_groups('structures') as $unit_id) {
     $build_level = mrc_get_level($user, $planet, $unit_id, true, true);
     if ($build_level > 0) {
@@ -143,7 +146,7 @@ function killer_add_planet($planet) {
       }
     }
   }
-
+  // Adding fleet and defense cost
   foreach (sn_get_groups(array('defense', 'fleet')) as $unit_id) {
     $unit_count = mrc_get_level($user, $planet, $unit_id, true, true);
     if ($unit_count > 0) {
@@ -153,8 +156,10 @@ function killer_add_planet($planet) {
       }
     }
   }
-
+  // Adding plain resources
   foreach ($sn_group_resources_loot as $resource_id) {
     $final_cost[$resource_id] += floor(mrc_get_level($user, $planet, $resource_id, true, true));
   }
+
+  return $final_cost;
 }

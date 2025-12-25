@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\DbSqlPaging;
 use General\Helpers\PagingRenderer;
 
@@ -9,6 +10,11 @@ use General\Helpers\PagingRenderer;
  * @param int      $query_limit
  */
 function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
+  if($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
+    $query_where .= (!empty($query_where) ? ' AND ' : '')
+      . '`tsTimeStamp` <= (NOW())';
+  }
+
   $mmModuleIsActive = !empty(SN::$gc->modules->getModulesInGroup('payment'));
 
   $sqlText = "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
@@ -151,18 +157,18 @@ function survey_vote(&$user) {
     return true;
   }
 
-  sn_db_transaction_start();
+  db_mysql::db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
   $is_voted = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
   if (empty($is_voted)) {
     $survey_vote_id = sys_get_param_id('survey_vote');
     $is_answer_exists = doquery("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
     if (!empty($is_answer_exists)) {
-      $user_name_safe = db_escape($user['username']);
+      $user_name_safe = SN::$db->db_escape($user['username']);
       doquery("INSERT INTO `{{survey_votes}}` SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
     }
   }
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
 
   return true;
 }

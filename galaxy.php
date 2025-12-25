@@ -65,6 +65,9 @@ if ($mode == 1) {
   $planet = $planetrow['planet'];
 }
 
+$uni_galaxy = (int)$uni_galaxy;
+$uni_system = (int)$uni_system;
+
 $uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > SN::$config->game_maxGalaxy ? SN::$config->game_maxGalaxy : $uni_galaxy);
 $uni_system = $uni_system < 1 ? 1 : ($uni_system > SN::$config->game_maxSystem ? SN::$config->game_maxSystem : $uni_system);
 $planet = $planet < 1 ? 1 : ($planet > SN::$config->game_maxPlanet + 1 ? SN::$config->game_maxPlanet + 1 : $planet);

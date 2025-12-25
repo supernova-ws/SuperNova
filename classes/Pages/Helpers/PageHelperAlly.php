@@ -33,7 +33,7 @@ class PageHelperAlly {
       $template->assign_var('SEARCH_TEXT', $ali_search_text);
 
       $search = doquery("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
-      if (db_num_rows($search)) {
+      if (SN::$db->db_num_rows($search)) {
         PageHelperAlly::allyFetchFromResult($template, $search, $user['total_points']);
       }
     }
@@ -78,7 +78,7 @@ class PageHelperAlly {
   public static function externalSearchRecommend(array $user, template $template) {
     if (empty($user['ally_id'])) {
       $recommended = Alliance::recommend($user['total_points']);
-      if (db_num_rows($recommended)) {
+      if (SN::$db->db_num_rows($recommended)) {
         $template->assign_block_vars('alliances', array(
           'ID' => -1,
         ));

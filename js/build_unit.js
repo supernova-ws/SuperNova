@@ -225,6 +225,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
   var unit_info_image = $('#unit_info_image');
   unit_info_image.attr('src', unit['image']);
+  unit_info_image.attr('unit_id', unit_id);
   $('#unit_info_wiki').attr('unit_id', unit_id);
   $('#unit_info_description').html(unit['description']);
 

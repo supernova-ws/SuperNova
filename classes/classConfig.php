@@ -1,4 +1,10 @@
 <?php
+
+/** @noinspection PhpMissingFieldTypeInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+
 /**
  * Created by Gorlum 29.10.2016 10:16
  */
@@ -10,16 +16,24 @@
  *
  * @package supernova
  *
- * @property string     $db_prefix                     - REMOVE! Just for compatibility!
+ * @property string $db_prefix                     - REMOVE! Just for compatibility!
  *
- * @property int        $debug
+ * @property int    $debug
  *
- * @property string     $db_version
+ * @property bool   $DEBUG_SQL_FILE_LOG            => 0 // Полный дамп запросов в рил-тайме. Подойдет любое значение
+ * @property bool   $DEBUG_SQL_ERROR               => 0 // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+ * @property bool   $DEBUG_SQL_COMMENT_LONG        => 0 // Добавлять SQL запрос длинные комментарии. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+ * @property bool   $DEBUG_SQL_COMMENT             => 0 // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
  *
- * @property string     $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
+ * @property string $db_version
+ * @property int    $db_manual_lock_enabled
  *
- * @property string     $auth_vkontakte_app_id
- * @property string     $auth_vkontakte_app_key
+ * @property string $admin_http_key                => '', // Use this key to access some admin functionality via HTTP - say, in script
+ *
+ * @property string $ali_bonus_members             => 10, // Minimum alliance size to start using bonus
+ *
+ * @property string $auth_vkontakte_app_id
+ * @property string $auth_vkontakte_app_key
  * @property string     $auth_vkontakte_token
  * @property int        $auth_vkontakte_token_expire
  *
@@ -30,12 +44,13 @@
  * @property int        $empire_mercenary_base_period  => PERIOD_MONTH, // Base hire period for price calculations
  * @property int        $empire_mercenary_temporary    => 0, // Temporary empire-wide mercenaries
  *
- * @property int        $fleet_update_max_run_time     => 30,         // Maximum length in seconds for single fleet dispatch run. Should be 1 second or more
- * @property int        $fleet_update_interval         => 4 second    // how often fleets should be updated
+ * @property float      $fleet_update_dispatch_time    => 3           // (float), seconds Maximum seconds fleet dispatch can run, Default 3s
+ * @property int        $fleet_update_interval         => 4 second    // how often fleet dispatch worker should run
+ * @property int        $fleet_update_max_run_time     => 30,         // (int), seconds. How long fleet dispatch worker can run. Should be 1 second or more
  * @property int        $fleet_update_last             => SN_TIME_NOW // unixtime - when fleet was updated last
  * @property int        $fleet_update_lock             => ''          // SQL time when lock was acquired
  *
- * @property string     $game_adminEmail               => 'root@localhost',    // Admin's email to show to users
+ * @property string     $game_adminEmail               => 'root@localhost',    // Admin email to show to users
  *
  * @property string     $game_default_language         => 'ru'
  * @property string     $game_default_skin             => 'skins/EpicBlue/'
@@ -49,7 +64,7 @@
  * @property int        $game_maxSystem                => 199
  * @property int        $game_maxPlanet                => 15
  *
- * @property string     $game_name                     Server name as it would be seen through game
+ * @property string     $game_name                     Server's name as it would be seen through game
  *
  * @property string     $game_watchlist
  *
@@ -88,10 +103,13 @@
  *
  * @property int        $tutorial_first_item           ID of first item of tutorial
  *
- * @property int        $url_faq                       URL of FAQ root
+ * @property string $url_faq                 URL of FAQ root
+ * @property string $url_purchase_metamatter URL to purchase MM for servers w/o payment modules
+ * @property string $url_forum               '',
+ * @property string $url_rules               '',
  *
  * @property int        $users_amount                  => 1,                // Total users count
- * @property int        $game_users_online_timeout     => PERIOD_MINUTE_15, // How long user should considered ONLINE for online counter (seconds)
+ * @property int        $game_users_online_timeout     => PERIOD_MINUTE_15, // How long user should consider ONLINE for online counter (seconds)
  * @property int        $game_users_update_online      => 30,               // How often user online should be refreshed (seconds)
  * @property int        $var_online_user_time          => 0,                // When last time user online was refreshed (Unix timestamp)
  * @property int        $var_online_user_count         => 0,                // Last calculated online user count
@@ -102,15 +120,19 @@
  * @property float      $resource_multiplier           => 1, // aka Mining speed
  * @property float      $game_speed                    => 1, // Game speed aka Building/Research speed
  * @property float      $fleet_speed                   => 1, // Fleet speed
- * @property float      $game_speed_expedition         => 1, // Game expedition speed
+ * @property float      $game_speed_expedition         => 1, // Game expedition rate aka Game expedition speed
  *
  * @property int        $tpl_minifier                  => 0, // Template minifier
  * @property int        $tpl_allow_php                 => 0, // PTL allow INCLUDEPHP and PHP tags
  *
  * @property int        $uni_galaxy_distance           => 20000, // Distance between galaxies
  *
+ * @property int        $user_birthday_celebrate       => 0, // When last time celebrations (i.e. gift-giving) was made
+ * @property int        $user_birthday_gift            => 0, // User birthday gift - DM points
+ * @property int        $user_birthday_range           => PERIOD_MONTH, // How far in past can be user birthday for giving him gift
+ *
  * ----- Player settings
- * @property int|float  $player_metamatter_immortal    => 200000, // MM amount to reward account with Immortal status
+ * @property int        $player_metamatter_immortal    => 200000, // MM amount to reward account with Immortal status
  *
  * @property int        $game_user_changename          => 2, // Is user allowed to change name after registration?
  * @property int        $game_user_changename_cost     => 100000, // Change name cost for paid changename
@@ -120,7 +142,7 @@
  * @property int        $player_vacation_timeout       => PERIOD_WEEK, // Timeout after leaving vacation to start new one in seconds
  *
  * @property string     $player_levels                 => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
- * @property string     $player_levels_calculated      => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+ * @property string     $player_levels_calculated      => '2000-01-01 00:00:00', // Date and time when player level was calculated last
  *
  * @property int        $player_delete_time            => 3888000, //
  *
@@ -144,9 +166,9 @@
  * @property int        $planet_teleport_cost          => 50000, // Cost of planet teleportation
  * @property int        $planet_teleport_timeout       => 86400, // Timeout for next teleportation
  *
- * @property string     $server_updater_check_auto     => 0, // Server autocheck version
+ * @property string     $server_updater_check_auto     => 0, // Server auto-check version
  * @property int        $server_updater_check_last     => 0, // Server last check time
- * @property int        $server_updater_check_period   => PERIOD_DAY, // Server autocheck period
+ * @property int        $server_updater_check_period   => PERIOD_DAY, // Server auto-check period
  * @property int        $server_updater_check_result   => SNC_VER_NEVER, // Server last check result
  * @property int|string $server_updater_id             => 0, // Server ID on update server
  * @property string     $server_updater_key            => '', // Server key on update server
@@ -163,7 +185,6 @@
  *
  * @property string     $server_cypher                 => Internally generated cypher for in-server communications
  *
- * @property string            $url_purchase_metamatter       => URL to purchase MM for servers w/o payment modules
  *
  * @property string            $var_db_update                 => '0' - SQL_DATE_TIME
  * @property string            $var_db_update_end             => '0' - SQL_DATE_TIME
@@ -171,9 +192,42 @@
  * @property string            $var_stat_update               => '0' - SQL_DATE_TIME - when stat update was started
  * @property string            $var_stat_update_end           => '0' - SQL_DATE_TIME - ?????????
  * @property string            $var_stat_update_admin_forced  => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
- * @property string            $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
+ * @property string            $var_stat_update_next          => ''  - SQL_DATE_TIME - Next time when stat update scheduled to run
  * @property string            $var_stat_update_msg           => 'Update never started' - Last stat update message
  *
+ * @property string            $var_news_last                 => 0, // Last news post time
+ *
+ * @property int    $allow_buffing           => 0, // Disable buffing check for TRANSPORT missions
+ * @property int    $ally_help_weak          => 0, // Allow strong players to HOLD on weak co-ally planets
+ * @property int    $game_email_pm           => 0, // Is allowed forwarding messages from PM to e-mail?
+ * @property int    $rpg_exchange_metal      => 1,
+ * @property int    $rpg_exchange_crystal    => 2,
+ * @property int    $rpg_exchange_deuterium  => 4,
+ * @property int    $rpg_exchange_darkMatter => 400,
+ * @property int    $initial_fields          => 163,
+ * @property int    $chat_refresh_rate       => 5, // in seconds. Chat AJAX refresh rate
+ * @property int    $chat_timeout            => 900, // in seconds. Default = 15 min
+ * @property int    $game_counter            => 0,  // Does built-in page hit counter is on?
+ * @property string $geoip_whois_url         => '',
+ * @property int    $advGoogleLeftMenuIsOn   => 0,
+ * @property string $advGoogleLeftMenuCode   => '(Place here code for banner)',
+ * @property int    $uni_price_galaxy        => 10000,
+ * @property int    $uni_price_system        => 1000,
+ * @property int               $fleet_bashing_attacks   => 3,      // Max amount of attack per wave - 3 by default
+ * @property int               $fleet_bashing_interval  => 1800,   // Maximum interval between attacks when they still count as one wave - 30m by default
+ * @property int               $fleet_bashing_scope     => 86400,  // Interval on which bashing waves counts - 24h by default
+ * @property int               $fleet_bashing_war_delay => 43200,  // Delay before start bashing after declaring war to alliance - 12h by default
+ * @property int               $fleet_bashing_waves     => 3,      // Max amount of waves per day - 3 by default
+ * @property int               $player_max_colonies     => -1, // Max player planet count (NOT including main planet)
+ * @property int               $eco_scale_storage       => 1,
+ * @property int               $game_mode               => 0,           // 0 - SuperNova, 1 - oGame
+ * @property int $festival_gather_log_enabled => 0, // Is Festival Gather log enabled?
+ * @property int $festival_gather_autobalance  => 0, // Is Festival Gather auto-balancer enabled?
+ *
+ *
+ * @property string            $cache_prefix Temporary for updater
+ *
+ * @property mixed|string|null $rpg_cost_exchange => 1000, // Exchange allows resource trade between players
  */
 class classConfig extends classPersistent {
   const DATE_TYPE_UNIX = 0;
@@ -190,6 +244,18 @@ class classConfig extends classPersistent {
   protected $cypher = '';
 
   protected $defaults = array(
+    'geoip_whois_url' => '',
+
+    'db_manual_lock_enabled' => 0,
+
+    'admin_http_key'  => '',
+
+    // Debug
+    'DEBUG_SQL_FILE_LOG'     => 0, // Полный дамп запросов в отдельный файл. Подойдет любое значение
+    'DEBUG_SQL_ERROR'        => 0, // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+    'DEBUG_SQL_COMMENT_LONG' => 0, // Добавлять SQL запрос длинные комментарии. Подойдет любое значение. Подразумевает `DEBUG_SQL_COMMENT`
+    'DEBUG_SQL_COMMENT'      => 0, // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
+
     // SEO meta
     'adv_conversion_code_payment'  => '',
     'adv_conversion_code_register' => '',
@@ -256,6 +322,9 @@ class classConfig extends classPersistent {
     'deuterium_basic_income'       => 0,
     'energy_basic_income'          => 0,
 
+    'festival_gather_log_enabled'  => 0, // Is Festival Gather log enabled?
+    'festival_gather_autobalance'  => 0, // Is Festival Gather auto-balancer enabled?
+
     // Bashing protection settings
     'fleet_bashing_attacks'        => 3,      // Max amount of attack per wave - 3 by default
     'fleet_bashing_interval'       => 1800,   // Maximum interval between attacks when they still count as one wave - 30m by default
@@ -266,11 +335,12 @@ class classConfig extends classPersistent {
     'Fleet_Cdr'   => 30,
     'fleet_speed' => 1,
 
-    self::FLEET_UPDATE_MAX_RUN_TIME => 30,     // Maximum length in seconds for single fleet dispatch run
-    'fleet_update_interval'         => 4,
+    'fleet_update_dispatch_time'    => 3,  // (float) Maximum seconds fleet dispatch can run, Default 3s
+    'fleet_update_interval'         => 4,  // How often fleet dispatch worker should run
+    self::FLEET_UPDATE_MAX_RUN_TIME => 30, // (int) seconds. How long fleet dispatch worker can run. Should be 1 second or more
     'fleet_update_lock'             => '', // SQL time when lock was acquired
 
-    'game_adminEmail'       => 'root@localhost',    // Admin's email to show to users
+    'game_adminEmail'       => 'root@localhost',    // Admin email to show to users
     'game_counter'          => 0,  // Does built-in page hit counter is on?
     // Defaults
     'game_default_language' => 'ru',
@@ -295,7 +365,7 @@ class classConfig extends classPersistent {
     'game_noob_factor'        => 5,    // Multiplier to divide "stronger" and "weaker" users
     'game_noob_points'        => 5000, // Below this point user treated as noob. 0 to disable
 
-    'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccounts)
+    'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccount)
 
     'game_speed'            => 1, // Game speed
     'game_speed_expedition' => 1, // Game expedition speed
@@ -347,7 +417,7 @@ class classConfig extends classPersistent {
     'payment_currency_exchange_wmz' => 1,
     'payment_currency_exchange_pln' => 3.86,
 
-    'payment_lot_price' => 1,     // Lot price in default currency
+    'payment_lot_price' => 1,     // Lot's price in default currency
     'payment_lot_size'  => 2500,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
 
     'planet_capital_cost'          => 25000, // Cost in DM to move Capital to current planet
@@ -366,16 +436,16 @@ class classConfig extends classPersistent {
     'player_metamatter_immortal' => 200000, // MM amount to reward account with Immortal status
 
     'player_levels'            => '', // JSON-encoded array of [(int)level => (float)maxPointsForLevel]
-    'player_levels_calculated' => '2000-01-01 00:00:00', // Date and time where player level was calculated last
+    'player_levels_calculated' => '2000-01-01 00:00:00', // Date and time when player level was calculated last
 
     // Quests
     'quest_total'              => 0, // Total number of quests
 
     'resource_multiplier'     => 1,
 
-    //Roleplay system
-    'rpg_bonus_divisor'       => 10,    // Amount of DM referral shoud get for partner have 1 DM bonus
-    'rpg_bonus_minimum'       => 10000, // Minimum DM ammount for starting paying bonuses to affiliate
+    //Role play system
+    'rpg_bonus_divisor'       => 10,    // Amount of DM referral should get for partner have 1 DM bonus
+    'rpg_bonus_minimum'       => 10000, // Minimum DM amount for starting paying bonuses to affiliate
 
     // Black Market - General
     'rpg_cost_banker'         => 1000, // Banker can hold some resources
@@ -386,7 +456,7 @@ class classConfig extends classPersistent {
     'rpg_cost_stockman'       => 1000, // Stockman resells ship that was scrapped
     'rpg_cost_trader'         => 1000, // Trader trades between resources
 
-    // Black Market - Resource exachange rates
+    // Black Market - Resource exchange rates
     'rpg_exchange_metal'      => 1,
     'rpg_exchange_crystal'    => 2,
     'rpg_exchange_deuterium'  => 4,
@@ -408,9 +478,9 @@ class classConfig extends classPersistent {
 
     'server_start_date' => '', //
 
-    'server_updater_check_auto'   => 0, // Server autocheck version
+    'server_updater_check_auto'   => 0, // Server auto-check version
     'server_updater_check_last'   => 0, // Server last check time
-    'server_updater_check_period' => PERIOD_DAY, // Server autocheck period
+    'server_updater_check_period' => PERIOD_DAY, // Server auto-check period
     'server_updater_check_result' => SNC_VER_NEVER, // Server last check result
     'server_updater_id'           => 0, // Server ID on update server
     'server_updater_key'          => '', // Server key on update server
@@ -440,15 +510,15 @@ class classConfig extends classPersistent {
     'url_rules'               => '',
 
     'users_amount'              => 1,                // Total users count
-    'game_users_online_timeout' => PERIOD_MINUTE_15, // Seconds, How long user should considered ONLINE for online counter
+    'game_users_online_timeout' => PERIOD_MINUTE_15, // Seconds, How long user should consider ONLINE for online counter
     'game_users_update_online'  => 30,               // How often user online should be refreshed (seconds)
     'var_online_user_time'      => 0,                // When last time user online was refreshed
     'var_online_user_count'     => 0,                // Last calculated online user count
     'server_log_online'         => 0,                // Log online user count
 
-    'user_birthday_celebrate' => 0, // When last time celebrations (i.e. giftgiving) was made
-    'user_birthday_gift'      => 0, // User birthday gift
-    'user_birthday_range'     => PERIOD_MONTH, // How far in past can be user birthday for giving him gift
+    'user_birthday_celebrate' => 0, // When last time celebrations (i.e. gift-giving) was made - timestamp
+    'user_birthday_gift'      => 0, // User birthday gift - Dark Matter points
+    'user_birthday_range'     => PERIOD_MONTH, // How far in past can be user birthday for giving him gift - seconds
 
 
     'var_db_update'     => 0, // Time of last DB update
@@ -489,7 +559,7 @@ class classConfig extends classPersistent {
    */
   public function dateConvert($date, $as) {
     if ($as === self::DATE_TYPE_UNIX && !is_numeric($date)) {
-      // It is not a TIMESTAMP - may be it's SQL timestamp or other date-related string? Trying to convert to UNIX
+      // It is not a TIMESTAMP - maybe it's SQL timestamp or other date-related string? Trying to convert to UNIX
       $date = intval(strtotime($date, SN_TIME_NOW));
     } elseif ($as === self::DATE_TYPE_SQL_STRING && (!is_string($date) || is_numeric($date))) {
       $date = date(FMT_DATE_TIME_SQL, $date);
@@ -524,7 +594,7 @@ class classConfig extends classPersistent {
    * @see dateConvert()
    */
   public function dateRead($name, $as) {
-    return $this->dateConvert($date = $this->pass()[$name], $as);
+    return $this->dateConvert($this->pass()[$name], $as);
   }
 
   public function getCypher() {

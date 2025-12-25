@@ -43,7 +43,7 @@ class DbFleetStatic {
         ->setValues($fieldArray)
         ->doInsert(DbQuery::DB_INSERT_PLAIN, true);
 
-      $fleet_id = db_insert_id();
+      $fleet_id = SN::$db->db_insert_id();
     } else {
       $fleet_id = 0;
     }
@@ -130,37 +130,6 @@ class DbFleetStatic {
   }
 
 
-  /**
-   * LOCK - Lock all records which can be used with mission
-   *
-   * @param $mission_data
-   * @param $fleet_id
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public static function db_fleet_lock_flying($fleet_id, &$mission_data) {
-    // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
-    // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
-    $fleet_id_safe = idval($fleet_id);
-
-    $query = [];
-    /** @noinspection SqlResolve */
-    $query[] = "SELECT 1 FROM `{{fleets}}` AS f";
-    // Блокировка всех прилетающих и улетающих флотов, если нужно
-    $mission_data['dst_fleets'] ? $query[] = 'LEFT JOIN `{{fleets}}` AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id' : false;
-
-    $mission_data['dst_user'] || $mission_data['dst_planet'] ? $query[] = 'LEFT JOIN `{{users}}` AS ud ON ud.id = f.fleet_target_owner' : false;
-    $mission_data['dst_planet'] ? $query[] = 'LEFT JOIN `{{planets}}` AS pd ON pd.id = f.fleet_end_planet_id' : false;
-
-    $mission_data['src_user'] || $mission_data['src_planet'] ? $query[] = 'LEFT JOIN `{{users}}` AS us ON us.id = f.fleet_owner' : false;
-    $mission_data['src_planet'] ? $query[] = 'LEFT JOIN `{{planets}}` AS ps ON ps.id = f.fleet_start_planet_id' : false;
-
-    $query[] = "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE";
-
-    return doquery(implode(' ', $query));
-  }
-
-
 
   /* FLEET LIST & COUNT CRUD ===========================================================================================*/
   /**
@@ -232,7 +201,7 @@ class DbFleetStatic {
    * TODO - deprecated
    */
   public static function db_fleet_list_query_all_stat() {
-    return  doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
+    return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM `{{fleets}}`;");
   }
 
 
@@ -356,15 +325,19 @@ class DbFleetStatic {
   /**
    * Fleets on hold on planet orbit
    *
-   * @param $fleet_row
-   * @param $ube_time
+   * @param int $galaxy
+   * @param int $system
+   * @param int $planet
+   * @param int $planet_type
+   * @param int $ube_time
    *
    * @return array
    *
    * TODO - safe params
    */
   public static function fleet_list_on_hold($galaxy, $system, $planet, $planet_type, $ube_time) {
-    return static::db_fleet_list(
+    /** @noinspection PhpRedundantOptionalArgumentInspection */
+    return DbFleetStatic::db_fleet_list(
       "`fleet_end_galaxy` = {$galaxy}
     AND `fleet_end_system` = {$system}
     AND `fleet_end_planet` = {$planet}
@@ -566,7 +539,7 @@ class DbFleetStatic {
    */
   public static function dbAcsInsert($userId, $fleetid, $fleet) {
     return doquery("INSERT INTO `{{aks}}` SET
-          `name` = '" . db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
+          `name` = '" . SN::$db->db_escape(SN::$lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $userId . "',
           `flotten` = '" . $fleetid . "',
           `ankunft` = '" . $fleet['fleet_start_time'] . "',
@@ -648,7 +621,7 @@ class DbFleetStatic {
       throw new Exception(SN::$lang['flt_aks_error_too_much_players']);
     }
 
-    $acsPoints = 0;
+    $acsPoints    = 0;
     $isUserExists = false;
     foreach ($invited_ar as $inv) {
       if ($userToAddID == $inv) {
@@ -656,7 +629,7 @@ class DbFleetStatic {
       }
 
       $invitedUserRecord = db_user_by_id($inv);
-      if(!empty($invitedUserRecord)) {
+      if (!empty($invitedUserRecord)) {
         $acsPoints += $invitedUserRecord['total_points'];
       }
     }
@@ -671,13 +644,13 @@ class DbFleetStatic {
     }
 
 
-    if(self::acsIsAcsFull($aks['id'])) {
+    if (self::acsIsAcsFull($aks['id'])) {
       throw new Exception(SN::$lang['fl_aks_too_power']);
     }
 
     if ($isUserExists) {
 //      if ($userToAddID != $userId)
-        throw new Exception(SN::$lang['fl_aks_player_invited_already']);
+      throw new Exception(SN::$lang['fl_aks_player_invited_already']);
     } else {
       DbFleetStatic::dbAcsAddUserByFleetId($userToAddID, $fleetid);
       $aks['eingeladen'] .= ',' . $userToAddID;

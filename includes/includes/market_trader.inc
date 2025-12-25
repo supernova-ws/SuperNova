@@ -1,5 +1,7 @@
 <?php
 
+use DBAL\db_mysql;
+
 if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)) {
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
@@ -31,9 +33,9 @@ function eco_mrk_trader($user, $planetrow = null) {
     $value = 0;
     $qry = array();
 
-    sn_db_transaction_start();
+    db_mysql::db_transaction_start();
     if($planetrow['id_owner']) {
-      $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
+      $global_data = sys_o_get_updated($planetrow['id_owner'], $planetrow['id'], SN_TIME_NOW);
       $planetrow = $global_data['planet'];
     }
     else {
@@ -92,13 +94,13 @@ function eco_mrk_trader($user, $planetrow = null) {
 
       doquery("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
       rpg_points_change($user['id'], RPG_MARKET_EXCHANGE, -$operation_cost, "Using Black Market page {$lang['eco_mrk_trader']}");
-      sn_db_transaction_commit();
+      db_mysql::db_transaction_commit();
 
       $intError = MARKET_DEAL_TRADE;
       $_SERVER['REQUEST_URI'] = ($has_message = strpos($_SERVER['REQUEST_URI'], '&message=')) ? substr($_SERVER['REQUEST_URI'], 0, $has_message) : $_SERVER['REQUEST_URI'];
       sys_redirect("{$_SERVER['REQUEST_URI']}&message={$intError}");
     }
-    sn_db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS' => $intError == MARKET_DEAL ? ERR_NONE : ERR_ERROR,
       'MESSAGE' => $lang['eco_mrk_errors'][$intError],

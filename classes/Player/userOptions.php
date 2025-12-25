@@ -3,6 +3,7 @@
 namespace Player;
 
 use Common\oldArrayAccessNd;
+use SN;
 
 /**
  * Class Player\userOptions
@@ -142,7 +143,7 @@ class userOptions extends oldArrayAccessNd {
     if (!empty($this->to_write)) {
       foreach ($this->to_write as $key => $cork) {
         $value = is_array($this->data[$key]) ? serialize($this->data[$key]) : $this->data[$key]; // Сериализация для массивов при сохранении в БД
-        $this->to_write[$key] = "({$this->user_id}, '" . db_escape($key) . "', '" . db_escape($value) . "')";
+        $this->to_write[$key] = "({$this->user_id}, '" . SN::$db->db_escape($key) . "', '" . SN::$db->db_escape($value) . "')";
       }
 
       doquery("REPLACE INTO `{{player_options}}` (`player_id`, `option_id`, `value`) VALUES " . implode(',', $this->to_write));
@@ -153,7 +154,7 @@ class userOptions extends oldArrayAccessNd {
 
     if (!empty($this->to_delete)) {
       foreach ($this->to_delete as $key => &$value) {
-        $value = is_string($key) ? "'" . db_escape($key) . "'" : $key;
+        $value = is_string($key) ? "'" . SN::$db->db_escape($key) . "'" : $key;
       }
 
       doquery("DELETE FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} AND `option_id` IN (" . implode(',', $this->to_delete) . ") ");

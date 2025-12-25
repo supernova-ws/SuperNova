@@ -1,5 +1,8 @@
 <?php
 
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+/** @noinspection PhpRedundantOptionalArgumentInspection */
+
 /**
  * settings.php
  *
@@ -15,7 +18,7 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $lang, $user;
+global $lang, $user, $sn_version_check_class;
 
 SnTemplate::messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 

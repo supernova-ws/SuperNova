@@ -1,26 +1,28 @@
 <?php
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection SqlResolve */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+
+use Player\PlayerStatic;
 
 /**
  * Возвращает информацию о пользователе по его ID
  *
- * @param int|array $user_id_unsafe
- *    <p>int - ID пользователя</p>
- *    <p>array - запись пользователя с установленным полем ['id']</p>
- * @param bool      $for_update @deprecated
- * @param string    $fields @deprecated список полей или '*'/'' для всех полей
- * @param null      $player
- * @param bool|null $player Признак выбора записи пользователь типа "игрок"
- *    <p>null - Можно выбрать запись любого типа</p>
- *    <p>true - Выбирается только запись типа "игрок"</p>
- *    <p>false - Выбирается только запись типа "альянс"</p>
+ * @param int   $user_id_unsafe  ID пользователя
+ * @param bool  $for_update      @deprecated
+ * @param ?bool $player          Признак выбора записи пользователь типа "игрок"
+ *                               <p>null - Можно выбрать запись любого типа</p>
+ *                               <p>true - Выбирается только запись типа "игрок"</p>
+ *                               <p>false - Выбирается только запись типа "альянс"</p>
  *
  * @return array|false
  *    <p>false - Нет записи с указанным ID и $player</p>
  *    <p>array - запись типа $user</p>
  * @deprecated
+ * @noinspection PhpUnusedParameterInspection
  */
-function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-  $user = SN::db_get_record_by_id(LOC_USER, $user_id_unsafe);
+function db_user_by_id($user_id_unsafe, $for_update = false, $player = null) {
+  $user  = PlayerStatic::dbSelectOne("SELECT * FROM {{users}} WHERE `id` = " . idval($user_id_unsafe));
 
   return (is_array($user) &&
     (
@@ -33,28 +35,6 @@ function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $pla
 }
 
 /**
- * @param        $where_safe
- *
- * @return array|null
- * @deprecated
- */
-function db_get_user_by_where($where_safe) {
-  $user = null;
-
-  if (!empty($where_safe)) {
-    // Вытаскиваем запись
-    $user = SN::db_query_select(
-      "SELECT * FROM {{users}} WHERE {$where_safe}",
-      true
-    );
-
-    _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
-  }
-
-  return $user;
-}
-
-/**
  * @deprecated
  */
 function db_user_by_username($username_unsafe, $like = false) {
@@ -62,26 +42,29 @@ function db_user_by_username($username_unsafe, $like = false) {
     return null;
   }
 
-  $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+  // тут на самом деле strtolower() лишняя, но пусть будет
+  $username_safe = SN::$db->db_escape($like ? strtolower($username_unsafe) : $username_unsafe);
 
-  $user = db_get_user_by_where("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'");
+  // Вытаскиваем запись
+  $operand = $like ? 'LIKE' : '=';
+
+   $user  = PlayerStatic::dbSelectOne("SELECT * FROM {{users}} WHERE `username` {$operand} '{$username_safe}'");
 
   return $user;
 }
+
 /**
- * @param        $username_unsafe
- * @param bool   $for_update
- * @param string $fields
+ * @param        $playerIdOrName
  * @param null   $player
  * @param bool   $like
  *
  * @return array|false
  * @deprecated
  */
-function dbPlayerByIdOrName($username_unsafe, $player = null, $like = false) {
-  $row = db_user_by_id($username_unsafe, false, '*', $player);
+function dbPlayerByIdOrName($playerIdOrName, $player = null, $like = false) {
+  $row = db_user_by_id($playerIdOrName, false, $player);
   if (empty($row['id'])) {
-    $row = db_user_by_username($username_unsafe, $like);
+    $row = db_user_by_username($playerIdOrName, $like);
   }
 
   return !is_array($row) || empty($row['id']) ? false : $row;
@@ -89,11 +72,11 @@ function dbPlayerByIdOrName($username_unsafe, $player = null, $like = false) {
 
 /**
  * @deprecated
+ * @noinspection PhpUnusedParameterInspection
  */
-function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
-  return SN::db_get_record_list(LOC_USER, $user_filter);
+function db_user_list($filter = '', $for_update = false, $fields = '*') {
+  return SN::db_get_record_list(LOC_USER, $filter);
 }
-
 
 
 /**
@@ -107,15 +90,17 @@ function db_user_set_by_id($user_id, $set) {
 /**
  * @deprecated
  */
-function db_user_list_set_mass_mail(&$owners_list, $set) {
+function db_user_list_set_mass_mail($owners_list, $set) {
   return SN::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
 }
+
 /**
  * @deprecated
  */
 function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
   return SN::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
 }
+
 /**
  * @deprecated
  */
@@ -124,13 +109,9 @@ function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) 
 }
 
 
-
-
-
 function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
   return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
 }
-
 
 
 // TODO Внести это всё в supernova для HyperNova
@@ -140,21 +121,20 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
  * TODO - это вообще-то надо хранить в конфигурации
  */
 function db_user_last_registered_username() {
-  $user = SN::db_query_select(
-    'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
-    true
-  );
-  _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
+  $user = PlayerStatic::dbSelectOne('SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC');
 
   return isset($user['username']) ? $user['username'] : '';
 }
 
 function db_user_count($online = false) {
   $result = doquery('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = ' . USER_BOT_PLAYER . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - SN::$config->game_users_online_timeout) : ''), true);
+
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
 
 function db_user_list_to_celebrate($config_user_birthday_range) {
+  // TODO
+  /** @noinspection SqlAggregates */
   return doquery(
     "SELECT
       `id`, `username`, `user_birthday`, `user_birthday_celebrated`
@@ -170,31 +150,19 @@ function db_user_list_to_celebrate($config_user_birthday_range) {
       `days_after_birthday` >= 0 AND `days_after_birthday` < {$config_user_birthday_range} FOR UPDATE;");
 }
 
-function db_user_list_online_sorted($TypeSort) {
-  global $config;
-
-  return doquery(
-    "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
-      `onlinetime` AS `ACTIVITY`
-    FROM `{{users}}`
-    WHERE `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) ." ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
-}
-
-
-function db_user_list_admin_multiaccounts() {
+function db_user_list_admin_multi_accounts() {
   return doquery("SELECT COUNT(*) as ip_count, `user_lastip` FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
 }
 
-
-function db_user_list_admin_sorted($sort, $online = false) {
+function db_user_list_admin_sorted($sort, $online = false, $desc = false) {
   global $config;
 
   return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
     LEFT JOIN {{referrals}} as r on r.id_partner = u.id
     WHERE" .
-    ($online ? " `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
+    ($online ? " `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
     " GROUP BY u.id
-    ORDER BY user_as_ally, {$sort} ASC");
+    ORDER BY user_as_ally, {$sort}" . ($desc ? " DESC" : " ASC"));
 }
 
 /**
@@ -205,12 +173,15 @@ function db_user_list_admin_sorted($sort, $online = false) {
  * @return array
  */
 function db_user_list_by_id($user_id_list) {
-  !is_array($user_id_list) ? $user_id_list = array($user_id_list) : false;
+  if (!is_array($user_id_list)) {
+    $user_id_list = array($user_id_list);
+  }
 
   $user_list = array();
-  foreach($user_id_list as $user_id_unsafe) {
-    $user = db_user_by_id($user_id_unsafe);
-    !empty($user) ? $user_list[$user_id_unsafe] = $user : false;
+  foreach ($user_id_list as $user_id_unsafe) {
+    if (!empty($user = db_user_by_id($user_id_unsafe))) {
+      $user_list[$user_id_unsafe] = $user;
+    }
   }
 
   return $user_list;

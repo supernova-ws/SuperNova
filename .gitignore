@@ -2,45 +2,36 @@
 config.php
 *config.php
 
+badqrys.txt
+
 # Ignore Yandex and Google placeholders
 /yandex_*.txt
 /google*.txt
+/google*.html
 
-# Ignore skin xNova
-/skins/xnova/
+# Ignore override CSS files
+/desing/css/*override*
 
-# Ignore forums
-/phpBB3/
-/forum/
-
-# Ignore DirInfo
-dirinfo
-
-# Ignore xcache interface
-/xcache/
-/xcache-admin/
+# Ignore uploaded files
+/files
 
 # Ignore local folder, test folder and test files
 /test/
 /.local/
 t.*
 
-# Ignore CMD-files
-/*.cmd
-
 # Ignore update flag
 /includes/update.last
 
 # Ignore cache folder
 /cache/
+/design/cache/
 
-# Ignore cache folder
+# Ignore avatar folder
 /images/avatar/
 
-# Ignore backup folder
-/admin/sxd/cfg.php
-/admin/sxd/error.log
-/admin/sxd/ses.php
+# Ignore instanced servers
+/servers/
 
 # Ignore all dotfiles...
 .*
@@ -52,6 +43,12 @@ t.*
 # Ignoring all files started with "__" - it's a local or global test files
 __*
 
+# Ignore backup folder
+/admin/sxd/cfg.php
+/admin/sxd/error.log
+/admin/sxd/ses.php
+/admin/sxd/backup/*.job.php
+
 # Ignore backups
 /admin/backup/*.gz
 /admin/backup/*.bz2
@@ -59,3 +56,22 @@ __*
 /admin/sxd/backup/*.gz
 /admin/sxd/backup/*.bz2
 /admin/sxd/backup/*.sql
+
+# Ignore skin xNova
+/skins/xnova/
+
+# Ignore forums
+/phpBB3/
+/forum/
+
+# Ignore DirInfo
+dirinfo
+
+# Ignore CMD-files
+/*.cmd
+
+# Ignore xcache interface
+/xcache/
+/xcache-admin/
+/xcache-admin2/
+

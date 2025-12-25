@@ -61,7 +61,7 @@ class classPersistent extends classCache {
   public function db_loadItem($index) {
     $result = null;
     if($index) {
-      $index_safe = db_escape($index);
+      $index_safe = SN::$db->db_escape($index);
       $queryResult = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
       if(is_array($queryResult) && !empty($queryResult)) {
         $this->$index = $result = $queryResult[$this->sql_value_field];
@@ -103,8 +103,8 @@ class classPersistent extends classCache {
     $qry = array();
     foreach($item_list as $item_name => $item_value) {
       if($item_name) {
-        $item_value = db_escape($item_value === NULL ? $this->$item_name : $item_value);
-        $item_name = db_escape($item_name);
+        $item_value = SN::$db->db_escape($item_value === NULL ? $this->$item_name : $item_value);
+        $item_name = SN::$db->db_escape($item_name);
         $qry[] = "('{$item_name}', '{$item_value}')";
       }
     }

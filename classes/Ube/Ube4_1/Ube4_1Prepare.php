@@ -5,6 +5,7 @@
 
 namespace Ube\Ube4_1;
 
+use Fleet\FleetDispatchEvent;
 use Planet\DBStaticPlanet;
 
 class Ube4_1Prepare {
@@ -22,11 +23,11 @@ class Ube4_1Prepare {
   /**
    * Заполняет начальные данные по данным миссии
    *
-   * @param $mission_data
+   * @param ?FleetDispatchEvent $fleetEvent
    *
    * @return array
    */
-  public function prepareFromMissionArray(&$mission_data, &$fleet_list_on_hold, $acs_fleet_list) {
+  public function prepareFromMissionArray($fleetEvent, $fleet_list_on_hold, $acs_fleet_list) {
     /*
     UBE_OPTIONS[UBE_LOADED]
     UBE_OPTIONS[UBE_SIMULATOR_STATIC]
@@ -34,12 +35,11 @@ class Ube4_1Prepare {
     UBE_OPTIONS[UBE_MOON_WAS]
     */
 
-    $fleet_row = &$mission_data['fleet'];
-    $destination_planet = &$mission_data['dst_planet'];
+    // We refreshed fleet and planet before - so nothing to do here
+    $destination_planet = $fleetEvent->dstPlanetRow;
 
-    $ube_time = $fleet_row['fleet_start_time'];
     $combat_data = [
-      UBE_TIME           => $ube_time,
+      UBE_TIME           => $fleetEvent->eventTimeStamp,
       UBE_OBJ_PREPARATOR => $this,
     ];
     // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
@@ -58,7 +58,7 @@ class Ube4_1Prepare {
 
     // Готовим опции
     $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(DBStaticPlanet::db_planet_by_parent($destination_planet['id'], true, '`id`'));
-    $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
+    $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleetEvent->missionId;
     global $config;
     $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
 

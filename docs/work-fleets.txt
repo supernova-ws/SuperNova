@@ -492,32 +492,3 @@ pdie();
 
 
 
-
-
-
-
-
-
-
-  return doquery(
-    "SELECT 1 FROM {{fleets}} AS f " .
-    ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
-    ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
-    ($mission_data['dst_planet'] ?
-    // Fleets that will arrive to same planet that our fleet
-    "
-    LEFT JOIN {{fleets}} AS f1 ON
-        f1.fleet_end_galaxy = f.fleet_end_galaxy AND
-        f1.fleet_end_system = f.fleet_end_system AND
-        f1.fleet_end_planet = f.fleet_end_planet AND
-        f1.fleet_mess = 0
-    LEFT JOIN {{users}} AS u1 ON u1.id = f1.fleet_owner " : '') . // f1
-
-    // Р‘Р»РѕРєРёСЂРѕРІРєР° РІСЃРµС… РїСЂРёР»РµС‚Р°СЋС‰РёС… Рё СѓР»РµС‚Р°СЋС‰РёС… С„Р»РѕС‚РѕРІ, РµСЃР»Рё РЅСѓР¶РЅРѕ
-    ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
-
-    ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
-    ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
-
-    "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
-  );

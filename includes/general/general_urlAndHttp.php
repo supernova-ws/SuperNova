@@ -42,11 +42,16 @@ function setHeader($header) {
 // ----------------------------------------------------------------------------------------------------------------
 function sn_get_url_contents($url) {
   if (function_exists('curl_init')) {
-    $crl = curl_init();
+    $crl     = curl_init();
     $timeout = 5;
-    curl_setopt($crl, CURLOPT_URL, $url);
-    curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt_array($crl, [
+      // CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+      // CURLOPT_DNS_USE_GLOBAL_CACHE => false,
+      // CURLOPT_DNS_CACHE_TIMEOUT => 2,
+      CURLOPT_CONNECTTIMEOUT => $timeout,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_URL            => $url,
+    ]);
     $return = curl_exec($crl);
     curl_close($crl);
   } else {
@@ -120,5 +125,10 @@ function sec_player_ip() {
     $ip['ip'] = '127.0.0.1';
   }
 
-  return array_map('db_escape', $ip);
+  foreach($ip as &$val) {
+    $val = SN::$db->db_escape($val);
+  }
+
+  return $ip;
+//  return array_map('db_escape', $ip);
 }

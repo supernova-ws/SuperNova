@@ -1,13 +1,17 @@
 <?php
 
 use Fleet\DbFleetStatic;
+use Fleet\FleetDispatchEvent;
 
-function flt_mission_hold(&$mission_data)
-{
-  if($mission_data['fleet']['fleet_end_stay'] < SN_TIME_NOW)
-  {
-    DbFleetStatic::fleet_send_back($mission_data['fleet']);
-    // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+/**
+ * @param FleetDispatchEvent $fleetEvent
+ *
+ * @return int
+ */
+function flt_mission_hold($fleetEvent) {
+  if ($fleetEvent->fleet['fleet_end_stay'] < SN_TIME_NOW) {
+    DbFleetStatic::fleet_send_back($fleetEvent->fleet);
+
     return CACHE_FLEET;
   }
 

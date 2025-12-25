@@ -17,8 +17,8 @@ if($d) {
 
 $id_user = sys_get_param_id('id_user');
 if($id_user) {
-  $ally_name_safe = db_escape($ally['ally_name']);
-  $ally_tag_safe = db_escape($ally['ally_tag']);
+  $ally_name_safe = SN::$db->db_escape($ally['ally_name']);
+  $ally_tag_safe = SN::$db->db_escape($ally['ally_tag']);
   db_user_set_by_id($id_user, "`ally_id` = '{$ally['id']}', `ally_name` = '{$ally_name_safe}', `ally_tag` = '{$ally_tag_safe}', `ally_register_time` = " . SN_TIME_NOW . ", `ally_rank_id` = 0");
   doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` + 1 WHERE `id`='{$ally['id']}'");
   doquery("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}' LIMIT 1;");

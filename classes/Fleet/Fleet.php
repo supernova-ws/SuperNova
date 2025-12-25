@@ -38,6 +38,16 @@ use SN;
  * @property int|string $fleet_target_owner       - int        -
  * @property int|string $fleet_group              - varchar    -
  * @property int        $status                   - int        - Current fleet status: flying to destination; returning
+ *
+ * Old fields for direct access
+ * @property int        $fleet_id
+ * @property int        $fleet_owner
+ * @property int        $start_time               Time when fleet launched from source
+ * @property int        $fleet_start_time         Time when fleet will arrive to destination point. Wrong name - should be `fleet_dst_arrive`
+ * @property int        $fleet_end_stay           Time when fleet will end its mission on destination point. Should be `fleet_dst_stay_until`
+ * @property int        $fleet_end_time           Time when fleet will return to source point. Should be `fleet_return_to_src`
+ * @property int        $fleet_mess
+ *
  */
 class Fleet extends EntityDb {
 
@@ -109,7 +119,7 @@ class Fleet extends EntityDb {
     }
 
 //    $ReturnFlyingTime = ($this->timeEndStay != 0 && $this->timeArrive < SN_TIME_NOW ? $this->timeArrive : SN_TIME_NOW) - $this->timeLaunch + SN_TIME_NOW + 1;
-    $timeToReturn = SN_TIME_NOW - $this->timeLaunch + 1;
+    $timeToReturn     = SN_TIME_NOW - $this->timeLaunch + 1;
     $ReturnFlyingTime = (!empty($this->timeEndStay) && $this->timeArrive < SN_TIME_NOW ? $this->timeArrive : SN_TIME_NOW) + $timeToReturn;
 
     // TODO - Those two lines should be removed - fleet times should be filtered on interface side
@@ -117,7 +127,7 @@ class Fleet extends EntityDb {
     !empty($this->timeEndStay) ? $this->timeEndStay = SN_TIME_NOW : false;
 
     $this->timeReturn = $ReturnFlyingTime;
-    $this->status = FLEET_STATUS_RETURNING;
+    $this->status     = FLEET_STATUS_RETURNING;
 
     return $this->dbUpdate();
   }
@@ -280,7 +290,7 @@ class Fleet extends EntityDb {
     $result = [];
 
     foreach ($this->getShipListArray() as $unit_id => $unit_amount) {
-      $shipsLost = ceil($unit_amount * $multiplier);
+      $shipsLost        = ceil($unit_amount * $multiplier);
       $result[$unit_id] += $shipsLost;
     }
 
@@ -294,7 +304,7 @@ class Fleet extends EntityDb {
    */
   public function setMission($missionId) {
     $this->fleet_mission = $missionId;
-    $this->status = FLEET_STATUS_FLYING;
+    $this->status        = FLEET_STATUS_FLYING;
 
     return $this;
   }
@@ -336,7 +346,7 @@ class Fleet extends EntityDb {
     $this->fleet_start_galaxy = $from['galaxy'];
     $this->fleet_start_system = $from['system'];
     $this->fleet_start_planet = $from['planet'];
-    $this->fleet_start_type = $from['planet_type'];
+    $this->fleet_start_type   = $from['planet_type'];
 
     $this->sourcePlanet = $from;
 
@@ -357,7 +367,7 @@ class Fleet extends EntityDb {
     $this->fleet_end_galaxy = $to['galaxy'];
     $this->fleet_end_system = $to['system'];
     $this->fleet_end_planet = $to['planet'];
-    $this->fleet_end_type = $to['planet_type'];
+    $this->fleet_end_type   = $to['planet_type'];
 
     return $this;
   }
@@ -408,9 +418,9 @@ class Fleet extends EntityDb {
 
     $travel_data = $this->getTravelData();
 
-    $this->timeArrive = $this->timeLaunch + $travel_data['duration'];
+    $this->timeArrive  = $this->timeLaunch + $travel_data['duration'];
     $this->timeEndStay = $this->fleet_mission == MT_EXPLORE || $this->fleet_mission == MT_HOLD ? $this->timeArrive + $stayDuration : 0;
-    $this->timeReturn = $this->timeArrive + $stayDuration + $travel_data['duration'];
+    $this->timeReturn  = $this->timeArrive + $stayDuration + $travel_data['duration'];
 
     return $travel_data;
   }

@@ -5,7 +5,9 @@
 
 namespace Que;
 
+use DBAL\db_mysql;
 use Planet\DBStaticPlanet;
+use SN;
 
 class QueUnitStatic {
 
@@ -26,7 +28,7 @@ class QueUnitStatic {
 
     // TODO que_process() тут
 
-    sn_db_transaction_check(true);
+    db_mysql::db_transaction_check(true);
 
     $build_mode = $build_mode == BUILD_CREATE ? BUILD_CREATE : BUILD_DESTROY;
 
@@ -37,9 +39,9 @@ class QueUnitStatic {
       RES_DEUTERIUM => -$build_data[$build_mode][RES_DEUTERIUM] * $unit_amount,
     ));
 
-    $que_type = que_get_unit_que($unit_id);
+    $que_type         = que_get_unit_que($unit_id);
     $planet_id_origin = $planet['id'] ? floatval($planet['id']) : null;
-    $planet_id = $que_type == QUE_RESEARCH ? null : $planet_id_origin;
+    $planet_id        = $que_type == QUE_RESEARCH ? null : $planet_id_origin;
     if (is_numeric($planet_id)) {
       DBStaticPlanet::db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
     } elseif (is_numeric($user['id'])) {
@@ -49,17 +51,17 @@ class QueUnitStatic {
     $resource_list = sys_unit_arr2str($build_data[$build_mode]);
 
     $result = [
-      'que_player_id'        => $user['id'],
-      'que_planet_id'        => $planet_id,
-      'que_planet_id_origin' => $planet_id_origin,
-      'que_type'             => $que_type,
-      'que_time_left'        => $build_data[RES_TIME][$build_mode],
-      'que_unit_id'          => $unit_id,
-      'que_unit_amount'      => $unit_amount,
-      'que_unit_mode'        => $build_mode,
-      'que_unit_level'       => $unit_level,
-      'que_unit_time'        => $build_data[RES_TIME][$build_mode],
-      'que_unit_price'       => $resource_list,
+      'que_player_id'         => $user['id'],
+      'que_planet_id'         => $planet_id,
+      'que_planet_id_origin'  => $planet_id_origin,
+      'que_type'              => $que_type,
+      'que_time_left'         => $build_data[RES_TIME][$build_mode],
+      'que_unit_id'           => $unit_id,
+      'que_unit_amount'       => $unit_amount,
+      'que_unit_mode'         => $build_mode,
+      'que_unit_level'        => $unit_level,
+      'que_unit_time'         => $build_data[RES_TIME][$build_mode],
+      'que_unit_price'        => $resource_list,
       'que_unit_one_time_raw' => $build_data[P_OPTIONS][P_TIME_RAW],
     ];
 

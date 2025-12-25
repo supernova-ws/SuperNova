@@ -83,7 +83,7 @@ class SnTemplate {
       'SN_TIME_NOW'      => SN_TIME_NOW,
       'SN_TEMPLATE_NAME' => SnTemplate::getPlayerTemplateName(),
       'USER_AUTHLEVEL'   => isset($user['authlevel']) ? $user['authlevel'] : -1,
-      'SN_GOOGLE'        => defined('SN_GOOGLE'),
+      'SN_GOOGLE'        => SN_GOOGLE,
     ));
 
     $template->parsed = true;
@@ -220,7 +220,7 @@ class SnTemplate {
       'USER_AUTHLEVEL'      => $user['authlevel'],
       'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
       'PAYMENT'             => SN::$gc->modules->countModulesInGroup('payment'),
-      'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
+      'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || SN_GOOGLE,
     ));
 
     if (isset($template_result['MENU_CUSTOMIZE'])) {
@@ -232,7 +232,7 @@ class SnTemplate {
         'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => SN::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
         'PLAYER_OPTION_MENU_WHITE_TEXT'       => SN::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
         'PLAYER_OPTION_MENU_OLD'              => SN::$user_options[PLAYER_OPTION_MENU_OLD],
-        'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE')
+        'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !SN_GOOGLE
           ? SN::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
       ));
     }
@@ -335,6 +335,8 @@ class SnTemplate {
       // WARNING! This can be set by page!
       // CHANGE CODE TO MAKE IT IMPOSSIBLE!
       'GLOBAL_META_TAGS'         => isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : '',
+
+      'IN_ADMIN' => $inAdmin ? 1 : '',
     ));
 
     $template->assign_vars(array(
@@ -383,6 +385,34 @@ class SnTemplate {
   }
 
   /**
+   */
+  public static function renderJavaScript() {
+    global $sn_mvc, $sn_page_name, $template_result;
+
+    empty($sn_mvc['javascript']) ? $sn_mvc['javascript'] = ['' => []] : false;
+
+    $standard_js = self::addFileName([
+      'js/lib/jquery',
+      'js/lib/js.cookie',
+      'js/lib/jquery-ui',
+      'js/lib/jquery.ui.touch-punch',
+      'js/lib/ion.sound',
+      'js/sn_global',
+      'js/sn_sound',
+      'js/sn_timer',
+    ], [], '.js');
+
+    $standard_js = self::addFileName(!empty($sn_mvc['javascript_filenames']) ? $sn_mvc['javascript_filenames'] : [], $standard_js, '.js');
+
+    $standard_js = self::cacheFiles($standard_js, '.js');
+
+    // Prepending standard JS files
+    $sn_mvc['javascript'][''] = array_merge($standard_js, $sn_mvc['javascript'][''] ?? []);
+
+    self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
+  }
+
+  /**
    * @param $is_login
    */
   public static function renderCss($is_login) {
@@ -391,27 +421,49 @@ class SnTemplate {
     empty($sn_mvc['css']) ? $sn_mvc['css'] = ['' => []] : false;
 
     $standard_css = [];
-    $standard_css = self::cssAddFileName('design/css/jquery-ui', $standard_css);
-    $standard_css = self::cssAddFileName('design/css/global', $standard_css);
-    $is_login ? $standard_css = self::cssAddFileName('design/css/login', $standard_css) : false;
+    $standard_css = self::addFileName('design/css/jquery-ui', $standard_css);
+    $standard_css = self::addFileName('design/css/global', $standard_css);
+    $is_login ? $standard_css = self::addFileName('design/css/login', $standard_css) : false;
+    $standard_css = self::addFileName('design/css/menu_icons', $standard_css);
 
     $standard_css = self::getCurrentTemplate()->cssAddFileName('_template', $standard_css);
 
-    $standard_css = self::cssAddFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
-    $standard_css = self::cssAddFileName('design/css/global_override', $standard_css);
+    $standard_css = self::addFileName(SN::$gc->theUser->getSkinPath() . 'skin', $standard_css);
+    $standard_css = self::addFileName('design/css/global_override', $standard_css);
+
+    // Trying to add extra CSS to cache file
+    foreach ($sn_mvc['css'][''] as $css => $cork) {
+      $cssOriginal = $css;
+
+      // At first - removing minimization flag from file name
+      if(($rPos = strrpos($css, '.min.css')) !== false) {
+        // 4 - string length of substring to cut `.min`
+        $css = substr_replace($css, '', $rPos, 4);
+      }
+      // Also we don't need `.css` extension
+      if(($rPos = strrpos($css, '.css')) !== false) {
+        // 4 - string length of substring to cut `.css`
+        $css = substr_replace($css, '', $rPos, 4);
+      }
+
+      // Memorizing size of css filename array
+      $cssWas = count($standard_css);
+      // Trying to add newly found filename
+      $standard_css = self::addFileName($css, $standard_css);
+      if(count($standard_css) > $cssWas) {
+        // Removing file from extra CSS list only if everything went well and records was added to list of CSS to cache
+        // Otherwise something went wrong - so we don't touch this
+        unset($sn_mvc['css'][''][$cssOriginal]);
+      }
+    }
+
+    // Trying to cache CSS files
+    $standard_css = self::cacheFiles($standard_css);
 
     // Prepending standard CSS files
     $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
 
     self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'css');
-  }
-
-  /**
-   */
-  public static function renderJavaScript() {
-    global $sn_mvc, $sn_page_name, $template_result;
-
-    self::renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
   }
 
   /**
@@ -509,21 +561,27 @@ class SnTemplate {
   }
 
   /**
-   * Checks if minified/full-size CSS file exists - and adds it if any
+   * Checks if minified/full-size file variant exists - and adds it if any
    *
-   * @param string $cssFileName
-   * @param array  $cssArray
+   * @param string|string[] $fileNames
+   * @param array  $anArray
    *
    * @return array
    */
-  public static function cssAddFileName($cssFileName, $cssArray) {
-    if (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.min.css')) {
-      $cssArray[$cssFileName . '.min.css'] = '';
-    } elseif (file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.css')) {
-      $cssArray[$cssFileName . '.css'] = '';
+  public static function addFileName($fileNames, $anArray, $ext = '.css') {
+    if(!is_array($fileNames)) {
+      $fileNames = [$fileNames];
     }
 
-    return $cssArray;
+    foreach($fileNames as $fileName) {
+      if (file_exists(SN_ROOT_PHYSICAL . $fileName . '.min' . $ext)) {
+        $anArray[$fileName . '.min' . $ext] = '';
+      } elseif (file_exists(SN_ROOT_PHYSICAL . $fileName . '.css' . $ext)) {
+        $anArray[$fileName . $ext] = '';
+      }
+    }
+
+    return $anArray;
   }
 
   /**
@@ -561,9 +619,9 @@ class SnTemplate {
   }
 
   /**
-   * @param $template
-   * @param $user
-   * @param $config
+   * @param             $template
+   * @param             $user
+   * @param classConfig $config
    */
   public static function tpl_navbar_render_news(&$template, &$user, $config) {
     if ($config->game_news_overview) {
@@ -834,7 +892,7 @@ class SnTemplate {
       }
 
       $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
-      if($CurPlanet['planet_type'] == PT_MOON) {
+      if ($CurPlanet['planet_type'] == PT_MOON) {
         $parentPlanet = DBStaticPlanet::db_planet_by_id($CurPlanet['parent_planet']);
       } else {
         $parentPlanet = $CurPlanet;
@@ -903,7 +961,7 @@ class SnTemplate {
       'USER_AVATAR'   => $user['avatar'],
       'USER_AVATARID' => $user['id'],
       'USER_PREMIUM'  => $premium_lvl,
-      'USER_RACE'     => $user['player_race'],
+      'USER_RACE'     => $user[P_RACE],
 
       'TOPNAV_CURRENT_PLANET'       => $user['current_planet'],
       'TOPNAV_CURRENT_PLANET_NAME'  => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),
@@ -920,7 +978,7 @@ class SnTemplate {
       'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 
       // TODO ГРЯЗНЫЙ ХАК!!!
-      'TOPNAV_PAYMENT'                => SN::$gc->modules->countModulesInGroup('payment') && !defined('SN_GOOGLE'),
+      'TOPNAV_PAYMENT'                => SN::$gc->modules->countModulesInGroup('payment') && !SN_GOOGLE,
 
       'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
       'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
@@ -928,9 +986,9 @@ class SnTemplate {
       'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
       'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
-      'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
+      'TOPNAV_FLEETS_FLYING'      => empty($fleet_flying_list[0]) ? 0 : count($fleet_flying_list[0]),
       'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
-      'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
+      'TOPNAV_EXPEDITIONS_FLYING' => empty($fleet_flying_list[MT_EXPLORE]) ? 0 : count($fleet_flying_list[MT_EXPLORE]),
       'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
       'TOPNAV_QUEST_COMPLETE'    => get_quest_amount_complete($user['id']),
@@ -964,7 +1022,11 @@ class SnTemplate {
       'QUE_STRUCTURES' => QUE_STRUCTURES,
     ));
 
-    if ((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
+    if (
+      (defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true)
+      ||
+      ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && (!defined('SN_RENDER_NAVBAR_PLANET') || SN_RENDER_NAVBAR_PLANET !== false))
+    ) {
       tpl_set_resource_info($template, $planetrow);
       $template->assign_vars(array(
         'SN_RENDER_NAVBAR_PLANET' => true,
@@ -982,10 +1044,10 @@ class SnTemplate {
    *
    * @return template
    */
-  public static function gettemplate($files, $template = null, $template_path = null) {
+  public static function gettemplate($files, $template = null, $template_path = null, $fallBackPath = '') {
     global $sn_mvc, $sn_page_name;
 
-    $template = self::getCurrentTemplate()->getTemplate($template, $template_path);
+    $template = self::getCurrentTemplate()->getTemplate($template, $template_path, $fallBackPath);
 
     // TODO ГРЯЗНЫЙ ХАК! Это нужно, что бы по возможности перезаписать инфу из языковых пакетов модулей там, где она была перезаписана раньше инфой из основного пакета. Почему?
     //  - сначала грузятся модули и их языковые пакеты
@@ -1171,7 +1233,7 @@ class SnTemplate {
 
     $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
-    sn_db_disconnect();
+    SN::$db->db_disconnect();
 
     $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
 
@@ -1233,11 +1295,71 @@ class SnTemplate {
   /**
    * @return TemplateMeta
    */
-  protected static function getCurrentTemplate() {
+  public static function getCurrentTemplate() {
     $templateName = SnTemplate::getPlayerTemplateName();
     $tMeta        = static::me()->registerTemplate($templateName);
 
     return $tMeta;
+  }
+
+  /**
+   * @param array  $fileList
+   * @param string $extension
+   *
+   * @return array|string[]
+   */
+  protected static function cacheFiles($fileList, $extension = '.css') {
+    // Calculating file key which include all used filenames and modification time for them
+    $key          = '';
+    $filesToMerge = [];
+    foreach ($fileList as $fileName => $aContent) {
+      // If content empty - index is a filename
+      if (empty($aContent)) {
+        // Checking file modification time. Also we will check if file exists
+        if ($fileMTime = filemtime(SN_ROOT_PHYSICAL . $fileName)) {
+          // Generating key
+          $key .= "$fileName:" . date(FMT_DATE_TIME_SQL, $fileMTime) . "\n";
+          // Adding filename to list of merge
+          $filesToMerge[$fileName] = "$fileName:" . date(FMT_DATE_TIME_SQL, $fileMTime);
+        }
+      }
+    }
+    // Name we will be using to address this file
+    $cacheFileName = 'design/cache/' . md5($key) . $extension;
+    // If no file exists - trying to create it
+    if (!file_exists($fullCacheFileName = SN_ROOT_PHYSICAL . $cacheFileName)) {
+      // Caching several files into one
+      $contentToCache = '';
+      foreach ($filesToMerge as $fileName => $temp) {
+        $fileExists = file_exists($fName = SN_ROOT_PHYSICAL . $fileName);
+        $notEmpty   = !empty($content = file_get_contents($fName));
+        if ($fileExists && $notEmpty) {
+          // Adding content of cached file
+          $contentToCache .= $content . "\n";
+          // Marking that file was read OK - for future debug purposes if any
+          $filesToMerge[$fileName] .= " - OK\n";
+        } else {
+          $filesToMerge[$fileName] .= " - ERROR: fileExists = `$fileExists`, notEmpty = `$notEmpty`!\n";
+        }
+      }
+      // If we have something to cache...
+      if (!empty($contentToCache)) {
+        // /* */ works as comment for both JS and CSS
+        file_put_contents($fullCacheFileName, "/* Generated content. Safe to delete\n" . implode('', $filesToMerge) . "*/\n\n" . $contentToCache);
+      }
+    }
+
+    // If CSS cache exists for current combination of files
+    if (file_exists($fullCacheFileName)) {
+      // Removing from list all CSS files that already in cache
+      foreach ($filesToMerge as $fileName => $temp) {
+        unset($fileList[$fileName]);
+      }
+      // Adding to list cache file
+      $fileList = [$cacheFileName => ''] + $fileList;
+    }
+
+    return $fileList;
   }
 
 }

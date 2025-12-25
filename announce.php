@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 /**
  * announce.php
@@ -9,7 +10,7 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $config;
+global $config, $lang;
 
 nws_mark_read($user);
 $template = SnTemplate::gettemplate('announce', true);
@@ -20,11 +21,14 @@ $announce_time = sys_get_param_str('dtDateTime');
 $detail_url = sys_get_param_str('detail_url');
 $mode = sys_get_param_str('mode');
 
+$survey_answers = sys_get_param('survey_answers');
+$annQuery = '';
+
 $announce = array();
 if ($user['authlevel'] >= 3) {
   if (!empty($text)) {
     $announce_time = strtotime($announce_time, SN_TIME_NOW);
-    $announce_time = $announce_time ? $announce_time : SN_TIME_NOW;
+    $announce_time = $announce_time ?: SN_TIME_NOW;
 
     if ($mode == 'edit') {
       /** @noinspection SqlResolve */
@@ -35,23 +39,26 @@ if ($user['authlevel'] >= 3) {
       /** @noinspection SqlResolve */
       doquery("INSERT INTO `{{announce}}`
         SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
-        `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
-      $announce_id = db_insert_id();
+        `user_id` = {$user['id']}, `user_name` = '" . SN::$db->db_escape($user['username']) . "'");
+      $announce_id = SN::$db->db_insert_id();
     }
-    if (($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param('survey_answers'))) {
+    if (($survey_question = sys_get_param_str('survey_question')) && $survey_answers) {
       $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
-      $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
+      /** @noinspection PhpIdempotentOperationInspection */
+      $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ?: SN_TIME_NOW + PERIOD_DAY * 1);
       /** @noinspection SqlResolve */
       doquery("INSERT INTO `{{survey}}` SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
-      $survey_id = db_insert_id();
+      $survey_id = SN::$db->db_insert_id();
 
-      // To remove difference between Linux/Windows/OsX/etc browsers
+      // To remove difference between Linux/Windows/OsX/etc. browsers
       $survey_answers = nl2br($survey_answers);
       $survey_answers = explode('<br />', $survey_answers);
       foreach ($survey_answers as $survey_answer) {
-        $survey_answer = db_escape(trim($survey_answer));
-        /** @noinspection SqlResolve */
-        $survey_answer ? doquery("INSERT INTO `{{survey_answers}}` SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'") : false;
+        $survey_answer = SN::$db->db_escape(trim($survey_answer));
+        if ($survey_answer) {
+          /** @noinspection SqlResolve */
+          doquery("INSERT INTO `{{survey_answers}}` SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
+        }
       }
     }
 
@@ -113,20 +120,21 @@ if ($user['authlevel'] >= 3) {
   }
 }
 
+/** @noinspection PhpRedundantOptionalArgumentInspection */
 nws_render($user, $template, $annQuery, 20);
 
-$template->assign_vars(array(
+$template->assign_vars([
   'PAGE_HEADER'     => $lang['news_title'],
   'AUTHLEVEL'       => $user['authlevel'],
   'MODE'            => $mode,
   'ANNOUNCE_ID'     => $announce_id,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
-  'strAnnounce'     => $announce['strAnnounce'],
+  'strAnnounce'     => $announce['strAnnounce'], // Obsolete ?
+  'strAnnounceJS'   => json_encode($announce['strAnnounce']),
   'DETAIL_URL'      => $announce['detail_url'],
   'SURVEY_QUESTION' => $announce['survey_question'],
   'SURVEY_UNTIL'    => $announce['survey_until'],
   'SURVEY_ANSWERS'  => $survey_answers,
-
-));
+]);
 
 SnTemplate::display($template, $lang['news_title']);

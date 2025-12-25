@@ -4,7 +4,6 @@
 
 namespace Unit;
 
-use _SnCacheInternal;
 use Exception;
 use mysqli_result;
 use Planet\Planet;
@@ -20,23 +19,71 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
+  /**
+   * Used by `unit_captain`
+   *
+   * @param int $unit_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public static function db_unit_by_id($unit_id) {
-    $unit = SN::db_get_record_by_id(LOC_UNIT, $unit_id);
-    if (is_array($unit)) {
-      _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);
-    }
-
-    return $unit;
+    return doquery("SELECT * FROM `{{unit}}` WHERE `unit_id` = " . idval($unit_id), true);
   }
 
+  /**
+   * @param int $user_id
+   * @param int $location_type
+   * @param int $location_id
+   * @param int $unit_snid
+   *
+   * @return array|false|mixed|null
+   */
   public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
-    SN::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+    $allUnits = DBStaticUnit::db_get_unit_list_by_location($location_type, $location_id);
 
-    return
-      !$unit_snid
-        ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
-        : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
+    $unit_snid = intval($unit_snid);
+
+    $resultOld = $unit_snid ? (isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null ) : $allUnits;
+
+    return $resultOld;
+  }
+
+  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов
+
+  /**
+   * @param $location_type
+   * @param $location_id
+   *
+   * @return array|false
+   */
+  public static function db_get_unit_list_by_location($location_type, $location_id) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+      return false;
+    }
+
+    if (!isset(DBStaticUnit::$locator[$location_type][$location_id])) {
+      $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
+      if (is_array($got_data)) {
+        foreach ($got_data as $unitRow) {
+          DBStaticUnit::$locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
+        }
+      }
+    }
+
+    $result = false;
+
+    if (is_array(DBStaticUnit::$locator[$location_type][$location_id])) {
+      foreach (DBStaticUnit::$locator[$location_type][$location_id] as $key => $value) {
+        $result[$key] = $value;
+      }
+    }
+
+    return $result;
+  }
+
+  public static function cache_clear() {
+    DBStaticUnit::$locator = [];
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

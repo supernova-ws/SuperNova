@@ -46,7 +46,7 @@ class OldDbChangeSet {
 
     $unit_location = sys_get_unit_location($user, array(), $unit_id);
     $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
-    $location_id = $location_id ? $location_id : 'NULL';
+    $location_id = $location_id ?: 'NULL';
 
     $temp = DBStaticUnit::db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id);
     if (!empty($temp['unit_id'])) {
@@ -143,7 +143,7 @@ class OldDbChangeSet {
           if (is_string($field_id)) {
             $field_value =
               $field_value === null ? 'NULL' :
-                (is_string($field_value) ? "'" . db_escape($field_value) . "'" :
+                (is_string($field_value) ? "'" . SN::$db->db_escape($field_value) . "'" :
                   (is_bool($field_value) ? intval($field_value) : $field_value));
             $the_conditions[] = "`{$field_id}` = {$field_value}";
           } else {

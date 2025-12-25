@@ -10,7 +10,7 @@
 <!-- ENDIF -->
 
 <!-- IF PLANET_GOVERNOR_LEVEL > 0 && $PLANET_GOVERNOR_ID -->
-  <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
+  <div class="unit_preview" id="unit{production.ID}" unit_id="{$PLANET_GOVERNOR_ID}">
     <div onclick="document.location='overview.php?mode=manage&cp={$PLANET_ID}'">
       <span class="posFill">
         {I_[$PLANET_GOVERNOR_ID]|html|height="100%"}

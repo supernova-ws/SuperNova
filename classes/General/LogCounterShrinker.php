@@ -112,7 +112,7 @@ class LogCounterShrinker extends VisitMerger {
   }
 
   protected function batchSave($forceSave = false) {
-    $this->gc->db->doQueryFast('START TRANSACTION');
+    $this->gc->db->transactionStart();
 
     if (count($this->batchDelete) >= static::BATCH_DELETE_PER_LOOP || $forceSave) {
       $this->deleteMergedRecords($this->batchDelete);
@@ -138,7 +138,7 @@ class LogCounterShrinker extends VisitMerger {
       $this->batchUpdate = [];
     }
 
-    $this->gc->db->doQueryFast('COMMIT');
+    $this->gc->db->transactionCommit();
   }
 
   protected function flushVisit($sign) {

@@ -8,6 +8,12 @@ var chat_disabled = false;
 var chat_last_message = 0;
 
 jQuery(document).ready(function () {
+  if (!window.SN_GOOGLE) {
+    jQuery(document).on('mouseleave', '.chat_unmute, [chat_muted]', function () {
+      $('div#chat_muted_tooltip').css('display', 'none');
+    });
+  }
+
   // Натягиваем скины на элементы смайлики
   jQuery("#chat_smile_point, #chat_color_button, #chat_color_select div, #chat_command_menu div:not(:first-child):not(:last-child)").button().addClass('ui-textfield');
   $('#chat_message_smiles2 div').addClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-textfield ui-button-text").attr('role', 'button');
@@ -167,11 +173,6 @@ jQuery(document).on('mouseenter', '.chat_unmute', function () {
   }
 });
 
-if (!SN_GOOGLE) {
-  jQuery(document).on('mouseleave', '.chat_unmute, [chat_muted]', function () {
-    $('div#chat_muted_tooltip').css('display', 'none');
-  });
-}
 
 // -------------------------------
 // Chat history buttons and select

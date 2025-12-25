@@ -6,7 +6,6 @@
 namespace Bonus;
 
 use Common\ContainerPlus;
-use Core\GlobalContainer;
 use \SN;
 
 
@@ -20,8 +19,6 @@ use \SN;
  * @package Bonus
  */
 class ValueStorage extends ContainerPlus {
-  // TODO UNUSED!
-
   /**
    * @var \Core\GlobalContainer
    */

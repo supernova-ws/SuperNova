@@ -1,6 +1,10 @@
 <!-- INCLUDE eco_queue -->
-<div class="navbar_button {$NAVBAR_QUE_CLASS}" title="{$NAVBAR_QUE_HINT}" go_url="{$NAVBAR_QUE_URL}">
+<div class="navbar_button {$NAVBAR_QUE_WIDE}" title="{$NAVBAR_QUE_HINT}" go_url="{$NAVBAR_QUE_URL}">
+  <!-- IF $NAVBAR_QUE_IMAGE -->
   <img class="navbar_button_image" src="{$NAVBAR_QUE_IMAGE}" alt="{$NAVBAR_QUE_HINT}"/>
+  <!-- ELSE -->
+  <div class="{$NAVBAR_QUE_CLASS}" title="{$NAVBAR_QUE_HINT}" go_url="{$NAVBAR_QUE_URL}"></div>
+  <!-- ENDIF -->
 
   <!-- IF $QUE_NOT_EMPTY -->
 

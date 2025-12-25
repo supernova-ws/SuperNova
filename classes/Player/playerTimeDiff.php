@@ -111,7 +111,7 @@ class playerTimeDiff {
   static public function defineTimeDiff() {
     $user_time_diff = playerTimeDiff::user_time_diff_get();
 
-    $time_diff = $user_time_diff[self::TIME_DIFF] + $user_time_diff[self::TIME_DIFF_UTC_OFFSET];
+    $time_diff = (float)$user_time_diff[self::TIME_DIFF] + $user_time_diff[self::TIME_DIFF_UTC_OFFSET];
 
     define('SN_CLIENT_TIME_DIFF', $time_diff);
     define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);

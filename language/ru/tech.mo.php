@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 45d0
+* @version 46d0
 *
 */
 
@@ -49,6 +49,7 @@ $a_lang_array = (array(
   'tech_fullness' => 'Заполнение',
 
   'type_mission' => array(
+    MT_NONE => '-- неизвестно --',
     MT_ATTACK => 'Атака',
     MT_AKS => 'Совместная атака',
     MT_TRANSPORT => 'Транспорт',
@@ -284,13 +285,13 @@ $a_lang_array = (array(
 //    MRC_ENGINEER => 'Инженер',
 //    MRC_FORTIFIER => 'Фортификатор',
 //
-//    UNIT_RESOURCES => 'Ресурсы',
-//    RES_METAL => 'Металл',
-//    RES_CRYSTAL => 'Кристалл',
-//    RES_DEUTERIUM => 'Дейтерий',
-//    RES_ENERGY => 'Энергия',
-//    RES_DARK_MATTER => 'Тёмная Материя',
-//    RES_METAMATTER => 'Метаматерия',
+    UNIT_RESOURCES => 'Ресы',
+    RES_METAL => 'Мет',
+    RES_CRYSTAL => 'Крис',
+    RES_DEUTERIUM => 'Дейт',
+    RES_ENERGY => 'Энер',
+    RES_DARK_MATTER => 'ТМ',
+    RES_METAMATTER => 'ММ',
 //
 //    UNIT_ARTIFACTS     => 'Артефакты',
 //    ART_LHC            => 'Большой Адронный Коллайдер',

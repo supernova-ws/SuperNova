@@ -1,0 +1,14 @@
+<Files *>
+  order allow,deny
+  deny from all
+</Files>
+
+<Files ~ "\.(css|webp|png|gif|jpg|jpeg)$">
+  order allow,deny
+  allow from all
+</Files>
+
+<FilesMatch "\.json$">
+  order allow,deny
+  deny from all
+</FilesMatch>

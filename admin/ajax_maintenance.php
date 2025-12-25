@@ -1,13 +1,29 @@
 <?php /** @noinspection SqlResolve */
 
+use DBAL\db_mysql;
+
 define('IN_ADMIN', true);
 
 require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
+global $user, $lang, $result;
+/**
+ * @var array $user
+ */
+
+if(
+  ($user['authlevel'] < 3)
+  &&
+  (empty($config->admin_http_key) || empty($_GET['admin_http_key']) || $_GET['admin_http_key'] != $config->admin_http_key)
+)
 {
   SnTemplate::messageBox($lang['sys_noalloaw'], $lang['sys_noaccess']);
   die();
+}
+
+// If we have  already passed here through admin_http_key - then we can safely assume that it's admin
+if(empty($user['authlevel'])) {
+  $user['authlevel'] = 3;
 }
 
 define('IN_AJAX', true);
@@ -173,14 +189,30 @@ $ques = array(
     AND `log_timestamp` < DATE_SUB(NOW(),INTERVAL 7 DAY);',
 
 
-  // TODO Удаляем устройства, на которые никто не ссылается
-//  "DELETE sd FROM `{{security_device}}` AS sd
-//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
-//  WHERE player_id IS NULL;",
+  // Удаляем вхождения игроков, на которые никто не ссылается
+  "DELETE spe FROM `{{security_player_entry}}` AS spe
+    LEFT JOIN `{{counter}}` AS c ON c.player_entry_id = spe.id
+  WHERE c.counter_id IS NULL;",
+  //  Удаляем устройства, на которые никто не ссылается
+  "DELETE sd FROM `{{security_device}}` AS sd
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.device_id = sd.device_id
+  WHERE spe.id IS NULL;",
   // Удаляем браузеры, на которые никто не ссылается
-//  "DELETE sb FROM `{{security_browser}}` AS sb
-//    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
-//  WHERE player_id IS NULL;",
+  "DELETE sb FROM `{{security_browser}}` AS sb
+    LEFT JOIN `{{security_player_entry}}` AS spe ON spe.browser_id = sb.browser_id
+  WHERE spe.id IS NULL;",
+  // Удаляем строки запросов, на которые никто не ссылается
+  "DELETE sqs FROM `{{security_query_strings}}` AS sqs
+    LEFT JOIN `{{counter}}` AS c ON c.query_string_id = sqs.id
+  WHERE c.counter_id IS NULL;",
+  // Удаляем УРЛы, на которые никто не ссылается
+  "DELETE su FROM `{{security_url}}` AS su
+    LEFT JOIN `{{counter}}` AS c ON c.page_url_id = su.url_id
+  WHERE c.counter_id IS NULL;",
+
+//  "INSERT INTO {{counter}} SET
+//        `page_url_id` = {$this->page_address_id},
+
 
   // Удаляем записи визитов без пользователей
 //  'DELETE FROM `{{counter}}` WHERE `user_id` NOT IN (SELECT `id` FROM `{{users}}`);',
@@ -207,13 +239,13 @@ function sn_maintenance_pack_user_list($user_list) {
 
 global $config, $debug, $lang;
 
-sn_db_transaction_start();
+db_mysql::db_transaction_start();
 $old_server_status = SN::$config->pass()->game_disable;
 $old_server_status == GAME_DISABLE_NONE ? SN::$config->pass()->game_disable = GAME_DISABLE_MAINTENANCE : false;
-sn_db_transaction_commit();
+db_mysql::db_transaction_commit();
 
 foreach($ques as $que_transaction) {
-  sn_db_transaction_start();
+  db_mysql::db_transaction_start();
 
   !is_array($que_transaction) ? $que_transaction = array($que_transaction) : false;
   foreach($que_transaction as $que) {
@@ -233,18 +265,18 @@ foreach($ques as $que_transaction) {
     $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . SN::$db->db_affected_rows() . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
 }
 
-sn_db_transaction_start();
+db_mysql::db_transaction_start();
 SN::$config->pass()->stats_hide_player_list = sn_maintenance_pack_user_list(SN::$config->pass()->stats_hide_player_list);
 $debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
+db_mysql::db_transaction_commit();
 
-sn_db_transaction_start();
+db_mysql::db_transaction_start();
 SN::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(SN::$config->pass()->game_watchlist));
 $debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
+db_mysql::db_transaction_commit();
 
 SN::$config->db_saveItem('users_amount', db_user_count());
 SN::$config->db_saveItem('game_disable', $old_server_status);

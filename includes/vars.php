@@ -19,7 +19,7 @@ if (!defined('INSIDE')) {
   die('Hack attempt!');
 }
 
-global $sn_menu_extra, $sn_menu_admin_extra, $config;
+global $sn_menu_extra, $sn_menu_admin_extra, $config, $sn_version_check_class;
 
 $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
@@ -27,41 +27,55 @@ $sn_menu_admin_extra = array();
 global $sn_mvc;
 $sn_mvc = [
   FIELD_MODEL => [
+    /** @see AjaxController::controller() */
     'ajax' => [AjaxController::class . '::controller'],
 
     'options'  => ['sn_options_model'],
 
 //    'chat'     => ['sn_chat_model'],
 //    'chat_add' => ['sn_chat_add_model'],
+    /** @see Chat::chatModel() */
     'chat'     => [Chat::class  . '::' . 'chatModel'],
+    /** @see Chat::chatAddModel() */
     'chat_add' => [Chat::class  . '::' . 'chatAddModel'],
 
+    /** @see PageImperium::modelStatic() */
     'imperium' => [PageImperium::class . '::' . 'modelStatic'],
 
+    /** @see PageAdminUserView::modelStatic() */
     'admin/user_view'  => [PageAdminUserView::class . '::' . 'modelStatic'],
     'admin/admin_ally' => ['sn_admin_ally_model'],
   ],
   FIELD_VIEW  => [
+    /** @see AjaxController::view() */
     'ajax' => [AjaxController::class . '::view'],
 
     'options'       => ['sn_options_view'],
 
 //    'chat'          => ['sn_chat_view'],
 //    'chat_msg'      => ['sn_chat_msg_view'],
+    /** @see Chat::chatView() */
     'chat'          => [Chat::class  . '::' . 'chatView'],
+    /** @see Chat::chatMsgView() */
     'chat_msg'      => [Chat::class  . '::' . 'chatMsgView'],
+    /** @see Chat::chatFrameView() */
     'chat_frame'      => [Chat::class  . '::' . 'chatFrameView'],
 
     'battle_report' => ['sn_battle_report_view'],
     'contact'       => ['sn_contact_view'],
     'imperator'     => ['sn_imperator_view'],
+    /** @see PageImperium::viewStatic() */
     'imperium'      => [PageImperium::class . '::' . 'viewStatic'],
     'techtree'      => ['sn_techtree_view'],
 
+    /** @see PageAdminUserView::viewStatic() */
     'admin/user_view'     => [PageAdminUserView::class . '::viewStatic'],
     'admin/admin_ally'    => ['sn_admin_ally_view'],
+    /** @see PageAdminMining::viewStatic() */
     'admin/admin_mining'  => [PageAdminMining::class . '::' . 'viewStatic'],
+    /** @see PageAdminModules::viewStatic() */
     'admin/admin_modules' => [PageAdminModules::class . '::' . 'viewStatic'],
+    /** @see PageAdminPayment::viewStatic() */
     'admin/admin_payment' => [PageAdminPayment::class . '::' . 'viewStatic'],
   ],
 
@@ -530,157 +544,57 @@ $sn_data += [
     );
     */
     'missions' => [
+      // For almost all missions lock statuses is for EVENT_FLT_ARRIVE
       MT_ATTACK => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_AKS => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_DESTROY => [
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'dst_fleets' => 1,
-        'src_planet' => 1,
-        'src_user'   => 1,
         'transport'  => false,
+        'isAttack'   => true,
       ],
 
       MT_SPY => [
-        'dst_user'   => 1,
-        'dst_planet' => 1,
-        'src_user'   => 1,
-        'src_planet' => 1,
         'transport'  => false,
         'AJAX'       => true,
       ],
 
       MT_HOLD => [
-        'dst_planet' => 0,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 0,
         'transport'  => false,
       ],
 
 
       MT_TRANSPORT => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 1,
-        'src_user'   => 0,
         'transport'  => true,
       ],
 
       MT_RELOCATE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 1,
-        'src_user'   => 0,
         'transport'  => true,
       ],
 
       MT_RECYCLE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 0,
         'transport'  => false,
         'AJAX'       => true,
       ],
 
       MT_EXPLORE => [
-        'dst_planet' => 0,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 1,
         'transport'  => false,
       ],
 
       MT_COLONIZE => [
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'src_planet' => 0,
-        'src_user'   => 1,
         'transport'  => true,
       ],
 
       MT_MISSILE => [
-        'src_planet' => 0,
-        'src_user'   => 0,
-        'dst_planet' => 0,
-        'dst_user'   => 0,
         'transport'  => false,
         'AJAX'       => true,
       ],
-    ],
-
-    GROUP_MISSION_EXPLORE_OUTCOMES => [
-      FLT_EXPEDITION_OUTCOME_NONE            => [
-        P_MISSION_EXPEDITION_OUTCOME      => FLT_EXPEDITION_OUTCOME_NONE,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE => FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL,
-        P_CHANCE                          => 200,
-      ],
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET      => [
-        P_MISSION_EXPEDITION_OUTCOME      => FLT_EXPEDITION_OUTCOME_LOST_FLEET,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE => FLT_EXPEDITION_OUTCOME_TYPE_BAD,
-        P_CHANCE                          => 9,
-      ],
-      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL  => [
-        P_MISSION_EXPEDITION_OUTCOME      => FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE => FLT_EXPEDITION_OUTCOME_TYPE_BAD,
-        P_CHANCE                          => 3,
-      ],
-      FLT_EXPEDITION_OUTCOME_FOUND_FLEET     => [
-        P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_FLEET,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE      => FLT_EXPEDITION_OUTCOME_TYPE_GOOD,
-        P_CHANCE                               => 200,
-        'percent'                              => [0 => 0.1, 1 => 0.02, 2 => 0.01,],
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
-          [P_CHANCE => 90, P_MULTIPLIER => 0.01, P_MESSAGE_ID => 2,],
-          [P_CHANCE => 9, P_MULTIPLIER => 0.02, P_MESSAGE_ID => 1,],
-          [P_CHANCE => 1, P_MULTIPLIER => 0.10, P_MESSAGE_ID => 0,],
-        ],
-      ],
-      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => [
-        P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE      => FLT_EXPEDITION_OUTCOME_TYPE_GOOD,
-        P_CHANCE                               => 300,
-        'percent'                              => [0 => 0.1, 1 => 0.050, 2 => 0.025,],
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
-          [P_CHANCE => 90, P_MULTIPLIER => 0.025, P_MESSAGE_ID => 2,],
-          [P_CHANCE => 9, P_MULTIPLIER => 0.050, P_MESSAGE_ID => 1,],
-          [P_CHANCE => 1, P_MULTIPLIER => 0.100, P_MESSAGE_ID => 0,],
-        ],
-      ],
-      FLT_EXPEDITION_OUTCOME_FOUND_DM        => [
-        P_MISSION_EXPEDITION_OUTCOME           => FLT_EXPEDITION_OUTCOME_FOUND_DM,
-        P_MISSION_EXPEDITION_OUTCOME_TYPE      => FLT_EXPEDITION_OUTCOME_TYPE_GOOD,
-        P_CHANCE                               => 100,
-        'percent'                              => [0 => 0.0100, 1 => 0.0040, 2 => 0.0010,],
-        P_MISSION_EXPEDITION_OUTCOME_SECONDARY => [
-          [P_CHANCE => 90, P_MULTIPLIER => 0.0010, /*P_MESSAGE_ID => 2,*/],
-          [P_CHANCE => 9, P_MULTIPLIER => 0.0040, /*P_MESSAGE_ID => 1,*/],
-          [P_CHANCE => 1, P_MULTIPLIER => 0.0100, /*P_MESSAGE_ID => 0,*/],
-        ],
-      ],
-      /*
-      FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT => array(
-        'outcome' => FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT,
-        'chance' => 10,
-      ),
-      */
     ],
 
     GROUP_DESIGN_OPTION_BLOCKS => [
@@ -1496,34 +1410,50 @@ global $sn_data_bbCodes;
 $sn_data_bbCodes = array(
   AUTH_LEVEL_REGISTERED => array(
     // Prefix sn:// resolves to current server URL
+    /** @lang RegExp */
     '#sn://#isU'                                                                        => SN_ROOT_VIRTUAL,
     // news://ID resolves to news BBCode
+    /** @lang RegExp */
     '#news:\/\/(\d+)#is'                                                                => "[news=$1]",
     // [news=ID] resolves to link to news
+    /** @lang RegExp */
     '#\[news\=(\d+)\]#is'                                                               => "<a href=\"announce.php?id=$1\" class=\"link zero\">news://$1</a>",
     // [ube=ID] resolves to link to battle report
+    /** @lang RegExp */
     '#\[ube\=([0-9a-zA-Z]{32})\]#isU'                                                   => "<a href=\"index.php?page=battle_report&cypher=$1\"><span class=\"battle_report_link link\">($1)</span></a>",
     // Battle report's URL from current server also resolves to special link
+    /** @lang RegExp */
     "#" . SN_ROOT_VIRTUAL . "index.php?page=battle_report&cypher=([0-9a-zA-Z]{32})#isU" => "<a href=\"index.php?page=battle_report&cypher=$1\"><span class=\"battle_report_link link\">($1)</span></a>",
 
+    /** @lang RegExp */
     '#\[(c|color)=(white|cyan|yellow|green|pink|red|lime|maroon|orange)\](.+)\[/\1\]#isU' => "<span style=\"color: $2\">$3</span>",
+    /** @lang RegExp */
     '#\[b\](.+)\[/b\]#isU'                                                                => "<b>$1</b>",
+    /** @lang RegExp */
     '#\[i\](.+)\[/i\]#isU'                                                                => "<i>$1</i>",
+    /** @lang RegExp */
     '#\[u\](.+)\[/u\]#isU'                                                                => '<span class="underline">$1</span>',
+    /** @lang RegExp */
     '#\[s\](.+)\[/s\]#isU'                                                                => '<span class="strike">$1</span>',
   ),
 
   AUTH_LEVEL_ADMINISTRATOR => array(
     // Plain URL on string start
-    "#^((?:ftp|https?|sn|faq)://[^\s\[]+)#i"                => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$1$2</a>",
+    /** @lang RegExp */
+    "#^((?:ftps?|https?|sn|faq):\/\/[^\s\[]+)#i"                => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$1$2</a>",
     // Plain URL in the string
-    "#([\s\)\]\}])((?:ftp|https?|sn|faq)://[^\s\[]+)#i"     => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link_external\">$2$3</a>",
+    /** @lang RegExp */
+    '#([\s\)\]\}\>])((?:ftps?|https?|sn|faq):\/\/[^\s\[\<]+)#i' => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link_external\">$2$3</a>",
 
     // [urlw=URL]DESCRIPTION[urlw] - opens link in current window
-    "#\[urlw=(ft|https?://)(.+)\](.+)\[/urlw\]#isU"         => "<a href=\"$1$2\" class=\"link\">$3</a>",
+    /** @lang RegExp */
+    "#\[urlw=(ftps?|https?://)(.+)\](.+)\[/urlw\]#isU"        => "<a href=\"$1$2\" class=\"link\">$3</a>",
     // [url=URL]DESCRIPTION[url] - opens link in new window
-    '#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU'           => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$3</a>",
+    /** @lang RegExp */
+    '#\[url=(ftps?|https?://)(.+)\](.+)\[/url\]#isU'          => "<a href=\"$1$2\" target=\"_blank\" class=\"link_external\">$3</a>",
+
     // Admins can use color codes and special PURPLE color
+    /** @lang RegExp */
     '#\[(c|color)=(\#[0-9A-Fa-f]+|purple)\](.+)\[/\1\]#isU' => "<span style=\"color: $2\">$3</span>",
   ),
 );

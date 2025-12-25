@@ -15,6 +15,8 @@ class Chat {
 
   use TSingleton;
 
+  const CHAT_DEFAULT_LINES_PER_PAGE = 20;
+
   protected $_chat_aliases = array(
     'h'         => 'help',
     '?'         => 'help',
@@ -142,7 +144,7 @@ class Chat {
     } else {
       $alliance = sys_get_param_str('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
 
-      $page_limit = sys_get_param_id('line_per_page', 20); // Chat rows Limit
+      $page_limit = sys_get_param_id('line_per_page', self::CHAT_DEFAULT_LINES_PER_PAGE); // Chat rows Limit
 
       $where_add    = '';
       $last_message = 0;
@@ -361,7 +363,7 @@ class Chat {
       $chat_message_sender_id      = 'NULL';
       $chat_message_sender_name    = '';
       $chat_message_recipient_id   = $user['id'];
-      $chat_message_recipient_name = db_escape($user['username']);
+      $chat_message_recipient_name = SN::$db->db_escape($user['username']);
       $nick                        = '';
       $ally_id                     = 0;
       $chat_command_issued         = '';
@@ -390,14 +392,14 @@ class Chat {
               } elseif ($chat_command_parsed[3] && $chat_command_parsed[2]) {
                 $chat_command_parsed[2] = trim($chat_command_parsed[2], '"');
                 $recipient_info         = db_user_by_username($chat_command_parsed[2]);
-                $chat_command_parsed[2] = db_escape($chat_command_parsed[2]);
+                $chat_command_parsed[2] = SN::$db->db_escape($chat_command_parsed[2]);
                 if ($recipient_info['id']) {
                   $message                     = $chat_command_parsed[3];
-                  $nick                        = db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => false))));
+                  $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => false))));
                   $chat_message_recipient_id   = $recipient_info['id'];
-                  $chat_message_recipient_name = db_escape($recipient_info['username']);
+                  $chat_message_recipient_name = SN::$db->db_escape($recipient_info['username']);
                   $chat_message_sender_id      = $user['id'];
-                  $chat_message_sender_name    = db_escape($user['username']);
+                  $chat_message_sender_name    = SN::$db->db_escape($user['username']);
                 } else {
                   $message = "[c=red]{$lang['chat_advanced_err_player_name_unknown']}[/c]";
                 }
@@ -415,7 +417,7 @@ class Chat {
               if ($chat_command_parsed[2] && ($chat_command_parsed[3] || $chat_command_issued == 'unmute' || $chat_command_issued == 'unban')) {
                 $chat_command_parsed[2] = strtolower($chat_command_parsed[2]);
                 if (strpos($chat_command_parsed[2], 'id ') !== false && is_id($player_id = substr($chat_command_parsed[2], 3))) {
-                  $chat_player_subject = db_user_by_id($player_id, false, '`id`, `authlevel`, `username`');
+                  $chat_player_subject = db_user_by_id($player_id, false);
                   if ($chat_player_subject) {
                     if ($chat_player_subject['id'] == $user['id']) {
                       $message = "[c=red]{$lang['chat_advanced_err_player_same']}[/c]";
@@ -425,7 +427,7 @@ class Chat {
                       $chat_message_recipient_id   = 'NULL';
                       $chat_message_recipient_name = '';
                       if ($chat_command_issued == 'unmute' || $chat_command_issued == 'unban') {
-                        $temp = db_escape($chat_command_parsed[3]);
+                        $temp = SN::$db->db_escape($chat_command_parsed[3]);
                         if ($chat_command_issued == 'unban') {
                           sys_admin_player_ban_unset($user, $chat_player_subject, $temp);
                           $message = $lang['chat_advanced_command_unban'];
@@ -454,7 +456,7 @@ class Chat {
 
                         $term                       = $date_to_timestamp[$chat_command_parsed_two[2]] * $chat_command_parsed_two[1];
                         $date_compiled              = $term + SN_TIME_NOW;
-                        $chat_command_parsed_two[4] = db_escape($chat_command_parsed_two[4]);
+                        $chat_command_parsed_two[4] = SN::$db->db_escape($chat_command_parsed_two[4]);
 
                         doquery("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
                         if ($chat_command_issued == 'ban') {
@@ -526,14 +528,14 @@ class Chat {
 
       if (!$chat_command_issued && !$chat_player_muted) {
         $chat_message_sender_id      = $user['id'];
-        $chat_message_sender_name    = db_escape($user['username']);
+        $chat_message_sender_name    = SN::$db->db_escape($user['username']);
         $chat_message_recipient_id   = 'NULL';
         $chat_message_recipient_name = '';
         $ally_id                     = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
-        $nick                        = db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
+        $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
 
         // Replacing news://xxx link with BBCode
-        $message = preg_replace("#news\:\/\/(\d+)#", "[news=$1]", $message);
+        $message = preg_replace("#news\:\/\/(\d+)#i", "[news=$1]", $message);
         // Replacing news URL with BBCode
         $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/announce\.php\?id\=(\d+))#", "[news=$1]", $message);
         $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
@@ -543,12 +545,12 @@ class Chat {
         }
       } elseif (!$chat_command_issued && $chat_player_muted) {
         $chat_message_recipient_id   = $user['id'];
-        $chat_message_recipient_name = db_escape($user['username']);
+        $chat_message_recipient_name = SN::$db->db_escape($user['username']);
         $message                     = sprintf($lang['chat_advanced_command_mute'], $user['username'], date(FMT_DATE_TIME, $chat_player_muted)) .
           ($chat_player_row['chat_player_muted_reason'] ? sprintf($lang['chat_advanced_command_mute_reason'], $chat_player_row['chat_player_muted_reason']) : '');
         $message                     = "[c=red]{$message}[/c]";
       }
-      $message = db_escape($message);
+      $message = SN::$db->db_escape($message);
 
       doquery(
         "INSERT INTO

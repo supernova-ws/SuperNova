@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\DbQuery;
 
 require_once('db_helpers.php');
@@ -230,9 +231,10 @@ function db_message_insert_all($message_type, $from, $subject, $text) {
  * @return int
  */
 function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditions) {
-  $isTransactionStarted = SN::db_transaction_check(SN::DB_TRANSACTION_WHATEVER);
+  $isTransactionStarted = db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER);
   if (!$isTransactionStarted) {
-    SN::db_transaction_start();
+//    SN::db_transaction_start();
+    doquery("LOCK TABLES {{" . $db_table_name . "}} WRITE;");
   }
 
   $dbq    = new DbQuery(SN::$gc->db);
@@ -255,7 +257,8 @@ function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditio
   }
 
   if (!$isTransactionStarted) {
-    SN::db_transaction_commit();
+    doquery("UNLOCK TABLES;");
+//    SN::db_transaction_commit();
   }
 
   return $variable_id;
@@ -270,7 +273,7 @@ function db_get_set_unique_id_value($db_table_name, $db_id_field_name, $conditio
  */
 // OK v4.7
 function db_player_name_exists($player_name_unsafe) {
-  sn_db_transaction_check(true);
+  db_mysql::db_transaction_check(true);
 
   $player_name_safe = SN::$db->db_escape($player_name_unsafe);
 

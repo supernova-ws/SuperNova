@@ -4,7 +4,7 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar') {
   global $config, $lang, $user;
 
   try {
-    $avatar_filename = $fullsize_filename = SN_ROOT_PHYSICAL . 'images/avatar/' . $prefix . '_' . $subject_id;
+    $avatar_filename = $fullsize_filename = SN_PATH_AVATAR . $prefix . '_' . $subject_id;
     $avatar_filename .= '.png';
     $fullsize_filename .= '_full.png';
     if (sys_get_param_int('avatar_remove')) {

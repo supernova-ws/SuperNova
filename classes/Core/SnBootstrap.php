@@ -7,6 +7,7 @@ namespace Core;
 
 
 use core_auth;
+use DBAL\db_mysql;
 use \SN;
 
 class SnBootstrap {
@@ -65,7 +66,7 @@ class SnBootstrap {
       }
 
 
-      if ($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
+      if (isset($user['authlevel']) && $user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
         echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';
       }
 
@@ -98,19 +99,33 @@ class SnBootstrap {
     if ($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
       define('BE_DEBUG', true);
     }
-    // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
-    define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
-    // Включаем нужные настройки
-    defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
-    defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
-    defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+
+    // Declaring PHP-constants from server config
+    /** @see \classConfig::$DEBUG_SQL_FILE_LOG */
+    foreach ([
+      'DEBUG_SQL_FILE_LOG'     => ['DEBUG_SQL_ERROR' => true, 'DEBUG_SQL_COMMENT_LONG' => true,],
+      'DEBUG_SQL_ERROR'        => ['DEBUG_SQL_COMMENT' => true,],
+      'DEBUG_SQL_COMMENT_LONG' => ['DEBUG_SQL_COMMENT' => true,],
+      'DEBUG_SQL_COMMENT'      => []
+    ] as $constantName => $implications) {
+      if (!empty(SN::$config->$constantName) && !defined($constantName)) {
+        define($constantName, true);
+      }
+      foreach ($implications as $impliedConstantName => $impliedValue) {
+        if (!defined($impliedConstantName)) {
+          define($impliedConstantName, $impliedValue);
+        }
+      }
+    }
 
     if (defined('BE_DEBUG') || SN::$config->debug) {
       @define('BE_DEBUG', true);
       @ini_set('display_errors', 1);
-      @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+      if(SN::$config->debug == 1) {
+        @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+      } else {
+        @error_reporting(SN::$config->debug);
+      }
     } else {
       @define('BE_DEBUG', false);
       @ini_set('display_errors', 0);
@@ -135,10 +150,10 @@ class SnBootstrap {
     }
 
     if (defined('IN_ADMIN') || !$config->pass()->game_installed) {
-      sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
+      db_mysql::db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
       if (SN_TIME_NOW >= $config->pass()->var_db_update_end) {
         $config->pass()->var_db_update_end = SN_TIME_NOW + $config->upd_lock_time;
-        sn_db_transaction_commit();
+        db_mysql::db_transaction_commit();
 
         require_once($update_file);
 
@@ -154,7 +169,7 @@ class SnBootstrap {
         Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait..."
         );
       }
-      sn_db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
     } else {
       die(
       'Происходит обновление сервера - пожалуйста, подождите...<br />

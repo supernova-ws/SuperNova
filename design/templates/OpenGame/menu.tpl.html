@@ -91,7 +91,7 @@
       <!-- ENDIF -->
     <!-- ENDIF -->
 
-    <!-- IF menu.HIDE && !menu.HIDE_LOCK -->
+    <!-- IF menu.HIDE && ! menu.HIDE_LOCK -->
       <!-- DEFINE $MENU_HIDE = ' is_hide="1" style="display: none"' -->
     <!-- ELSEIF menu.HIDE_LOCK -->
       <!-- DEFINE $MENU_HIDE = ' hide_lock="1"' -->
@@ -118,7 +118,7 @@
         <!-- IF menu.ICON_PATH -->
           <img src="{menu.ICON_PATH}" class="menu_icon" />
         <!-- ELSEIF menu.ICON  -->
-          <img src="{I_[menu.ICON]}" class="menu_icon" />
+          <span id="icon_{menu.ICON}" class="menu_icons"></span>
         <!-- ENDIF -->
 
         <!-- IF menu.TYPE == 'image' -->

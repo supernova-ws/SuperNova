@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use DBAL\DbQuery;
 use Fleet\DbFleetStatic;
 use Old\Avatar;
@@ -104,7 +105,13 @@ function sn_options_view($template = null) {
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while (($entry = $dir->read()) !== false) {
-    if (is_dir("skins/{$entry}") && $entry[0] != '.') {
+    if (
+      is_dir("skins/{$entry}")
+      && $entry[0] != '.' && (
+        file_exists("skins/{$entry}/skin.ini")
+        || file_exists("skins/{$entry}/skin.css")
+      )
+    ) {
       $template_result['.']['skin_list'][] = array(
         'VALUE'    => $entry,
         'NAME'     => $entry,
@@ -415,8 +422,8 @@ function sn_options_change_username($user) {
   }
 
   // проверка на корректность
-  sn_db_transaction_start();
-  $username_safe = db_escape($username);
+  db_mysql::db_transaction_start();
+  $username_safe = SN::$db->db_escape($username);
   /** @noinspection SqlResolve */
   $name_check = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
   if (empty($name_check['player_id']) || $name_check['player_id'] == $user['id']) {
@@ -457,7 +464,7 @@ function sn_options_change_username($user) {
       'MESSAGE' => $lang['opt_msg_name_change_err_used_name'],
     ];
   }
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
 
   return [$user, $result];
 }
@@ -519,7 +526,7 @@ function sn_options_vacation($user) {
     return $user;
   }
 
-  sn_db_transaction_start();
+  db_mysql::db_transaction_start();
   if ($user['authlevel'] < AUTH_LEVEL_ADMINISTRATOR) {
     if ($user['vacation_next'] > SN_TIME_NOW) {
       SnTemplate::messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
@@ -550,7 +557,7 @@ function sn_options_vacation($user) {
   } else {
     $user['vacation'] = SN_TIME_NOW;
   }
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
 
   return $user;
 }

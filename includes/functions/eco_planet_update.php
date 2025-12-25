@@ -1,46 +1,44 @@
 <?php
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+/** @noinspection SqlResolve */
 
-/*
- * PlanetResourceUpdate.php
- *
- * 2.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
- *     [+] Bit more optimization
- * 2.0 - copyright (c) 2009-2010 by Gorlum for http://supernova.ws
- *     [+] Full rewrote and optimization
- *
- */
-
+use DBAL\db_mysql;
+use Meta\Economic\ResourceCalculations;
 use Planet\DBStaticPlanet;
 
-function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
-  sn_db_transaction_check(true);
+/**
+ * @param ?int       $userId
+ * @param ?int|array $planet
+ * @param int        $UpdateTime
+ * @param bool       $simulation
+ * @param bool       $no_user_update
+ *
+ * @return array[]|false[]|void
+ */
+function sys_o_get_updated($userId, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
+  db_mysql::db_transaction_check(true);
 
-  $no_data = array('user' => false, 'planet' => false, 'que' => false);
+  $no_data = ['user' => false, 'planet' => false, 'que' => false];
 
   if (!$planet) {
     return $no_data;
   }
 
   if (!$no_user_update) {
-    $user = intval(is_array($user) && $user['id'] ? $user['id'] : $user);
-    if (!$user) {
-      // TODO - Убрать позже
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sys_o_get_updated() - USER пустой!</h1>');
-      $backtrace = debug_backtrace();
-      array_shift($backtrace);
-      pdump($backtrace);
+    if (!$userId) {
+      SN::$debug->error('sys_o_get_updated() - USER пустой!');
       die();
     }
-
-    $user = db_user_by_id($user, !$simulation, '*', true);
   }
+  $user = db_user_by_id($userId, !$simulation, true);
 
   if (empty($user['id'])) {
     return $no_data;
   }
 
   if (is_array($planet) && isset($planet['galaxy']) && $planet['galaxy']) {
-    $planet = DBStaticPlanet::db_planet_by_vector($planet, '', !$simulation);
+    $planet = DBStaticPlanet::db_planet_by_vector($planet, '');
   } else {
     $planet = intval(is_array($planet) && isset($planet['id']) ? $planet['id'] : $planet);
     $planet = DBStaticPlanet::db_planet_by_id($planet, !$simulation);
@@ -51,7 +49,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
 
   $que = que_process($user, $planet, $UpdateTime);
 
-  $ProductionTime = max(0, $UpdateTime - $planet['last_update']);
+  $ProductionTime        = max(0, $UpdateTime - $planet['last_update']);
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
@@ -59,7 +57,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
 
 //  if ($ProductionTime > 0)
   {
-    $capsObj = new \Meta\Economic\ResourceCalculations();
+    $capsObj = new ResourceCalculations();
     $capsObj->eco_get_planet_caps($user, $planet, 3600);
     $resources_increase = array(
       RES_METAL     => 0,
@@ -72,9 +70,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
         foreach ($resources_increase as $resource_id => &$increment) {
           $resource_name = pname_resource_name($resource_id);
 
-          $increment = $planet[$resource_name . '_perhour'] * $ProductionTime / 3600;
+          /** @noinspection SpellCheckingInspection */
+          $increment  = $planet[$resource_name . '_perhour'] * $ProductionTime / 3600;
           $store_free = $planet[$resource_name . '_max'] - $planet[$resource_name];
-          $increment = min($increment, max(0, $store_free));
+          $increment  = min($increment, max(0, $store_free));
 
           if ($planet[$resource_name] + $increment < 0 && !$simulation) {
             global $debug;
@@ -86,17 +85,18 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
 
       case PT_MOON:
       default:
-        $planet['metal_perhour'] = 0;
-        $planet['crystal_perhour'] = 0;
+        /** @noinspection SpellCheckingInspection */
+        $planet['metal_perhour']     = 0;
+        $planet['crystal_perhour']   = 0;
         $planet['deuterium_perhour'] = 0;
-        $planet['energy_used'] = 0;
-        $planet['energy_max'] = 0;
+        $planet['energy_used']       = 0;
+        $planet['energy_max']        = 0;
       break;
     }
 
     // TODO пересчитывать размер планеты только при постройке чего-нибудь и при покупке сектора
     $planet['field_current'] = 0;
-    $sn_group_build_allow = sn_get_groups('build_allow');
+    $sn_group_build_allow    = sn_get_groups('build_allow');
     if (is_array($sn_group_build_allow[$planet['planet_type']])) {
       foreach ($sn_group_build_allow[$planet['planet_type']] as $building_id) {
         $planet['field_current'] += mrc_get_level($user, $planet, $building_id, !$simulation, true);
@@ -105,6 +105,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
 
     // Saving data if not a simulation
     if (!$simulation) {
+      /** @noinspection SpellCheckingInspection */
       DBStaticPlanet::db_planet_set_by_id($planet['id'],
         "`last_update` = '{$planet['last_update']}', `field_current` = {$planet['field_current']},
     `metal` = `metal` + '{$resources_increase[RES_METAL]}', `crystal` = `crystal` + '{$resources_increase[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',

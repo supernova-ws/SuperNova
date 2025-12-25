@@ -1,9 +1,17 @@
-<?php
+<?php /** @noinspection PhpRedundantOptionalArgumentInspection */
+
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 namespace DBAL;
 
+use classConfig;
+use Core\GlobalContainer;
+use debug;
+use mysqli;
 use mysqli_result;
 use SN;
+use Unit\DBStaticUnit;
 
 /**
  * User: Gorlum
@@ -11,10 +19,38 @@ use SN;
  * Time: 15:58
  */
 class db_mysql {
-  const DB_MYSQL_TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
-  const DB_MYSQL_TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
-  const DB_MYSQL_TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
-  const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+  const TRANSACTION_LEVEL_SERIALIZABLE = 'SERIALIZABLE';
+  const TRANSACTION_LEVEL_REPEATABLE_READ = 'REPEATABLE READ';
+  const TRANSACTION_LEVEL_READ_COMMITTED = 'READ COMMITTED';
+  const TRANSACTION_LEVEL_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+
+  const TRANSACTION_LEVELS_ALLOWED = [
+    self::TRANSACTION_LEVEL_SERIALIZABLE,
+    self::TRANSACTION_LEVEL_REPEATABLE_READ,
+    self::TRANSACTION_LEVEL_READ_COMMITTED,
+    self::TRANSACTION_LEVEL_READ_UNCOMMITTED,
+  ];
+  const DB_TRANSACTION_WHATEVER = false;
+  const DB_TRANSACTION_SHOULD_BE = true;
+  const DB_TRANSACTION_SHOULD_NOT_BE = null;
+  public static $transaction_id = 0;
+  public static $db_in_transaction = false;
+  public static $transactionDepth = 0;
+
+  const TABLE_USERS = 'users';
+
+  const TABLE_ID_FIELD = [
+    'fleets' => 'fleet_id',
+  ];
+
+  // Order in which tables should be locked
+  const TABLE_LOCK_ORDER = [
+    'users',
+    'planets',
+    'que',
+    'unit',
+    'fleets',
+  ];
 
   /**
    * DB schemes
@@ -24,7 +60,7 @@ class db_mysql {
   protected static $schema = null;
 
   /**
-   * Статус соеднения с MySQL
+   * Статус соединения с MySQL
    *
    * @var bool
    */
@@ -42,12 +78,12 @@ class db_mysql {
    * @var array
    */
   protected $dbsettings = [];
-  /**
-   * Драйвер для прямого обращения к MySQL
-   *
-   * @var db_mysql_v5 $driver
-   */
-  public $driver = null;
+//  /**
+//   * Драйвер для прямого обращения к MySQL
+//   *
+//   * @var db_mysql_v5 $driver
+//   */
+//  public $driver = null;
 
   /**
    * Общее время запросов
@@ -61,10 +97,19 @@ class db_mysql {
    */
   protected $inTransaction = false;
 
+
+  /**
+   * Соединение с MySQL
+   *
+   * @var mysqli $link
+   */
+  public $link;
+
+
   /**
    * DBAL\db_mysql constructor.
    *
-   * @param \Core\GlobalContainer $gc
+   * @param GlobalContainer $gc
    */
   public function __construct($gc) {
 //    $this->transaction = new \DBAL\DbTransaction($gc, $this);
@@ -86,7 +131,7 @@ class db_mysql {
   public function load_db_settings() {
     $dbsettings = array();
 
-    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+    require(SN_CONFIG_PATH);
 
     $this->setDbSettings($dbsettings);
   }
@@ -102,42 +147,71 @@ class db_mysql {
       $this->load_db_settings();
     }
 
-    // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны
+    // TODO - фатальные (?) ошибки на каждом шагу
+    try {
     if (!empty($this->dbsettings)) {
-      $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
-      $this->driver = new $driver_name();
+      // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
+      // $this->driver = new $driver_name();
       $this->db_prefix = $this->dbsettings['prefix'];
 
-      $this->connected = $this->connected || $this->driver_connect();
+      $this->connected = $this->connected || $this->mysql_connect_driver($this->dbsettings);
 
       if ($this->connected && empty($this->schema()->getSnTables())) {
         die('DB error - cannot find any table. Halting...');
       }
 
-      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE);
+      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE);
     } else {
       $this->connected = false;
+    }
+    } catch (\Exception $e) {
+      $this->connected = false;
+
+      if($e->getCode() == 1044) {
+        die('Access denied for specified DB user to specified database. Check DB settings in game and user privileges on DB server');
+      } else {
+        die('Error happens while connecting to DB. Check DB settings in game and DB accessibility');
+      }
     }
 
     return $this->connected;
   }
 
-  public function driver_connect() {
+  public function mysql_connect_driver($settings) {
     global $debug;
 
-    if (!is_object($this->driver)) {
-      $debug->error_fatal('DB Error - No driver for MySQL found!');
+    static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
+
+    if ($this->connected) {
+      return true;
     }
 
-    if (!method_exists($this->driver, 'mysql_connect')) {
-      $debug->error_fatal('DB Error - WRONG MySQL driver!');
+    if (empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
+      $debug->error_fatal('There is miss-configuration in your config.php. Check it again');
     }
 
-    return $this->driver->mysql_connect($this->dbsettings);
+    @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
+    if (!is_object($this->link) || $this->link->connect_error) {
+      $debug->error_fatal('DB Error - cannot connect to server error #' . $this->link->connect_errno, $this->link->connect_error);
+    }
+
+    $this->db_sql_query("/*!40101 SET NAMES 'utf8' */")
+    or $debug->error_fatal('DB error - cannot set names 1 error #' . $this->link->errno, $this->link->error);
+    $this->db_sql_query("SET NAMES 'utf8';")
+    or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
+
+    //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
+    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE . ';')
+    or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
+
+    $this->connected = true;
+
+    return true;
   }
 
   public function db_disconnect() {
     if ($this->connected) {
+      /** @noinspection PhpFieldImmediatelyRewrittenInspection */
       $this->connected = !$this->driver_disconnect();
       $this->connected = false;
     }
@@ -147,12 +221,14 @@ class db_mysql {
 
   /**
    * @param int    $errno
-   * @param string $errstr
-   * @param string $errfile
-   * @param int    $errline
-   * @param array  $errcontext
+   * @param string $errStr
+   * @param string $errFile
+   * @param int    $errLine
+   * @param array  $errContext
+   *
+   * @noinspection PhpUnusedParameterInspection
    */
-  public function handlerQueryWarning($errno, $errstr, $errfile, $errline, $errcontext) {
+  public function handlerQueryWarning($errno, $errStr, $errFile, $errLine, $errContext) {
     static $alreadyHandled;
 
     // Error was suppressed with the @-operator
@@ -178,7 +254,12 @@ class db_mysql {
     return $sql;
   }
 
+  /** @noinspection SpellCheckingInspection */
   public function doquery($query, $fetch = false, $skip_query_check = false) {
+    /**
+     * @var debug       $debug
+     * @var classConfig $config
+     */
     global $numqueries, $debug, $config;
 
     if (!$this->connected) {
@@ -190,46 +271,48 @@ class db_mysql {
     $skip_query_check or $this->security_query_check_bad_words($query);
 
     $sql = $this->prefixReplace($query);
-//    $sql = $query;
-//    if (strpos($sql, '{{') !== false) {
-//      foreach ($this->schema()->getSnTables() as $tableName) {
-//        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
-//      }
-//    }
 
     if ($config->debug) {
       $numqueries++;
-      $arr = debug_backtrace();
-      $file = end(explode('/', $arr[0]['file']));
-      $line = $arr[0]['line'];
+      $arr   = debug_backtrace();
+      $array = explode('/', $arr[0]['file']);
+      $file  = end($array);
+      $line  = $arr[0]['line'];
       $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th><th>$fetch</th></tr>");
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
-      $backtrace = debug_backtrace();
-      $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
-
-      $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-      if (defined('DEBUG_SQL_ONLINE')) {
-        $debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
-      }
-
-      if (defined('DEBUG_SQL_ERROR')) {
-        array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
-        $debug->add_to_array($sql_comment);
-        // $debug->add_to_array($sql_comment . preg_replace("/\s+/", ' ', $sql));
-      }
-      $sql = $sql_commented;
+      $sql = $debug->comment_query(debug_backtrace(), $sql);
     }
 
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql);
-    if(!$sqlquery) {
-      $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    if (!$sqlquery) {
+      $debug->error(SN::$db->db_error() . "\n$sql\n", 'SQL Error');
     }
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+  }
+
+  /**
+   * Get all records for a query as array of arrays or objects
+   *
+   * @param string $query          SQL query to execute
+   * @param bool   $skipQueryCheck Should query skip security check
+   * @param bool   $asArray        Should records be returned as array? If false - records would be returned as StdObject
+   *
+   * @return array
+   */
+  public function dbGetAll($query, $skipQueryCheck = false, $asArray = true) {
+    $queryResult = $this->doquery($query, false, $skipQueryCheck);
+
+    $result = [];
+    while ($row = $this->db_fetch($queryResult)) {
+      $result[] = $asArray ? $row : (object)$row;
+    }
+
+    return $result;
   }
 
   public function doQueryAndFetch($query) {
@@ -240,10 +323,10 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     set_error_handler([$this, 'handlerQueryWarning']);
-    $sqlquery = $this->db_sql_query($sql) or SN::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    $sqlQuery = $this->db_sql_query($sql) or SN::$debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
-    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+    return $fetch ? $this->db_fetch($sqlQuery) : $sqlQuery;
   }
 
   /**
@@ -269,11 +352,11 @@ class db_mysql {
   }
 
   /**
-   * @param \DBAL\DbQuery $dbQuery
+   * @param DbQuery $dbQuery
    *
    * @return array|null
    */
-  public function dbqSelectAndFetch(\DBAL\DbQuery $dbQuery) {
+  public function dbqSelectAndFetch(DbQuery $dbQuery) {
     return $this->doQueryAndFetch($dbQuery->select());
   }
 
@@ -285,7 +368,7 @@ class db_mysql {
     if (!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array)) {
       if (!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
         $is_watching = true;
-        $msg = "\$query = \"{$query}\"\n\r";
+        $msg         = "\$query = \"{$query}\"\n\r";
         if (!empty($_POST)) {
           $msg .= "\n\r" . dump($_POST, '$_POST');
         }
@@ -299,6 +382,7 @@ class db_mysql {
   }
 
 
+  /** @noinspection SpellCheckingInspection */
   public function security_query_check_bad_words($query) {
     global $user, $dm_change_legit, $mm_change_legit;
 
@@ -349,6 +433,7 @@ class db_mysql {
 
         $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
         die($message);
+        /** @noinspection PhpUnreachableStatementInspection */
       break;
     }
   }
@@ -370,7 +455,7 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1 = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
+    $q1                     = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
     while ($r1 = db_fetch($q1)) {
       $dbf = new DbFieldDescription();
       $dbf->fromMySqlDescription($r1);
@@ -393,10 +478,10 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1 = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
+    $q1                     = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['Key_name'];
-      if(empty($result[$indexName])) {
+      if (empty($result[$indexName])) {
         $result[$indexName] = new DbIndexDescription();
       }
       $result[$indexName]->addField($r1);
@@ -415,16 +500,16 @@ class db_mysql {
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
 
-    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
+    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . SN::$db->db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['CONSTRAINT_NAME'];
 
       $table_referenced = str_replace($this->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
-      $result[$indexName]['name'] = $indexName;
-      $result[$indexName]['signature'][] = "{$r1['COLUMN_NAME']}=>{$table_referenced}.{$r1['REFERENCED_COLUMN_NAME']}";
-      $r1['REFERENCED_TABLE_NAME'] = $table_referenced;
-      $r1['TABLE_NAME'] = $tableName_unsafe;
+      $result[$indexName]['name']                       = $indexName;
+      $result[$indexName]['signature'][]                = "{$r1['COLUMN_NAME']}=>{$table_referenced}.{$r1['REFERENCED_COLUMN_NAME']}";
+      $r1['REFERENCED_TABLE_NAME']                      = $table_referenced;
+      $r1['TABLE_NAME']                                 = $tableName_unsafe;
       $result[$indexName]['fields'][$r1['COLUMN_NAME']] = $r1;
     }
 
@@ -436,10 +521,17 @@ class db_mysql {
   }
 
 
+  /**
+   * @param $query_string
+   *
+   * @return bool|mysqli_result
+   */
   public function db_sql_query($query_string) {
-    $microtime = microtime(true);
-    $result = $this->driver->mysql_query($query_string);
-    $this->time_mysql_total += microtime(true) - $microtime;
+    $mt = microtime(true);
+
+    $result = $this->link->query($query_string);
+
+    $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
 //    return $this->driver->mysql_query($query_string);
@@ -450,60 +542,67 @@ class db_mysql {
    *
    * @return array|null
    */
-  public function db_fetch(&$query_result) {
-    $microtime = microtime(true);
-    $result = $this->driver->mysql_fetch_assoc($query_result);
-    $this->time_mysql_total += microtime(true) - $microtime;
+  public function db_fetch($query_result) {
+    $mt = microtime(true);
+
+    $result = mysqli_fetch_assoc($query_result);
+
+    $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
-//    return $this->driver->mysql_fetch_assoc($query);
   }
 
-  public function db_fetch_row(&$query) {
-    return $this->driver->mysql_fetch_row($query);
-  }
+//  public function db_fetch_row(&$query) {
+//    return mysqli_fetch_row($query);
+//  }
 
   public function db_escape($unescaped_string) {
-    return $this->driver->mysql_real_escape_string($unescaped_string);
+    return mysqli_real_escape_string($this->link, $unescaped_string);
   }
 
   public function driver_disconnect() {
-    return $this->driver->mysql_close_link();
+    if (is_object($this->link)) {
+      $this->link->close();
+      $this->connected = false;
+      unset($this->link);
+    }
+
+    return true;
   }
 
   public function db_error() {
-    return $this->driver->mysql_error();
+    return mysqli_error($this->link);
   }
 
   /**
    * @return int|string
    */
   public function db_insert_id() {
-    return $this->driver->mysql_insert_id();
+    return mysqli_insert_id($this->link);
   }
 
-  public function db_num_rows(&$result) {
-    return $this->driver->mysql_num_rows($result);
+  public function db_num_rows($result) {
+    return mysqli_num_rows($result);
   }
 
   public function db_affected_rows() {
-    return $this->driver->mysql_affected_rows();
+    return mysqli_affected_rows($this->link);
   }
 
-  public function db_get_client_info() {
-    return $this->driver->mysql_get_client_info();
+  public function getClientInfo() {
+    return mysqli_get_client_info($this->link);
   }
 
-  public function db_get_server_info() {
-    return $this->driver->mysql_get_server_info();
+  public function getServerInfo() {
+    return mysqli_get_server_info($this->link);
   }
 
-  public function db_get_host_info() {
-    return $this->driver->mysql_get_host_info();
+  public function getHostInfo() {
+    return mysqli_get_host_info($this->link);
   }
 
-  public function db_get_server_stat() {
-    return $this->driver->mysql_stat();
+  public function getServerStat() {
+    return mysqli_stat($this->link);
   }
 
   /**
@@ -511,7 +610,7 @@ class db_mysql {
    */
   public function setDbSettings($dbSettings) {
     $this->dbsettings = $dbSettings;
-    $this->dbName = $this->dbsettings['name'];
+    $this->dbName     = $this->dbsettings['name'];
 
     return $this;
   }
@@ -520,21 +619,34 @@ class db_mysql {
     return $this->dbsettings;
   }
 
+  /**
+   * @param $level
+   *
+   * @return void
+   */
   public function transactionStart($level = '') {
     $this->inTransaction = true;
 
-    $level ? $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};") : false;
+    if ($level && in_array($level, self::TRANSACTION_LEVELS_ALLOWED)) {
+      $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};");
+    }
 
-    $this->db_sql_query('START TRANSACTION;');
+    $this->doquery('START TRANSACTION; /* transaction start */', false);
   }
 
+  /**
+   * @return void
+   */
   public function transactionCommit() {
-    $this->db_sql_query('COMMIT;');
+    $this->doquery('COMMIT; /* transaction commit */');
     $this->inTransaction = false;
   }
 
+  /**
+   * @return void
+   */
   public function transactionRollback() {
-    $this->db_sql_query('ROLLBACK;');
+    $this->doquery('ROLLBACK; /* transaction rollback */');
     $this->inTransaction = false;
   }
 
@@ -562,4 +674,136 @@ class db_mysql {
 
     return $result;
   }
+
+  public static function db_transaction_start($level = '') {
+    self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_NOT_BE);
+
+    SN::$gc->db->transactionStart($level);
+
+    self::$transaction_id++;
+
+    if (SN::$config->db_manual_lock_enabled) {
+      SN::$config->db_loadItem('var_db_manually_locked');
+      SN::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
+    }
+
+    self::$db_in_transaction = true;
+    self::$transactionDepth++;
+    DBStaticUnit::cache_clear();
+
+    return self::$transaction_id;
+  }
+
+  public static function db_transaction_rollback() {
+    // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
+    DBStaticUnit::cache_clear();
+
+    SN::$gc->db->transactionRollback();
+
+    self::$db_in_transaction = false;
+    self::$transactionDepth--;
+
+    return self::$transaction_id;
+  }
+
+  /**
+   * Блокирует указанные таблицу/список таблиц
+   *
+   * @param string|array $tables Таблица/список таблиц для блокировки. Названия таблиц - без префиксов
+   *                             <p>string - название таблицы для блокировки</p>
+   *                             <p>array - массив, где ключ - имя таблицы, а значение - условия блокировки элементов</p>
+   */
+  public static function db_lock_tables($tables) {
+    $tables = is_array($tables) ? $tables : array($tables => '');
+    foreach ($tables as $table_name => $condition) {
+      SN::$db->doquery(
+        "SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : '')
+      );
+    }
+  }
+
+  public static function db_transaction_commit() {
+    self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_BE);
+
+    DBStaticUnit::cache_clear();
+    SN::$gc->db->transactionCommit();
+
+    self::$db_in_transaction = false;
+    self::$transactionDepth--;
+
+    return self::$transaction_id++;
+  }
+
+  /**
+   * Эта функция проверяет статус транзакции
+   *
+   * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
+   *
+   * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
+   *                                <p>null - транзакция НЕ должна быть запущена</p>
+   *                                <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
+   *                                <p>false - всё равно - для совместимости с $for_update</p>
+   *
+   * @return bool Текущий статус транзакции
+   */
+  public static function db_transaction_check($status = self::DB_TRANSACTION_WHATEVER) {
+    $error_msg = false;
+    if ($status && !self::$db_in_transaction) {
+      $error_msg = 'No transaction started for current operation';
+    } elseif ($status === null && self::$db_in_transaction) {
+      $error_msg = 'Transaction is already started';
+    }
+
+    if ($error_msg) {
+      // TODO - Убрать позже
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
+      $backtrace = debug_backtrace();
+      array_shift($backtrace);
+      pdump($backtrace);
+      die($error_msg);
+    }
+
+    return self::$db_in_transaction;
+  }
+
+  /**
+   * Lock specified records in specified tables
+   *
+   * @param array[] $locks ['$tableName' => [$idToLock, ...],],
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function lockRecords($locks) {
+    // Reordering lock order for known tables
+    $newLocks = [];
+    foreach (self::TABLE_LOCK_ORDER as $tableName) {
+      if (array_key_exists($tableName, $locks)) {
+        $newLocks[$tableName] = $locks[$tableName];
+        unset($locks[$tableName]);
+      }
+    }
+    // Adding tables left - their lock order is not important
+    $newLocks += $locks;
+
+    // Compiling SQL queries to lock records
+    $queries = [];
+    foreach ($newLocks as $tableName => $lockedIds) {
+      if (!empty($lockedIds)) {
+        // Detecting primary key name
+        $idFieldName = !empty(static::TABLE_ID_FIELD[$tableName]) ? static::TABLE_ID_FIELD[$tableName] : 'id';
+        // Making ID mysql-safe
+        array_walk($lockedIds, function (&$id) { $id = idval($id); });
+        /** @noinspection SqlResolve */
+        $queries[] = "(SELECT 1 FROM `{{{$tableName}}}` WHERE `{$idFieldName}` IN (" . implode(',', $lockedIds) . ") FOR UPDATE)";
+      }
+    }
+
+//    return !empty($query) ? doquery(implode(' UNION ', $query)) : false;
+    foreach ($queries as $query) {
+      doquery($query);
+    }
+
+    return true;
+  }
+
 }

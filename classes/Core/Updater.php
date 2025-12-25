@@ -1,5 +1,4 @@
-<?php
-/** @noinspection SqlResolve */
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 /**
  * Created by Gorlum 01.03.2019 6:03
@@ -32,7 +31,7 @@ class Updater {
   public $new_version = 0;
   protected $old_server_status;
 
-  // Does updater terminated successfully
+  // Does updater terminate successfully
   public $successTermination = false;
 
   public function __construct() {
@@ -47,7 +46,7 @@ class Updater {
     $this->config->reset();
     $this->config->db_loadAll();
 
-    $this->config->db_prefix    = $this->db->db_prefix; // Оставить пока для совместимости
+    $this->config->db_prefix    = $this->db->db_prefix; // Left for compatibility reasons. Deprecated
     $this->config->cache_prefix = SN::$cache_prefix;
 
     $this->config->debug = 0;
@@ -99,9 +98,7 @@ class Updater {
   public function upd_log_message($message) {
     global $sys_log_disabled, $debug;
 
-    if ($sys_log_disabled) {
-//    print("{$message}<br />");
-    } else {
+    if (!$sys_log_disabled) {
       $this->upd_log .= "{$message}\r\n";
       $debug->warning($message, 'Database Update', 103);
     }
@@ -151,7 +148,7 @@ class Updater {
         $declaration .= $tableOptions;
       }
       $result = $this->upd_do_query("CREATE TABLE IF NOT EXISTS `{$this->config->db_prefix}{$table_name}` {$declaration}");
-      $error  = db_error();
+      $error  = SN::$db->db_error();
       if ($error) {
         die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
       }
@@ -183,11 +180,11 @@ class Updater {
     }
 
     $alters = implode(',', $alters);
-    // foreach($alters as $table_name => )
+    // $alters = preg_replace('/({{(.+)}})/U', 'lvh1_$2', $alters);
     $qry = "ALTER TABLE {$this->config->db_prefix}{$table} {$alters};";
 
     $result = $this->upd_do_query($qry);
-    $error  = db_error();
+    $error  = SN::$db->db_error();
     if ($error) {
       die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
     }
@@ -202,11 +199,70 @@ class Updater {
     $this->db->schema()->clear();
   }
 
+  /**
+   * @param $table
+   * @param $index
+   *
+   * @return bool|mysqli_result|null
+   */
+  public function indexDropIfExists($table, $index) {
+    return $this->upd_alter_table($table, ["DROP KEY `{$index}`",], $this->isIndexExists($table, $index));
+  }
+
+  /**
+   * @param $table
+   * @param $constraint
+   *
+   * @return bool|mysqli_result|null
+   */
+  public function constraintDropIfExists($table, $constraint) {
+    return $this->upd_alter_table($table, ["DROP FOREIGN KEY `{$constraint}`",], $this->isConstrainExists($table, $constraint));
+  }
+
+  /**
+   * Replace index in table
+   *
+   * @param string    $table  Table name
+   * @param string    $index  Index name
+   * @param string[]  $fields Field names to make index on
+   * @param ?callable $dropForeign
+   * @param ?callable $createForeign
+   *
+   * @return void
+   */
+  public function indexReplace($table, $index, $fields, $dropForeign = null, $createForeign = null) {
+    $this->transactionStart();
+    $this->upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
+
+    if (is_callable($dropForeign)) {
+      $dropForeign();
+    }
+
+    $this->indexDropIfExists($table, $index);
+    $queryFields = implode(',', array_map(function ($value) { return "`{$value}`"; }, $fields));
+    if ($queryFields) {
+      $this->upd_alter_table(
+        $table,
+        ["ADD KEY `{$index}` (" . $queryFields . ")"],
+        !$this->isIndexExists($table, $index)
+      );
+    }
+
+    if (is_callable($createForeign)) {
+      $createForeign();
+    }
+
+    $this->upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
+    $this->transactionCommit();
+  }
+
   public function upd_add_more_time($time = 0) {
     global $sys_log_disabled;
 
-    $time = $time ? $time : $this->config->upd_lock_time;
-    !$sys_log_disabled ? $this->config->pass()->var_db_update_end = SN_TIME_NOW + $time : false;
+    $time = $time ?: $this->config->upd_lock_time;
+    if (!$sys_log_disabled) {
+      $this->config->pass()->var_db_update_end = SN_TIME_NOW + $time;
+    }
     set_time_limit($time);
   }
 
@@ -261,7 +317,7 @@ class Updater {
         $query = str_replace("{{{$tableName}}}", $this->db->db_prefix . $tableName, $query);
       }
     }
-    $result = $this->db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+    $result = $this->db->db_sql_query($query) or die('Query error for ' . $query . ': ' . SN::$db->db_error());
 
     return $result;
   }
@@ -281,7 +337,7 @@ class Updater {
       die(
       'Internal error! Updater detects DB version greater then can be handled!<br />
     Possible you have out-of-date SuperNova version<br />
-    Please upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>'
+    Please upgrade your server from <a href="https://github.com/supernova-ws/SuperNova">GIT repository</a>'
       );
     }
   }
@@ -316,6 +372,20 @@ class Updater {
 
   public function isIndexExists($table, $index) {
     return $this->db->schema()->isIndexExists($table, $index);
+  }
+
+  public function isConstrainExists($table, $index) {
+    return $this->db->schema()->isConstrainExists($table, $index);
+  }
+
+  public function transactionStart() {
+//    $this->upd_do_query('START TRANSACTION;', true);
+    $this->db->transactionStart();
+  }
+
+  public function transactionCommit() {
+//    $this->upd_do_query('COMMIT;', true);
+    $this->db->transactionCommit();
   }
 
 }

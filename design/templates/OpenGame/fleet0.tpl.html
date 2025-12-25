@@ -79,7 +79,10 @@ var speed_factor   = {speed_factor};
       <!-- BEGIN ships -->
         <tr>
           <th class="{$SHIP_NO_SLOTS_SIZE_CLASS}" colspan="{$SHIP_COLSPAN}">
-            <div class="ship_miniature_container {$FLEET_SHIP_SELECT_OLD}" style="background-image: url({I_[ships.ID]})" go="info" unit_id="{ships.ID}">
+            <style>
+              .ship_miniature_container[unit_id="{ships.ID}"] {background-image: url({I_[ships.ID]});}
+            </style>
+            <div class="ship_miniature_container {$FLEET_SHIP_SELECT_OLD}" go="info" unit_id="{ships.ID}">
               <div class="a75 ship_miniature_name">
                 {ships.NAME}
               </div>

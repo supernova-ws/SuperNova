@@ -444,13 +444,13 @@ input[type=text].coordinate {
 }
 
 .i_icon_visible {
-  background-image: url("../../images/icon_eye_visible.png");
+  background-image: url("/design/images/icon_eye_visible.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 .i_icon_invisible {
-  background-image: url("../../images/icon_eye_invisible.png");
+  background-image: url("/design/images/icon_eye_invisible.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -460,6 +460,10 @@ input[type=text].coordinate {
   height: 1.3em;
   width: 1.3em;
   /*border: none;*/
+}
+
+.menu_icons { /* New menu icon*/
+  margin-right: 0.5em;
 }
 
 
@@ -2363,10 +2367,10 @@ body:not(.no_border_image) .border_image_large
 
   border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;
 
-  -moz-border-image:    url("../../../design/images/border.png") 24 11 25 25 round round;
-  -o-border-image:      url("../../../design/images/border.png") 24 11 25 25 round round;
-  -webkit-border-image: url("../../../design/images/border.png") 24 11 25 25 round round;
-  border-image:         url("../../../design/images/border.png") 24 11 25 25 round round;
+  -moz-border-image:    url("/design/images/border.png") 24 11 25 25 round round;
+  -o-border-image:      url("/design/images/border.png") 24 11 25 25 round round;
+  -webkit-border-image: url("/design/images/border.png") 24 11 25 25 round round;
+  border-image:         url("/design/images/border.png") 24 11 25 25 round round;
 }
 
 body:not(.no_border_image) .border_image_small:not(.no_border_image), body:not(.no_border_image) .ui-dialog
@@ -2376,10 +2380,10 @@ body:not(.no_border_image) .border_image_small:not(.no_border_image), body:not(.
 
   border-width: 1em 1em 1em 1em;
 
-  -moz-border-image:    url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  -o-border-image:      url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  -webkit-border-image: url("../../../design/images/border_small.png") 11 11 11 11 round round;
-  border-image:         url("../../../design/images/border_small.png") 11 11 11 11 round round;
+  -moz-border-image:    url("/design/images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("/design/images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("/design/images/border_small.png") 11 11 11 11 round round;
+  border-image:         url("/design/images/border_small.png") 11 11 11 11 round round;
 }
 
 
@@ -3147,10 +3151,10 @@ tr.error_bg > td, tr.error_bg > th,
   color: #9900ff;
 }
 .birthday:before {
-  content: url("../../images/birthday.png");
+  content: url("/design/images/birthday.png");
 }
 .vacation:before { /* Replaces .birthday ! */
-  content: url("../../images/icon_vacation.png");
+  content: url("/design/images/icon_vacation.png");
 }
 .vacation {
   color: cyan;
@@ -3267,8 +3271,9 @@ tr.error_bg > td, tr.error_bg > th,
   background-color: #446666;
 }
 .msg_admin, .msg_admin * {
-  color: #9900ff !important;
-  background-color: #ffffff;
+  /*color: #9900ff;*/
+  color: #5500aa;
+  background-color: #aaaaaa;
 }
 .new_message, .new_message * {
   color: #000000;
@@ -3477,7 +3482,7 @@ td,
 .spy_table tr.subheader > td, .spy_table tr.subheader > th {
   background-color: #233452;
 }
-.th, .header {
+.th, .header,  .header > th {
   background-color:  #132544; /*rgba(0,0,0,0.35);*/
 }
 
@@ -3971,7 +3976,7 @@ td.error_message {
   display: inline-block;
   height: 1.454545em;
   width: 1.454545em;
-  background-image: url("../../images/ranks_sprite_small.png");
+  background-image: url("/design/images/ranks_sprite_small.png");
   /*height: 1.5em;*/
   /*width: 1.5em;*/
 }
@@ -3981,7 +3986,7 @@ td.error_message {
 }
 .rank {
   background-size: 1000% 600%;
-  background-image: url("../../images/ranks_sprite.png");
+  background-image: url("/design/images/ranks_sprite.png");
 }
 .rank.rank-0 {background-position:    0  0;}
 .rank.rank-1 {background-position: -200% 0;}
@@ -4084,4 +4089,45 @@ td.error_message {
 {
   text-wrap: none;
   white-space: nowrap;
+}
+
+
+.ui-icon,
+.ui-widget-content .ui-icon {
+	background-image: url("/design/css/images/ui-icons_e6ebfb_256x240.png");
+}
+.ui-widget-header .ui-icon {
+	background-image: url("/design/css/images/ui-icons_13233E_256x240.png");
+}
+.ui-state-default .ui-icon {
+	background-image: url("/design/css/images/ui-icons_e6ebfb_256x240.png");
+}
+.ui-state-hover .ui-icon,
+.ui-state-focus .ui-icon {
+	background-image: url("/design/css/images/ui-icons_e6ebfb_256x240.png");
+}
+.ui-state-active .ui-icon {
+	background-image: url("/design/css/images/ui-icons_e6ebfb_256x240.png");
+}
+.ui-state-highlight .ui-icon {
+	background-image: url("/design/css/images/ui-icons_2e83ff_256x240.png");
+}
+.ui-state-error .ui-icon,
+.ui-state-error-text .ui-icon {
+	background-image: url("/design/css/images/ui-icons_ff0000_256x240.png");
+}
+
+table.novapedia .unit_description {
+  display: table-row;
+  position: relative;
+  margin: 0.5em;
+}
+table.novapedia .unit_image_large {
+  max-width: 50em;
+}
+table.novapedia .unit_image_small {
+  border: 0;
+  height: 128px;
+  width: 128px;
+  margin-right: 7px;
 }

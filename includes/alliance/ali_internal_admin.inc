@@ -1,6 +1,7 @@
 <?php
 
 use Alliance\DBStaticAlly;
+use DBAL\db_mysql;
 use Old\Avatar;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
@@ -33,7 +34,7 @@ if(sys_get_param_str('isSaveOptions')) {
   $ally_changeset = array();
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
     $new_tag_unsafe = $new_tag;
-    $new_tag = db_escape($new_tag);
+    $new_tag = SN::$db->db_escape($new_tag);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_tag($new_tag);
     if(!empty($isTaggedAllyExists)) {
       SnTemplate::messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
@@ -44,7 +45,7 @@ if(sys_get_param_str('isSaveOptions')) {
 
   if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
     $new_name_unsafe = $new_name;
-    $new_name = db_escape($new_name);
+    $new_name = SN::$db->db_escape($new_name);
     $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_name($new_name);
     if(!empty($isTaggedAllyExists)) {
       SnTemplate::messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
@@ -53,11 +54,11 @@ if(sys_get_param_str('isSaveOptions')) {
   }
 
   if(($new_owner_rank = sys_get_param_str_unsafe('owner_range', $ally['ally_owner_range'])) && $new_owner_rank != $ally['ally_owner_range']) {
-    $new_owner_rank = db_escape($new_owner_rank);
+    $new_owner_rank = SN::$db->db_escape($new_owner_rank);
     $ally_changeset[] = "`ally_owner_range` = '{$new_owner_rank}'";
   }
   if(($new_web = sys_get_param_str_unsafe('web', $ally['ally_web'])) && $new_web != $ally['ally_web']) {
-    $new_web = db_escape($new_web);
+    $new_web = SN::$db->db_escape($new_web);
     $ally_changeset[] = "`ally_web` = '{$new_web}'";
   }
   $new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow']);
@@ -88,14 +89,14 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
     SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
 
-  $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
+  $newLeader = db_user_by_id($idNewLeader, false);
   if($newLeader['ally_id'] == $user['ally_id'])
   {
-    sn_db_transaction_start();
+    db_mysql::db_transaction_start();
     db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
     doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
     db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
-    sn_db_transaction_commit();
+    db_mysql::db_transaction_commit();
     sys_redirect('alliance.php');
   }
 }
@@ -105,10 +106,10 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
   {
     SnTemplate::messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
-  sn_db_transaction_start();
+  db_mysql::db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
   db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
   sys_redirect('alliance.php');
 };
 

@@ -1,11 +1,17 @@
 <?php
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection SqlResolve */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+
 /**
  * Created by Gorlum 05.03.2018 20:42
  */
 
 namespace Player;
 
+use DBAL\db_mysql;
 use Fleet\DbFleetStatic;
+use mysqli_result;
 use SN;
 use Planet\DBStaticPlanet;
 
@@ -18,6 +24,7 @@ use Planet\DBStaticPlanet;
 class PlayerStatic {
 
   public static function getPlayerProduction($userId) {
+    /** @noinspection SqlResolve */
     return doquery("       
        SELECT
          sum(metal_perhour) + sum(crystal_perhour) * 2 + sum(deuterium_perhour) * 4 AS `total`,
@@ -44,8 +51,8 @@ class PlayerStatic {
    */
   public static function DeleteSelectedUser($UserID) {
     $internalTransaction = false;
-    if (!sn_db_transaction_check(false)) {
-      sn_db_transaction_start();
+    if (!db_mysql::db_transaction_check(false)) {
+      db_mysql::db_transaction_start();
 
       $internalTransaction = true;
     }
@@ -53,8 +60,10 @@ class PlayerStatic {
     $TheUser = db_user_by_id($UserID);
 
     if (!empty($TheUser['ally_id'])) {
-      $TheAlly = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
+      /** @noinspection SqlResolve */
+      $TheAlly                 = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true);
       $TheAlly['ally_members'] -= 1;
+      /** @noinspection SqlResolve */
       doquery("UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
 
 //      if ( $TheAlly['ally_members'] > 0 ) {
@@ -92,12 +101,25 @@ class PlayerStatic {
     dbUpdateUsersCount(SN::$config->pass()->users_amount - 1);
 
     if ($internalTransaction) {
-      sn_db_transaction_commit();
+      db_mysql::db_transaction_commit();
     }
   }
 
   public static function dbUpdateBotStatus($botType, $onlineTime = SN_TIME_NOW) {
     SN::$db->doquery("UPDATE `{{users}}` SET `onlinetime` = " . $onlineTime . " WHERE `user_bot` = " . $botType);
+  }
+
+  /**
+   * @param string $query
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public static function dbSelectOne($query) {
+    $query .= ' LIMIT 1';
+    $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+
+    return SN::$db->doquery($query, true);
   }
 
 }

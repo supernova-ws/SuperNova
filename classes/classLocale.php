@@ -145,7 +145,7 @@ class classLocale implements ArrayAccess {
       doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
       foreach ($this->stat_usage_new as &$value) {
         foreach ($value as &$value2) {
-          $value2 = '"' . db_escape($value2) . '"';
+          $value2 = '"' . SN::$db->db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) . ')';
       }
@@ -296,11 +296,11 @@ class classLocale implements ArrayAccess {
 
     SN::log_file("locale.switch: Trying to switch language to '{$language_new}'");
 
-    if ($language_new == $this->active) {
-      SN::log_file("locale.switch: New language '{$language_new}' is equal to current language '{$this->active}' - EXIT", -1);
-
-      return false;
-    }
+//    if ($language_new == $this->active) {
+//      SN::log_file("locale.switch: New language '{$language_new}' is equal to current language '{$this->active}' - EXIT", -1);
+//
+//      return false;
+//    }
 
     $this->active            = $language = $language_new;
     $this->cache_prefix_lang = $this->cache_prefix . $this->active . '_';

@@ -1,6 +1,6 @@
 <h1>{PAGE_HEADER}</h1>
 
-<table class="c_l" width="519">
+<table class="c_l novapedia" width="519">
   <tr>
     <th class="c_l" colspan="3">
       {UNIT_TYPE_NAME} - {UNIT_NAME}
@@ -12,16 +12,16 @@
       <!-- IF UNIT_IMAGE_LARGE -->
       <div>
         <div>
-          <img src="{I_[UNIT_ID]_large}" align="top" border="0" style="max-width: 50em">
+          <img src="{I_[UNIT_ID]_large}" class="unit_image_large" unit_id="{UNIT_ID}" align="top" border="0">
         </div>
 
-        <div style="display: table-row; position: relative; margin: 0.5em;">
+        <div class="unit_description">
           {UNIT_DESCRIPTION}
         </div>
       </div>
       <!-- ELSE -->
       <div style="display: table-row; position: relative; margin: 7px;">
-        <img src="{I_[UNIT_ID]}" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
+        <img src="{I_[UNIT_ID]}" class="fl unit_image_small" unit_id="{UNIT_ID}" align="top"/>
         {UNIT_DESCRIPTION}
       </div>
       <!-- ENDIF -->

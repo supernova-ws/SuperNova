@@ -6,9 +6,11 @@
 namespace Alliance;
 
 use Core\GlobalContainer;
+use DBAL\db_mysql;
 use \Exception;
 use \HelperString;
 use Player\RecordPlayer;
+use SN;
 
 /**
  * Class Alliance
@@ -95,7 +97,7 @@ class Alliance extends RecordAlliance {
     }
 
     if (!isset($user['ally']['player'])) {
-      $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
+      $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, false);
     }
   }
 
@@ -148,7 +150,7 @@ class Alliance extends RecordAlliance {
    */
   public function pass(AllianceMember $newOwnerMember) {
     try {
-      sn_db_transaction_start();
+      db_mysql::db_transaction_start();
 
       if ($newOwnerMember->isOwner()) {
         throw new Exception('{ Указанный пользователь уже является владельцем указанного Альянса }', ERR_NOTICE);
@@ -169,9 +171,9 @@ class Alliance extends RecordAlliance {
         throw new Exception('{ Ошибка изменения владельца Альянса }', ERR_ERROR);
       }
 
-      sn_db_transaction_commit();
+      db_mysql::db_transaction_commit();
     } catch (Exception $e) {
-      sn_db_transaction_rollback();
+      db_mysql::db_transaction_rollback();
 
       throw $e;
     }

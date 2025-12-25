@@ -163,7 +163,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     // inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
     inputs.filter(':radio').addClass("ui-corner-all ui-state-default ui-textfield");
     jQuery("button:not(.do-not-skin):not(.do-not-skin-child *)").button().addClass('ui-textfield');
-    jQuery('textarea:not(#ally_text):not(.do-not-skin):not(.do-not-skin-child *)').button().addClass('ui-textfield ui-input-text').off('keydown');
+    // jQuery('textarea:not(#ally_text):not(.do-not-skin):not(.do-not-skin-child *)').button().addClass('ui-textfield ui-input-text').off('keydown');
 
     //inputs.filter(':checkbox, :radio').checkator();
   }

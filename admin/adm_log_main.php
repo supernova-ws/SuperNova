@@ -31,24 +31,54 @@ elseif(sys_get_param_str('deleteall') == 'yes')
 //  doquery("TRUNCATE TABLE `{{logs}}`");
 }
 
+/**
+ * @param $value
+ *
+ * @return string|null
+ */
+function admLogRender($value) {
+  if (is_array($value)) {
+    $result = '<table class="no_border_image var_in">';
+    foreach ($value as $key => $val) {
+      $result .= '<tr><td>' . $key . '</td><td>' . var_export($val, true) . '</td></tr>';
+    }
+    $result .= '</table>';
+  } else {
+    $result = var_export($value, true);
+  }
+
+  return $result;
+}
+
 if($detail = sys_get_param_id('detail'))
 {
   $template = SnTemplate::gettemplate('admin/adm_log_main_detail', true);
 
   $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
-  $error_dump = unserialize($errorInfo['log_dump']);
+  $error_dump = json_decode($errorInfo['log_dump'], true);
   if(is_array($error_dump))
   {
     foreach ($error_dump as $key => $value)
     {
-      $v = array(
-        'VAR_NAME' => $key,
-        'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
-      );
+      // Parsing user options to readable state
+      if($key == 'user' ) {
+        if(!empty($value['options'])) {
+          $value['options'] = explode(USER_OPTIONS_SPLIT, $value['options']);
+        }
+      }
 
-      $template->assign_block_vars('vars', $v);
+      $val = $key == 'query_log' ? $value : admLogRender($value);
+
+      $template->assign_block_vars('vars', [
+        'VAR_NAME' => $key,
+        'VAR_VALUE' => $val,
+      ]);
     }
   }
+
+  // Replacing LF with HTML <br /> tag for better readability
+  $errorInfo['log_text'] = str_replace("\n", '<br />', $errorInfo['log_text']);
+
   $template->assign_vars($errorInfo);
 }
 else
@@ -60,7 +90,8 @@ else
   while($u = db_fetch($query))
   {
     $i++;
-    $v = array();
+    $v = [];
+    $u['log_text'] = str_replace("\n", "<br />", $u['log_text']);
     foreach($u as $key => $value)
     {
       $v[strtoupper($key)] = $value;

@@ -114,9 +114,13 @@ class Lock {
    * Removing lock
    */
   public function unLock($selfTransaction = true) {
-    $selfTransaction ? $this->db->transactionStart() : false;
+    if ($selfTransaction) {
+      $this->db->transactionStart();
+    }
     $this->configWrite(0);
-    $selfTransaction ? $this->db->transactionCommit() : false;
+    if ($selfTransaction) {
+      $this->db->transactionCommit();
+    }
 
     return $this;
   }

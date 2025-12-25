@@ -3,25 +3,27 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+use DBAL\db_mysql;
 use DBAL\OldDbChangeSet;
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;
 use Unit\DBStaticUnit;
 
 if(SN_IN_FLEET !== true) {
-  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+  SN::$debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
 function sn_fleet_page3() {
-  global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
+  global $missiontype, $target_mission, $fleetarray, $planetrow;
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
-  global $speed_percent, $distance, $fleet_speed, $user, $debug;
+  global $speed_percent, $distance, $fleet_speed, $user;
   global $duration;
+
+  $lang = SN::$lang;
 
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
-  // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
   if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
     $errorlist .= $lang['fl_limit_galaxy'];
@@ -48,8 +50,23 @@ function sn_fleet_page3() {
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
 
-  sn_db_transaction_start();
+  // Preparing to lock both source and target users and planets
+  $recordsToLock = [
+    'users'   => [$user['id'],] + (!empty($TargetPlanet['id_owner']) ? [1 => $TargetPlanet['id_owner'],] : []),
+    'planets' => [$planetrow['id'],] + (!empty($TargetPlanet['id']) ? [1 => $TargetPlanet['id'],] : []),
+  ];
+  // Adding incoming aggressive fleets from current user to this planet - to lock those fleets. They will be needed later in bashing check
+  if (!empty($TargetPlanet) && !empty($fleetsBashing = DbFleetStatic::fleet_list_bashing($user['id'], $TargetPlanet))) {
+    foreach($fleetsBashing as $bashingFleet) {
+      $recordsToLock['fleets'][] = $bashingFleet['fleet_id'];
+    }
+  }
 
+  db_mysql::db_transaction_start();
+  // Locking user and planet records
+  SN::$gc->db->lockRecords($recordsToLock);
+
+  // Refreshing current user and planet data
   $user = db_user_by_id($user['id'], true);
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
 
@@ -105,7 +122,7 @@ function sn_fleet_page3() {
   }
 
   if ($errorlist) {
-    sn_db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
     SnTemplate::messageBox("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
@@ -168,7 +185,7 @@ function sn_fleet_page3() {
   if($max_duration) {
     $StayDuration = sys_get_param_id('missiontime');
     if($StayDuration > $max_duration || $StayDuration < 1) {
-      $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
+      SN::$debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
     $StayDuration = ceil($StayDuration * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
@@ -299,7 +316,7 @@ function sn_fleet_page3() {
     'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
   ));
 
-  sn_db_transaction_commit();
+  db_mysql::db_transaction_commit();
   $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);

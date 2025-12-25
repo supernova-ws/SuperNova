@@ -1,5 +1,6 @@
 <?php
 
+use DBAL\db_mysql;
 use Planet\DBStaticPlanet;
 
 /**
@@ -12,28 +13,28 @@ use Planet\DBStaticPlanet;
 function sys_user_vacation($user) {
   global $config;
 
-  if(sys_get_param_str('vacation') == 'leave') {
+  if (sys_get_param_str('vacation') == 'leave') {
     if ($user['vacation'] < SN_TIME_NOW) {
-      $user['vacation'] = 0;
+      $user['vacation']      = 0;
       $user['vacation_next'] = SN_TIME_NOW + $config->player_vacation_timeout;
       db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
     }
   }
 
-  if($user['vacation']) {
+  if ($user['vacation']) {
     // sn_sys_logout(false, true);
     // core_auth::logout(false, true);
 
     $template = SnTemplate::gettemplate('vacation', true);
 
     $template->assign_vars(array(
-      'MENU' => false,
+      'MENU'   => false,
       'NAVBAR' => false,
 
-      'NAME' => $user['username'],
+      'NAME'         => $user['username'],
       'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
-      'CAN_LEAVE' => $user['vacation'] <= SN_TIME_NOW,
-      'RANDOM' => mt_rand(1, 2),
+      'CAN_LEAVE'    => $user['vacation'] <= SN_TIME_NOW,
+      'RANDOM'       => mt_rand(1, 2),
     ));
 
     SnTemplate::display($template);
@@ -56,13 +57,13 @@ function sys_is_multiaccount($user1, $user2) {
  * @param string $reason
  */
 function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
-  $ban_current = db_user_by_id($banned['id'], false, 'banaday');
-  $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
+  $ban_current = db_user_by_id($banned['id'], false);
+  $ban_until   = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
   db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
+  $banned['username'] = SN::$db->db_escape($banned['username']);
+  $banner['username'] = SN::$db->db_escape($banner['username']);
   doquery(
     "INSERT INTO
       `{{banned}}`
@@ -91,9 +92,9 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  $reason = db_escape($reason);
+  $banned['username'] = SN::$db->db_escape($banned['username']);
+  $banner['username'] = SN::$db->db_escape($banner['username']);
+  $reason             = SN::$db->db_escape($reason);
   doquery(
     "INSERT INTO `{{banned}}`
     SET
@@ -112,7 +113,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
  * @param string $username_unsafe
  * @param string $email_unsafe
  * @param array  $options
- * [
+ *   [
  *   'user_bot'                 => (int),
  *   'total_points'             => (float),
  *   'language_iso'             => (string),
@@ -125,26 +126,26 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
  *   'system'                   => (int),
  *   'planet'                   => (int),
  *   'planet_options'           => (array),
- * ]
+ *   ]
  *
  * @return array|false
  */
 function player_create($username_unsafe, $email_unsafe, $options) {
-  sn_db_transaction_check(true);
+  db_mysql::db_transaction_check(true);
 
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
 
   empty($options['planet_options']) ? $options['planet_options'] = [] : false;
 
   $field_set = array(
-    'server_name' => SN_ROOT_VIRTUAL,
+    'server_name'   => SN_ROOT_VIRTUAL,
     'register_time' => SN_TIME_NOW,
     'news_lastread' => SN_TIME_NOW,
-    'user_bot' => $options['user_bot'] = empty($options['user_bot']) ? USER_BOT_PLAYER : $options['user_bot'],
+    'user_bot'      => $options['user_bot'] = empty($options['user_bot']) ? USER_BOT_PLAYER : $options['user_bot'],
 
     'username' => $username_unsafe,
-    'email' => $email_unsafe,
-    'email_2' => $email_unsafe,
+    'email'    => $email_unsafe,
+    'email_2'  => $email_unsafe,
 
     'lang' => $options['language_iso'] ? $options['language_iso'] : DEFAULT_LANG,
     'skin' => DEFAULT_SKIN_NAME,
@@ -161,29 +162,29 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
   \DBAL\DbQuery::build()->setTable('users')->setValues($field_set)->doInsert();
-  $user_new = db_user_by_id(db_insert_id());
+  $user_new = db_user_by_id(SN::$db->db_insert_id());
 
-  if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
+  if (!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = SN::$config->LastSettedGalaxyPos;
     $options['system'] = SN::$config->LastSettedSystemPos;
-    $segment_size = floor(SN::$config->game_maxPlanet / 3);
-    $segment = floor(SN::$config->LastSettedPlanetPos / $segment_size);
+    $segment_size      = floor(SN::$config->game_maxPlanet / 3);
+    $segment           = floor(SN::$config->LastSettedPlanetPos / $segment_size);
     $segment++;
     $options['planet'] = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
 
-    while(true) {
-      if($options['planet'] > SN::$config->game_maxPlanet) {
+    while (true) {
+      if ($options['planet'] > SN::$config->game_maxPlanet) {
         $options['planet'] = mt_rand(0, $segment_size - 1) + 1;
         $options['system']++;
       }
-      if($options['system'] > SN::$config->game_maxSystem) {
+      if ($options['system'] > SN::$config->game_maxSystem) {
         $options['system'] = 1;
         $options['galaxy']++;
       }
       $options['galaxy'] > SN::$config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
 
-      $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
-      if(!$galaxy_row['id']) {
+      $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET);
+      if (!$galaxy_row['id']) {
         SN::$config->db_saveItem(array(
           'LastSettedGalaxyPos' => $options['galaxy'],
           'LastSettedSystemPos' => $options['system'],
@@ -201,10 +202,10 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
-  $username_safe = db_escape($username_unsafe);
+  $username_safe = SN::$db->db_escape($username_unsafe);
   doquery("REPLACE INTO `{{player_name_history}}` SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
 
-  if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
+  if (!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
     doquery("INSERT INTO `{{referrals}}` SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
   }
 

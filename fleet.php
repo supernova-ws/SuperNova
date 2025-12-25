@@ -22,7 +22,7 @@
   V1.0 Created by Perberos. All rights reversed (C) 2006
 */
 
-global $user, $planetrow, $lang;
+global $user, $planetrow, $lang, $template_result;
 
 use Fleet\DbFleetStatic;
 use Planet\DBStaticPlanet;

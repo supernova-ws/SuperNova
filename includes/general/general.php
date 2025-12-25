@@ -1,7 +1,7 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
+/** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+/** @noinspection PhpUnusedParameterInspection */
 
-
-use Fleet\MissionExplore;
 
 require_once('general_math.php');
 require_once('general_compatibility.php');
@@ -31,6 +31,7 @@ require_once('general_pname.php');
 function sn_function_call($func_name, $func_arg = array()) {
   global $functions; // All data in $functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
 
+  $result = null;
   if (is_array($functions[$func_name]) && !is_callable($functions[$func_name])) {
     // Chain-callable functions should be made as following:
     // 1. Never use incomplete calls with parameters "by default"
@@ -61,6 +62,8 @@ function sn_function_call($func_name, $func_arg = array()) {
  * @param        $template
  * @param string $hook_type - тип хука 'model' или 'view'
  * @param string $page_name - имя страницы, для которого должен был быть выполнен хук
+ *
+ * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
  */
 function execute_hooks(&$hook_list, &$template, $hook_type = null, $page_name = null) {
   if (!empty($hook_list)) {
@@ -96,6 +99,7 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
     $override_with = &$function_data['callable'];
   }
 
+  /** @noinspection PhpUndefinedVariableInspection */
   $overwrite = $override_with[0] == '*';
   $prepend   = $override_with[0] == '+';
   if ($overwrite || $prepend) {
@@ -130,27 +134,29 @@ function sys_handler_add_one(&$functions, $function_name, $function_data, $class
 
 
 // FLEET FUNCTIONS -----------------------------------------------------------------------------------------------------
-/**
- * @param MissionExplore $result
- *
- * @return MissionExplore
- */
-function flt_mission_explore_addon_object($result) { return sn_function_call('flt_mission_explore_addon_object', [$result]); }
-
-/**
- * @param MissionExplore $result
- *
- * @return MissionExplore
- */
-function sn_flt_mission_explore_addon_object($result) {
-  return $result;
-}
+///**
+// * @param MissionExplore $result
+// *
+// * @return MissionExplore
+// */
+//function flt_mission_explore_addon_object($result) { return sn_function_call('flt_mission_explore_addon_object', [$result]); }
+//
+///**
+// * @param MissionExplore $result
+// *
+// * @return MissionExplore
+// */
+//function sn_flt_mission_explore_addon_object($result) {
+//  return $result;
+//}
 
 // FILE FUNCTIONS ----------------------------------------------------------------------------------------------------------------
+/** @noinspection PhpUnused */
 function sys_file_read($filename) {
   return @file_get_contents($filename);
 }
 
+/** @noinspection PhpUnused */
 function sys_file_write($filename, $content) {
   return @file_put_contents($filename, $content, FILE_APPEND);
 }
@@ -211,18 +217,6 @@ function get_game_speed($plain = false) {
 }
 
 /**
- * Get fleet flying speed aka... hmph... fleet flying speed
- *
- * @param bool $plain
- *
- * @return float|int
- */
-function flt_server_flight_speed_multiplier($plain = false) {
-  return getValueFromStorage(UNIT_SERVER_SPEED_FLEET, $plain);
-}
-
-
-/**
  * Получение стоимости ММ в валюте сервера
  *
  * @param bool|false $plain
@@ -236,7 +230,7 @@ function get_mm_cost($plain = false) {
 }
 
 function sn_get_mm_cost($plain = false, &$result) {
-  return $result = SN::$config->payment_currency_exchange_mm_ ? SN::$config->payment_currency_exchange_mm_ : 20000;
+  return $result = SN::$config->payment_currency_exchange_mm_ ?: 20000;
 }
 
 /**
@@ -251,9 +245,7 @@ function get_exchange_rate($currency_symbol) {
   $config_field    = 'payment_currency_exchange_' . $currency_symbol;
 
   // Заворачиваем получение стоимости ММ через перекрываемую процедуру
-  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : SN::$config->$config_field);
-
-  return $exchange_rate;
+  return floatval($currency_symbol == 'mm_' ? get_mm_cost() : SN::$config->$config_field);
 }
 
 function sys_stat_get_user_skip_list() {
@@ -291,12 +283,32 @@ function market_get_autoconvert_cost() {
   return SN::$config->rpg_cost_exchange ? SN::$config->rpg_cost_exchange * 3 : 3000;
 }
 
+/**
+ * @param $powerup_id
+ * @param $powerup_unit
+ * @param $level_max
+ * @param $plain
+ *
+ * @return mixed|null
+ */
 function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false) {
   $result = null;
 
+  /** @see sn_sn_powerup_get_price_matrix(), FestivalHighspotDiscountMatrix::sn_powerup_get_price_matrix_linear() */
   return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result));
 }
 
+/**
+ * @param $powerup_id
+ * @param $powerup_unit
+ * @param $level_max
+ * @param $plain
+ * @param $result
+ *
+ * @return array
+ *
+ * @see sn_powerup_get_price_matrix()
+ */
 function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
   global $sn_powerup_buy_discounts;
 
@@ -427,6 +439,8 @@ function print_rr($var, $capture = false) {
   } else {
     print($print);
   }
+
+  return $print;
 }
 
 /**
@@ -481,6 +495,7 @@ function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
   $body = str_replace("\n", "\r\n", $body);
 
   if ($html) {
+    /** @noinspection HtmlRequiredLangAttribute, HtmlRequiredTitleElement */
     $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
@@ -511,7 +526,7 @@ function sn_version_compare($ver1, $ver2) {
  *
  * For typecasting
  *
- * @return null|player_award
+ * @return null|player_award|\Modules\sn_module
  */
 function moduleAward() {
   return SN::$gc->modules->getModule('player_award');
@@ -522,7 +537,7 @@ function moduleAward() {
  *
  * For typecasting
  *
- * @return null|unit_captain
+ * @return null|unit_captain|\Modules\sn_module
  */
 function moduleCaptain() {
   return SN::$gc->modules->getModule('unit_captain');

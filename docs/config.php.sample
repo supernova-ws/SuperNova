@@ -2,7 +2,7 @@
 if(!defined("INSIDE")){ die("attemp hacking"); }
 
 $dbsettings = array(
-  'sn_driver'  => 'db_mysql_v5',    // db_mysql_v5 - MySQLi, db_mysql_v4 - простой MySQL. Можно написать свой драйвер
+  'sn_driver'  => 'db_mysql_v5',    // db_mysql_v5 - MySQLi. Можно написать свой драйвер
   "server"     => "localhost",      // MySQL сервер.
   "user"       => "supernova_user", // Логин доступа MySQL сервера.
   "pass"       => "MYSQL_PASSWORD", // Пароль доступа MySQL сервера.

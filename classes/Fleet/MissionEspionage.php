@@ -5,7 +5,7 @@
 
 namespace Fleet;
 
-use \SN;
+use SN;
 use Planet\DBStaticPlanet;
 
 class MissionEspionage extends MissionData {
@@ -21,20 +21,28 @@ class MissionEspionage extends MissionData {
     $lang = SN::$lang;
     $fleet_array = sys_unit_str2arr($this->fleet['fleet_array']);
 
-    if (isset($this->dst_user['id']) && isset($this->dst_planet['id']) && isset($this->src_user['id']) && $fleet_array[SHIP_SPY] >= 1) {
+    if (isset($this->dstUserRow['id']) && isset($this->dstPlanetRow['id']) && isset($this->fleetOwnerRow['id']) && $fleet_array[SHIP_SPY] >= 1) {
       // TODO: Наемники, губернаторы, артефакты и прочее имперское
       $this->doSpying();
 
-      msg_send_simple_message($this->src_user['id'], '', $this->fleet['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'],
+      msg_send_simple_message($this->fleetOwnerRow['id'], '', $this->fleet['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'],
         json_encode($this->missionReport, JSON_UNESCAPED_UNICODE), STRING_NEED_ESCAPING, false, STRING_IS_JSON_ENCODED);
 
-      $this->target_message = "{$lang['sys_mess_spy_enemy_fleet']} {$this->src_planet['name']} " . uni_render_coordinates_href($this->src_planet, '', 3);
-      $this->target_message .= " {$lang['sys_mess_spy_seen_at']} {$this->dst_planet['name']} " . uni_render_coordinates($this->dst_planet);
-      if($this->missionReport->isSpyDetected()) {
+      $this->target_message = "{$lang['sys_mess_spy_enemy_fleet']} {$this->srcPlanetRow['name']} " . uni_render_coordinates_href($this->srcPlanetRow, '', 3);
+      $this->target_message .= " {$lang['sys_mess_spy_seen_at']} {$this->dstPlanetRow['name']} " . uni_render_coordinates($this->dstPlanetRow);
+      if ($this->missionReport->isSpyDetected()) {
         $this->target_message .= "<br />{$lang['sys_mess_spy_destroyed_enemy']}";
       }
 
-      msg_send_simple_message($this->fleet['fleet_target_owner'], '', $this->fleet['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $this->target_message);
+      msg_send_simple_message(
+        $this->fleet['fleet_target_owner'],
+        '',
+        $this->fleet['fleet_start_time'],
+        MSG_TYPE_SPY,
+        $lang['sys_mess_spy_control'],
+        $lang['sys_mess_spy_activity'],
+        $this->target_message
+      );
     }
 
     $this->dbApplyChanges();
@@ -42,7 +50,7 @@ class MissionEspionage extends MissionData {
 
   protected function scanGroup($group_name) {
     foreach ($this->general->getGroupsByName($group_name) as $unit_id) {
-      $this->missionReport->addUnit($unit_id, mrc_get_level($this->dst_user, $this->dst_planet, $unit_id, false, true));
+      $this->missionReport->addUnit($unit_id, mrc_get_level($this->dstUserRow, $this->dstPlanetRow, $unit_id, false, true));
     }
   }
 
@@ -74,7 +82,7 @@ class MissionEspionage extends MissionData {
     if (is_object($this->missionReport) && $this->missionReport->isSpyDetected()) {
       DbFleetStatic::db_fleet_delete($this->fleet['fleet_id']);
 
-      $debris_planet_id = $this->dst_planet['planet_type'] == PT_PLANET ? $this->dst_planet['id'] : $this->dst_planet['parent_planet'];
+      $debris_planet_id = $this->dstPlanetRow['planet_type'] == PT_PLANET ? $this->dstPlanetRow['id'] : $this->dstPlanetRow['parent_planet'];
 
       $spy_cost = get_unit_param(SHIP_SPY, P_COST);
 

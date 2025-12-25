@@ -170,30 +170,7 @@ class StorageSqlV2 {
       ->setAdjust($deltas)
       ->setWhereArray($conditions);
 
-//    var_dump($dbq->update());
-
-//    die();
-
     return $dbq->doUpdate();
-  }
-
-  public function transactionStart($level = '') {
-    static::$db->transactionStart($level);
-  }
-
-  public function transactionCommit() {
-    static::$db->transactionCommit();
-  }
-
-  public function transactionRollback() {
-    static::$db->transactionRollback();
-  }
-
-  /**
-   * @return bool
-   */
-  public function transactionCheck() {
-    return static::$db->transactionCheck();
   }
 
 }

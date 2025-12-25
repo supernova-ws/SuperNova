@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+
 /*
  * debug.php ::  Clase Debug, maneja reporte de eventos
  *
@@ -24,36 +25,62 @@
  * que esperabas!!! soy newbie!!! D':<
 */
 
-if(!defined('INSIDE')) {
+use DBAL\db_mysql;
+
+if (!defined('INSIDE')) {
   die("attemp hacking");
 }
 
 class debug {
-  var $log, $numqueries;
-  var $log_array;
+  protected $log;
+  protected $numqueries;
+  protected $log_array;
 
-  private $log_file_handler = null;
-
-  function log_file($message, $ident_change = 0) {
-    static $ident = 0;
-
-    if(!defined('SN_DEBUG_LOG')) {
+  public function log_file($message, $ident_change = 0) {
+    if (!defined('SN_DEBUG_LOG') || !SN_DEBUG_LOG) {
       return;
     }
 
-    if($this->log_file_handler === null) {
-      $this->log_file_handler = @fopen(SN_ROOT_PHYSICAL . '/.logs/supernova.log', 'a+');
-      @fwrite($this->log_file_handler, "\r\n\r\n");
+    static $ident = 0;
+    static $logFileName;
+
+    if (!$logFileName) {
+      $logFileName = SN_ROOT_PHYSICAL . '/.logs/supernova.log';
+      file_put_contents($logFileName, "\r\n\r\n", FILE_APPEND);
     }
-    $ident_change < 0 ? $ident += $ident_change * 2 : false;
-    if($this->log_file_handler) {
-      @fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . str_repeat(' ', $ident + 1) . $message . "\r\n");
+    if ($ident_change < 0) {
+      $ident += $ident_change * 2;
     }
-    $ident_change > 0 ? $ident += $ident_change * 2 : false;
+    file_put_contents($logFileName, date(FMT_DATE_TIME_SQL, time()) . str_repeat(' ', $ident + 1) . $message . "\r\n", FILE_APPEND);
+    if ($ident_change > 0) {
+      $ident += $ident_change * 2;
+    }
+  }
+
+  public function log_sql($message, $ident_change = 0) {
+    static $ident = 0;
+    static $logFileName;
+    static $mt_rand;
+
+    if (!$mt_rand) {
+      $mt_rand = mt_rand();
+    }
+
+    if (!$logFileName) {
+      $dbName      = SN::$db->dbName;
+      $logFileName = SN_ROOT_PHYSICAL . "/.logs/{$dbName}.mysql." . date('Y-m-d-H-i-s.') . sprintf("%06d", gettimeofday()["usec"]) . ".log";
+    }
+    if ($ident_change < 0) {
+      $ident += $ident_change * 2;
+    }
+    file_put_contents($logFileName, str_repeat(' ', $ident) . $message . "\n\n", FILE_APPEND);
+    if ($ident_change > 0) {
+      $ident += $ident_change * 2;
+    }
   }
 
   public function __construct() {
-    $this->vars = $this->log = '';
+    $this->log        = '';
     $this->numqueries = 0;
   }
 
@@ -71,20 +98,33 @@ class debug {
     die();
   }
 
-  function compact_backtrace($backtrace, $long_comment = false) {
+  public function compact_backtrace($backtrace, $long_comment = false, $onlyLastX = null) {
     static $exclude_functions = array(
-//      'doquery',
-//      'db_query_select', 'db_query_delete', 'db_query_insert', 'db_query_update',
-//      'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id'
+      // Caller not needed
+      'comment_query',
+      // Excluding includes/requires
+      'include', 'include_once', 'require_once', 'require',
+      // Excluding query calls/DB wrap functions
+      'doquery',
+      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
+      'doSelect', 'doSelectFetch',
+      'db_query_update',
+      'selectValue',
+      // classPersistent
+      '__get', 'db_loadItem', '__set', 'db_saveItem',
+      // Constructors ?! Why not...
+      '__construct',
+      // Hook handlers
+      'sn_function_call',
+      // Chat
+      'db_chat_player_list_online',
+      // Transaction-related functions
+      'db_transaction_commit', 'transactionCommit', 'transactionStart', 'db_transaction_start', 'db_transaction_rollback', 'transactionRollback',
     );
 
-    $result = array();
-    $transaction_id = SN::db_transaction_check(false) ? SN::$transaction_id : SN::$transaction_id++;
-    $result[] = "tID {$transaction_id}";
-    foreach($backtrace as $a_trace) {
-      if(in_array($a_trace['function'], $exclude_functions)) {
-        continue;
-      }
+    $raw      = [];
+    $filtered = [];
+    foreach ($backtrace as $a_trace) {
       $function =
         (!empty($a_trace['type'])
           ? ($a_trace['type'] == '->'
@@ -96,38 +136,93 @@ class debug {
 
       $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', !empty($a_trace['file']) ? $a_trace['file'] : ''));
 
-      $line = !empty($a_trace['line']) ? $a_trace['line'] : '_UNDEFINED_';
-      $result[] = "{$function} - '{$file}' Line {$line}";
+      $line  = !empty($a_trace['line']) ? '@' . $a_trace['line'] : '';
+      $raw[] = "{$function} - '{$file}'{$line}";
 
-      if(!$long_comment) {
+      if (!in_array($a_trace['function'], $exclude_functions)) {
+        $filtered[] = &$raw[count($raw) - 1];
+      }
+
+      if (!$long_comment) {
         break;
       }
     }
 
-    return $result;
+    $raw      = array_reverse($raw);
+    $filtered = array_reverse($filtered);
+
+    if ($onlyLastX) {
+      $raw      = array_slice($raw, -$onlyLastX);
+      $filtered = array_slice($filtered, -$onlyLastX);
+    }
+
+    return [$raw, $filtered,];
   }
 
+  /**
+   * @param array  $backtrace
+   * @param string $sql
+   *
+   * @return string
+   */
+  public function comment_query($backtrace, $sql) {
+    list($raw, $filtered,) = $this->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
+
+    $sql_commented = [
+      "/* ",
+      'date' => date("s.") . sprintf("%06d", gettimeofday()["usec"]),
+      !empty($filtered) ? "\n" . implode("\n", $filtered) . " \n" : '',
+      "*/\n",
+      // SQL itself with removed double spaces
+      preg_replace("/\s+/", ' ', $sql),
+    ];
+
+    if (defined('DEBUG_SQL_FILE_LOG') && !empty(DEBUG_SQL_FILE_LOG)) {
+      $this->log_sql(implode('', $sql_commented));
+    }
+
+//      $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
+//      $isSelect = strpos(strtoupper($query), 'SELECT') !== false ? 'true' : 'false';
+    $sql_commented['date'] = date('Y-m-d H:i:') . $sql_commented['date'];
+
+//      if(strpos($sql_comment, 'compact_backtrace') === false) {
+//        $transaction_id = SN::db_transaction_check(false) ? SN::$transaction_id : SN::$transaction_id++;
+//        $result[] = "tID {$transaction_id}";
+//      }
+
+    if (defined('DEBUG_SQL_ERROR')) {
+      array_unshift($raw, preg_replace("/\s+/", ' ', $sql));
+      array_unshift($raw, $sql_commented['date']);
+      $this->add_to_array($raw);
+    }
+
+    $sql = implode('', $sql_commented);
+
+    return $sql;
+  }
+
+
   function dump($dump = false, $force_base = false, $deadlock = false) {
-    if($dump === false) {
-      return;
+    if ($dump === false) {
+      return [];
     }
 
     $error_backtrace = array();
-    $base_dump = false;
+    $base_dump       = false;
 
-    if($force_base === true) {
+    if ($force_base === true) {
       $base_dump = true;
     }
 
-    if($dump === true) {
+    if ($dump === true) {
       $base_dump = true;
     } else {
-      if(!is_array($dump)) {
+      if (!is_array($dump)) {
         $dump = array('var' => $dump);
       }
 
-      foreach($dump as $dump_var_name => $dump_var) {
-        if($dump_var_name == 'base_dump') {
+      foreach ($dump as $dump_var_name => $dump_var) {
+        if ($dump_var_name == 'base_dump') {
           $base_dump = $dump_var;
         } else {
           $error_backtrace[$dump_var_name] = $dump_var;
@@ -135,12 +230,10 @@ class debug {
       }
     }
 
-    if($deadlock && ($q = db_fetch(SN::$db->mysql_get_innodb_status()))) {
+    if ($deadlock && ($q = SN::$db->mysql_get_innodb_status())) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
-      $error_backtrace['locks'] = _SnCacheInternal::$locks;
-      $error_backtrace['cSN_data'] = _SnCacheInternal::$data;
-      foreach($error_backtrace['cSN_data'] as &$location) {
-        foreach($location as $location_id => &$location_data) //          $location_data = $location_id;
+      foreach ($error_backtrace['cSN_data'] as &$location) {
+        foreach ($location as $location_id => &$location_data) //          $location_data = $location_id;
         {
           $location_data = isset($location_data['username']) ? $location_data['username'] :
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
@@ -148,11 +241,11 @@ class debug {
       }
     }
 
-    if($base_dump) {
-      if(!is_array($this->log_array) || empty($this->log_array)) {
+    if ($base_dump) {
+      if (!is_array($this->log_array) || empty($this->log_array)) {
         $this->log_array = [];
       } else {
-        foreach($this->log_array as $log) {
+        foreach ($this->log_array as $log) {
           $error_backtrace['queries'][] = $log;
         }
       }
@@ -164,31 +257,31 @@ class debug {
       // Converting object instances to object names
 
       foreach ($error_backtrace['backtrace'] as &$backtrace) {
-        if(is_object($backtrace['object'])) {
+        if (!empty($backtrace['object']) && is_object($backtrace['object'])) {
           $backtrace['object'] = get_class($backtrace['object']);
         }
 
-        if(empty($backtrace['args'])) {
+        if (empty($backtrace['args'])) {
           continue;
         }
 
         // Doing same conversion for backtrace params
-        foreach($backtrace['args'] as &$arg) {
-          if(is_object($arg)) {
+        foreach ($backtrace['args'] as &$arg) {
+          if (is_object($arg)) {
             $arg = 'object::' . get_class($arg);
           }
         }
       }
 
       // $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
-      $error_backtrace['$_GET'] = $_GET;
-      $error_backtrace['$_POST'] = $_POST;
+      $error_backtrace['$_GET']     = $_GET;
+      $error_backtrace['$_POST']    = $_POST;
       $error_backtrace['$_REQUEST'] = $_REQUEST;
-      $error_backtrace['$_COOKIE'] = $_COOKIE;
-      $error_backtrace['$_SESSION'] = $_SESSION;
-      $error_backtrace['$_SERVER'] = $_SERVER;
+      $error_backtrace['$_COOKIE']  = $_COOKIE;
+      $error_backtrace['$_SESSION'] = empty($_SESSION) ? [] : $_SESSION;
+      $error_backtrace['$_SERVER']  = $_SERVER;
       global $user, $planetrow;
-      $error_backtrace['user'] = $user;
+      $error_backtrace['user']      = $user;
       $error_backtrace['planetrow'] = $planetrow;
     }
 
@@ -200,35 +293,33 @@ class debug {
     die($die_message);
   }
 
-  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
+  public function error($message = 'There is a error on page', $title = 'Internal Error', $httpCode = 500, $dump = true) {
     global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
 
-    if(empty(SN::$db->connected)) {
+    if (empty(SN::$db->connected)) {
       // TODO - писать ошибку в файл
       die('SQL server currently unavailable. Please contact Administration...');
     }
 
-    sn_db_transaction_rollback();
+    db_mysql::db_transaction_rollback();
 
-    if(SN::$config->debug == 1) {
+    if (SN::$config->debug == 1) {
+      /** @noinspection HtmlDeprecatedTag */
+      /** @noinspection XmlDeprecatedElement */
+      /** @noinspection HtmlDeprecatedAttribute */
       echo "<h2>{$title}</h2><br><font color=red>" . htmlspecialchars($message) . "</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
 
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
 
-    $error_text = db_escape($message);
+    $error_text      = SN::$db->db_escape($message);
     $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
-    if(!$sys_log_disabled) {
-      $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
-        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
-        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
-      doquery($query, '', false, true) or die($fatal_error . db_error());
+    if (!$sys_log_disabled) {
+      $this->_writeLogMessage($httpCode, $user, $title, $message, $error_backtrace, $fatal_error);
 
-      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
+      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . SN::$db->db_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
@@ -236,9 +327,9 @@ class debug {
     } else {
 //        // TODO Здесь надо писать в файло
       ob_start();
-      print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
+      print("<hr>User ID {$user['id']} raised error code {$httpCode} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
-      foreach($error_backtrace as $name => $value) {
+      foreach ($error_backtrace as $name => $value) {
         print('<hr>');
         pdump($value, $name);
       }
@@ -247,27 +338,48 @@ class debug {
     }
   }
 
-  function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
+  function warning($message, $title = 'System Message', $httpCode = 300, $dump = false) {
     global $user, $lang, $sys_log_disabled;
 
-    if(empty(SN::$db->connected)) {
+    if (empty(SN::$db->connected)) {
       // TODO - писать ошибку в файл
       die('SQL server currently unavailable. Please contact Administration...');
     }
 
+    $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
+
     $error_backtrace = $this->dump($dump, false);
 
-    if(!$sys_log_disabled) {
-      $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
-        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
-        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
-      doquery($query, '', false, true);
+    if (empty($sys_log_disabled)) {
+      $this->_writeLogMessage($httpCode, $user, $title, $message, $error_backtrace, $fatal_error);
     } else {
 //        // TODO Здесь надо писать в файло
-      print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
+      $id = !empty($user['id']) ? $user['id'] : 0;
+      print("<hr>User ID {$id} made log entry with code {$httpCode} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
+  }
+
+  /**
+   * @param       $httpCode
+   * @param       $user
+   * @param       $title
+   * @param       $message
+   * @param array $error_backtrace
+   * @param       $fatal_error
+   *
+   * @return void
+   */
+  function _writeLogMessage($httpCode, $user, $title, $message, array $error_backtrace, $fatal_error) {
+    /** @noinspection SqlResolve */
+    $query = "INSERT INTO `{{logs}}` SET
+        `log_time` = '" . time() . "', `log_code` = '" . SN::$db->db_escape($httpCode) . "', " .
+      "`log_sender` = '" . (!empty($user['id']) ? SN::$db->db_escape($user['id']) : 0) . "', " .
+      "`log_username` = '" . SN::$db->db_escape(!empty($user['user_name']) ? $user['user_name'] : '') . "', " .
+      "`log_title` = '" . SN::$db->db_escape($title) . "',  `log_text` = '" . SN::$db->db_escape($message) . "', " .
+      "`log_page` = '" . SN::$db->db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" . ", " .
+      "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
+
+    doquery($query, '', false, true) or die($fatal_error . SN::$db->db_error());
   }
 }
 
@@ -275,12 +387,12 @@ class debug {
 // Dump variables nicer then var_dump()
 
 function dump($value, $varname = null, $level = 0, $dumper = '') {
-  if(isset($varname)) {
+  if (isset($varname)) {
     $varname .= " = ";
   }
 
-  if($level == -1) {
-    $trans[' '] = '&there4;';
+  if ($level == -1) {
+    $trans[' ']  = '&there4;';
     $trans["\t"] = '&rArr;';
     $trans["\n"] = '&para;;';
     $trans["\r"] = '&lArr;';
@@ -288,30 +400,30 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
 
     return strtr(htmlspecialchars($value), $trans);
   }
-  if($level == 0) {
+  if ($level == 0) {
 //    $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
     $dumper = mt_rand(10, 99) . '|' . $varname;
   }
 
-  $type = gettype($value);
+  $type   = gettype($value);
   $dumper .= $type;
 
-  if($type == 'string') {
+  if ($type == 'string') {
     $dumper .= '(' . strlen($value) . ')';
-    $value = dump($value, '', -1);
-  } elseif($type == 'boolean') {
+    $value  = dump($value, '', -1);
+  } elseif ($type == 'boolean') {
     $value = ($value ? 'true' : 'false');
-  } elseif($type == 'object') {
-    $props = get_class_vars(get_class($value));
+  } elseif ($type == 'object') {
+    $props  = get_class_vars(get_class($value));
     $dumper .= '(' . count($props) . ') <u>' . get_class($value) . '</u>';
-    foreach($props as $key => $val) {
+    foreach ($props as $key => $val) {
       $dumper .= "\n" . str_repeat("\t", $level + 1) . $key . ' => ';
       $dumper .= dump($value->$key, '', $level + 1);
     }
     $value = '';
-  } elseif($type == 'array') {
+  } elseif ($type == 'array') {
     $dumper .= '(' . count($value) . ')';
-    foreach($value as $key => $val) {
+    foreach ($value as $key => $val) {
       $dumper .= "\n" . str_repeat("\t", $level + 1) . dump($key, '', -1) . ' => ';
       $dumper .= dump($val, '', $level + 1);
     }
@@ -325,40 +437,12 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
   return $dumper;
 }
 
-function pdump($value, $varname = null) {
-  $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-//  print_rr($backtrace);
-//  $backtrace = $backtrace[1];
-
-  $caller = '';
-  if(defined('SN_DEBUG_PDUMP_CALLER') && SN_DEBUG_PDUMP_CALLER) {
-    $caller = (!empty($backtrace[1]['class']) ? $backtrace[1]['class'] : '') .
-      (!empty($backtrace[1]['type']) ? $backtrace[1]['type'] : '') .
-      $backtrace[1]['function'] .
-      (!empty($backtrace[0]['file'])
-        ? (
-          ' (' . substr($backtrace[0]['file'], SN_ROOT_PHYSICAL_STR_LEN) .
-          (!empty($backtrace[0]['line']) ? ':' . $backtrace[0]['line'] : '') .
-          ')'
-        )
-        : ''
-      );
-    $caller = "\r\n" . $caller;
-  }
-
-  print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
-    dump($value, $varname) .
-    $caller .
-    '</pre>'
-  );
-}
-
 function debug($value, $varname = null) {
   pdump($value, $varname);
 }
 
 function pr($prePrint = false) {
-  if($prePrint) {
+  if ($prePrint) {
     print("<br>");
   }
   print(mt_rand() . "<br>");
@@ -368,7 +452,7 @@ function pc($prePrint = false) {
   global $_PRINT_COUNT_VALUE;
   $_PRINT_COUNT_VALUE++;
 
-  if($prePrint) {
+  if ($prePrint) {
     print("<br>");
   }
   print($_PRINT_COUNT_VALUE . "<br>");
@@ -381,5 +465,6 @@ function prep($message) {
 function backtrace_no_arg() {
   $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
   array_shift($trace);
+
   return $trace;
 }

@@ -57,5 +57,6 @@ define('RPG_LOGIN_TOKEN', 49);
 define('RPG_EVENT_MARCH8_REWARD', 50);
 define('RPG_PROMO_CODE', 51);
 define('RPG_EVENT_MM_RACE_REWARD', 52);
+define('RPG_STORY_REWARD', 53);
 
-// Next 53
+// Next 54

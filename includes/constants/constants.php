@@ -1,5 +1,8 @@
 <?php
 
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+/** @noinspection PhpUnused */
+
 if(defined('__SN_CONSTANTS_DEFINED') && __SN_CONSTANTS_DEFINED === true) {
   return;
 }
@@ -11,7 +14,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '45');
 define('SN_RELEASE', '45');
-define('SN_VERSION', '45d2');
+define('SN_VERSION', '46d0');
 define('SN_RELEASE_STABLE', '45d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -28,25 +31,6 @@ const SN_DATE_PREHISTORIC_SQL = '2000-01-01';
 define('SN_DATE_PREHISTORIC_UNIX', strtotime(SN_DATE_PREHISTORIC_SQL));
 
 define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
-
-// Getting relative HTTP root to game resources
-// I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
-// It needed to make game work on sub-folders and do not mess with cookies
-// Not very accurate - heavily relies on filesystem paths and may fail on complicate web server setups
-$sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
-$sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
-$sn_root_relative = $sn_root_relative . basename($_SERVER['SCRIPT_NAME']);
-// Removing script name to obtain HTTP root
-define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']));
-
-$_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_server_http_host . SN_ROOT_RELATIVE);
-
-$_server_server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
-if(strpos(strtolower($_server_server_name), 'google.') !== false) {
-  define('SN_GOOGLE', true);
-}
-define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 define('FLEET_ID_TEMPLATE', 'f%sown');
 
@@ -136,7 +120,7 @@ define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
 
 define('UNIVERSE_RANDOM_PLANET_START', 16); // Позиция начала рандомизации планет
-define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг тзменения минимальной температуры рандомной планеты
+define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг изменения минимальной температуры случайной планеты
 
 define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
@@ -160,9 +144,8 @@ define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
 
-// Mot qui sont interdit a la saisie !
-global $ListCensure;
-$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
+//global $ListCensure;
+//$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // Confirmation record types
 define('CONFIRM_REGISTRATION'  , 1);
@@ -265,12 +248,36 @@ define('CACHE_ALL'       , CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURC
 
 define('CACHE_NONE'      , CACHE_NOTHING); // Alias for me
 
-// *** Event types
-define('EVENT_FLEET_NONE', 0);
-define('EVENT_FLEET_ARRIVE', 1);
-define('EVENT_FLEET_STAY'  , 2);
-define('EVENT_FLEET_RETURN', 3);
+// Fleet status aka `fleet_mess`
+const FLEET_STATUS_FLYING = 0;
+const FLEET_STATUS_RETURNING = 1;
 
+// *** Event types
+const EVENT_FLEET_NONE   = 0;
+const EVENT_FLEET_ARRIVE = 1;
+const EVENT_FLEET_STAY   = 2;
+const EVENT_FLEET_RETURN = 3;
+
+// Обязательно оставить, что бы arrive < accomplish < return
+/** @var string Fleet arrived to destination */
+const EVENT_FLT_ARRIVE     = 'EVENT_FLT_ARRIVE';
+/** @var string Fleet ended his mission by timer */
+const EVENT_FLT_ACCOMPLISH = 'EVENT_FLT_ACCOMPLISH'; //
+/** @var string Fleet returned to starting planet */
+const EVENT_FLT_RETURN     = 'EVENT_FLT_RETURN'; //
+
+
+/** @formatter:off */
+const CONST_1K    = 1000;
+const CONST_10K   = 10000;
+const CONST_100K  = 100000;
+const CONST_1M    = 1000000;
+const CONST_10M   = 10000000;
+const CONST_100M  = 100000000;
+const CONST_1B    = 1000000000;
+const CONST_10B   = 10000000000;
+const CONST_100B  = 100000000000;
+/** @formatter:on */
 
 // Log system codes
 define('LOG_DEFAULT', 0); // Код по умолчанию
@@ -671,7 +678,8 @@ define('QI_PLANET_ID' , 5);
 define('SORT_ASCENDING' , 0);
 define('SORT_DESCENDING', 1);
 
-define('SORT_ID'             , 0);
+define('SORT_NONE'           , 0);
+define('SORT_ID'             , 12);
 define('SORT_LOCATION'       , 1);
 define('SORT_NAME'           , 2);
 define('SORT_SIZE'           , 3);
@@ -782,24 +790,7 @@ define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
 
 
 
-define('FLT_EXPEDITION_OUTCOME_NONE', 0);
-define('FLT_EXPEDITION_OUTCOME_LOST_FLEET', 1);
-define('FLT_EXPEDITION_OUTCOME_FOUND_FLEET', 2);
-define('FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES', 3);
-define('FLT_EXPEDITION_OUTCOME_FOUND_DM', 4);
-define('FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT', 5);
-define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);
-
-const FLT_EXPEDITION_OUTCOME_TYPE_BAD = -1;
-const FLT_EXPEDITION_OUTCOME_TYPE_NEUTRAL = 0;
-const FLT_EXPEDITION_OUTCOME_TYPE_GOOD = 1;
-
-// Обязательно оставить, что бы arrive < accomplish < return
-define('EVENT_FLT_ARRIVE', 1); // Fleet arrive to destination
-define('EVENT_FLT_ACOMPLISH', 2); // Fleet ends his mission by timer
-define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
-
-
+define('USER_OPTIONS_SPLIT', '|');
 
 // define('NICK_ID',               -1);
 define('NICK_HTML',              0);
@@ -1012,7 +1003,7 @@ define('THIS_STRING', '$this');
 
 define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
 
-define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
+// define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
 const PLAYER_INACTIVE_TIMEOUT = PERIOD_WEEK; // Player inactivity timeout to become 'i'-marked player
@@ -1078,11 +1069,6 @@ const TPL_BLOCK_REQUIRE = 'require';
 const PAGE_OPTION_FLEET_UPDATE_SKIP = 'fleet_update_skip';
 const PAGE_OPTION_ADMIN = 'admin_page';
 
-const FLEET_STATUS_FLYING = 0;
-const FLEET_STATUS_RETURNING = 1;
-
 const MENU_FIELD_AUTH_LEVEL = 'AUTH_LEVEL';
-
-const REQUIRE_HIGHSPOT = 'festival_highspot';
 
 const UNIVERSE_GALAXY_DISTANCE = 20000;

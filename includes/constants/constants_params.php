@@ -44,6 +44,9 @@ define('P_STRUCTURE', 'structure');
 define('P_LOCATION', 'location');
 define('P_CONSUMPTION', 'consumption');
 define('P_UNIT_ENGINE', 'engine');
+const P_REQUIRE_HIGHSPOT = 'festival_highspot';
+/** @var string Param name in ship description to identify race to which this ship belongs */
+const P_RACE_SHIP        = 'player_race';
 
 define('P_ID', 'id');
 define('P_SNID', 'snid');
@@ -73,9 +76,6 @@ define('P_TIME_RAW', 'P_TIME_RAW');
 
 define('P_MINING_IS_MANAGED', 'P_MINING_IS_MANAGED'); // Флаг, означающий что добычей ресурсов можно управлять
 
-const P_MISSION_EXPEDITION_OUTCOME = 'outcome';
-const P_MISSION_EXPEDITION_OUTCOME_TYPE = 'outcome_type';
-const P_MISSION_EXPEDITION_OUTCOME_SECONDARY = 'secondary';
 const P_MULTIPLIER = 'multiplier';
 const P_MESSAGE_ID = 'messageId';
 
