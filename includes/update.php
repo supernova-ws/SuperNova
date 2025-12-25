@@ -796,7 +796,7 @@ switch ($updater->new_version) {
       }
     }, PATCH_REGISTER);
 
-    $updater->new_version = 47;
+    $updater->new_version = 46;
     $updater->transactionCommit();
 
   case 46:
@@ -805,7 +805,7 @@ switch ($updater->new_version) {
 //    }, PATCH_PRE_CHECK);
 
 //   TODO - UNCOMMENT ON RELEASE!
-//    $updater->new_version = 46;
+//    $updater->new_version = 47;
 //    $updater->transactionCommit();
 
 }
