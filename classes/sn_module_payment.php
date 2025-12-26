@@ -14,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#47a0#';
+  public $versionCommitted = '#47a4#';
 
   public $active = false;
 

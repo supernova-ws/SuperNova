@@ -5,7 +5,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2025 Gorlum
- * @version #47a1#
+ * @version #47a4#
  **/
 
 use Player\PlayerStatic;

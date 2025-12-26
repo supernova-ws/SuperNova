@@ -168,7 +168,7 @@ function doSelect($query, $table = '', $fetch = false, $skip_query_check = false
  * @deprecated
  */
 function doSelectFetch($query, $skip_query_check = false) {
-  return SN::$db->doquery($query, true, $skip_query_check);
+  return SN::$db->doquery($query, true, false);
 }
 
 /**

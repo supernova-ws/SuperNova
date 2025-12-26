@@ -229,7 +229,7 @@ function get_mm_cost($plain = false) {
   return sn_function_call('get_mm_cost', array($plain, &$result));
 }
 
-function sn_get_mm_cost($plain = false, &$result) {
+function sn_get_mm_cost($plain = false, &$result = null) {
   return $result = SN::$config->payment_currency_exchange_mm_ ?: 20000;
 }
 
@@ -309,7 +309,7 @@ function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_
  *
  * @see sn_powerup_get_price_matrix()
  */
-function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
+function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result = null) {
   global $sn_powerup_buy_discounts;
 
   $result = array();

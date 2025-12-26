@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #47a0#
+ * @version #47a4#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *

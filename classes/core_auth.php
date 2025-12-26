@@ -13,16 +13,16 @@ use Modules\sn_module;
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #47a0#
+ * version #47a4#
  */
 class core_auth extends sn_module {
-  public $versionCommitted = '#47a0#';
+  public $versionCommitted = '#47a4#';
 
   public $manifest = [
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #47a0# copyright © 2009-2025 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #47a4# copyright © 2009-2025 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_CORE_AUTH,
 

@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #47a0#
+ * @version #47a4#
  **/
 
 define('INSIDE', true);
