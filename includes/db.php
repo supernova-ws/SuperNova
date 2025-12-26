@@ -123,20 +123,14 @@ function doUnlockTables(): void {
 
 /**
  * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
  *
  * @return array|bool|mysqli_result|null
  *
  * @deprecated
  */
-function doReplace($query, $table = '', $fetch = false, $skip_query_check = false) {
-  if (!is_string($table)) {
-    $fetch = $table;
-  }
+function doReplace($query) {
 
-  return SN::$db->doquery($query, $fetch, $skip_query_check);
+  return SN::$db->doquery($query, false, false);
 }
 
 /**
@@ -158,29 +152,36 @@ function doSelect($query, $table = '', $fetch = false, $skip_query_check = false
 }
 
 /**
- * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
+ * @param string $query
  *
  * @return array|bool|mysqli_result|null
  *
  * @deprecated
  */
-function doSelectFetch($query, $skip_query_check = false) {
+function doSelectFetch($query) {
   return SN::$db->doquery($query, true, false);
 }
 
 /**
  * @param        $query
- * @param bool   $skip_query_check - checked
  *
  * @return array|bool|mysqli_result|null
  *
  * @deprecated
  */
-function doInsert($query, $skip_query_check = false) {
-  return SN::$db->doquery($query, false, $skip_query_check);
+function doInsert($query) {
+  return SN::$db->doquery($query, false, false);
+}
+
+/**
+ * @param        $query
+ *
+ * @return array|bool|mysqli_result|null
+ *
+ * @deprecated
+ */
+function doInsertNoCheck($query) {
+  return SN::$db->doquery($query, false, true);
 }
 
 /**
