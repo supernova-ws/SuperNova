@@ -235,7 +235,7 @@ class SN {
     $query = "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
     $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
 
-    $sqlResult = self::$db->doquery($query, false);
+    $sqlResult = doSelect($query);
 
     while ($row = db_fetch($sqlResult)) {
       $result[$row[$id_field]] = $row;

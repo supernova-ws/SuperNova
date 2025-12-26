@@ -183,7 +183,7 @@ class DbQuery {
   }
 
   public function doUpdateDb() {
-    return $this->db->doquery($this->update());
+    return $this->db->doOnlyQuery($this->update());
   }
 
   /**
@@ -196,7 +196,7 @@ class DbQuery {
 
   // TODO - Do something with delete when there is no records
   public function doDeleteDb() {
-    return $this->db->doquery($this->delete());
+    return $this->db->doOnlyQuery($this->delete());
   }
 
   /**

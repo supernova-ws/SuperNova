@@ -82,26 +82,26 @@ function db_change_units(&$user, &$planet, $unit_list = [], $query = null) {
 }
 
 /* Pass-through functions ******************************************************************************************* */
-/**
- * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
-function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  if (!is_string($table)) {
-    $fetch = $table;
-  }
-
-  return SN::$db->doquery($query, $fetch, $skip_query_check);
-}
+///**
+// * @param        $query
+// * @param string $table
+// * @param bool   $fetch
+// * @param bool   $skip_query_check
+// *
+// * @return array|bool|mysqli_result|null
+// *
+// * @deprecated
+// */
+//function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
+//  if (!is_string($table)) {
+//    $fetch = $table;
+//  }
+//
+//  return SN::$db->doquery($query, $fetch, $skip_query_check);
+//}
 
 function doShowStatus() {
-  return SN::$db->doquery('SHOW STATUS;');
+  return SN::$db->doOnlyQuery('SHOW STATUS;');
 }
 
 
@@ -111,14 +111,14 @@ function doShowStatus() {
  * @return void
  */
 function doLockTable(string $db_table_name): void {
-  doquery("LOCK TABLES {{" . $db_table_name . "}} WRITE;");
+  doSqlStatement("LOCK TABLES {{" . $db_table_name . "}} WRITE;");
 }
 
 /**
  * @return void
  */
 function doUnlockTables(): void {
-  doquery("UNLOCK TABLES;");
+  doSqlStatement("UNLOCK TABLES;");
 }
 
 /**
@@ -130,7 +130,7 @@ function doUnlockTables(): void {
  */
 function doReplace($query) {
 
-  return SN::$db->doquery($query, false, false);
+  return SN::$db->doOnlyQuery($query);
 }
 
 /**
@@ -143,12 +143,8 @@ function doReplace($query) {
  *
  * @deprecated
  */
-function doSelect($query, $table = '', $fetch = false, $skip_query_check = false) {
-  if (!is_string($table)) {
-    $fetch = $table;
-  }
-
-  return SN::$db->doquery($query, $fetch, $skip_query_check);
+function doSelect($query) {
+  return SN::$db->doOnlyQuery($query);
 }
 
 /**
@@ -159,7 +155,7 @@ function doSelect($query, $table = '', $fetch = false, $skip_query_check = false
  * @deprecated
  */
 function doSelectFetch($query) {
-  return SN::$db->doquery($query, true, false);
+  return SN::$db->doquery($query, true);
 }
 
 /**
@@ -170,7 +166,7 @@ function doSelectFetch($query) {
  * @deprecated
  */
 function doInsert($query) {
-  return SN::$db->doquery($query, false, false);
+  return SN::$db->doOnlyQuery($query);
 }
 
 /**
@@ -181,7 +177,7 @@ function doInsert($query) {
  * @deprecated
  */
 function doInsertNoCheck($query) {
-  return SN::$db->doquery($query, false, true);
+  return SN::$db->doOnlyQuery($query, true);
 }
 
 /**
@@ -195,7 +191,7 @@ function doInsertNoCheck($query) {
  * @deprecated
  */
 function doDelete($query) {
-  return SN::$db->doquery($query, false, false);
+  return SN::$db->doOnlyQuery($query);
 }
 
 /**
@@ -209,8 +205,21 @@ function doDelete($query) {
  * @deprecated
  */
 function doUpdate($query) {
-  return SN::$db->doquery($query, false, false);
+  return SN::$db->doOnlyQuery($query);
 }
+
+/**
+ * Executes plain SQL statement. Possible DDL
+ *
+ * @param $query
+ *
+ * @return bool|mysqli_result
+ */
+function doSqlStatement($query) {
+  return SN::$db->doOnlyQuery($query, true);
+}
+
+
 
 /**
  * @param $query

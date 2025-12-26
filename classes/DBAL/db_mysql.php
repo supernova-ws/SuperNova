@@ -255,8 +255,13 @@ class db_mysql {
     return $sql;
   }
 
-  /** @noinspection SpellCheckingInspection */
-  public function doquery($query, $fetch = false, $skip_query_check = false) {
+  /**
+   * @param             $query
+   * @param bool        $skip_query_check
+   *
+   * @return bool|mysqli_result
+   */
+  public function doOnlyQuery($query, $skip_query_check = false) {
     /**
      * @var debug       $debug
      * @var classConfig $config
@@ -279,7 +284,7 @@ class db_mysql {
       $array = explode('/', $arr[0]['file']);
       $file  = end($array);
       $line  = $arr[0]['line'];
-      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th><th>$fetch</th></tr>");
+      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th></tr>");
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
@@ -292,6 +297,13 @@ class db_mysql {
       $debug->error(SN::$db->db_error() . "\n$sql\n", 'SQL Error');
     }
     restore_error_handler();
+
+    return $sqlquery;
+  }
+
+  /** @noinspection SpellCheckingInspection */
+  public function doquery($query, $fetch = false, $skip_query_check = false) {
+    $sqlquery = $this->doOnlyQuery($query, $skip_query_check);
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
@@ -306,7 +318,7 @@ class db_mysql {
    * @return array
    */
   public function dbGetAll($query, $skipQueryCheck = false, $asArray = true) {
-    $queryResult = $this->doquery($query, false, $skipQueryCheck);
+    $queryResult = $this->doOnlyQuery($query, $skipQueryCheck);
 
     $result = [];
     while ($row = $this->db_fetch($queryResult)) {
@@ -337,7 +349,7 @@ class db_mysql {
    * @return DbMysqliResultIterator
    */
   public function selectIterator($query, $skip_query_check = false) {
-    return new DbMysqliResultIterator($this->doquery($query, false, $skip_query_check));
+    return new DbMysqliResultIterator($this->doOnlyQuery($query, $skip_query_check));
   }
 
   /**
@@ -346,8 +358,8 @@ class db_mysql {
    *
    * @return int|null
    */
-  public function selectValue($query, $skip_query_check = false) {
-    $row = $this->doquery($query, true, $skip_query_check);
+  public function selectValue($query) {
+    $row = $this->doquery($query, true, false);
 
     return !empty($row) ? intval(reset($row)) : null;
   }
@@ -649,17 +661,17 @@ class db_mysql {
     $this->inTransaction = true;
 
     if ($level && in_array($level, self::TRANSACTION_LEVELS_ALLOWED)) {
-      $this->db_sql_query("SET TRANSACTION ISOLATION LEVEL {$level};");
+      $this->doOnlyQuery("SET TRANSACTION ISOLATION LEVEL {$level};");
     }
 
-    $this->doquery('START TRANSACTION; /* transaction start */', false);
+    $this->doOnlyQuery('START TRANSACTION; /* transaction start */', false);
   }
 
   /**
    * @return void
    */
   public function transactionCommit() {
-    $this->doquery('COMMIT; /* transaction commit */');
+    $this->doOnlyQuery('COMMIT; /* transaction commit */');
     $this->inTransaction = false;
   }
 
@@ -667,7 +679,7 @@ class db_mysql {
    * @return void
    */
   public function transactionRollback() {
-    $this->doquery('ROLLBACK; /* transaction rollback */');
+    $this->doOnlyQuery('ROLLBACK; /* transaction rollback */');
     $this->inTransaction = false;
   }
 
@@ -828,7 +840,7 @@ class db_mysql {
   }
 
   public function doDbSelect(string $string, $skip_query_check = false) {
-    return $this->doquery($string, false, $skip_query_check);
+    return $this->doOnlyQuery($string, $skip_query_check);
   }
 
   public function doDbSelectFetch(string $string, $skip_query_check = false) {
@@ -843,19 +855,19 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doDbDelete(string $string) {
-    return $this->doquery($string);
+    return $this->doOnlyQuery($string);
   }
 
   public function doDbUpdate(string $string) {
-    return $this->doquery($string);
+    return $this->doOnlyQuery($string);
   }
 
   public function doDbReplace(string $string) {
-    return $this->doquery($string);
+    return $this->doOnlyQuery($string);
   }
 
   public function doDbInsert(string $string) {
-    return $this->doquery($string);
+    return $this->doOnlyQuery($string);
   }
 
 }

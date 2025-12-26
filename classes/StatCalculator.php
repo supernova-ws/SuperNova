@@ -287,7 +287,7 @@ class StatCalculator {
     static::sta_set_time_limit("updating ranks for players");
     foreach ($rankNames as $rankName) {
       static::sta_set_time_limit("updating player rank '{$rankName}'", false);
-      doquery('SET @rownum=0;');
+      doSqlStatement('SET @rownum=0;');
       doUpdate(sprintf($qryFormat, $rankName, 1));
     }
 
@@ -295,7 +295,7 @@ class StatCalculator {
     // --- Updating Allie's ranks
     foreach ($rankNames as $rankName) {
       static::sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
-      doquery('SET @rownum=0;');
+      doSqlStatement('SET @rownum=0;');
       doUpdate(sprintf($qryFormat, $rankName, 2));
     }
 

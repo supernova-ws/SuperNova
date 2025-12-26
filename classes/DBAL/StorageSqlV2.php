@@ -142,7 +142,7 @@ class StorageSqlV2 {
       ->setTable($tableName)
       ->setValues($fieldList);
 
-    $result = static::$db->doquery($dbq->insert(DbQuery::DB_INSERT_PLAIN, true));
+    $result = static::$db->doOnlyQuery($dbq->insert(DbQuery::DB_INSERT_PLAIN, true));
 
     return $result ? static::$db->db_insert_id() : null;
   }

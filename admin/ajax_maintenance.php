@@ -36,7 +36,7 @@ $pack_until = date("Y-m-01 00:00:00", SN_TIME_NOW - PERIOD_MONTH * 3);
 // [#] info_best_battles 1b0
 $best_reports = array();
 if(defined('MODULE_INFO_BEST_BATTLES_QUERY')) {
-  $query = doquery(MODULE_INFO_BEST_BATTLES_QUERY);
+  $query = doSelect(MODULE_INFO_BEST_BATTLES_QUERY);
   while($row = db_fetch($query)) {
     $best_reports[] = $row['ube_report_id'];
   }
@@ -250,7 +250,7 @@ foreach($ques as $que_transaction) {
   !is_array($que_transaction) ? $que_transaction = array($que_transaction) : false;
   foreach($que_transaction as $que) {
     set_time_limit(120);
-    $QryResult = doquery($que);
+    $QryResult = doSqlStatement($que);
     //$msg .= '<hr>' . $que . '<hr>';
     $que = str_replace(array('{{', '}}'), '', $que);
     //$que = str_replace('{{', '', $que);

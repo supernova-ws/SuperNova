@@ -578,13 +578,12 @@ class Account {
       $group = implode(',', $group);
     }
 
-    $sql = "SELECT SUM(`amount`) as 'mm', reason, account_id, account_name, user_id, username
+    return doSelect(
+      "SELECT SUM(`amount`) as 'mm', reason, account_id, account_name, user_id, username
           FROM `{{log_metamatter}}`"
       . (!empty($where) ? ' WHERE ' . $where : '')
       . (!empty($group) ? ' GROUP BY ' . $group : '')
-    ;
-
-    return $this->db->doquery($sql);
+    );
   }
 
 }

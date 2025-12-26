@@ -116,7 +116,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
       unset($this->mysqli_result);
     }
     // Performing query
-    $this->mysqli_result = $this->db->doquery($this->sqlQuery);
+    $this->mysqli_result = $this->db->doOnlyQuery($this->sqlQuery);
 
     // Checking if page number within allowed ranges
     if (

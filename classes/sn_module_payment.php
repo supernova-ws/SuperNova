@@ -14,7 +14,7 @@ abstract class sn_module_payment extends sn_module {
   const FIELD_SUM = 'SUM';
   const FIELD_CURRENCY = 'CURRENCY';
 
-  public $versionCommitted = '#47a4#';
+  public $versionCommitted = '#47a9#';
 
   public $active = false;
 
@@ -524,7 +524,7 @@ abstract class sn_module_payment extends sn_module {
       $query[] = "`{$key}` = {$value}";
     }
 
-    $this->db->doquery(($replace ? 'REPLACE' : 'INSERT') . ' INTO `{{payment}}` SET ' . implode(',', $query) . ';');
+    $this->db->doOnlyQuery(($replace ? 'REPLACE' : 'INSERT') . ' INTO `{{payment}}` SET ' . implode(',', $query) . ';');
 
     return $this->db_get_by_id($this->db->db_insert_id());
   }

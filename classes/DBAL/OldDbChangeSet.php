@@ -212,7 +212,7 @@ class OldDbChangeSet {
               die('Неподдерживаемая операция в SN::db_changeset_apply');
           }
         } else {
-          $result = doquery($conditions[P_QUERY_STR]) && $result;
+          $result = doSqlStatement($conditions[P_QUERY_STR]) && $result;
         }
       }
     }
