@@ -10,7 +10,6 @@ use classConfig;
 use Common\ContainerPlus;
 use Core\Scheduler\Watchdog;
 use DBAL\db_mysql;
-use DBAL\StorageSqlV2;
 use debug;
 use Design;
 use Fleet\FleetDispatcher;
@@ -46,7 +45,6 @@ use TheUser;
  * @property Storage           $storage
  * @property RepoV2            $repoV2
  * @property StorageV2         $storageV2
- * @property StorageSqlV2      $storageSqlV2
  * @property Design            $design
  * @property BBCodeParser      $bbCodeParser
  * @property FleetDispatcher   $fleetDispatcher
@@ -160,10 +158,6 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->storageV2 = function (GlobalContainer $gc) {
       return new StorageV2($gc);
-    };
-
-    $gc->storageSqlV2 = function (GlobalContainer $gc) {
-      return new StorageSqlV2($gc);
     };
 
     $gc->design = function (GlobalContainer $gc) {

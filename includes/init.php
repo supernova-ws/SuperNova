@@ -1,6 +1,6 @@
 <?php
 
-version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
+version_compare(PHP_VERSION, '7.4') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 7.4') : false;
 
 use Common\Tools\VersionCheckerDeprecated;
 use Core\Autoloader;

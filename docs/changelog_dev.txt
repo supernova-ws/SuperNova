@@ -840,6 +840,11 @@ FleetDispatchEvent::__construct
 * RecordV2 - убрать из кода
 * ad_promo_codes.from / to - заменить 1970-01-01 03:00:00 на null
 
+2025-12-28 13:46:39 47a17
+
+[@] Bumped required PHP version to 7.4
+[@] Removed unused files
+
 2025-12-28 12:10:07 47a14
 
 [@] Better sql-query log
