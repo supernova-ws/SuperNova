@@ -84,8 +84,8 @@ class debug {
     $this->numqueries = 0;
   }
 
-  function add($mes) {
-    $this->log .= $mes;
+  function add($numQueries, $query, $file, $line) {
+    $this->log .= "<tr><th>Query $numQueries: </th><th>$query</th><th>$file($line)</th></tr>";
     $this->numqueries++;
   }
 

@@ -1,5 +1,10 @@
-<?php /** @noinspection PhpRedundantOptionalArgumentInspection */
+<?php
 
+/** @noinspection PhpMissingFieldTypeInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+
+/** @noinspection PhpRedundantOptionalArgumentInspection */
 /** @noinspection PhpDeprecationInspection */
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
@@ -8,8 +13,10 @@ namespace DBAL;
 use classConfig;
 use Core\GlobalContainer;
 use debug;
-use mysqli;
-use mysqli_result;
+use Exception;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use PDO;
+use PDOStatement;
 use SN;
 use Unit\DBStaticUnit;
 
@@ -19,6 +26,7 @@ use Unit\DBStaticUnit;
  * Time: 15:58
  */
 class db_mysql {
+
   const TRANSACTION_LEVEL_SERIALIZABLE = 'SERIALIZABLE';
   const TRANSACTION_LEVEL_REPEATABLE_READ = 'REPEATABLE READ';
   const TRANSACTION_LEVEL_READ_COMMITTED = 'READ COMMITTED';
@@ -36,8 +44,6 @@ class db_mysql {
   public static $transaction_id = 0;
   public static $db_in_transaction = false;
   public static $transactionDepth = 0;
-
-  const TABLE_USERS = 'users';
 
   const TABLE_ID_FIELD = [
     'fleets' => 'fleet_id',
@@ -57,7 +63,7 @@ class db_mysql {
    *
    * @var Schema|null $schema
    */
-  protected static $schema = null;
+  protected $schema = null;
 
   /**
    * Статус соединения с MySQL
@@ -97,13 +103,9 @@ class db_mysql {
    */
   protected $inTransaction = false;
 
-
-  /**
-   * Соединение с MySQL
-   *
-   * @var mysqli $link
-   */
-  public $link;
+  private ?PDO $pdo;
+  /** @noinspection PhpPropertyOnlyWrittenInspection */
+  private Capsule $capsule;
 
 
   /**
@@ -111,7 +113,7 @@ class db_mysql {
    *
    * @param GlobalContainer $gc
    */
-  public function __construct($gc) {
+  public function __construct($gc = null) {
 //    $this->transaction = new \DBAL\DbTransaction($gc, $this);
 //    $this->snCache = new $gc->snCacheClass($gc, $this);
 //    $this->operator = new DbRowDirectOperator($this);
@@ -121,11 +123,11 @@ class db_mysql {
    * @return Schema
    */
   public function schema() {
-    if (!isset(self::$schema)) {
-      self::$schema = new Schema($this);
+    if (!isset($this->schema)) {
+      $this->schema = new Schema($this);
     }
 
-    return self::$schema;
+    return $this->schema;
   }
 
   public function load_db_settings() {
@@ -164,7 +166,7 @@ class db_mysql {
       } else {
         $this->connected = false;
       }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       $this->connected = false;
 
       if ($e->getCode() == 1044) {
@@ -191,19 +193,42 @@ class db_mysql {
       $debug->error_fatal('There is miss-configuration in your config.php. Check it again');
     }
 
-    @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
-    if (!is_object($this->link) || $this->link->connect_error) {
-      $debug->error_fatal('DB Error - cannot connect to server error #' . $this->link->connect_errno, $this->link->connect_error);
+    try {
+//      $this->pdo = new PDO(
+//        "mysql:host={$settings['server']};dbname={$settings['name']};charset=utf8mb4",
+//        $settings['user'],
+//        $settings['pass'],
+//        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+//      );
+
+      $capsule = new Capsule;
+
+      // Подключение к базе
+      $capsule->addConnection([
+        'driver'    => 'mysql',
+        'host'      => $settings['server'],
+        'database'  => $settings['name'],
+        'username'  => $settings['user'],
+        'password'  => $settings['pass'],
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => $settings['prefix'],
+      ]);
+
+      // Делаем глобально доступным
+      $capsule->setAsGlobal();
+      $capsule->bootEloquent();
+
+      $this->capsule = $capsule;
+
+      $this->pdo = Capsule::connection()->getPdo();
+
+      $this->db_sql_query("/*!40101 SET NAMES 'utf8' */");
+      $this->db_sql_query("SET NAMES 'utf8';");
+      $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE . ';');
+    } catch (Exception $e) {
+      $debug->error_fatal('DB Error - cannot connect to server error #' . $e->getCode(), $e->getMessage());
     }
-
-    $this->db_sql_query("/*!40101 SET NAMES 'utf8' */")
-    or $debug->error_fatal('DB error - cannot set names 1 error #' . $this->link->errno, $this->link->error);
-    $this->db_sql_query("SET NAMES 'utf8';")
-    or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
-
-    //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
-    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE . ';')
-    or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
 
     $this->connected = true;
 
@@ -259,13 +284,14 @@ class db_mysql {
    * @param             $query
    * @param bool        $skip_query_check
    *
+   * @return bool|PDOStatement
    */
   public function doOnlyQuery($query, $skip_query_check = false) {
     /**
      * @var debug       $debug
      * @var classConfig $config
      */
-    global $numqueries, $debug, $config;
+    global $numQueries, $debug, $config;
 
     if (!$this->connected) {
       $this->sn_db_connect();
@@ -278,12 +304,19 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     if ($config->debug ?? null) {
-      $numqueries++;
+      $numQueries++;
       $arr   = debug_backtrace();
+      while(
+        !empty($arr)
+        && in_array(basename($arr[0]['file']), ['db.php', 'db_mysql.php', 'db_queries.php', 'DbQuery.php'])
+      ) {
+        array_shift($arr);
+      }
+
       $array = explode('/', $arr[0]['file']);
       $file  = end($array);
       $line  = $arr[0]['line'];
-      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>&nbsp;</th></tr>");
+      $debug->add($numQueries, $query, $file, $line);
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
@@ -300,17 +333,10 @@ class db_mysql {
     return $sqlquery;
   }
 
-  /** @noinspection SpellCheckingInspection */
-  public function doquery($query) {
-    $sqlquery = $this->doOnlyQuery($query, false);
+  public function doQueryAndFetch($sql) {
+    $stmt = $this->doOnlyQuery($sql, false);
 
-    return $this->db_fetch($sqlquery);
-  }
-
-  public function doQueryAndFetch($query) {
-    $sqlquery = $this->doOnlyQuery($query, false);
-
-    return $this->db_fetch($sqlquery);
+    return $this->db_fetch($stmt);
   }
 
   /**
@@ -347,15 +373,13 @@ class db_mysql {
    * @param string $query
    * @param bool   $skip_query_check
    *
-   * @return DbMysqliResultIterator
    */
   public function selectIterator($query, $skip_query_check = false) {
-    return new DbMysqliResultIterator($this->doOnlyQuery($query, $skip_query_check));
+    return new PDORowIterator($this->doOnlyQuery($query, $skip_query_check));
   }
 
   /**
    * @param string $query
-   * @param bool   $skip_query_check
    *
    * @return int|null
    */
@@ -548,50 +572,47 @@ class db_mysql {
   }
 
   /**
-   * @param $query_string
+   * Executes direct SQL query
    *
-   * @return bool|mysqli_result
+   * @param string $query_string
+   *
+   * @return false|PDOStatement
    */
   public function db_sql_query($query_string) {
     $mt = microtime(true);
 
-    $result = $this->link->query($query_string);
+//    // SELECT / SHOW / DESCRIBE / EXPLAIN
+//    if (preg_match('/^\s*(SELECT|SHOW|DESCRIBE|EXPLAIN)\b/i', $sql)) {
+//      $result = $this->dbLaravel->select($sql, $bindings);
+//      // stdClass[] → array[]
+//      $result = array_map(fn($row) => (array) $row, $result);
+//    } else {
+//      // INSERT / UPDATE / DELETE / DDL
+//      $result = $this->dbLaravel->statement($sql, $bindings);
+//    }
+
+    $result = $this->pdo->query($query_string, PDO::FETCH_ASSOC);
 
     $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
+//    return $this->driver->mysql_query($query_string);
   }
 
   /**
-   * Executes statement such as INSERT / UPDATE / DELETE / DDL
-   *
-   * @param string $sql
-   *
-   * @return bool|mysqli_result
-   */
-  public function db_statement($sql) {
-    $mt = microtime(true);
-
-    $result = $this->link->query($sql);
-
-    $this->time_mysql_total += microtime(true) - $mt;
-
-    return $result;
-  }
-
-  /**
-   * @param mysqli_result $query_result
+   * @param PDOStatement $query_result
    *
    * @return array|null
    */
   public function db_fetch($query_result) {
     $mt = microtime(true);
 
-    $result = mysqli_fetch_assoc($query_result);
+    // $result = mysqli_fetch_assoc($query_result);
+    $result = $query_result->fetch(PDO::FETCH_ASSOC);
 
     $this->time_mysql_total += microtime(true) - $mt;
 
-    return $result;
+    return empty($result) ? null : $result;
   }
 
 //  public function db_fetch_row(&$query) {
@@ -599,52 +620,80 @@ class db_mysql {
 //  }
 
   public function db_escape($unescaped_string) {
-    return mysqli_real_escape_string($this->link, $unescaped_string);
+    return substr($this->pdo->quote($unescaped_string), 1, -1);
   }
 
   public function driver_disconnect() {
-    if (is_object($this->link)) {
-      $this->link->close();
+    if (is_object($this->pdo)) {
+      $this->pdo       = null;
       $this->connected = false;
-      unset($this->link);
+      unset($this->pdo);
     }
 
     return true;
   }
 
   public function db_error() {
-    return mysqli_error($this->link);
+//    return mysqli_error($this->link);
+    return $this->pdo->errorInfo()[2] ?? null;
   }
 
   /**
-   * @return int|string
+   * @return false|string
    */
   public function db_insert_id() {
-    return mysqli_insert_id($this->link);
+    return $this->pdo->lastInsertId();
   }
 
+  /**
+   * @param PDOStatement $result
+   *
+   * @return int
+   */
   public function db_num_rows($result) {
-    return mysqli_num_rows($result);
+    return $result->rowCount();
   }
 
+  /**
+   * @param PDOStatement $result
+   */
   public function db_affected_rows($result = null) {
-    return mysqli_affected_rows($this->link);
+    return $result ? $result->rowCount() : null;
   }
 
   public function getClientInfo() {
-    return mysqli_get_client_info($this->link);
+    return (string)$this->pdo->getAttribute(PDO::ATTR_CLIENT_VERSION);
+//    return mysqli_get_client_info($this->link);
   }
 
   public function getServerInfo() {
-    return mysqli_get_server_info($this->link);
+//    return mysqli_get_server_info($this->link);
+    return (string)$this->pdo->getAttribute(PDO::ATTR_SERVER_INFO);
   }
 
   public function getHostInfo() {
-    return mysqli_get_host_info($this->link);
+//    return mysqli_get_host_info($this->link);
+    return (string)$this->pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS);
   }
 
   public function getServerStat() {
-    return mysqli_stat($this->link);
+//    return mysqli_stat($this->link);
+    $stmt = $this->pdo->query("SHOW STATUS");
+    $rows = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    return sprintf(
+      "Uptime: %s  Threads: %s  Questions: %s  Slow queries: %s  Opens: %s  Flush tables: %s  Open tables: %s  Queries per second avg: %.3f",
+      $rows['Uptime'] ?? 0,
+      $rows['Threads_connected'] ?? 0,
+      $rows['Questions'] ?? 0,
+      $rows['Slow_queries'] ?? 0,
+      $rows['Opened_tables'] ?? 0,
+      $rows['Flush_commands'] ?? 0,
+      $rows['Open_tables'] ?? 0,
+      isset($rows['Uptime'], $rows['Questions']) && $rows['Uptime'] > 0
+        ? $rows['Questions'] / $rows['Uptime']
+        : 0
+    );
   }
 
   /**
@@ -655,10 +704,6 @@ class db_mysql {
     $this->dbName     = $this->dbsettings['name'];
 
     return $this;
-  }
-
-  public function getDbSettings() {
-    return $this->dbsettings;
   }
 
   /**
@@ -813,7 +858,7 @@ class db_mysql {
    *
    * @param array[] $locks ['$tableName' => [$idToLock, ...],],
    *
-   * @return array|bool|mysqli_result|null
+   * @return bool|null
    */
   public function lockRecords($locks) {
     // Reordering lock order for known tables
@@ -848,6 +893,7 @@ class db_mysql {
     return true;
   }
 
+  // TODO
   public function doDbSelect(string $string, $skip_query_check = false) {
     return $this->doOnlyQuery($string, $skip_query_check);
   }
@@ -856,6 +902,8 @@ class db_mysql {
    * doDbDelete - not to miss with doDelete() on replaces
    *
    * @param string $string
+   *
+   * @return bool|PDOStatement
    */
   public function doDbDelete(string $string) {
     return $this->doOnlyQuery($string);
@@ -871,6 +919,33 @@ class db_mysql {
 
   public function doDbInsert(string $string) {
     return $this->doOnlyQuery($string);
+  }
+
+  /**
+   * Executes direct SQL query that returns result like SELECT/SHOW/DESCRIBE/EXPLAIN
+   *
+   * @param string $sql
+   *
+   * @return false|PDOStatement
+   */
+  public function pdoSelectAssoc($sql) {
+    $mt = microtime(true);
+
+//    // SELECT / SHOW / DESCRIBE / EXPLAIN
+//    if (preg_match('/^\s*(SELECT|SHOW|DESCRIBE|EXPLAIN)\b/i', $sql)) {
+//      $result = $this->dbLaravel->select($sql, $bindings);
+//      // stdClass[] → array[]
+//      $result = array_map(fn($row) => (array) $row, $result);
+//    } else {
+//      // INSERT / UPDATE / DELETE / DDL
+//      $result = $this->dbLaravel->statement($sql, $bindings);
+//    }
+
+    $result = $this->pdo->query($sql, PDO::FETCH_ASSOC);
+
+    $this->time_mysql_total += microtime(true) - $mt;
+
+    return $result;
   }
 
 }

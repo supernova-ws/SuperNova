@@ -128,6 +128,7 @@ ob_start();
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
 Autoloader::register('classes/');
 Autoloader::register('classes/UBE/');
+Autoloader::register('modules/', 'Modules\\');
 
 @include_once SN_ROOT_PHYSICAL . 'vendor/autoload.php';
 

@@ -5,7 +5,6 @@
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use DBAL\db_mysql;
-use DBAL\db_pdo;
 use Player\userOptions;
 use Common\Vector;
 use Core\GlobalContainer;
@@ -32,7 +31,7 @@ class SN {
   /**
    * Основная БД для доступа к данным
    *
-   * @var db_pdo $db
+   * @var db_mysql $db
    */
   public static $db;
   public static $db_name = '';

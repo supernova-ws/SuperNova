@@ -27,6 +27,7 @@
     "mailgun/mailgun-php": "^3.0",
     "symfony/http-client": "^5.4",
     "nyholm/psr7": "^1.8",
-    "psr/log": "^1.1"
+    "psr/log": "^1.1",
+    "barryvdh/laravel-ide-helper": "^2.14"
   }
 }

@@ -831,9 +831,18 @@ FleetDispatchEvent::__construct
 * Autoloader::register - в модули
 
 * db_affected_rows in modules!
-* doquery() in modules!
 * db_sql_query()
-* doDbSelectFetch(string
+* db_num_rows() - check usages
+* db_escape - rid off
+* db_fetch() - rid off
+* why using DBStaticUnit in db_mysql???
+    * same for SN in db_mysql
+* RecordV2 - убрать из кода
+* ad_promo_codes.from / to - заменить 1970-01-01 03:00:00 на null
+
+2025-12-28 12:10:07 47a14
+
+[@] Better sql-query log
 
 2025-12-28 08:19:52 47a11
 

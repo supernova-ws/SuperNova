@@ -8,7 +8,6 @@ namespace Core;
 
 use classConfig;
 use DBAL\db_mysql;
-use DBAL\db_pdo;
 use DBAL\DbFieldDescription;
 use DBAL\DbIndexDescription;
 use mysqli_result;
@@ -23,7 +22,7 @@ class Updater {
    */
   protected $config;
   /**
-   * @var db_pdo $db
+   * @var db_mysql $db
    */
   protected $db;
 
