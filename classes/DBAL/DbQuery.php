@@ -199,9 +199,6 @@ class DbQuery {
     return $this->db->doOnlyQuery($this->delete());
   }
 
-  /**
-   * @return array|bool|\mysqli_result|null
-   */
   public function doSelect() {
     return doSelect($this->select());
   }

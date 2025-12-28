@@ -5,6 +5,7 @@
 /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
 
 use DBAL\db_mysql;
+use DBAL\db_pdo;
 use Player\userOptions;
 use Common\Vector;
 use Core\GlobalContainer;
@@ -31,7 +32,7 @@ class SN {
   /**
    * Основная БД для доступа к данным
    *
-   * @var db_mysql $db
+   * @var db_pdo $db
    */
   public static $db;
   public static $db_name = '';
@@ -261,7 +262,7 @@ class SN {
     $table_name    = $location_info[P_TABLE_NAME];
     if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
-      if (static::$db->db_affected_rows()) {
+      if (static::$db->db_affected_rows($result)) {
         // Обновляем данные только если ряд был затронут
         DBStaticUnit::cache_clear();
       }
@@ -280,7 +281,7 @@ class SN {
 
     if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
-      if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows($result)) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         DBStaticUnit::cache_clear();
       }
@@ -293,7 +294,7 @@ class SN {
     $set        = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if ($result = self::$db->doDbInsert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
-      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows($result)) // Обновляем данные только если ряд был затронут
       {
         $record_id = SN::$db->db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -315,7 +316,7 @@ class SN {
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
     if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
-      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows($result)) // Обновляем данные только если ряд был затронут
       {
         DBStaticUnit::cache_clear();
       }
@@ -332,7 +333,7 @@ class SN {
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
     if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
-      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows($result)) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
         DBStaticUnit::cache_clear();

@@ -21,7 +21,7 @@ function sys_maintenance()
   {
     $query['result'] = doDelete($query['query']);
     $query['error']  = SN::$db->db_error();
-    $query['affected_rows']  = SN::$db->db_affected_rows();
+    $query['affected_rows']  = SN::$db->db_affected_rows($query['result']);
   }
 
   return $queries;

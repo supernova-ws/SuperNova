@@ -120,7 +120,7 @@ class PlayerStatic {
     $query .= ' LIMIT 1';
     $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
 
-    return SN::$db->doquery($query, true);
+    return SN::$db->doQueryAndFetch($query);
   }
 
 }

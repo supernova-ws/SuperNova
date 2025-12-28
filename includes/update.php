@@ -222,7 +222,7 @@ switch ($updater->new_version) {
         !$updater->isFieldExists('users', 'skin')
       );
 
-      $query = $updater->upd_do_query("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
+      $query = $updater->upd_do_select("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
       while ($row = db_fetch($query)) {
         $skinName = '';
         /** @noinspection SpellCheckingInspection */
@@ -319,7 +319,7 @@ switch ($updater->new_version) {
     }
 
     $updater->updPatchApply(1, function () use ($updater) {
-      $q = $updater->upd_do_query("SELECT `messageid`, `user` FROM `{{chat}}`", true);
+      $q = $updater->upd_do_select("SELECT `messageid`, `user` FROM `{{chat}}`", true);
       while ($row = db_fetch($q)) {
         if (strpos($row['user'], 'a:') !== 0) {
           continue;
@@ -663,7 +663,7 @@ switch ($updater->new_version) {
         );
 
         // module_festival_69_highspot_1396_code
-        $query = $updater->upd_do_query("SELECT * FROM {{config}} WHERE `config_name` LIKE 'module_festival_%_highspot_%';");
+        $query = $updater->upd_do_select("SELECT * FROM {{config}} WHERE `config_name` LIKE 'module_festival_%_highspot_%';");
         $total = $patched = 0;
         while ($row = db_fetch($query)) {
           $total++;
@@ -675,8 +675,8 @@ switch ($updater->new_version) {
                 2 => string(3) 275
                 3 => string(6) status
              * */
-            $festival = $updater->upd_do_query("SELECT `id` FROM {{festival}} WHERE `id` = {$matches[1]};", true);
-            $highspot = $updater->upd_do_query("SELECT `id` FROM {{festival_highspot}} WHERE `id` = {$matches[2]};", true);
+            $festival = $updater->upd_do_select("SELECT `id` FROM {{festival}} WHERE `id` = {$matches[1]};", true);
+            $highspot = $updater->upd_do_select("SELECT `id` FROM {{festival_highspot}} WHERE `id` = {$matches[2]};", true);
             if (!empty($festival->num_rows) && !empty($highspot->num_rows)) {
               $matches[3] = "'" . SN::$db->db_escape($matches[3]) . "'";
               $matches[4] = "'" . SN::$db->db_escape($row['config_value']) . "'";

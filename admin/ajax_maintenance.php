@@ -259,10 +259,10 @@ foreach($ques as $que_transaction) {
     $msg .=
       '<li>' . htmlspecialchars($que) .
         ' --- <span style="' . ($QryResult ? 'ok">OK' : 'error">FAILED!') . '</span> ' .
-      SN::$db->db_affected_rows() . ' ' . $lang['adm_records'] .
+      SN::$db->db_affected_rows($QryResult) . ' ' . $lang['adm_records'] .
       "</li>";
 
-    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . SN::$db->db_affected_rows() . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
+    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . SN::$db->db_affected_rows($QryResult) . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
   db_mysql::db_transaction_commit();

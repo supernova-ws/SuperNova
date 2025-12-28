@@ -432,7 +432,7 @@ class Account {
       if(!$result) {
         $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
       }
-      $result = SN::$db->db_affected_rows();
+      $result = SN::$db->db_affected_rows($result);
 
       $this->awardImmortal($metamatter, $config);
     }

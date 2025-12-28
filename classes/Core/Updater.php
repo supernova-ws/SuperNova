@@ -8,6 +8,7 @@ namespace Core;
 
 use classConfig;
 use DBAL\db_mysql;
+use DBAL\db_pdo;
 use DBAL\DbFieldDescription;
 use DBAL\DbIndexDescription;
 use mysqli_result;
@@ -22,7 +23,7 @@ class Updater {
    */
   protected $config;
   /**
-   * @var db_mysql $db
+   * @var db_pdo $db
    */
   protected $db;
 
@@ -180,10 +181,7 @@ class Updater {
     }
 
     $alters = implode(',', $alters);
-    // $alters = preg_replace('/({{(.+)}})/U', 'lvh1_$2', $alters);
-    $qry = "ALTER TABLE {$this->config->db_prefix}{$table} {$alters};";
-
-    $result = $this->upd_do_query($qry);
+    $result = $this->upd_do_query("ALTER TABLE {$this->config->db_prefix}{$table} {$alters};");
     $error  = SN::$db->db_error();
     if ($error) {
       die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
@@ -195,8 +193,8 @@ class Updater {
   }
 
   public function upd_drop_table($table_name) {
-    $this->db->db_sql_query("DROP TABLE IF EXISTS {$this->config->db_prefix}{$table_name};");
-    $this->db->schema()->clear();
+//    $this->db->db_sql_query("DROP TABLE IF EXISTS {$this->config->db_prefix}{$table_name};");
+    $this->db->schema()->dropTable("{$this->config->db_prefix}{$table_name}");
   }
 
   /**
@@ -272,7 +270,7 @@ class Updater {
    * @return bool
    */
   public function updPatchExists($id) {
-    $q = $this->upd_do_query("SELECT 1 FROM `{{server_patches}}` WHERE `id` = " . intval($id), true);
+    $q = $this->upd_do_select("SELECT 1 FROM `{{server_patches}}` WHERE `id` = " . intval($id), true);
 
     return !empty(db_fetch($q));
   }
@@ -302,22 +300,29 @@ class Updater {
   /**
    * @param string $query
    * @param bool   $no_log
-   *
-   * @return bool|mysqli_result
    */
   public function upd_do_query($query, $no_log = false) {
-    $this->upd_add_more_time();
+    $query  = $this->parseSql($no_log, $query);
 
-    if (!$no_log) {
-      $this->upd_log_message("Performing query '{$query}'");
+    $result = $this->db->db_sql_query($query);
+    if (empty($result)) {
+      die('Query error for ' . $query . ': ' . SN::$db->db_error());
     }
 
-    if (strpos($query, '{{') !== false) {
-      foreach ($this->db->schema()->getSnTables() as $tableName => $cork) {
-        $query = str_replace("{{{$tableName}}}", $this->db->db_prefix . $tableName, $query);
-      }
+    return $result;
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $no_log
+   */
+  public function upd_do_select($query, $no_log = false) {
+    $query  = $this->parseSql($no_log, $query);
+
+    $result = $this->db->pdoSelectAssoc($query);
+    if (empty($result)) {
+      die('Query error for ' . $query . ': ' . SN::$db->db_error());
     }
-    $result = $this->db->db_sql_query($query) or die('Query error for ' . $query . ': ' . SN::$db->db_error());
 
     return $result;
   }
@@ -386,6 +391,28 @@ class Updater {
   public function transactionCommit() {
 //    $this->upd_do_query('COMMIT;', true);
     $this->db->transactionCommit();
+  }
+
+  /**
+   * @param bool   $no_log
+   * @param string $query
+   *
+   * @return array|string|string[]
+   */
+  public function parseSql(bool $no_log, string $query) {
+    $this->upd_add_more_time();
+
+    if (!$no_log) {
+      $this->upd_log_message("Performing query '{$query}'");
+    }
+
+    if (strpos($query, '{{') !== false) {
+      foreach ($this->db->schema()->getSnTables() as $tableName => $cork) {
+        $query = str_replace("{{{$tableName}}}", $this->db->db_prefix . $tableName, $query);
+      }
+    }
+
+    return $query;
   }
 
 }

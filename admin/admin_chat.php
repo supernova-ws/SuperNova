@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #47a4#
+ * @version #47a11#
  **/
 
 define('INSIDE', true);
@@ -26,8 +26,11 @@ if ($delete) {
 
 $template = SnTemplate::gettemplate('admin/admin_chat', true);
 
+$count = 0;
+
 $query = doSelect("SELECT * FROM `{{chat}}` ORDER BY `messageid` DESC LIMIT 25;");
 while ($e = db_fetch($query)) {
+  $count++;
   $template->assign_block_vars('message', array(
     'ID'          => $e['messageid'],
     'TIMESTAMP'   => str_replace(' ', '&nbsp;', date(FMT_DATE_TIME, $e['timestamp'])),
@@ -38,7 +41,8 @@ while ($e = db_fetch($query)) {
 
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['adm_ch_ttle'],
-  'msg_num'     => SN::$gc->db->db_num_rows($query),
+  // 'msg_num'     => SN::$gc->db->db_num_rows($query),
+  'msg_num'     => $count,
 ));
 
 SnTemplate::display($template);

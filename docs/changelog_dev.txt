@@ -823,11 +823,21 @@ FleetDispatchEvent::__construct
 #ctv
 
 * PDO/Laravel migration
-    * проверить кроневые doSelect и прописать doSelectFetch где это возможно - остальное проверено, как и все методы в объекте - кроме селекта
-    + Проверил корневые doSelect и вроде везде дописал doSelectFetch
     + SN::$db->doDbSelect
-    ? Позаменять всё в модулях
     ? скормить гопоте диффы, пусть поищет ошибки
+
+* db_num_rows - заменить на count(*) запросы
+
+* Autoloader::register - в модули
+
+* db_affected_rows in modules!
+* doquery() in modules!
+* db_sql_query()
+* doDbSelectFetch(string
+
+2025-12-28 08:19:52 47a11
+
+[@] Migrating to PDO
 
 2025-12-26 00:28:42 47a1
 

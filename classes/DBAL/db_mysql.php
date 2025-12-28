@@ -149,25 +149,25 @@ class db_mysql {
 
     // TODO - фатальные (?) ошибки на каждом шагу
     try {
-    if (!empty($this->dbsettings)) {
-      // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
-      // $this->driver = new $driver_name();
-      $this->db_prefix = $this->dbsettings['prefix'];
+      if (!empty($this->dbsettings)) {
+        // $driver_name = 'DBAL\\' . (empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver']);
+        // $this->driver = new $driver_name();
+        $this->db_prefix = $this->dbsettings['prefix'];
 
-      $this->connected = $this->connected || $this->mysql_connect_driver($this->dbsettings);
+        $this->connected = $this->connected || $this->mysql_connect_driver($this->dbsettings);
 
-      if ($this->connected && empty($this->schema()->getSnTables())) {
-        die('DB error - cannot find any table. Halting...');
+        if ($this->connected && empty($this->schema()->getSnTables())) {
+          die('DB error - cannot find any table. Halting...');
+        }
+
+        $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE);
+      } else {
+        $this->connected = false;
       }
-
-      $this->doQueryFast('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::TRANSACTION_LEVEL_SERIALIZABLE);
-    } else {
-      $this->connected = false;
-    }
     } catch (\Exception $e) {
       $this->connected = false;
 
-      if($e->getCode() == 1044) {
+      if ($e->getCode() == 1044) {
         die('Access denied for specified DB user to specified database. Check DB settings in game and user privileges on DB server');
       } else {
         die('Error happens while connecting to DB. Check DB settings in game and DB accessibility');
@@ -259,7 +259,6 @@ class db_mysql {
    * @param             $query
    * @param bool        $skip_query_check
    *
-   * @return bool|mysqli_result
    */
   public function doOnlyQuery($query, $skip_query_check = false) {
     /**
@@ -302,10 +301,16 @@ class db_mysql {
   }
 
   /** @noinspection SpellCheckingInspection */
-  public function doquery($query, $fetch = false, $skip_query_check = false) {
-    $sqlquery = $this->doOnlyQuery($query, $skip_query_check);
+  public function doquery($query) {
+    $sqlquery = $this->doOnlyQuery($query, false);
 
-    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+    return $this->db_fetch($sqlquery);
+  }
+
+  public function doQueryAndFetch($query) {
+    $sqlquery = $this->doOnlyQuery($query, false);
+
+    return $this->db_fetch($sqlquery);
   }
 
   /**
@@ -326,10 +331,6 @@ class db_mysql {
     }
 
     return $result;
-  }
-
-  public function doQueryAndFetch($query) {
-    return $this->doquery($query, true);
   }
 
   public function doQueryFast($query, $fetch = false) {
@@ -359,7 +360,7 @@ class db_mysql {
    * @return int|null
    */
   public function selectValue($query) {
-    $row = $this->doquery($query, true, false);
+    $row = $this->doQueryAndFetch($query);
 
     return !empty($row) ? intval(reset($row)) : null;
   }
@@ -457,11 +458,11 @@ class db_mysql {
   }
 
   public function mysql_get_table_list() {
-    return $this->db_sql_query('SHOW TABLES;');
+    return $this->pdoSelectAssoc('SHOW TABLES;');
   }
 
   public function mysql_get_innodb_status() {
-    return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
+    return $this->pdoSelectAssoc('SHOW ENGINE INNODB STATUS;');
   }
 
   /**
@@ -473,7 +474,7 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1                     = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
+    $q1                     = $this->pdoSelectAssoc("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
     while ($r1 = db_fetch($q1)) {
       $dbf = new DbFieldDescription();
       $dbf->fromMySqlDescription($r1);
@@ -496,7 +497,7 @@ class db_mysql {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
-    $q1                     = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
+    $q1                     = $this->pdoSelectAssoc("SHOW INDEX FROM {$prefixedTableName_safe};");
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['Key_name'];
       if (empty($result[$indexName])) {
@@ -518,7 +519,15 @@ class db_mysql {
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
 
-    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . SN::$db->db_escape(SN::$db_name) . "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
+    $dbNameSafe = SN::$db->db_escape(SN::$db_name);
+
+    $q1 = $this->pdoSelectAssoc(
+      "SELECT * 
+        FROM `information_schema`.`KEY_COLUMN_USAGE` 
+        WHERE `TABLE_SCHEMA` = '{$dbNameSafe}' 
+          AND `TABLE_NAME` = '{$prefixedTableName_safe}' 
+          AND `REFERENCED_TABLE_NAME` IS NOT NULL;"
+    );
     while ($r1 = db_fetch($q1)) {
       $indexName = $r1['CONSTRAINT_NAME'];
 
@@ -618,7 +627,7 @@ class db_mysql {
     return mysqli_num_rows($result);
   }
 
-  public function db_affected_rows() {
+  public function db_affected_rows($result = null) {
     return mysqli_affected_rows($this->link);
   }
 
@@ -843,16 +852,10 @@ class db_mysql {
     return $this->doOnlyQuery($string, $skip_query_check);
   }
 
-  public function doDbSelectFetch(string $string, $skip_query_check = false) {
-    return $this->doquery($string, true, $skip_query_check);
-  }
-
   /**
    * doDbDelete - not to miss with doDelete() on replaces
    *
    * @param string $string
-   *
-   * @return array|bool|mysqli_result|null
    */
   public function doDbDelete(string $string) {
     return $this->doOnlyQuery($string);

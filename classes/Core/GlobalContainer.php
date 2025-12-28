@@ -10,6 +10,7 @@ use classConfig;
 use Common\ContainerPlus;
 use Core\Scheduler\Watchdog;
 use DBAL\db_mysql;
+use DBAL\db_pdo;
 use DBAL\StorageSqlV2;
 use debug;
 use Design;
@@ -38,7 +39,7 @@ use TheUser;
  * Services ------------------------------------------------------------------------------------------------------------
  * @property HttpRequest       $request
  * @property debug             $debug
- * @property db_mysql          $db
+ * @property db_pdo          $db
  * @property classCache        $cache
  * @property classConfig       $config
  * @property Crypto            $crypto
@@ -118,7 +119,7 @@ class GlobalContainer extends ContainerPlus {
     };
 
     $gc->db = function (GlobalContainer $c) {
-      SN::$db = new db_mysql($c);
+      SN::$db = new db_pdo($c);
 
       return SN::$db;
     };

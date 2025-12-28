@@ -130,4 +130,9 @@ class Schema {
     return $this->isSnTableExists($table) && $this->getTableSchema($table)->isConstrainExists($constrain);
   }
 
+  public function dropTable(string $tableName) {
+    $this->db->db_sql_query("DROP TABLE IF EXISTS `{$tableName}`;");
+    $this->loadTableNamesFromDb();
+  }
+
 }

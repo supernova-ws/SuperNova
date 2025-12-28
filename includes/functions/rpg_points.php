@@ -64,8 +64,8 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
       $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
     }
     $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
-    !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
-    $rows_affected = SN::$db->db_affected_rows();
+    $result = !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
+    $rows_affected = SN::$db->db_affected_rows($result);
   }
 
   if($rows_affected || !$dark_matter) {

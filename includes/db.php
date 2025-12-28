@@ -133,88 +133,30 @@ function doReplace($query) {
   return SN::$db->doOnlyQuery($query);
 }
 
-/**
- * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doSelect($query) {
   return SN::$db->doOnlyQuery($query);
 }
 
-/**
- * @param string $query
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doSelectFetch($query) {
-  return SN::$db->doquery($query, true);
+  return SN::$db->doQueryAndFetch($query);
 }
 
-/**
- * @param        $query
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doInsert($query) {
   return SN::$db->doOnlyQuery($query);
 }
 
-/**
- * @param        $query
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doInsertNoCheck($query) {
   return SN::$db->doOnlyQuery($query, true);
 }
 
-/**
- * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doDelete($query) {
   return SN::$db->doOnlyQuery($query);
 }
 
-/**
- * @param        $query
- * @param string $table
- * @param bool   $fetch
- * @param bool   $skip_query_check
- *
- * @return array|bool|mysqli_result|null
- *
- * @deprecated
- */
 function doUpdate($query) {
   return SN::$db->doOnlyQuery($query);
 }
 
-/**
- * Executes plain SQL statement. Possible DDL
- *
- * @param $query
- *
- * @return bool|mysqli_result
- */
 function doSqlStatement($query) {
   return SN::$db->doOnlyQuery($query, true);
 }

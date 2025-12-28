@@ -118,7 +118,7 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 if (in_array($_SERVER['HTTP_HOST'], ['trunk.supernova.local', 'modules.supernova.local', ])) {
   ini_set('display_errors', '1');
   ini_set('display_startup_errors', '1');
-  error_reporting(E_ALL);
+  error_reporting(E_ALL ^ E_DEPRECATED);
 }
 
 header('Content-type: text/html; charset=utf-8');
@@ -128,6 +128,8 @@ ob_start();
 require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
 Autoloader::register('classes/');
 Autoloader::register('classes/UBE/');
+
+@include_once SN_ROOT_PHYSICAL . 'vendor/autoload.php';
 
 // Propagating other constants
 require_once SN_ROOT_PHYSICAL . 'includes/constants/constants.php';

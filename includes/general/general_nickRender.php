@@ -254,7 +254,7 @@ function player_nick_render_current_to_array($render_user, $options = false) {
  *
  * @return mixed
  */
-function sn_player_nick_render_current_to_array($render_user, $options = false, &$result) {
+function sn_player_nick_render_current_to_array($render_user, $options = false, &$result = null) {
   /*
   $options = $options !== true ? $options :
     array(

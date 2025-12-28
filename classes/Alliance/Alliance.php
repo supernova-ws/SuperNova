@@ -107,7 +107,7 @@ class Alliance extends RecordAlliance {
    *
    * @param GlobalContainer|null $services
    */
-  public function __construct(GlobalContainer $services = null) {
+  public function __construct(?GlobalContainer $services = null) {
     parent::__construct($services);
   }
 

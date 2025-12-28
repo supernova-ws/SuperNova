@@ -8,6 +8,7 @@ namespace DBAL;
 use Common\AccessLogged;
 use Core\GlobalContainer;
 use Common\Exceptions\DbalFieldInvalidException;
+use PDO;
 
 /**
  * Class ActiveRecordAbstract
@@ -133,7 +134,6 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    *
    * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
-   * @return bool|\mysqli_result
    */
   public static function find($propertyFilter) {
     $dbq = static::dbPrepareQuery();
@@ -158,7 +158,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * @return string[] - [$field_name => $field_value]
    */
   public static function findRecordFirst($propertyFilter) {
-    $result = empty($mysqliResult = static::find($propertyFilter)) ? [] : $mysqliResult->fetch_assoc();
+//    $result = empty($mysqliResult = static::find($propertyFilter)) ? [] : $mysqliResult->fetch_assoc();
+    $result = empty($mysqliResult = static::find($propertyFilter)) ? [] : $mysqliResult->fetch(PDO::FETCH_ASSOC);
 
     // Secondary check - for fetch_assoc() result
     return empty($result) ? [] : $result;
@@ -212,7 +213,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    *
    * @param \Core\GlobalContainer|null $services
    */
-  public function __construct(GlobalContainer $services = null) {
+  public function __construct(?GlobalContainer $services = null) {
     parent::__construct($services);
     $this->defaultValues();
   }

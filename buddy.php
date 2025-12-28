@@ -44,8 +44,8 @@ try {
           throw new exception('buddy_err_accept_denied', ERR_ERROR);
         }
 
-        doUpdate("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-        if (SN::$db->db_affected_rows()) {
+        $qRes = doUpdate("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+        if (SN::$db->db_affected_rows($qRes)) {
           msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
             sprintf($lang['buddy_msg_accept_text'], $user['username']));
           db_mysql::db_transaction_commit();

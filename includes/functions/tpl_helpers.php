@@ -119,7 +119,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false) {
  *
  * @return mixed
  */
-function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
+function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result = null) {
   global $lang, $user;
 
   if (!$user_data) {

@@ -52,7 +52,7 @@ function sn_unit_relocate($unit_id, $from, $to) { }
  *
  * @see sn_mrc_get_level()
  */
-function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false) {
+function mrc_get_level(&$user, $planet = [], $unit_id = null, $for_update = false, $plain = false) {
   $result = null;
 
   return sn_function_call(__FUNCTION__, [&$user, $planet, $unit_id, $for_update, $plain, &$result]);
@@ -70,7 +70,7 @@ function mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $pla
  *
  * @see mrc_get_level()
  */
-function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $plain = false, &$result) {
+function sn_mrc_get_level(&$user, $planet = [], $unit_id = null, $for_update = false, $plain = false, &$result = null) {
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
 
@@ -93,9 +93,9 @@ function sn_mrc_get_level(&$user, $planet = [], $unit_id, $for_update = false, $
   return $result = $mercenary_level;
 }
 
-function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) { return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value)); }
+function mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $value = null) { return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value)); }
 
-function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $base_value = null) {
+function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $value = null, $base_value = null) {
   if (!is_array($mercenaries)) {
     $mercenaries = array($mercenaries);
   }
@@ -245,7 +245,7 @@ function get_unit_param($unit_id, $param_name = null, $user = null, $planet = nu
  *
  * @see get_unit_param()
  */
-function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result) {
+function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result = null) {
   global $sn_data;
 
   $result = isset($sn_data[$unit_id])
@@ -285,7 +285,7 @@ function unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIR
   return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result));
 }
 
-function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE, &$result) {
+function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = P_REQUIRE, &$result = null) {
   global $lang, $config;
 
   $sn_data_unit = get_unit_param($unit_id);

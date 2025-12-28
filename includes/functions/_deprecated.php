@@ -33,7 +33,7 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
  * @return int
  * @deprecated
  */
-function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
+function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result = null) {
   db_mysql::db_transaction_check(true);
 
   $result = CACHE_NOTHING;

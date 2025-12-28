@@ -1,19 +1,20 @@
 <?php
 
 use DBAL\db_mysql;
+use DBAL\db_pdo;
 
 /**
  * Class auth_local
  */
 // Расширяет Modules\sn_module, потому что его потомки так же являются модулями
 class auth_local extends auth_abstract {
-  public $versionCommitted = '#46d0#';
+  public $versionCommitted = '#47a11#';
 
   public $manifest = [
     'package'   => 'auth',
     'name'      => 'local',
     'version'   => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #46d0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #47a11# copyright © 2009-2015 Gorlum',
 
     self::M_LOAD_ORDER => MODULE_LOAD_ORDER_AUTH_LOCAL,
 
@@ -93,7 +94,7 @@ class auth_local extends auth_abstract {
     $this->active = false;
     if (!empty($this->config) && is_array($this->config['db'])) {
       // БД, отличная от стандартной
-      $this->db = new db_mysql();
+      $this->db = new db_pdo();
 
       $this->db->sn_db_connect($this->config['db']);
       if ($this->active = $this->db->connected) {

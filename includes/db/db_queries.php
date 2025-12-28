@@ -105,8 +105,6 @@ function db_unit_records_plain($unit_id, $user_skip_list_unit) {
  * @param $Rank
  * @param $start
  * @param $source
- *
- * @return array|bool|mysqli_result|null
  */
 function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = false) {
   if (!$source) {

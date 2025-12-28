@@ -14,7 +14,7 @@ global $lang, $user;
 //messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 
-$userId = sys_get_param_id('id');
+$userId = sys_get_param_id('id') ?: $user['id'];
 
 $template = SnTemplate::gettemplate('admin/admin_user_activity');
 visualize($userId);
