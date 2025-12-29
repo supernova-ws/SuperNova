@@ -863,6 +863,8 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
     * В частности - batchSave
     * Так же как-то сохранять место, на котором остановили обсчёт
 
+* Избавиться от PDORowIterator - нахрен не нужен! PDOStatement сам по себе итерабилен!
+
 2025-12-29 14:36:06 47a21
 
 [%] Fixed news display

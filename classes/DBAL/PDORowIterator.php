@@ -51,7 +51,7 @@ class PDORowIterator implements \Iterator, \Countable
 
   /* ===== Iterator ===== */
 
-  public function current(): mixed
+  public function current()
   {
     return $this->rows[$this->position];
   }
