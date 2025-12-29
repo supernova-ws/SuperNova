@@ -11,14 +11,14 @@ class FleetStatic {
    * @param array $planetIds
    * @param int   $time
    *
-   * @return DbMysqliResultIterator|EmptyCountableIterator
+   * @return array|\PDOStatement}
    */
   public static function dbFleetsOnHoldOnPlanetsByIds($planetIds, $time = SN_TIME_NOW) {
     if(empty($planetIds) || !is_array($planetIds)) {
-      return new EmptyCountableIterator();
+      return [];
     }
 
-    return SN::$db->selectIterator("SELECT `{{fleets}}`.*
+    return doSelect("SELECT `{{fleets}}`.*
       FROM `{{fleets}}`
         LEFT JOIN `{{users}}` ON id = fleet_owner
       WHERE
