@@ -99,7 +99,7 @@ GROUP BY
     $iterator = new DbSqlPaging($stringSqlQuery, 50, sys_get_param_int(PagingRenderer::KEYWORD));
 
     $render = [];
-    foreach ($iterator as $row) {
+    foreach ($iterator->getIterator() as $row) {
       $render[] = [
         'ID'         => $row['id'],
         'NAME'       => player_nick_render_to_html($row, true),

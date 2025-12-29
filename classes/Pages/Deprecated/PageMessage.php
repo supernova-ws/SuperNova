@@ -332,19 +332,21 @@ class PageMessage extends PageDeprecated {
         FROM `{{messages}}` as m 
           LEFT JOIN `{{users}}` as sender on sender.id = m.message_sender
         WHERE m.`message_owner` = '{$this->playerId}' {$SubSelectQry} 
-        ORDER BY m.`message_time` DESC;";
+        ORDER BY m.`message_time` DESC";
     }
 
     if ($this->showAll) {
-      $message_query = $this->db->selectIterator($message_query);
+      $iterator = $this->db->selectIterator($message_query);
     } else {
       $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
       $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
+
+      $iterator = $message_query->getIterator();
     }
 
     $wasIgnored = 0;
     $template = SnTemplate::gettemplate('msg_message_list', true);
-    foreach ($message_query as $message_row) {
+    foreach ($iterator as $message_row) {
       if(
         $message_row['message_type'] == MSG_TYPE_PLAYER
         &&

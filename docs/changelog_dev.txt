@@ -840,6 +840,36 @@ FleetDispatchEvent::__construct
 * RecordV2 - убрать из кода
 * ad_promo_codes.from / to - заменить 1970-01-01 03:00:00 на null
 
+* - DbAbstractResultIterator
+
+
+$sql = "
+  INSERT INTO users (id, name, email)
+  VALUES (?, ?, ?), (?, ?, ?)
+  ON DUPLICATE KEY UPDATE
+    name  = VALUES(name),
+    email = VALUES(email)
+";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+  1, 'Ivan', 'i@test.com',
+  2, 'Oleg', 'o@test.com',
+]);
+
+
+$size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
+
+* Переписать утилиту сжатия каунтера
+    * В частности - batchSave
+    * Так же как-то сохранять место, на котором остановили обсчёт
+
+2025-12-29 14:36:06 47a21
+
+[%] Fixed news display
+[%] Fixed messages display
+[%] Fixed admin displays
+[%] Fixed counter log compressor
+
 2025-12-28 13:46:39 47a17
 
 [@] Bumped required PHP version to 7.4

@@ -5,8 +5,6 @@
 
 namespace DBAL;
 
-use mysqli_result;
-
 /**
  * Class DbSqlPaging
  *
@@ -16,19 +14,22 @@ use mysqli_result;
  *
  * @package DBAL
  */
-class DbSqlPaging extends DbAbstractResultIterator {
+class DbSqlPaging {
   protected $db = null;
   protected $sqlQuery;
   protected $pageSize = PAGING_PAGE_SIZE_DEFAULT;
   protected $currentPage = 1;
+  private ?PDORowIterator $iterator = null;
+
+  private $totalRecords = 0;
 
   /**
    * DbSqlPaging constructor.
    *
-   * @param string              $sqlQuery
-   * @param int                 $pageSize
-   * @param int                 $currentPage
-   * @param \DBAL\db_mysql|null $db
+   * @param string        $sqlQuery
+   * @param int           $pageSize
+   * @param int           $currentPage
+   * @param db_mysql|null $db
    */
   public function __construct($sqlQuery, $pageSize = PAGING_PAGE_SIZE_DEFAULT, $currentPage = 1, $db = null) {
     $this->sqlQuery = $sqlQuery;
@@ -37,29 +38,35 @@ class DbSqlPaging extends DbAbstractResultIterator {
 
     $this->db = isset($db) ? $db : \SN::$gc->db;
 
+    $this->totalRecords = $this->db->countQueryRecords($sqlQuery);
+
     $this->query();
+  }
+
+  public function getIterator(): \Iterator {
+    return $this->iterator;
   }
 
   /**
    * @inheritdoc
    */
   public function valid() {
-    return parent::valid() && $this->counter < $this->getRecordsOnCurrentPage();
+    return $this->iterator->valid() && $this->iterator->key() < $this->getRecordsOnCurrentPage();
   }
 
   /**
    * @inheritdoc
    */
   public function count() {
-    return $this->mysqli_result instanceof mysqli_result ? $this->getRecordsOnCurrentPage() : 0;
+    return $this->iterator instanceof PDORowIterator ? $this->getRecordsOnCurrentPage() : 0;
   }
 
   /**
    * @inheritdoc
    */
   protected function seekToFirst() {
-    if ($this->mysqli_result instanceof mysqli_result) {
-      $this->mysqli_result->data_seek($this->getPageZeroRecordNum());
+    if ($this->iterator instanceof PDORowIterator) {
+      $this->iterator->data_seek($this->getPageZeroRecordNum());
     }
   }
 
@@ -78,7 +85,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * @return int
    */
   public function getTotalRecords() {
-    return $this->mysqli_result instanceof mysqli_result ? $this->mysqli_result->num_rows : 0;
+    return $this->totalRecords;
   }
 
   /**
@@ -87,7 +94,7 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * @return float|int
    */
   public function getTotalPages() {
-    return $this->mysqli_result instanceof mysqli_result ? ceil($this->getTotalRecords() / $this->pageSize) : 0;
+    return ceil($this->getTotalRecords() / $this->pageSize);
   }
 
   /**
@@ -112,12 +119,6 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * Queries DB for data and makes all necessary preparations
    */
   protected function query() {
-    if ($this->mysqli_result !== null) {
-      unset($this->mysqli_result);
-    }
-    // Performing query
-    $this->mysqli_result = $this->db->doOnlyQuery($this->sqlQuery);
-
     // Checking if page number within allowed ranges
     if (
       // Is it not a first page?
@@ -130,7 +131,10 @@ class DbSqlPaging extends DbAbstractResultIterator {
       $this->currentPage = max(1, $this->getTotalPages());
     }
 
-    $this->rewind();
+    // Performing query
+    $this->iterator = $this->db->selectIterator($this->sqlQuery . ' LIMIT ' . $this->pageSize . ' OFFSET ' . ($this->currentPage - 1) * $this->pageSize);
+
+    $this->iterator->rewind();
   }
 
 }

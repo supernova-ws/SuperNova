@@ -29,7 +29,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
   $pager = new PagingRenderer($announce_list, 'announce.php');
 
   $users = array();
-  foreach ($announce_list as $announce) {
+  foreach ($announce_list->getIterator() as $announce) {
     if ($announce['user_id'] && !isset($users[$announce['user_id']])) {
       $users[$announce['user_id']] = db_user_by_id($announce['user_id']);
     }

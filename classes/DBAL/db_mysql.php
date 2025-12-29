@@ -359,14 +359,14 @@ class db_mysql {
     return $result;
   }
 
-  public function doQueryFast($query, $fetch = false) {
+  public function doQueryFast($query) {
     $sql = $this->prefixReplace($query);
 
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlQuery = $this->db_sql_query($sql) or SN::$debug->error(SN::$db->db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
-    return $fetch ? $this->db_fetch($sqlQuery) : $sqlQuery;
+    return $sqlQuery;
   }
 
   /**
@@ -600,15 +600,31 @@ class db_mysql {
   }
 
   /**
-   * @param PDOStatement $query_result
+   * @param PDOStatement $stmt
    *
    * @return array|null
    */
-  public function db_fetch($query_result) {
+  public function db_fetch($stmt) {
     $mt = microtime(true);
 
     // $result = mysqli_fetch_assoc($query_result);
-    $result = $query_result->fetch(PDO::FETCH_ASSOC);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $this->time_mysql_total += microtime(true) - $mt;
+
+    return empty($result) ? null : $result;
+  }
+
+  /**
+   * @param PDOStatement $stmt
+   *
+   * @return array|null
+   */
+  public function dbFetchClass($stmt, $className = \stdClass::class, $params = [], $mode = PDO::FETCH_CLASS) {
+    $mt = microtime(true);
+
+    // $result = mysqli_fetch_assoc($query_result);
+    $result = $stmt->fetch($mode, $className);
 
     $this->time_mysql_total += microtime(true) - $mt;
 
@@ -946,6 +962,17 @@ class db_mysql {
     $this->time_mysql_total += microtime(true) - $mt;
 
     return $result;
+  }
+
+  public function getCapsule(): Capsule {
+    return $this->capsule;
+  }
+
+  public function countQueryRecords(string $sql): int {
+    return $this->getCapsule()::selectOne($this->prefixReplace(
+      "SELECT COUNT(*) AS cnt FROM (
+    {$sql}
+  ) t"))->cnt;
   }
 
 }

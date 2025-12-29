@@ -5,9 +5,7 @@
 
 namespace General;
 
-use Common\EmptyCountableIterator;
 use Core\GlobalContainer;
-use Common\Interfaces\ICountableIterator;
 
 /**
  * Class VisitMerger
@@ -44,10 +42,8 @@ abstract class VisitMerger {
    */
   protected $mergedIds = [];
 
-  /**
-   * @var ICountableIterator|null
-   */
-  protected $iterator = null;
+  /** @var false|\PDOStatement|null */
+  protected $stmt = null;
 
   protected $prevBatchStart = 0;
   protected $prevBatchEnd = 0;
@@ -67,14 +63,6 @@ abstract class VisitMerger {
    */
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
-    $this->iterator = new EmptyCountableIterator();
-  }
-
-  /**
-   * @param ICountableIterator $iterator
-   */
-  public function setIterator(ICountableIterator $iterator) {
-    $this->iterator = $iterator;
   }
 
   /**
@@ -104,16 +92,18 @@ abstract class VisitMerger {
     $this->prevBatchStart = $this->batchStart;
     $this->prevBatchEnd = $this->batchEnd;
 
-    if ($this->iterator->valid()) {
-      $logRecord = VisitAccumulator::build($this->iterator->current());
-      $this->batchStart = $logRecord->counterId;
-    }
+    if(!empty($this->stmt)) {
+      $row = db_fetch($this->stmt);
+      $this->batchStart = $row['counter_id'];
+      while(!empty($row)) {
+        $this->batchProcessed++;
 
-    foreach ($this->iterator as $row) {
-      $this->addMoreTime();
-      $logRecord = VisitAccumulator::build($row);
-      $this->processRecord($logRecord);
-      $this->batchProcessed++;
+        $this->addMoreTime();
+        $logRecord = VisitAccumulator::build($row);
+        $this->processRecord($logRecord);
+
+        $row = db_fetch($this->stmt);
+      }
     }
     $this->batchEnd = isset($logRecord) ? $logRecord->counterId : $this->batchStart;
 
@@ -161,12 +151,6 @@ abstract class VisitMerger {
    * @return string
    */
   protected function calcSignature($logRecord) {
-//    return
-//      $logRecord->userId . '_' .
-//      $logRecord->deviceId . '_' .
-//      $logRecord->browserId . '_' .
-//      $logRecord->ip . '_' .
-//      $logRecord->proxies;
     return $logRecord->userId . '_'  . $logRecord->playerEntryId;
   }
 

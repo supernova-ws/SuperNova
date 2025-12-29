@@ -6,7 +6,6 @@
 namespace General;
 
 use Core\GlobalContainer;
-use \DBAL\DbMysqliResultIterator;
 
 /**
  * Class LogCounterShrinker
@@ -45,27 +44,6 @@ class LogCounterShrinker extends VisitMerger {
     parent::__construct($gc);
   }
 
-  /**
-   * @param string           $sign
-   * @param VisitAccumulator $logRecord
-   *
-   * @return bool
-   */
-
-  /**
-   * @return DbMysqliResultIterator
-   */
-  protected function buildIterator() {
-    return $this->gc->db->selectIterator(
-      "SELECT * 
-        FROM `{{counter}}`
-        WHERE `visit_time` < DATE_SUB(NOW(), INTERVAL " . static::RESERVE_WEEKS . " WEEK)
-        AND `counter_id` > {$this->batchEnd} 
-        ORDER BY `visit_time`, `counter_id` 
-        LIMIT {$this->batchSize};"
-    );
-  }
-
 
   /**
    * @inheritdoc
@@ -75,8 +53,21 @@ class LogCounterShrinker extends VisitMerger {
 
     $result = [];
 
-    while (($iter = $this->buildIterator()) && $iter->count()) {
-      $this->setIterator($iter);
+
+    do {
+      $stmt = $this->gc->db->doQueryFast(
+        "SELECT * 
+        FROM `{{counter}}`
+        WHERE `visit_time` < DATE_SUB(NOW(), INTERVAL " . static::RESERVE_WEEKS . " WEEK)
+        AND `counter_id` > {$this->batchEnd} 
+        ORDER BY `visit_time`, `counter_id` 
+        LIMIT {$this->batchSize};"
+      );
+      if($stmt->rowCount() < 1) {
+        break;
+      }
+
+      $this->stmt = $stmt;
 
       parent::process(false);
 
@@ -99,7 +90,7 @@ class LogCounterShrinker extends VisitMerger {
         ];
         break;
       }
-    }
+    } while ($stmt && $stmt->rowCount());
 
     $this->cutTails();
     $this->batchSave(true);
@@ -112,6 +103,12 @@ class LogCounterShrinker extends VisitMerger {
   }
 
   protected function batchSave($forceSave = false) {
+//    if(count($this->batchDelete) || count($this->batchUpdate)) {
+//      pred(count($this->batchDelete), count($this->batchUpdate), $this->batchUpdate);
+//    } else {
+//      return;
+//    }
+
     $this->gc->db->transactionStart();
 
     if (count($this->batchDelete) >= static::BATCH_DELETE_PER_LOOP || $forceSave) {
@@ -121,10 +118,10 @@ class LogCounterShrinker extends VisitMerger {
 
     if (count($this->batchUpdate) >= static::BATCH_UPDATE_PER_LOOP || $forceSave) {
       foreach ($this->batchUpdate as $record) {
-        if (!$record->isChanged()) {
-          $this->batchSkipped++;
-          continue;
-        }
+//        if (!$record->isChanged()) {
+//          $this->batchSkipped++;
+//          continue;
+//        }
 
         $this->addMoreTime();
         $this->gc->db->doQueryFast(
@@ -142,7 +139,7 @@ class LogCounterShrinker extends VisitMerger {
   }
 
   protected function flushVisit($sign) {
-    if (!empty($this->data[$sign])) {
+    if (!empty($this->data[$sign]) && $this->data[$sign]->isChanged()) {
       $this->batchUpdate[] = $this->data[$sign];
     }
 

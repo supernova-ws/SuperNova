@@ -164,14 +164,14 @@ function doSqlStatement($query) {
 
 
 /**
- * @param $query
+ * @param PDOStatement $stmt
  *
  * @return array|null
  *
  * @deprecated
  */
-function db_fetch(&$query) {
-  return SN::$db->db_fetch($query);
+function db_fetch($stmt) {
+  return SN::$db->db_fetch($stmt);
 }
 
 /**
