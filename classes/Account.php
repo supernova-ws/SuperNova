@@ -403,6 +403,8 @@ class Account {
    * @param float             $metamatter
    * @param string|array|bool $comment
    * @param bool              $already_changed
+   *
+   * @return false|int|string ID of inserted MM-log record
    */
   public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
     global $debug, $mm_change_legit, $config;

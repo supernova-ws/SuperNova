@@ -36,6 +36,8 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     return false;
   }
 
+  $mmLogRowId = null;
+
   $dm_change_legit = true;
   $sn_data_dark_matter_db_name = pname_resource_name(RES_DARK_MATTER);
 
@@ -57,7 +59,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
           $comment = call_user_func_array('sprintf', $comment);
         }
 //        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
-        SN::$auth->account->metamatter_change($change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
+        $mmLogRowId  = SN::$auth->account->metamatter_change($change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
         $dark_matter = -$dark_matter_exists;
       }
     } else {
@@ -105,7 +107,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   }
 
   $dm_change_legit = false;
-  return $rows_affected;
+  return $rows_affected || $mmLogRowId;
 }
 
 function rpg_level_up(&$user, $type, $xp_to_add = 0)

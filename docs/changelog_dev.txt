@@ -820,7 +820,9 @@ FleetDispatchEvent::__construct
 
 [детект сходных символов](./docs/similar_characters_detect.md)
 
-#ctv
+* Че там с генерацией баннера?
+    * Пройтись по новостям - в ранних позаменять ссылки
+    * Пройтись по форуму, сообщениям и подписям - поправить ссылки
 
 * PDO/Laravel migration
     + SN::$db->doDbSelect
@@ -865,6 +867,17 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 
 * Избавиться от PDORowIterator - нахрен не нужен! PDOStatement сам по себе итерабилен!
 * Избавиться от ActiveRecordAbstract
+
+* Не указывается причина начисления ТМ в логе для промо-кодов
+
+* mm_points_change - выбросить, как и поля про ММ из таблицы `user`
+* rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
+
+#ctv
+
+2026-01-01 15:57:45 47a36
+
+[%] Fixed MM to DM conversion when full DM price taken from MM
 
 2025-12-31 20:18:51 47a33
 
