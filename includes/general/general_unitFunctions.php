@@ -93,9 +93,14 @@ function sn_mrc_get_level(&$user, $planet = [], $unit_id = null, $for_update = f
   return $result = $mercenary_level;
 }
 
-function mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $value = null) { return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value)); }
+function mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $value = null) {
+  /** @see sn_mrc_modify_value() */
+  return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));
+}
 
 function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $value = null, $base_value = null) {
+  static $mrcNavigator;
+
   if (!is_array($mercenaries)) {
     $mercenaries = array($mercenaries);
   }
@@ -103,7 +108,14 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries = null, $va
   $base_value = isset($base_value) ? $base_value : $value;
 
   foreach ($mercenaries as $mercenary_id) {
-    $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
+    if ($mercenary_id == MRC_NAVIGATOR) {
+      if (!isset($mrcNavigator)) {
+        $mrcNavigator = mrc_get_level($user, $planet, $mercenary_id);
+      }
+      $mercenary_level = $mrcNavigator;
+    } else {
+      $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
+    }
 
     $mercenary = get_unit_param($mercenary_id);
     $mercenary_bonus = $mercenary[P_BONUS_VALUE];
@@ -190,17 +202,19 @@ function get_engine_data($user, $engine_info, $user_tech_level = null) {
   return $engine_info;
 }
 
-function get_ship_data($ship_id, $user) {
+function get_ship_data($ship_id, $user, $engineTechLevels = []) {
   $ship_data = array();
   if (in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
     foreach (get_unit_param($ship_id, 'engine') as $engine_info) {
-      $tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+//      $tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+      $tech_level = intval($engineTechLevels[$engine_info['tech']] ?? mrc_get_level($user, false, $engine_info['tech']));
       if (empty($ship_data) || $tech_level >= $engine_info['min_level']) {
         $ship_data = $engine_info;
         $ship_data['tech_level'] = $tech_level;
       }
     }
-    $ship_data = get_engine_data($user, $ship_data);
+//    $ship_data = get_engine_data($user, $ship_data);
+    $ship_data = get_engine_data($user, $ship_data, $ship_data['tech_level'] ?? null);
     $ship_data['capacity'] = get_unit_param($ship_id, 'capacity');
   }
 

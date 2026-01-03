@@ -8,6 +8,7 @@
 
 namespace Unit;
 
+use DBAL\db_mysql;
 use Exception;
 use PDOStatement;
 use Planet\Planet;
@@ -36,52 +37,121 @@ class DBStaticUnit {
 
   /**
    * @param int $user_id
-   * @param int $location_type
+   * @param int $locationTypeId
    * @param int $location_id
    * @param int $unit_snid
    *
    * @return array|false|mixed|null
    * @noinspection PhpUnusedParameterInspection
    */
-  public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
-    // apply time restrictions ????
-    $allUnits = DBStaticUnit::db_get_unit_list_by_location($location_type, $location_id);
+  public static function db_unit_by_location($user_id, $locationTypeId, $location_id, $unit_snid) {
+    if (!($locationTypeId = idval($locationTypeId)) || !($location_id = idval($location_id))) {
+      return false;
+    }
 
     $unit_snid = intval($unit_snid);
+
+    $filter   = ($unit_snid ? "unit_snid = {$unit_snid} AND " : '')
+      . "unit_location_type = {$locationTypeId} AND unit_location_id = {$location_id}" .
+      " AND " . DBStaticUnit::db_unit_time_restrictions();
+    $query = "SELECT * FROM {{unit}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
+    $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+
+    $sqlResult = doSelect($query);
+
+    $allUnits = false;
+
+    while ($row = db_fetch($sqlResult)) {
+      $allUnits[$row['unit_snid']] = $row;
+    }
 
     return $unit_snid ? ($allUnits[$unit_snid] ?? null) : $allUnits;
   }
 
   /**
-   * @param $location_type
+   * @param int $locationTypeId
+   * @param int $location_id
+   *
+   * @return array|false|mixed|null
+   */
+  public static function dbUnitsAllByLocation($locationTypeId, $location_id) {
+    if (!($locationTypeId = idval($locationTypeId)) || !($location_id = idval($location_id))) {
+      return false;
+    }
+
+    $allUnits = false;
+
+    $filter   =
+      "unit_location_type = {$locationTypeId} AND unit_location_id = {$location_id}" .
+      " AND " . DBStaticUnit::db_unit_time_restrictions();
+    $query = "SELECT * FROM {{unit}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
+    $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+
+    $sqlResult = doSelect($query);
+
+
+    while ($row = db_fetch($sqlResult)) {
+      $allUnits[$row['unit_snid']] = $row;
+    }
+
+    return $allUnits;
+  }
+
+  /**
+   * @param $locationTypeId
    * @param $location_id
    *
    * @return array|false
    */
-  public static function db_get_unit_list_by_location($location_type, $location_id) {
-    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
-      return false;
+  public static function db_get_unit_list_by_location($locationTypeId, $location_id) {
+
+//    $oldResult = SN::db_get_record_list($location_type, $filter);
+
+
+//    $location_info = &SN::$location_info[LOC_UNIT];
+//    $id_field      = $location_info[P_ID];
+//    $result = false;
+
+//    $sqlResult = static::db_query_select(
+//      "SELECT * FROM {{{$tableName}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+//    );
+
+    $filter   = "unit_location_type = {$locationTypeId} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions();
+    $query = "SELECT * FROM {{unit}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
+    $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';
+
+    $sqlResult = doSelect($query);
+
+    $allUnits = false;
+
+    while ($row = db_fetch($sqlResult)) {
+//      $result[$row['unit_id']] = $row;
+      $allUnits[$row['unit_snid']] = $row;
     }
 
-    $locator = [];
 
-      $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
-      if (is_array($got_data)) {
-        foreach ($got_data as $unitRow) {
-          $locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
-        }
-      }
+//      if (is_array($result)) {
+//        foreach ($result as $unitRow) {
+//          $locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
+//        }
+//      }
+//
+//
+//    $return = false;
+//
+//    if (is_array($locator[$locationTypeId][$location_id])) {
+//      foreach ($locator[$locationTypeId][$location_id] as $key => $value) {
+//        $return[$key] = $value;
+//      }
+//    }
+//
+//    pre($return === $result2);
+//
+//    if($return !== $result2) {
+//      pred($return, $result2);
+//    }
 
-
-    $result = false;
-
-    if (is_array($locator[$location_type][$location_id])) {
-      foreach ($locator[$location_type][$location_id] as $key => $value) {
-        $result[$key] = $value;
-      }
-    }
-
-    return $result;
+    return $allUnits;
   }
 
 //  public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

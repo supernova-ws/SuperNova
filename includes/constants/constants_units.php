@@ -45,7 +45,8 @@ define('TECH_SHIELD', 110);
 define('TECH_ARMOR', 111); // 112
 define('TECH_ENERGY', 113);
 define('TECH_HYPERSPACE', 114);
-define('TECH_ENGINE_CHEMICAL', 115); // 116
+define('TECH_ENGINES', 116);
+define('TECH_ENGINE_CHEMICAL', 115);
 define('TECH_ENGINE_ION', 117);
 define('TECH_ENGINE_HYPER', 118);
 define('TECH_ENGINE_NUCLEAR', 119);

@@ -1204,6 +1204,13 @@ $sn_data += [
       ART_HEURISTIC_CHIP => ART_HEURISTIC_CHIP, ART_NANO_BUILDER => ART_NANO_BUILDER, // ART_DENSITY_CHANGER => ART_DENSITY_CHANGER,
     ],
 
+    TECH_ENGINES => [
+      TECH_ENGINE_CHEMICAL => TECH_ENGINE_CHEMICAL,
+      TECH_ENGINE_ION      => TECH_ENGINE_ION,
+      TECH_ENGINE_HYPER    => TECH_ENGINE_HYPER,
+      TECH_ENGINE_NUCLEAR  => TECH_ENGINE_NUCLEAR,
+    ],
+
     // Resource list
     UNIT_RESOURCES_STR      => [0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'],
     // Resources all

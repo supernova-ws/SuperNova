@@ -292,6 +292,11 @@ class db_mysql {
      */
     global $numQueries, $debug, $config;
 
+    static $exclude_functions;
+    if(empty($exclude_functions)) {
+      $exclude_functions = $debug->getExcludedFunctionNames();
+    }
+
     if (!$this->connected) {
       $this->sn_db_connect();
     }
@@ -307,7 +312,9 @@ class db_mysql {
       $arr   = debug_backtrace();
       while(
         !empty($arr)
-        && in_array(basename($arr[0]['file']), ['db.php', 'db_mysql.php', 'db_queries.php', 'DbQuery.php'])
+        && (in_array(basename($arr[0]['file']), ['db.php', 'db_mysql.php', 'db_queries.php', 'DbQuery.php'])
+//        || in_array(basename($arr[0]['function']), $exclude_functions)
+        )
       ) {
         array_shift($arr);
       }
@@ -316,6 +323,7 @@ class db_mysql {
       $file  = end($array);
       $line  = $arr[0]['line'];
       $debug->add($numQueries, $query, $file, $line);
+//      $debug->add($numQueries, str_replace("\n", '<br>', $debug->comment_query(debug_backtrace(), $sql)), $file, $line);
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {

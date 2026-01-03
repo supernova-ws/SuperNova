@@ -872,7 +872,13 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 * mm_points_change - выбросить, как и поля про ММ из таблицы `user`
 * rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
 
+
 #ctv
+
+
+2026-01-03 21:21:04 47a53
+
+[~] Speed up some queries
 
 2026-01-03 11:44:23 47a48
 

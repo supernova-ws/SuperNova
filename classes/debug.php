@@ -99,29 +99,10 @@ class debug {
   }
 
   public function compact_backtrace($backtrace, $long_comment = false, $onlyLastX = null) {
-    static $exclude_functions = array(
-      // Caller not needed
-      'comment_query',
-      // Excluding includes/requires
-      'include', 'include_once', 'require_once', 'require',
-      // Excluding query calls/DB wrap functions
-      'doquery',
-      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
-      'doDelete', 'doInsert', 'doUpdate', 'doReplace', 'doSelect', 'doSelectFetch',
-      'doDbSelect', 'doDbInsert', 'doDbUpdate', 'doDbReplace', 'doDbSelect', 'doDbSelectFetch',
-      'db_query_update',
-      'selectValue',
-      // classPersistent
-      '__get', 'db_loadItem', '__set', 'db_saveItem',
-      // Constructors ?! Why not...
-      '__construct',
-      // Hook handlers
-      'sn_function_call',
-      // Chat
-      'db_chat_player_list_online',
-      // Transaction-related functions
-      'db_transaction_commit', 'transactionCommit', 'transactionStart', 'db_transaction_start', 'db_transaction_rollback', 'transactionRollback',
-    );
+    static $exclude_functions;
+    if(empty($exclude_functions)) {
+      $exclude_functions = $this->getExcludedFunctionNames();
+    }
 
     $raw      = [];
     $filtered = [];
@@ -387,6 +368,41 @@ class debug {
       "`log_dump` = '" . ($error_backtrace ? SN::$db->db_escape(json_encode($error_backtrace)) : '') . "'" . ";";
 
     doInsertNoCheck($query) or die($fatal_error . SN::$db->db_error());
+  }
+
+  /**
+   * @return string[]
+   */
+  public function getExcludedFunctionNames(): array {
+    return array(
+//      'call_user_func_array',
+      // Caller not needed
+      'comment_query',
+      // Excluding includes/requires
+      'include', 'include_once', 'require_once', 'require',
+      // Excluding query calls/DB wrap functions
+      'doquery',
+      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
+      'doDelete', 'doInsert', 'doUpdate', 'doReplace', 'doSelect', 'doSelectFetch',
+      'doDbSelect', 'doDbInsert', 'doDbUpdate', 'doDbReplace', 'doDbSelect', 'doDbSelectFetch',
+      'db_query_update',
+      'selectValue',
+      // SN::
+      // 'db_get_record_list',
+      'db_get_unit_list_by_location',
+      // DBStaticUnit
+      'db_unit_by_location',
+      // classPersistent
+      '__get', 'db_loadItem', '__set', 'db_saveItem',
+      // Constructors ?! Why not...
+      '__construct',
+      // Hook handlers
+      'sn_function_call',
+      // Chat
+      'db_chat_player_list_online',
+      // Transaction-related functions
+      'db_transaction_commit', 'transactionCommit', 'transactionStart', 'db_transaction_start', 'db_transaction_rollback', 'transactionRollback',
+    );
   }
 }
 
