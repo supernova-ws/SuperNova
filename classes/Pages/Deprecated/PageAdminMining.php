@@ -95,7 +95,7 @@ GROUP BY
   id_owner 
 " . " ORDER BY " . implode(',', $sorting[$sortBy]['SQL_SORT']);
 
-    // View all at one page //    $iterator = SN::$db->selectIterator($stringSqlQuery);
+    // View all at one page
     $iterator = new DbSqlPaging($stringSqlQuery, 50, sys_get_param_int(PagingRenderer::KEYWORD));
 
     $render = [];

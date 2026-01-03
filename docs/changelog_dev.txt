@@ -865,7 +865,6 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
     * В частности - batchSave
     * Так же как-то сохранять место, на котором остановили обсчёт
 
-* Избавиться от PDORowIterator - нахрен не нужен! PDOStatement сам по себе итерабилен!
 * Избавиться от ActiveRecordAbstract
 
 * Не указывается причина начисления ТМ в логе для промо-кодов
@@ -873,26 +872,33 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 * mm_points_change - выбросить, как и поля про ММ из таблицы `user`
 * rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
 
-посмотреть, что бы не было вызовов getIterator() в модулях
-
 #ctv
+
+
+2026-01-03 09:56:34 47a46
+
+[@] Removing old mysqli-related code
 
 
 2026-01-03 09:43:41 47a43
 
 [@] Removing old mysqli-related code
 
+
 2026-01-03 08:18:34 47a41
 
 [%] Fixed error in message outbox
+
 
 2026-01-01 15:57:45 47a36
 
 [%] Fixed MM to DM conversion when full DM price taken from MM
 
+
 2025-12-31 20:18:51 47a33
 
 [~] Skins: Reverting usage of CSS sprites in navbar
+
 
 2025-12-29 14:36:06 47a21
 

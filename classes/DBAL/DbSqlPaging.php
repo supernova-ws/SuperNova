@@ -19,7 +19,6 @@ class DbSqlPaging {
   protected $sqlQuery;
   protected $pageSize = PAGING_PAGE_SIZE_DEFAULT;
   protected $currentPage = 1;
-  private ?PDORowIterator $iterator = null;
 
   private $totalRecords = 0;
   /**
@@ -45,10 +44,6 @@ class DbSqlPaging {
     $this->totalRecords = $this->db->countQueryRecords($sqlQuery);
 
     $this->query();
-  }
-
-  public function getIterator(): \Iterator {
-    return $this->iterator;
   }
 
   /**

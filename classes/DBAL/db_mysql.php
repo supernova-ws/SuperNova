@@ -371,15 +371,6 @@ class db_mysql {
 
   /**
    * @param string $query
-   * @param bool   $skip_query_check
-   *
-   */
-  public function selectIterator($query, $skip_query_check = false) {
-    return new PDORowIterator($this->doOnlyQuery($query, $skip_query_check));
-  }
-
-  /**
-   * @param string $query
    *
    * @return int|null
    */
