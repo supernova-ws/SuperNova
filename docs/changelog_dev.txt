@@ -875,6 +875,11 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 
 #ctv
 
+
+2026-01-03 08:18:34 47a41
+
+[%] Fixed error in message outbox
+
 2026-01-01 15:57:45 47a36
 
 [%] Fixed MM to DM conversion when full DM price taken from MM

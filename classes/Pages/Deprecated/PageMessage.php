@@ -304,7 +304,7 @@ class PageMessage extends PageDeprecated {
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
          {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$this->playerId}' AND `message_type` = 1
-       ORDER BY `message_time` DESC;";
+       ORDER BY `message_time` DESC";
     } else {
       if ($this->current_class == MSG_TYPE_NEW) {
         $SubUpdateQry = array();
