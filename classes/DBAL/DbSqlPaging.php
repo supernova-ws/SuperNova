@@ -22,6 +22,10 @@ class DbSqlPaging {
   private ?PDORowIterator $iterator = null;
 
   private $totalRecords = 0;
+  /**
+   * @var bool|\PDOStatement
+   */
+  private $stmt;
 
   /**
    * DbSqlPaging constructor.
@@ -48,26 +52,10 @@ class DbSqlPaging {
   }
 
   /**
-   * @inheritdoc
+   * @return bool|\PDOStatement
    */
-  public function valid() {
-    return $this->iterator->valid() && $this->iterator->key() < $this->getRecordsOnCurrentPage();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function count() {
-    return $this->iterator instanceof PDORowIterator ? $this->getRecordsOnCurrentPage() : 0;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  protected function seekToFirst() {
-    if ($this->iterator instanceof PDORowIterator) {
-      $this->iterator->data_seek($this->getPageZeroRecordNum());
-    }
+  public function getResult() {
+    return $this->stmt;
   }
 
   /**
@@ -132,9 +120,7 @@ class DbSqlPaging {
     }
 
     // Performing query
-    $this->iterator = $this->db->selectIterator($this->sqlQuery . ' LIMIT ' . $this->pageSize . ' OFFSET ' . ($this->currentPage - 1) * $this->pageSize);
-
-    $this->iterator->rewind();
+    $this->stmt = $this->db->doDbSelect($this->sqlQuery . ' LIMIT ' . $this->pageSize . ' OFFSET ' . ($this->currentPage - 1) * $this->pageSize);
   }
 
 }

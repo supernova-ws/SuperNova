@@ -914,6 +914,19 @@ class db_mysql {
     return $this->doOnlyQuery($string, $skip_query_check);
   }
 
+  // TODO
+  /**
+   * @param string $string
+   * @param        $skip_query_check
+   *
+   * @return array
+   */
+  public function doDbSelectAndFetchAll(string $string, $skip_query_check = false) {
+    $stmt = $this->doOnlyQuery($string, $skip_query_check);
+
+    return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+  }
+
   /**
    * doDbDelete - not to miss with doDelete() on replaces
    *

@@ -9,7 +9,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $lang, $user;
+global $lang, $user, $template_result;
 
 //messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
@@ -29,24 +29,24 @@ function visualize($userId) {
 
   $userIdSafe = round(floatval($userId));
 
-  $iter = SN::$gc->db->selectIterator(
-    "SELECT c.visit_time, c.visit_length, c.counter_id
+  $sql  = "SELECT c.visit_time, c.visit_length, c.counter_id
     FROM `{{counter}}` as c
     where 
           user_id={$userIdSafe}
           AND visit_time > '2018-01-01'
-    order by visit_time desc;"
-  );
+    order by visit_time desc";
+
+  $count = SN::$gc->db->countQueryRecords($sql);
 
   $user = SN::$db->doQueryAndFetch("SELECT `username` FROM `{{users}}` WHERE `id` = {$userIdSafe}");
 
   $template_result += [
-    'RECORDS'   => count($iter),
+    'RECORDS'   => $count,
     'USER_ID'   => $userId,
     'USER_NAME' => $user['username'],
   ];
 
-  if (!count($iter)) {
+  if (!$count) {
     return;
   }
 
@@ -54,8 +54,12 @@ function visualize($userId) {
   $to   = null;
 
   $perHour = [];
+
+  $iter = SN::$gc->db->doDbSelect($sql);
   foreach ($iter as $record) {
-    empty($to) ? $to = $record['visit_time'] : false;
+    if (empty($to)) {
+      $to = $record['visit_time'];
+    }
 
     $from = $record['visit_time'];
 
@@ -63,7 +67,9 @@ function visualize($userId) {
     $hourStart = floor($time / $activityPeriod) * $activityPeriod;
 
     $length = $record['visit_length'];
-    $length == 0 ? $length = 1 : false;
+    if ($length == 0) {
+      $length = 1;
+    }
 
     do {
       $leftOfThisHour = $hourStart + $activityPeriod - $time;
@@ -81,6 +87,7 @@ function visualize($userId) {
     } while ($length > 0);
 
   }
+  ksort($perHour);
 
   $template_result += [
     'PERIOD' => $activityPeriod,
@@ -88,8 +95,6 @@ function visualize($userId) {
     'DATE_FROM' => $from,
     'DATE_TO'   => $to,
   ];
-
-  ksort($perHour);
 
   end($perHour);
   $lastHour = key($perHour);

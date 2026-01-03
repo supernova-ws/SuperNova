@@ -873,8 +873,14 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 * mm_points_change - выбросить, как и поля про ММ из таблицы `user`
 * rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
 
+посмотреть, что бы не было вызовов getIterator() в модулях
+
 #ctv
 
+
+2026-01-03 09:43:41 47a43
+
+[@] Removing old mysqli-related code
 
 2026-01-03 08:18:34 47a41
 

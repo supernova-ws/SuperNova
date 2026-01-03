@@ -336,17 +336,17 @@ class PageMessage extends PageDeprecated {
     }
 
     if ($this->showAll) {
-      $iterator = $this->db->selectIterator($message_query);
+      $stmt = $this->db->doDbSelect($message_query);
     } else {
       $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
       $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
 
-      $iterator = $message_query->getIterator();
+      $stmt = $message_query->getResult();
     }
 
     $wasIgnored = 0;
     $template = SnTemplate::gettemplate('msg_message_list', true);
-    foreach ($iterator as $message_row) {
+    foreach ($stmt as $message_row) {
       if(
         $message_row['message_type'] == MSG_TYPE_PLAYER
         &&

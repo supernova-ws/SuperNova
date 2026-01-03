@@ -160,7 +160,7 @@ class PageAdminPayment extends PageDeprecated {
     $pager = new PagingRenderer($query, 'index.php?' . $_SERVER['QUERY_STRING']);
     $pager->setDelta(10);
 
-    foreach ($query->getIterator() as $row) {
+    foreach ($query->getResult() as $row) {
       $row2 = array();
       foreach ($row as $key => $value) {
         $row2[strtoupper($key)] = $value;
