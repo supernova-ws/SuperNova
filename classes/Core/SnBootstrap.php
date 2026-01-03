@@ -82,8 +82,8 @@ class SnBootstrap {
         $output = [
           "\n\n",
           SN_TIME_SQL . " - ERROR",
-          var_export($error, true),
-//          var_export(debug_backtrace(), true),
+          print_r($error, true),
+          var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true),
           var_export(core_auth::$device, true),
         ];
         file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);

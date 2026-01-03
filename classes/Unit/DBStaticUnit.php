@@ -51,8 +51,9 @@ class DBStaticUnit {
 
     $unit_snid = intval($unit_snid);
 
-    $filter   = ($unit_snid ? "unit_snid = {$unit_snid} AND " : '')
-      . "unit_location_type = {$locationTypeId} AND unit_location_id = {$location_id}" .
+    $filter   =
+//      ($unit_snid ? "unit_snid = {$unit_snid} AND " : '') .
+      "unit_location_type = {$locationTypeId} AND unit_location_id = {$location_id}" .
       " AND " . DBStaticUnit::db_unit_time_restrictions();
     $query = "SELECT * FROM {{unit}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '');
     $query .= db_mysql::db_transaction_check(db_mysql::DB_TRANSACTION_WHATEVER) ? ' FOR UPDATE' : '';

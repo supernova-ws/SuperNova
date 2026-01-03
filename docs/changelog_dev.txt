@@ -873,8 +873,16 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 * rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
 
 
+в чате невидимый пользователь должен видеть себя
+
 #ctv
 
+
+
+2026-01-04 00:38:51 47a56
+
+[~] Rolled back per-unit selection due to possible deadlocks
+[@] Redo error logging a bit
 
 2026-01-03 21:21:04 47a53
 
