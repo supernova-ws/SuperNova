@@ -259,15 +259,8 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
-    {
-      if (static::$db->db_affected_rows($result)) {
-        // Обновляем данные только если ряд был затронут
-        DBStaticUnit::cache_clear();
-      }
-    }
 
-    return $result;
+    return self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}");
   }
 
   public static function db_upd_record_list($location_type, $condition, $set) {
@@ -278,15 +271,7 @@ class SN {
     $condition  = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
-
-      if (static::$db->db_affected_rows($result)) { // Обновляем данные только если ряд был затронут
-        // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
-        DBStaticUnit::cache_clear();
-      }
-    }
-
-    return $result;
+    return self::$db->doDbUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''));
   }
 
   public static function db_ins_record($location_type, $set) {
@@ -298,8 +283,6 @@ class SN {
         $record_id = SN::$db->db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
-        // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
-        DBStaticUnit::cache_clear();
       }
     }
 
@@ -314,14 +297,8 @@ class SN {
     $location_info = &static::$location_info[$location_type];
     $id_field      = $location_info[P_ID];
     $table_name    = $location_info[P_TABLE_NAME];
-    if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
-      if (static::$db->db_affected_rows($result)) // Обновляем данные только если ряд был затронут
-      {
-        DBStaticUnit::cache_clear();
-      }
-    }
 
-    return $result;
+    return self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}");
   }
 
   public static function db_del_record_list($location_type, $condition) {
@@ -331,15 +308,7 @@ class SN {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
-      if (static::$db->db_affected_rows($result)) // Обновляем данные только если ряд был затронут
-      {
-        // Обнуление кэша, потому что непонятно, что поменялось
-        DBStaticUnit::cache_clear();
-      }
-    }
-
-    return $result;
+    return self::$db->doDbDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}");
   }
 
 

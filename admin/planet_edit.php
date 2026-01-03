@@ -83,8 +83,6 @@ function planet_edit_model($planet_id, array $unit_list, $mode) {
         DBStaticUnit::db_unit_list_delete($theUserId, LOC_PLANET, $planet_id, $unit_id);
       } else {
         DBStaticUnit::dbChangeUnit($theUserId, $planet_id, $unit_id, $unit_amount);
-
-        DBStaticUnit::cache_clear();
       }
     }
 

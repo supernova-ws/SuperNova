@@ -121,7 +121,6 @@ class StatCalculator {
       }
     }
     unset($user_list);
-    DBStaticUnit::cache_clear();
 
     static::sta_set_time_limit('calculating planets stats');
     $i = 0;

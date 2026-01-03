@@ -1,11 +1,15 @@
 <?php
 
+/** @noinspection PhpDeprecationInspection */
+/** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
 /** @noinspection SqlResolve */
 
 namespace Unit;
 
 use Exception;
-use mysqli_result;
+use PDOStatement;
 use Planet\Planet;
 use SN;
 
@@ -24,7 +28,7 @@ class DBStaticUnit {
    *
    * @param int $unit_id
    *
-   * @return array|bool|mysqli_result|null
+   * @return array|null
    */
   public static function db_unit_by_id($unit_id) {
     return doSelectFetch("SELECT * FROM `{{unit}}` WHERE `unit_id` = " . idval($unit_id));
@@ -37,6 +41,7 @@ class DBStaticUnit {
    * @param int $unit_snid
    *
    * @return array|false|mixed|null
+   * @noinspection PhpUnusedParameterInspection
    */
   public static function db_unit_by_location($user_id, $location_type, $location_id, $unit_snid = 0) {
     // apply time restrictions ????
@@ -44,12 +49,8 @@ class DBStaticUnit {
 
     $unit_snid = intval($unit_snid);
 
-    $resultOld = $unit_snid ? (isset($allUnits[$unit_snid]) ? $allUnits[$unit_snid] : null ) : $allUnits;
-
-    return $resultOld;
+    return $unit_snid ? ($allUnits[$unit_snid] ?? null) : $allUnits;
   }
-
-  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов
 
   /**
    * @param $location_type
@@ -62,19 +63,20 @@ class DBStaticUnit {
       return false;
     }
 
-    if (!isset(DBStaticUnit::$locator[$location_type][$location_id])) {
+    $locator = [];
+
       $got_data = SN::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
       if (is_array($got_data)) {
         foreach ($got_data as $unitRow) {
-          DBStaticUnit::$locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
+          $locator[$unitRow['unit_location_type']][$unitRow['unit_location_id']][$unitRow['unit_snid']] = $unitRow;
         }
       }
-    }
+
 
     $result = false;
 
-    if (is_array(DBStaticUnit::$locator[$location_type][$location_id])) {
-      foreach (DBStaticUnit::$locator[$location_type][$location_id] as $key => $value) {
+    if (is_array($locator[$location_type][$location_id])) {
+      foreach ($locator[$location_type][$location_id] as $key => $value) {
         $result[$key] = $value;
       }
     }
@@ -82,24 +84,20 @@ class DBStaticUnit {
     return $result;
   }
 
-  public static function cache_clear() {
-    DBStaticUnit::$locator = [];
-  }
-
-  public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
-    $query  = doSelect(
-      "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
-      ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
-      ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
-      'GROUP BY `unit_snid`'
-    );
-    $result = array();
-    while ($row = db_fetch($query)) {
-      $result[$row['unit_snid']] = $row;
-    }
-
-    return $result;
-  }
+//  public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
+//    $query  = doSelect(
+//      "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
+//      ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
+//      ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
+//      'GROUP BY `unit_snid`'
+//    );
+//    $result = array();
+//    while ($row = db_fetch($query)) {
+//      $result[$row['unit_snid']] = $row;
+//    }
+//
+//    return $result;
+//  }
 
 // Used by UNIT_CAPTAIN module TODO
   public static function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update) {
@@ -130,7 +128,7 @@ class DBStaticUnit {
   /**
    * @param string $set
    *
-   * @return array|bool|false|mysqli_result|null
+   * @return array|bool|PDOStatement
    */
   public static function db_unit_set_insert($set) {
     return SN::db_ins_record(LOC_UNIT, $set);
@@ -139,9 +137,9 @@ class DBStaticUnit {
   public static function db_unit_list_delete($user_id, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
     return SN::db_del_record_list(LOC_UNIT,
       "`unit_location_type` = {$unit_location_type}" .
-      ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
-      ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
-      ($unit_snid = idval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
+      (($unit_location_id = idval($unit_location_id)) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
+      (($user_id = idval($user_id)) ? " AND `unit_player_id` = {$user_id}" : '') .
+      (($unit_snid = idval($unit_snid)) ? " AND `unit_snid` = {$unit_snid}" : ''));
   }
 
   public static function db_unit_list_stat_calculate() {
@@ -198,6 +196,7 @@ class DBStaticUnit {
       $result = boolval(rpg_points_change($playerId, $reason, $amount));
     } elseif (in_array($unitSnId, sn_get_groups(UNIT_RESOURCES_STR_LOOT))) {
       // Add resources to user's capital
+      /** @noinspection PhpStatementHasEmptyBodyInspection */
       if ($userArray['user_as_ally'] == 1) {
         // TODO - If ally - adding resources to user record
       } else {

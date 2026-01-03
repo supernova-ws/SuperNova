@@ -18,7 +18,6 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use PDO;
 use PDOStatement;
 use SN;
-use Unit\DBStaticUnit;
 
 /**
  * User: Gorlum
@@ -783,14 +782,12 @@ class db_mysql {
 
     self::$db_in_transaction = true;
     self::$transactionDepth++;
-    DBStaticUnit::cache_clear();
 
     return self::$transaction_id;
   }
 
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
-    DBStaticUnit::cache_clear();
 
     SN::$gc->db->transactionRollback();
 
@@ -819,7 +816,6 @@ class db_mysql {
   public static function db_transaction_commit() {
     self::db_transaction_check(db_mysql::DB_TRANSACTION_SHOULD_BE);
 
-    DBStaticUnit::cache_clear();
     SN::$gc->db->transactionCommit();
 
     self::$db_in_transaction = false;

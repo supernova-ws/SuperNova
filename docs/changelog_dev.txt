@@ -874,6 +874,10 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 
 #ctv
 
+2026-01-03 11:44:23 47a48
+
+[@] Removing old mysqli-related code
+
 
 2026-01-03 09:56:34 47a46
 
