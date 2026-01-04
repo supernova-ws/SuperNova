@@ -20,11 +20,12 @@ class SnBootstrap {
 
       global $user, $locale_cache_statistic;
 
+      !defined('SN_TIME_RENDER_START') ? define('SN_TIME_RENDER_START', microtime(true)) : false;
+
       $now       = microtime(true);
       $totalTime = round($now - SN_TIME_MICRO, 6);
-      !defined('SN_TIME_RENDER_START') ? define('SN_TIME_RENDER_START', microtime(true)) : false;
       $executionTime = round(SN_TIME_RENDER_START - SN_TIME_MICRO, 6);
-      $displayTime   = round($now - SN_TIME_RENDER_START, 6);
+      $displayTime   = number_format(round($now - SN_TIME_RENDER_START, 6), 6);
 
       $benchmarkResults =
         '[' . SN_TIME_SQL . '] '
@@ -38,6 +39,7 @@ class SnBootstrap {
           : ''
         )
         . ', memory: ' . number_format(memory_get_usage() - SN_MEM_START)
+        . ', peak OS: ' . number_format(memory_get_peak_usage(true) - SN_MEM_START)
         . (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '')
         . '';
 
@@ -82,10 +84,12 @@ class SnBootstrap {
         $output = [
           "\n\n",
           SN_TIME_SQL . " - ERROR",
-          print_r($error, true),
-          var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true),
+//          print_r($error, true),
+//          var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true),
           var_export(core_auth::$device, true),
         ];
+        $output = array_merge($output, $error);
+
         file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);
 
         if (!empty($error['file']) && strpos($error['file'], 'classCache.php') !== false) {

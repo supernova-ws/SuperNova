@@ -253,7 +253,7 @@ class db_mysql {
    *
    * @noinspection PhpUnusedParameterInspection
    */
-  public function handlerQueryWarning($errno, $errStr, $errFile, $errLine, $errContext) {
+  public function handlerQueryWarning($errno, $errStr, $errFile, $errLine, $errContext = null) {
     static $alreadyHandled;
 
     // Error was suppressed with the @-operator
@@ -290,7 +290,7 @@ class db_mysql {
      * @var debug       $debug
      * @var classConfig $config
      */
-    global $numQueries, $debug, $config;
+    global $debug, $config;
 
     static $exclude_functions;
     if(empty($exclude_functions)) {
@@ -308,26 +308,11 @@ class db_mysql {
     $sql = $this->prefixReplace($query);
 
     if ($config->debug ?? null) {
-      $numQueries++;
-      $arr   = debug_backtrace();
-      while(
-        !empty($arr)
-        && (in_array(basename($arr[0]['file']), ['db.php', 'db_mysql.php', 'db_queries.php', 'DbQuery.php'])
-//        || in_array(basename($arr[0]['function']), $exclude_functions)
-        )
-      ) {
-        array_shift($arr);
-      }
-
-      $array = explode('/', $arr[0]['file']);
-      $file  = end($array);
-      $line  = $arr[0]['line'];
-      $debug->add($numQueries, $query, $file, $line);
-//      $debug->add($numQueries, str_replace("\n", '<br>', $debug->comment_query(debug_backtrace(), $sql)), $file, $line);
+      $debug->logQuery($query);
     }
 
     if (defined('DEBUG_SQL_COMMENT')) {
-      $sql = $debug->comment_query(debug_backtrace(), $sql);
+      $sql = $debug->comment_query(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), $sql, defined('DEBUG_SQL_COMMENT_LONG'));
     }
 
     set_error_handler([$this, 'handlerQueryWarning']);
@@ -570,7 +555,7 @@ class db_mysql {
   }
 
   /**
-   * Executes direct SQL query
+   * Executes direct decoded SQL query
    *
    * @param string $query_string
    *
@@ -589,7 +574,11 @@ class db_mysql {
 //      $result = $this->dbLaravel->statement($sql, $bindings);
 //    }
 
-    $result = $this->pdo->query($query_string, PDO::FETCH_ASSOC);
+    try {
+      $result = $this->pdo->query($query_string, PDO::FETCH_ASSOC);
+    } catch (\Throwable $t) {
+      SN::$debug->exception($t);
+    }
 
     $this->time_mysql_total += microtime(true) - $mt;
 

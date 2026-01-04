@@ -32,7 +32,8 @@ if (!defined('INSIDE')) {
 }
 
 class debug {
-  protected $log;
+  public $log;
+  public $lastQuery = '';
   protected $numqueries;
   protected $log_array;
 
@@ -80,12 +81,17 @@ class debug {
   }
 
   public function __construct() {
-    $this->log        = '';
+    $this->log        = [];
     $this->numqueries = 0;
   }
 
-  function add($numQueries, $query, $file, $line) {
-    $this->log .= "<tr><th>Query $numQueries: </th><th>$query</th><th>$file($line)</th></tr>";
+  protected function add($query, $file, $function = null, $line = null) {
+    if (is_array($file)) {
+      $function = $file['function'];
+      $file     = $file['file'];
+    }
+
+    $this->log[] = $this->lastQuery = ['query' => $query, 'file' => $file, 'function' => $function, 'line' => $line,];
     $this->numqueries++;
   }
 
@@ -94,23 +100,41 @@ class debug {
   }
 
   function echo_log() {
-    echo '<br><table><tr><td class=k colspan=4><a href="' . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
+    echo '<br><table><tr><td class=k colspan=4><a href="' . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>" .
+      $this->renderTable() .
+      "</table>";
     die();
   }
 
   public function compact_backtrace($backtrace, $long_comment = false, $onlyLastX = null) {
     static $exclude_functions;
-    if(empty($exclude_functions)) {
+    if (empty($exclude_functions)) {
       $exclude_functions = $this->getExcludedFunctionNames();
     }
 
     $raw      = [];
     $filtered = [];
+
+//    ini_set('memory_limit', '-1');
+
+//pred($backtrace);
+//    $thisTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+//
+//    array_walk($thisTrace, function(&$a) {$a['object1'] = $a['object'] ?? 'NOOBJECT'; unset($a['object']);});
+//    pre($thisTrace);
+
     foreach ($backtrace as $a_trace) {
+      if ($a_trace['object'] ?? null) {
+        $a_trace['object'] = get_class($a_trace['object']);
+      }
+
+//      pre($a_trace['class'] ?? 'n/a', $a_trace['object'] ?? 'n/a');
+//      pre($a_trace['object'] ? get_class($a_trace['object']) : false);
+
       $function =
         (!empty($a_trace['type'])
           ? ($a_trace['type'] == '->'
-            ? "({$a_trace['class']})" . get_class($a_trace['object'])
+            ? "({$a_trace['class']})" . ($a_trace['object'] ? get_class($a_trace['object']) : '')
             : $a_trace['class']
           ) . $a_trace['type']
           : ''
@@ -119,7 +143,7 @@ class debug {
       $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', !empty($a_trace['file']) ? $a_trace['file'] : ''));
 
       $line  = !empty($a_trace['line']) ? '@' . $a_trace['line'] : '';
-      $raw[] = "{$function} - '{$file}'{$line}";
+      $raw[] = "{$file}{$line} => {$function}";
 
       if (!in_array($a_trace['function'], $exclude_functions)) {
         $filtered[] = &$raw[count($raw) - 1];
@@ -147,8 +171,8 @@ class debug {
    *
    * @return string
    */
-  public function comment_query($backtrace, $sql) {
-    list($raw, $filtered,) = $this->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
+  public function comment_query($backtrace, $sql, $fullTrace) {
+    list($raw, $filtered,) = $this->compact_backtrace($backtrace, $fullTrace);
 
     $sql_commented = [
       "/* ",
@@ -296,7 +320,7 @@ class debug {
       /** @noinspection XmlDeprecatedElement */
       /** @noinspection HtmlDeprecatedAttribute */
       echo "<h2>{$title}</h2><br><font color=red>" . htmlspecialchars($message) . "</font><br><hr>";
-      echo "<table>{$this->log}</table>";
+      echo "<table>" . $this->renderTable() . "</table>";
     }
 
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
@@ -376,33 +400,155 @@ class debug {
   public function getExcludedFunctionNames(): array {
     return array(
 //      'call_user_func_array',
+      // DBAL\db_mysql
+      'doQueryAndFetch', 'doOnlyQuery',
       // Caller not needed
       'comment_query',
       // Excluding includes/requires
       'include', 'include_once', 'require_once', 'require',
       // Excluding query calls/DB wrap functions
-      'doquery',
-      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
-      'doDelete', 'doInsert', 'doUpdate', 'doReplace', 'doSelect', 'doSelectFetch',
-      'doDbSelect', 'doDbInsert', 'doDbUpdate', 'doDbReplace', 'doDbSelect', 'doDbSelectFetch',
-      'db_query_update',
-      'selectValue',
+//      'doquery',
+//      'db_get_record_list', // 'db_user_by_id', 'db_get_user_by_id',
+//      'doDelete', 'doInsert', 'doUpdate', 'doReplace', 'doSelect', 'doSelectFetch',
+//      'doDbSelect', 'doDbInsert', 'doDbUpdate', 'doDbReplace', 'doDbSelect', 'doDbSelectFetch',
+//      'db_query_update',
+//      'selectValue',
       // SN::
       // 'db_get_record_list',
-      'db_get_unit_list_by_location',
+//      'db_get_unit_list_by_location',
       // DBStaticUnit
-      'db_unit_by_location',
+//      'db_unit_by_location',
       // classPersistent
-      '__get', 'db_loadItem', '__set', 'db_saveItem',
+//      '__get', 'db_loadItem', '__set', 'db_saveItem',
       // Constructors ?! Why not...
-      '__construct',
+//      '__construct',
       // Hook handlers
-      'sn_function_call',
+//      'sn_function_call',
       // Chat
-      'db_chat_player_list_online',
+//      'db_chat_player_list_online',
       // Transaction-related functions
       'db_transaction_commit', 'transactionCommit', 'transactionStart', 'db_transaction_start', 'db_transaction_rollback', 'transactionRollback',
     );
+  }
+
+  /**
+   * Filters trace down to significant caller
+   *
+   * @param $trace
+   *
+   * @return array
+   */
+  public function filterTrace($trace) {
+    // Ignore trace if call made in those files
+    $fileNames = [
+      'db_mysql.php', 'db.php', 'DbQuery.php', 'db_queries.php',
+      'PlayerStatic.php', 'db_queries_users.php', 'DBStaticPlanet.php', 'DbFleetStatic.php', ];
+    // Ignore trace if called those objects
+    $classes = ['PDO', 'debug',];
+    // Ignore trace if called those functions/methods
+    $methods = ['doSelect', 'Unit\DBStaticUnit::db_unit_by_location', 'SN::db_get_record_list', ];
+
+    while (
+      !empty($trace)
+      && (
+        in_array(basename($trace[0]['file']), $fileNames)
+        || (($trace[0]['class'] ?? null) && in_array($trace[0]['class'], $classes))
+        || in_array($this->getTraceFunction($trace[0]), $methods)
+      )
+    ) {
+      array_shift($trace);
+//      pre($this->getTraceFunction($trace));
+//      pre($this->getTraceFunction($trace[0]));
+    }
+
+    return $trace;
+  }
+
+  public function compactOneTrace($trace) {
+    return [
+      'file'     =>
+        substr(realpath($trace['file']), strlen(SN_ROOT_PHYSICAL))
+        . (($trace['line'] ?? null) ? '@' . $trace['line'] : ''),
+      'function' => $this->getTraceFunction($trace),
+    ];
+  }
+
+  public function stringifyOneTrace($trace) {
+    $trace = $this->compactOneTrace($trace);
+    return $trace['file'] . ' => ' . $trace['function'];
+  }
+
+  public function exception(Throwable $t) {
+    $fName = SN_ROOT_PHYSICAL . '_error.txt';
+
+//    $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    $trace = $t->getTrace();
+//    while (
+//      !empty($trace)
+////      && in_array($trace[0]['class'], ['debug', 'DBAL\\db_mysql',])
+//      && in_array($trace[0]['class'], ['debug',])
+//    ) {
+//      array_shift($trace);
+//    }
+//    pred($this->lastQuery, $trace);
+
+//    pred($trace, $this->compact_backtrace($trace, true));
+
+    array_walk($trace, function (&$item) {$item = $this->stringifyOneTrace($item);});
+
+    $dt = DateTime::createFromFormat('U.u', microtime(true));
+
+    $dtString = $dt->format(FMT_DATE_TIME_SQL_MS);
+    $output   = [
+      "\n\n",
+      $dtString . " - Exception " . get_class($t) . " [{$t->getCode()}]: " . $t->getMessage(),
+      var_export(core_auth::$device, true),
+      'Last query: ' . var_export($this->lastQuery, true),
+      'Memory: ' . json_encode([
+        'mem' => number_format(memory_get_usage()),
+        'mem OS' => number_format(memory_get_usage(true)),
+        'peak' => number_format(memory_get_peak_usage()),
+        'peak OS' => number_format(memory_get_peak_usage(true)),
+        'limit' => ini_get('memory_limit'),
+      ]),
+      'Trace: ',
+//          print_r($error, true),
+//          var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true),
+    ];
+    $output   = array_merge($output, $trace);
+
+    file_put_contents($fName, implode("\n", $output), FILE_APPEND | LOCK_EX);
+
+    die("Exception occurred at {$dtString}");
+  }
+
+  /**
+   * @return string
+   */
+  public function renderTable(): string {
+    $table = [];
+    foreach ($this->log as $num => $value) {
+      $num++;
+      $table[] = "<tr><th>Query $num: </th><th>{$value['query']}</th><th>{$value['file']} => {$value['function']}</th></tr>";
+    }
+
+    return implode('', $table);
+  }
+
+  public function logQuery($query) {
+    $arr = $this->filterTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+    $this->add($query, $this->compactOneTrace($arr[0]));
+
+    return $this;
+  }
+
+  /**
+   * @param $trace
+   *
+   * @return string
+   */
+  protected function getTraceFunction($trace): string {
+    return (($trace['type'] ?? null) ? ($trace['class'] ?? '--CLASS--') . $trace['type'] : '') . $trace['function'];
   }
 }
 

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection SqlResolve */
 
 use DBAL\db_mysql;
 use DBAL\DbQuery;
