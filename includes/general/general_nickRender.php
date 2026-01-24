@@ -3,6 +3,8 @@
  * Created by Gorlum 04.12.2017 4:20
  */
 
+use Refactor\PlayerNickRenderer\PlayerNickRenderer;
+
 global $nickSorting;
 $nickSorting = [
   NICK_HTML,
@@ -33,36 +35,6 @@ $nickSorting = [
 
   NICK_LAST,
 ];
-/*
- // Old nick sorting
- $nickSorting = [
-  NICK_HTML,
-
-  NICK_FIRST,
-
-  NICK_RACE,
-  NICK_GENDER,
-  NICK_AWARD,
-  NICK_VACATION,
-  NICK_BIRTHDAY,
-  NICK_PREMIUM,
-  NICK_AUTH_LEVEL,
-
-  NICK_RANK,
-  NICK_HIGHLIGHT,
-  NICK_CLASS,
-  NICK_NICK_CLASS,
-  NICK_NICK,
-  NICK_NICK_CLASS_END,
-  NICK_ALLY_CLASS,
-  NICK_ALLY,
-  NICK_ALLY_CLASS_END,
-  NICK_CLASS_END,
-  NICK_HIGHLIGHT_END,
-
-  NICK_LAST,
-];
-*/
 
 
 /**
@@ -97,7 +69,8 @@ function player_nick_render_to_html($result, $options = false) {
 
   if (is_array($result)) {
     if (isset($result['id'])) {
-      $result = player_nick_render_current_to_array($result, $options);
+      // $result = player_nick_render_current_to_array($result, $options);
+      $result = playerNickRenderCurrentToArray($result, $options);
     }
     if (!isset($result[NICK_HTML])) {
       $result = player_nick_render_array_to_html($result);
@@ -142,6 +115,7 @@ function player_nick_uncompact($nick_string) {
 function player_nick_render_array_to_html($nick_array) {
   $result = null;
 
+  /** @see sn_player_nick_render_array_to_html */
   return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result));
 }
 
@@ -224,6 +198,32 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
 }
 
 /**
+ * @psalm-type PlayerNickRenderOptionArray = array{
+ *    color:bool,
+ *    ally:bool,
+ *    icons:bool,
+ *    gender:bool,
+ *    birthday:bool,
+ *    vacancy:bool,
+ *    player_rank:bool,
+ *    race:bool,
+ *    award:bool,
+ * }
+ *
+ * @param array $user
+ * @param PlayerNickRenderOptionArray|bool $options
+ *
+ * @return mixed
+ */
+function playerNickRenderCurrentToArray(array $user, $options = false) {
+  static $renderer;
+
+  $renderer ??= PlayerNickRenderer::singleton();
+
+  return $renderer->render($user, $options);
+}
+
+/**
  * @param array      $render_user
  * @param array|bool $options - [
  *                            'color' => true,
@@ -240,6 +240,7 @@ function player_nick_render_current_to_array($render_user, $options = false) {
 
   return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result));
 }
+
 
 /**
  * @param array      $render_user

@@ -395,7 +395,8 @@ class Chat {
                 $chat_command_parsed[2] = SN::$db->db_escape($chat_command_parsed[2]);
                 if ($recipient_info['id']) {
                   $message                     = $chat_command_parsed[3];
-                  $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => false))));
+                  //$nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => false))));
+                  $nick                        = SN::$db->db_escape(player_nick_compact(playerNickRenderCurrentToArray($user, array('color' => true, 'icons' => true, 'ally' => false))));
                   $chat_message_recipient_id   = $recipient_info['id'];
                   $chat_message_recipient_name = SN::$db->db_escape($recipient_info['username']);
                   $chat_message_sender_id      = $user['id'];
@@ -532,7 +533,15 @@ class Chat {
         $chat_message_recipient_id   = 'NULL';
         $chat_message_recipient_name = '';
         $ally_id                     = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
-        $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
+        // $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
+
+        $nickArray = playerNickRenderCurrentToArray($user, [
+            'color' => true,
+            'icons' => true,
+            'ally'  => !$ally_id,
+            'class' => 'class="chat_nick_msg"']
+        );
+        $nick      = SN::$db->db_escape(player_nick_compact($nickArray));
 
         // Replacing news://xxx link with BBCode
         $message = preg_replace("#news\:\/\/(\d+)#i", "[news=$1]", $message);

@@ -873,82 +873,107 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 * rpg_points_change - должна сама кидать экспешны в случае проблемы - обернуть везде в try-catch
 
 
-в чате невидимый пользователь должен видеть себя
+* При логгировании УРЛа обращения считать MD5 от параметров
+    * Записывать как GET так и POST. И, возможно, боди на случай JSON
+
+* в чате невидимый пользователь должен видеть себя
+
+* Опция для "струи" - не показывать попап
+    * Присылать ПМ пользователю?
+    * Выдавать строку?
+
+* чат: <div>=> <span>
+
+* // TODO public ?PlayerNickRenderOption $optionsObject = null;
+
+* git stash push всего кроме модулей
+    * git stash push -- . ':!modules'
+
+* 21 ранг Сингулярность для команды сервера
+
+* player_nick_render_array_to_html()
+
+* отдельное окно только для чата
+    * похожее есть для скана Вселенной - посмотреть, как сделано
+    * скорее всего - там костыли
+
+* Если всё ОК - почистить модули от неиспользуемого кода
 
 #ctv
 
 
-2026-01-04 19:15:58 47a58
+2026-01-24 21:36:40 47a67
+[@] Code - refactoring `player_nick_render_current_to_array()`
+    Introduced `Pipeline` as a partial replace for `Pimp`
+    Refactored `player_nick_render_current_to_array()` to use Pipeline
+    Moved module-specific `PlayerNickModifierXXX` classes to the corresponding modules
 
+
+2026-01-04 19:15:58 47a58
 [~] Extends log reporting subsystem a bit
 
-2026-01-04 00:38:51 47a56
 
+2026-01-04 00:38:51 47a56
 [~] Rolled back per-unit selection due to possible deadlocks
 [@] Redo error logging a bit
 
-2026-01-03 21:21:04 47a53
 
+2026-01-03 21:21:04 47a53
 [~] Speed up some queries
 
-2026-01-03 11:44:23 47a48
 
+2026-01-03 11:44:23 47a48
 [@] Removing old mysqli-related code
 
 
 2026-01-03 09:56:34 47a46
-
 [@] Removing old mysqli-related code
 
 
 2026-01-03 09:43:41 47a43
-
 [@] Removing old mysqli-related code
 
 
 2026-01-03 08:18:34 47a41
-
 [%] Fixed error in message outbox
 
 
 2026-01-01 15:57:45 47a36
-
 [%] Fixed MM to DM conversion when full DM price taken from MM
 
 
 2025-12-31 20:18:51 47a33
-
 [~] Skins: Reverting usage of CSS sprites in navbar
 
 
 2025-12-29 14:36:06 47a21
-
 [%] Fixed news display
 [%] Fixed messages display
 [%] Fixed admin displays
 [%] Fixed counter log compressor
 
-2025-12-28 13:46:39 47a17
 
+2025-12-28 13:46:39 47a17
 [@] Bumped required PHP version to 7.4
 [@] Removed unused files
 
-2025-12-28 12:10:07 47a14
 
+2025-12-28 12:10:07 47a14
 [@] Better sql-query log
 
-2025-12-28 08:19:52 47a11
 
+2025-12-28 08:19:52 47a11
 [@] Migrating to PDO
 
-2025-12-26 00:28:42 47a1
 
+2025-12-26 00:28:42 47a1
 [@] Decoupled doSelect() and doSelectFetch() in main code
 
-2025-12-25 23:36:53 47a0
 
+2025-12-25 23:36:53 47a0
 [@] Decoupled doquery() in main code
 [@] Renamed `.inc` files to `.php`
+
 
 2025-12-25 16:26:41 46d0
 [!] Project "SuperNova.WS" Release 46 "Совершеннолетие"
