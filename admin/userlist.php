@@ -5,7 +5,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2025 Gorlum
- * @version #47a4#
+ * @version #47a73#
  **/
 
 use Player\PlayerStatic;
@@ -103,7 +103,7 @@ while ($user_row = db_fetch($query)) {
 
   $template->assign_block_vars('user', array(
       'ID'              => $user_row['id'],
-      'NAME'            => $renderedNick = player_nick_render_to_html($user_row, ['player_rank' => true, 'vacancy' => true, 'birthday' => true, 'award' => true, NICK_RANK_NO_TEXT => true,]),
+      'NAME'            => $renderedNick = player_nick_render_to_html_user($user_row, ['player_rank' => true, 'vacancy' => true, 'birthday' => true, 'award' => true, NICK_RANK_NO_TEXT => true,]),
       'NAME_HTML'       => htmlentities($user_row['username'], ENT_QUOTES, 'UTF-8'),
       'IP'              => $user_row['user_lastip'],
       'IP_MULTI'        => intval($multi_ip[$user_row['user_lastip']]),

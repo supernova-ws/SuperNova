@@ -49,7 +49,7 @@ function nws_render(&$user, &$template, $query_where = '', $query_limit = 20) {
       'ANNOUNCE'        => SN::$gc->bbCodeParser->expandBbCode($announce['strAnnounce'], intval($announce['authlevel'])),
       'DETAIL_URL'      => $announce['detail_url'],
       'USER_NAME'       => !empty($users[$announce['user_id']])
-        ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true))
+        ? player_nick_render_to_html_user($users[$announce['user_id']], array('color' => true))
         : js_safe_string($announce['user_name']),
       'NEW'             => $announce['unix_time'] + SN::$config->game_news_actual >= SN_TIME_NOW,
       'FUTURE'          => $announce['unix_time'] > SN_TIME_NOW,

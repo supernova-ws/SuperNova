@@ -192,7 +192,7 @@ class Chat {
         ORDER BY messageid DESC
         LIMIT {$start_row}, {$page_limit}");
       while ($chat_row = db_fetch($query)) {
-        $chat_row['user']               = player_nick_render_to_html($chat_row['user']);
+        $chat_row['user']               = player_nick_render_to_html_chat($chat_row['user']);
         $nick_stripped                  = htmlentities(strip_tags($chat_row['user']), ENT_QUOTES, 'utf-8');
         $template_result['.']['chat'][] = array(
           'TIME'                => SN::$gc->bbCodeParser->expandBbCode(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF)),
@@ -257,7 +257,7 @@ class Chat {
           $safe_name                               = $chat_player_row['username'] <> $safe_name || strpbrk($safe_name, ' /\\\'') !== false ? '&quot;' . $safe_name . '&quot;' : $safe_name;
           $template_result['.']['online_player'][] = array(
             'ID'          => $chat_player_row['id'],
-            'NAME'        => player_nick_render_to_html($chat_player_row, array(
+            'NAME'        => player_nick_render_to_html_user($chat_player_row, array(
               'color' => true,
               'icons' => true,
               'ally'  => !$alliance,
@@ -396,7 +396,7 @@ class Chat {
                 if ($recipient_info['id']) {
                   $message                     = $chat_command_parsed[3];
                   //$nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => false))));
-                  $nick                        = SN::$db->db_escape(player_nick_compact(playerNickRenderCurrentToArray($user, array('color' => true, 'icons' => true, 'ally' => false))));
+                  $nick                        = SN::$db->db_escape(player_nick_compact(playerNickRenderToArray($user, array('color' => true, 'icons' => true, 'ally' => false))));
                   $chat_message_recipient_id   = $recipient_info['id'];
                   $chat_message_recipient_name = SN::$db->db_escape($recipient_info['username']);
                   $chat_message_sender_id      = $user['id'];
@@ -535,7 +535,7 @@ class Chat {
         $ally_id                     = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
         // $nick                        = SN::$db->db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id, 'class' => 'class="chat_nick_msg"'))));
 
-        $nickArray = playerNickRenderCurrentToArray($user, [
+        $nickArray = playerNickRenderToArray($user, [
             'color' => true,
             'icons' => true,
             'ally'  => !$ally_id,

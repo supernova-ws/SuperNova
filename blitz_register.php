@@ -188,7 +188,7 @@ $query             = doSelect(
   order by `blitz_place`, `timestamp`;");
 while ($row = db_fetch($query)) {
   $tpl_player_data = array(
-    'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),
+    'NAME' => player_nick_render_to_html_user($row, array('icons' => true, 'color' => true, 'ally' => true)),
   );
 
   if (SN::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES) {

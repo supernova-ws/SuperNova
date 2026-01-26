@@ -102,7 +102,7 @@ GROUP BY
     foreach ($iterator->getResult() as $row) {
       $render[] = [
         'ID'         => $row['id'],
-        'NAME'       => player_nick_render_to_html($row, true),
+        'NAME'       => player_nick_render_to_html_user($row, true),
         'NAME_clear' => $row['username'],
         'RANK'       => $row['total_rank'],
         'POINTS'     => $row['total_points'],

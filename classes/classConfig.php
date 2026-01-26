@@ -117,6 +117,12 @@
  *
  * @property int        $quest_total                   => 0, // Total number of quests
  *
+ * @property string     $chat_highlight_developer      => '<span class=\"nick_developer\">$1</span>', // Developer nick
+ * @property string     $chat_highlight_admin          => '<span class=\"nick_admin\">$1</span>', // Admin nick
+ * @property string     $chat_highlight_moderator      => '<span class=\"nick_moderator\">$1</span>', // Moderator nick
+ * @property string     $chat_highlight_operator       => '<span class=\"nick_operator\">$1</span>', // Operator nick
+ * @property string     $chat_highlight_premium        => '<span class=\"nick_premium\">$1</span>', // Premium nick
+ *
  * @property float      $resource_multiplier           => 1, // aka Mining speed
  * @property float      $game_speed                    => 1, // Game speed aka Building/Research speed
  * @property float      $fleet_speed                   => 1, // Fleet speed

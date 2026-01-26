@@ -14,7 +14,7 @@ defined('INSIDE') or die('Hacking attempt');
 define('DB_VERSION_MIN', '40'); // Minimal supported version of DB
 define('DB_VERSION', '46');
 define('SN_RELEASE', '46');
-define('SN_VERSION', '47a67');
+define('SN_VERSION', '47a73');
 define('SN_RELEASE_STABLE', '46d0'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -794,7 +794,7 @@ define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
 define('USER_OPTIONS_SPLIT', '|');
 
 // define('NICK_ID',               -1);
-define('NICK_HTML',              0);
+//define('NICK_HTML',              0);
 
 define('NICK_FIRST',             1);
 define('NICK_RACE',           1000);

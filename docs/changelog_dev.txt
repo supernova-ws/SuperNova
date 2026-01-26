@@ -899,11 +899,18 @@ $size = $pdo->query("SELECT @@max_allowed_packet")->fetchColumn();
 
 * Если всё ОК - почистить модули от неиспользуемого кода
 
+* отрефакторить другие пайп-лайн рендереры ника
+    * добавить в пайплайн/каждый шаг возможность вызова разных функций
+
 #ctv
 
 
+2026-01-26 06:37:16 47a72
+[@] Code - refactored `player_nick_render_array_to_html()` to use Pipeline
+
+
 2026-01-24 21:36:40 47a67
-[@] Code - refactoring `player_nick_render_current_to_array()`
+[@] Code - refactored `player_nick_render_current_to_array()`
     Introduced `Pipeline` as a partial replace for `Pimp`
     Refactored `player_nick_render_current_to_array()` to use Pipeline
     Moved module-specific `PlayerNickModifierXXX` classes to the corresponding modules
