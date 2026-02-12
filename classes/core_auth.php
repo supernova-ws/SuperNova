@@ -346,6 +346,17 @@ class core_auth extends sn_module {
         // Да, есть доступные игроки, которые так же прописаны в базе
         $this->get_active_user(); // 4.5
 
+        // 同步语言设置：如果请求参数中有语言选择，且与用户数据库不一致，则更新数据库
+        if (!empty(self::$user['id'])) {
+          $param_lang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : '';
+          if ($param_lang && preg_match('/^[a-z]{2}$/', $param_lang)) {
+             if (empty(self::$user['lang']) || self::$user['lang'] != $param_lang) {
+                db_user_set_by_id(self::$user['id'], "lang = '" . db_escape($param_lang) . "'");
+                self::$user['lang'] = $param_lang;
+             }
+          }
+        }
+
         if ($this->is_impersonating = !empty($_COOKIE[SN_COOKIE_U_I]) ? $_COOKIE[SN_COOKIE_U_I] : 0) {
           $a_user                      = db_user_by_id($this->is_impersonating);
           $this->impersonator_username = $a_user['username'];

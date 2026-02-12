@@ -3,6 +3,7 @@ config.php
 *config.php
 
 badqrys.txt
+_error.txt
 
 # Ignore Yandex and Google placeholders
 /yandex_*.txt
@@ -74,4 +75,3 @@ dirinfo
 /xcache/
 /xcache-admin/
 /xcache-admin2/
-

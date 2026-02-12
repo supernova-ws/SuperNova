@@ -1,4 +1,6 @@
 <?php
+// 禁用 Deprecated 警告
+error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
 
 version_compare(PHP_VERSION, '5.6') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.6') : false;
 
@@ -116,7 +118,7 @@ define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL)
 define('SN_HTTP_AVATAR', SN_ROOT_VIRTUAL . SN_PATH_AVATAR_RELATIVE);
 
 
-ini_set('error_reporting', E_ALL ^ E_NOTICE);
+ini_set('error_reporting', E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
 header('Content-type: text/html; charset=utf-8');
 ob_start();
